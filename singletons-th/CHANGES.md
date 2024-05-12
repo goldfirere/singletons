@@ -1,7 +1,7 @@
 Changelog for the `singletons-th` project
 =========================================
 
-3.4 [????.??.??]
+3.4 [2024.05.12]
 ----------------
 * Require building with GHC 9.10.
 * GHC 9.10 removes arity inference when kind-checking type families with
