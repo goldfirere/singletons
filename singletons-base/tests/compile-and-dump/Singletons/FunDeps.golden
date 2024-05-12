@@ -90,12 +90,6 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       sL2r ::
         (forall (t :: a). Sing t -> Sing (Apply L2rSym0 t :: b) :: Type)
     instance SFD Bool Natural where
-      sMeth ::
-        (forall (t :: Bool).
-         Sing t -> Sing (Apply MethSym0 t :: Bool) :: Type)
-      sL2r ::
-        (forall (t :: Bool).
-         Sing t -> Sing (Apply L2rSym0 t :: Natural) :: Type)
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = applySing (singFun1 @NotSym0 sNot) sA_0123456789876543210
       sL2r SFalse = sFromInteger (sing :: Sing 0)

@@ -68,18 +68,8 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       fromSing x = case x of {}
       toSing x = SomeSing (case x of {})
     instance SEq Empty where
-      (%==) ::
-        forall (t1 :: Empty) (t2 :: Empty). Sing t1
-                                            -> Sing t2
-                                               -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
-                                                                                  -> Type) t1) t2)
       (%==) _ _ = STrue
     instance SOrd Empty where
-      sCompare ::
-        forall (t1 :: Empty) (t2 :: Empty). Sing t1
-                                            -> Sing t2
-                                               -> Sing (Apply (Apply (CompareSym0 :: TyFun Empty ((~>) Empty Ordering)
-                                                                                     -> Type) t1) t2)
       sCompare _ _ = SEQ
     instance SDecide Empty where
       (%~) x _ = Proved (case x of {})

@@ -343,14 +343,6 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
           of
             (,) (SomeSing c) (SomeSing c) -> SomeSing (SMkFoo3 c c)
     instance SShow Foo1 where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Foo1)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo1 ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SMkFoo1
@@ -360,14 +352,6 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "MkFoo1"))
             sA_0123456789876543210
     instance SShow a => SShow (Foo2 a) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Foo2 a)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Foo2 a) ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SMkFoo2a (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
@@ -500,14 +484,6 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
                         sArgR_0123456789876543210))))
             sA_0123456789876543210
     instance SShow Bool => SShow Foo3 where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Foo3)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo3 ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SMkFoo3 (sArg_0123456789876543210 :: Sing arg_0123456789876543210)

@@ -55,14 +55,6 @@ Singletons/T89.hs:0:0:: Splicing declarations
       fromSing SFoo = Foo
       toSing Foo = SomeSing SFoo
     instance SEnum Foo where
-      sToEnum ::
-        forall (t :: GHC.Num.Natural.Natural). Sing t
-                                               -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural Foo
-                                                                                                       -> Type) t)
-      sFromEnum ::
-        forall (t :: Foo). Sing t
-                           -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun Foo GHC.Num.Natural.Natural
-                                                                                     -> Type) t)
       sToEnum (sN :: Sing n)
         = id
             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))))

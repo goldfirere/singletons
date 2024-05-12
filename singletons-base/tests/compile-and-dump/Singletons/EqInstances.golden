@@ -31,11 +31,6 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
     instance PEq Foo where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     instance SEq Foo => SEq Foo where
-      (%==) ::
-        forall (t1 :: Foo) (t2 :: Foo). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Foo ((~>) Foo Bool)
-                                                                              -> Type) t1) t2)
       (%==) SFLeaf SFLeaf = STrue
       (%==) SFLeaf ((:%+:) _ _) = SFalse
       (%==) ((:%+:) _ _) SFLeaf = SFalse
@@ -80,9 +75,4 @@ Singletons/EqInstances.hs:0:0:: Splicing declarations
     instance PEq Empty where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
     instance SEq Empty where
-      (%==) ::
-        forall (t1 :: Empty) (t2 :: Empty). Sing t1
-                                            -> Sing t2
-                                               -> Sing (Apply (Apply ((==@#@$) :: TyFun Empty ((~>) Empty Bool)
-                                                                                  -> Type) t1) t2)
       (%==) _ _ = STrue

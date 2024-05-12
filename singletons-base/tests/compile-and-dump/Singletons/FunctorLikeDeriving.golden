@@ -548,19 +548,6 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing x = case x of {}
       toSing x = SomeSing (case x of {})
     instance SFunctor (T x) where
-      sFmap ::
-        forall (a :: Type)
-               (b :: Type)
-               (t1 :: (~>) a b)
-               (t2 :: T x a). Sing t1
-                              -> Sing t2
-                                 -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (T x a) (T x b))
-                                                                    -> Type) t1) t2)
-      (%<$) ::
-        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: T x b). Sing t1
-                                                                -> Sing t2
-                                                                   -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (T x b) (T x a))
-                                                                                                      -> Type) t1) t2)
       sFmap
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -646,25 +633,6 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                           (_ :: Sing n_0123456789876543210) -> sN_0123456789876543210))
                sA_0123456789876543210)
     instance SFoldable (T x) where
-      sFoldMap ::
-        forall (a :: Type)
-               (m :: Type)
-               (t1 :: (~>) a m)
-               (t2 :: T x a). SMonoid m =>
-                              Sing t1
-                              -> Sing t2
-                                 -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (T x a) m)
-                                                                       -> Type) t1) t2)
-      sFoldr ::
-        forall (a :: Type)
-               (b :: Type)
-               (t1 :: (~>) a ((~>) b b))
-               (t2 :: b)
-               (t3 :: T x a). Sing t1
-                              -> Sing t2
-                                 -> Sing t3
-                                    -> Sing (Apply (Apply (Apply (FoldrSym0 :: TyFun ((~>) a ((~>) b b)) ((~>) b ((~>) (T x a) b))
-                                                                               -> Type) t1) t2) t3)
       sFoldMap
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -792,16 +760,6 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                sA_0123456789876543210)
             _sz_0123456789876543210
     instance STraversable (T x) where
-      sTraverse ::
-        forall (a :: Type)
-               (f :: Type -> Type)
-               (b :: Type)
-               (t1 :: (~>) a (f b))
-               (t2 :: T x a). SApplicative f =>
-                              Sing t1
-                              -> Sing t2
-                                 -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (T x a) (f (T x b)))
-                                                                        -> Type) t1) t2)
       sTraverse
         (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
         (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -837,19 +795,6 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun2 @FmapSym0 sFmap) (singFun1 @MkT2Sym0 SMkT2))
             (applySing (singFun1 @PureSym0 sPure) sA_0123456789876543210)
     instance SFunctor Empty where
-      sFmap ::
-        forall (a :: Type)
-               (b :: Type)
-               (t1 :: (~>) a b)
-               (t2 :: Empty a). Sing t1
-                                -> Sing t2
-                                   -> Sing (Apply (Apply (FmapSym0 :: TyFun ((~>) a b) ((~>) (Empty a) (Empty b))
-                                                                      -> Type) t1) t2)
-      (%<$) ::
-        forall (a :: Type) (b :: Type) (t1 :: a) (t2 :: Empty b). Sing t1
-                                                                  -> Sing t2
-                                                                     -> Sing (Apply (Apply ((<$@#@$) :: TyFun a ((~>) (Empty b) (Empty a))
-                                                                                                        -> Type) t1) t2)
       sFmap _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = id
             @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210))
@@ -859,27 +804,8 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
             @(Sing (Case_0123456789876543210 v_0123456789876543210 v_0123456789876543210))
             (case sV_0123456789876543210 of {})
     instance SFoldable Empty where
-      sFoldMap ::
-        forall (a :: Type)
-               (m :: Type)
-               (t1 :: (~>) a m)
-               (t2 :: Empty a). SMonoid m =>
-                                Sing t1
-                                -> Sing t2
-                                   -> Sing (Apply (Apply (FoldMapSym0 :: TyFun ((~>) a m) ((~>) (Empty a) m)
-                                                                         -> Type) t1) t2)
       sFoldMap _ _ = sMempty
     instance STraversable Empty where
-      sTraverse ::
-        forall (a :: Type)
-               (f :: Type -> Type)
-               (b :: Type)
-               (t1 :: (~>) a (f b))
-               (t2 :: Empty a). SApplicative f =>
-                                Sing t1
-                                -> Sing t2
-                                   -> Sing (Apply (Apply (TraverseSym0 :: TyFun ((~>) a (f b)) ((~>) (Empty a) (f (Empty b)))
-                                                                          -> Type) t1) t2)
       sTraverse _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
         = applySing
             (singFun1 @PureSym0 sPure)

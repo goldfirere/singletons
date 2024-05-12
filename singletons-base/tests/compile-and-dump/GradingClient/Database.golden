@@ -92,11 +92,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of SomeSing c -> SomeSing (SSucc c)
     instance SEq Nat => SEq Nat where
-      (%==) ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                                                              -> Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -107,11 +102,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
             sB_0123456789876543210
     instance SOrd Nat => SOrd Nat where
-      sCompare ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                                                 -> Type) t1) t2)
       sCompare SZero SZero
         = applySing
             (applySing
@@ -1626,11 +1616,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing [Attribute] of
             SomeSing c -> SomeSing (SSch c)
     instance (SEq U, SEq Nat) => SEq U where
-      (%==) ::
-        forall (t1 :: U) (t2 :: U). Sing t1
-                                    -> Sing t2
-                                       -> Sing (Apply (Apply ((==@#@$) :: TyFun U ((~>) U Bool)
-                                                                          -> Type) t1) t2)
       (%==) SBOOL SBOOL = STrue
       (%==) SBOOL SSTRING = SFalse
       (%==) SBOOL SNAT = SFalse
@@ -1661,14 +1646,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
                sB_0123456789876543210)
     instance (SShow U, SShow Nat) => SShow U where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: U)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) U ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SBOOL
@@ -1728,14 +1705,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                            sArg_0123456789876543210)))))
             sA_0123456789876543210
     instance SShow AChar where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: AChar)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) AChar ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SCA
@@ -1945,11 +1914,6 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "CZ"))
             sA_0123456789876543210
     instance SEq AChar where
-      (%==) ::
-        forall (t1 :: AChar) (t2 :: AChar). Sing t1
-                                            -> Sing t2
-                                               -> Sing (Apply (Apply ((==@#@$) :: TyFun AChar ((~>) AChar Bool)
-                                                                                  -> Type) t1) t2)
       (%==) SCA SCA = STrue
       (%==) SCA SCB = SFalse
       (%==) SCA SCC = SFalse

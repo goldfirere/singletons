@@ -129,21 +129,11 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
       toSing Location = SomeSing SLocation
       toSing Quaternion = SomeSing SQuaternion
     instance SEq MyPropKind where
-      (%==) ::
-        forall (t1 :: MyPropKind) (t2 :: MyPropKind). Sing t1
-                                                      -> Sing t2
-                                                         -> Sing (Apply (Apply ((==@#@$) :: TyFun MyPropKind ((~>) MyPropKind Bool)
-                                                                                            -> Type) t1) t2)
       (%==) SLocation SLocation = STrue
       (%==) SLocation SQuaternion = SFalse
       (%==) SQuaternion SLocation = SFalse
       (%==) SQuaternion SQuaternion = STrue
     instance SOrd MyPropKind where
-      sCompare ::
-        forall (t1 :: MyPropKind) (t2 :: MyPropKind). Sing t1
-                                                      -> Sing t2
-                                                         -> Sing (Apply (Apply (CompareSym0 :: TyFun MyPropKind ((~>) MyPropKind Ordering)
-                                                                                               -> Type) t1) t2)
       sCompare SLocation SLocation
         = applySing
             (applySing
@@ -159,14 +149,6 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
       sCompare SLocation SQuaternion = SLT
       sCompare SQuaternion SLocation = SGT
     instance SShow MyPropKind where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: MyPropKind)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) MyPropKind ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SLocation

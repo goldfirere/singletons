@@ -325,11 +325,6 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing S1 = SomeSing SS1
       toSing S2 = SomeSing SS2
     instance SEq a => SEq (T a ()) where
-      (%==) ::
-        forall (t1 :: T a ()) (t2 :: T a ()). Sing t1
-                                              -> Sing t2
-                                                 -> Sing (Apply (Apply ((==@#@$) :: TyFun (T a ()) ((~>) (T a ()) Bool)
-                                                                                    -> Type) t1) t2)
       (%==)
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
                 (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -345,11 +340,6 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
                sB_0123456789876543210)
     instance SOrd a => SOrd (T a ()) where
-      sCompare ::
-        forall (t1 :: T a ()) (t2 :: T a ()). Sing t1
-                                              -> Sing t2
-                                                 -> Sing (Apply (Apply (CompareSym0 :: TyFun (T a ()) ((~>) (T a ()) Ordering)
-                                                                                       -> Type) t1) t2)
       sCompare
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
                 (sA_0123456789876543210 :: Sing a_0123456789876543210))
@@ -373,14 +363,6 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                         sB_0123456789876543210))
                   SNil))
     instance SShow a => SShow (T a ()) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: T a ())
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (T a ()) ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         ((:%*:) (sArgL_0123456789876543210 :: Sing argL_0123456789876543210)
@@ -413,21 +395,11 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                         sArgR_0123456789876543210))))
             sA_0123456789876543210
     instance SEq S where
-      (%==) ::
-        forall (t1 :: S) (t2 :: S). Sing t1
-                                    -> Sing t2
-                                       -> Sing (Apply (Apply ((==@#@$) :: TyFun S ((~>) S Bool)
-                                                                          -> Type) t1) t2)
       (%==) SS1 SS1 = STrue
       (%==) SS1 SS2 = SFalse
       (%==) SS2 SS1 = SFalse
       (%==) SS2 SS2 = STrue
     instance SOrd S where
-      sCompare ::
-        forall (t1 :: S) (t2 :: S). Sing t1
-                                    -> Sing t2
-                                       -> Sing (Apply (Apply (CompareSym0 :: TyFun S ((~>) S Ordering)
-                                                                             -> Type) t1) t2)
       sCompare SS1 SS1
         = applySing
             (applySing
@@ -443,14 +415,6 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare SS1 SS2 = SLT
       sCompare SS2 SS1 = SGT
     instance SShow S where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: S)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) S ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SS1
@@ -468,19 +432,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "S2"))
             sA_0123456789876543210
     instance SBounded S where
-      sMinBound :: Sing (MinBoundSym0 :: S)
-      sMaxBound :: Sing (MaxBoundSym0 :: S)
       sMinBound = SS1
       sMaxBound = SS2
     instance SEnum S where
-      sToEnum ::
-        forall (t :: GHC.Num.Natural.Natural). Sing t
-                                               -> Sing (Apply (ToEnumSym0 :: TyFun GHC.Num.Natural.Natural S
-                                                                             -> Type) t)
-      sFromEnum ::
-        forall (t :: S). Sing t
-                         -> Sing (Apply (FromEnumSym0 :: TyFun S GHC.Num.Natural.Natural
-                                                         -> Type) t)
       sToEnum (sN :: Sing n)
         = id
             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))))

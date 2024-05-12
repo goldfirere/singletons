@@ -104,11 +104,6 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       toSing (Just (b :: Demote a))
         = case toSing b :: SomeSing a of SomeSing c -> SomeSing (SJust c)
     instance SEq a => SEq (Maybe a) where
-      (%==) ::
-        forall (t1 :: Maybe a) (t2 :: Maybe a). Sing t1
-                                                -> Sing t2
-                                                   -> Sing (Apply (Apply ((==@#@$) :: TyFun (Maybe a) ((~>) (Maybe a) Bool)
-                                                                                      -> Type) t1) t2)
       (%==) SNothing SNothing = STrue
       (%==) SNothing (SJust _) = SFalse
       (%==) (SJust _) SNothing = SFalse
@@ -119,14 +114,6 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
             sB_0123456789876543210
     instance SShow a => SShow (Maybe a) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Maybe a)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Maybe a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SNothing

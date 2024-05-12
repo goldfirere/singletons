@@ -146,14 +146,6 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       toSing (Y2 (b :: Demote (X a)))
         = case toSing b :: SomeSing (X a) of SomeSing c -> SomeSing (SY2 c)
     instance SShow (Y a) => SShow (X a) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: X a)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (X a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SX1
@@ -185,14 +177,6 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                      sArg_0123456789876543210)))
             sA_0123456789876543210
     instance SShow (X a) => SShow (Y a) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Y a)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Y a) ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SY1
