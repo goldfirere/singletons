@@ -265,11 +265,6 @@ Singletons/Star.hs:0:0:: Splicing declarations
                                                                    -> Type) where
       GHC.Internal.Data.Type.Coercion.testCoercion = decideCoercion
     instance (SEq Type, SEq Nat) => SEq Type where
-      (%==) ::
-        forall (t1 :: Type) (t2 :: Type). Sing t1
-                                          -> Sing t2
-                                             -> Sing (Apply (Apply ((==@#@$) :: TyFun Type ((~>) Type Bool)
-                                                                                -> Type) t1) t2)
       (%==) SNat SNat = STrue
       (%==) SNat SInt = SFalse
       (%==) SNat SString = SFalse
@@ -314,11 +309,6 @@ Singletons/Star.hs:0:0:: Splicing declarations
                (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
                sB_0123456789876543210)
     instance (SOrd Type, SOrd Nat) => SOrd Type where
-      sCompare ::
-        forall (t1 :: Type) (t2 :: Type). Sing t1
-                                          -> Sing t2
-                                             -> Sing (Apply (Apply (CompareSym0 :: TyFun Type ((~>) Type Ordering)
-                                                                                   -> Type) t1) t2)
       sCompare SNat SNat
         = applySing
             (applySing
@@ -394,14 +384,6 @@ Singletons/Star.hs:0:0:: Splicing declarations
       sCompare (SVec _ _) SString = SGT
       sCompare (SVec _ _) (SMaybe _) = SGT
     instance (SShow Type, SShow Nat) => SShow Type where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Type)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Type ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         _
         SNat

@@ -584,11 +584,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (,,,) (SomeSing c) (SomeSing c) (SomeSing c) (SomeSing c)
               -> SomeSing (SF c c c c)
     instance SEq Nat => SEq Nat where
-      (%==) ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                                                              -> Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -599,11 +594,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
             sB_0123456789876543210
     instance SOrd Nat => SOrd Nat where
-      sCompare ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                                                 -> Type) t1) t2)
       sCompare SZero SZero
         = applySing
             (applySing
@@ -627,11 +617,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       sCompare SZero (SSucc _) = SLT
       sCompare (SSucc _) SZero = SGT
     instance (SEq a, SEq b, SEq c, SEq d) => SEq (Foo a b c d) where
-      (%==) ::
-        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
-                                                        -> Sing t2
-                                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Bool)
-                                                                                              -> Type) t1) t2)
       (%==)
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -844,11 +829,6 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                      sB_0123456789876543210)))
     instance (SOrd a, SOrd b, SOrd c, SOrd d) =>
              SOrd (Foo a b c d) where
-      sCompare ::
-        forall (t1 :: Foo a b c d) (t2 :: Foo a b c d). Sing t1
-                                                        -> Sing t2
-                                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun (Foo a b c d) ((~>) (Foo a b c d) Ordering)
-                                                                                                 -> Type) t1) t2)
       sCompare
         (SA (sA_0123456789876543210 :: Sing a_0123456789876543210)
             (sA_0123456789876543210 :: Sing a_0123456789876543210)

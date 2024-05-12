@@ -148,12 +148,6 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
             (applySing sUndefined sA_0123456789876543210)
             sA_0123456789876543210
     instance SFoo a => SFoo [a] where
-      sFoosPrec ::
-        (forall (t :: Natural) (t :: [a]) (t :: [Bool]).
-         Sing t
-         -> Sing t
-            -> Sing t
-               -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool]) :: Type)
       sFoosPrec
         _
         (sA_0123456789876543210 :: Sing a_0123456789876543210)

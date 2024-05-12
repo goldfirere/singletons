@@ -53,14 +53,6 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing x = case x of {}
       toSing x = SomeSing (case x of {})
     instance SShow Foo where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Foo)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Foo ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         (sV_0123456789876543210 :: Sing v_0123456789876543210)

@@ -211,11 +211,6 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ (b :: Demote Nat))
         = case toSing b :: SomeSing Nat of SomeSing c -> SomeSing (SSucc c)
     instance SEq Nat => SEq Nat where
-      (%==) ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Nat ((~>) Nat Bool)
-                                                                              -> Type) t1) t2)
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
       (%==) (SSucc _) SZero = SFalse
@@ -226,14 +221,6 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
             sB_0123456789876543210
     instance SShow Nat => SShow Nat where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Nat)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) Nat ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         SZero
@@ -265,11 +252,6 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
                      sArg_0123456789876543210)))
             sA_0123456789876543210
     instance SOrd Nat => SOrd Nat where
-      sCompare ::
-        forall (t1 :: Nat) (t2 :: Nat). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Nat ((~>) Nat Ordering)
-                                                                                 -> Type) t1) t2)
       sCompare SZero SZero
         = applySing
             (applySing

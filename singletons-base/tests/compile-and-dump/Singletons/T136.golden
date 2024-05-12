@@ -113,20 +113,6 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
       type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
     instance SEnum [Bool] where
-      sSucc ::
-        forall (t :: [Bool]). Sing t
-                              -> Sing (Apply (SuccSym0 :: TyFun [Bool] [Bool] -> Type) t)
-      sPred ::
-        forall (t :: [Bool]). Sing t
-                              -> Sing (Apply (PredSym0 :: TyFun [Bool] [Bool] -> Type) t)
-      sToEnum ::
-        forall (t :: GHC.Num.Natural.Natural). Sing t
-                                               -> Sing (Apply (ToEnumSym0 :: TyFun GHC.Num.Natural.Natural [Bool]
-                                                                             -> Type) t)
-      sFromEnum ::
-        forall (t :: [Bool]). Sing t
-                              -> Sing (Apply (FromEnumSym0 :: TyFun [Bool] GHC.Num.Natural.Natural
-                                                              -> Type) t)
       sSucc SNil
         = applySing (applySing (singFun2 @(:@#@$) SCons) STrue) SNil
       sSucc (SCons SFalse (sAs :: Sing as))

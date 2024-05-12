@@ -160,18 +160,8 @@ Singletons/T190.hs:0:0:: Splicing declarations
       fromSing ST = T
       toSing T = SomeSing ST
     instance SEq T where
-      (%==) ::
-        forall (t1 :: T) (t2 :: T). Sing t1
-                                    -> Sing t2
-                                       -> Sing (Apply (Apply ((==@#@$) :: TyFun T ((~>) T Bool)
-                                                                          -> Type) t1) t2)
       (%==) ST ST = STrue
     instance SOrd T where
-      sCompare ::
-        forall (t1 :: T) (t2 :: T). Sing t1
-                                    -> Sing t2
-                                       -> Sing (Apply (Apply (CompareSym0 :: TyFun T ((~>) T Ordering)
-                                                                             -> Type) t1) t2)
       sCompare ST ST
         = applySing
             (applySing
@@ -179,14 +169,6 @@ Singletons/T190.hs:0:0:: Splicing declarations
                SEQ)
             SNil
     instance SEnum T where
-      sToEnum ::
-        forall (t :: GHC.Num.Natural.Natural). Sing t
-                                               -> Sing (Apply (Data.Singletons.Base.Enum.ToEnumSym0 :: TyFun GHC.Num.Natural.Natural T
-                                                                                                       -> Type) t)
-      sFromEnum ::
-        forall (t :: T). Sing t
-                         -> Sing (Apply (Data.Singletons.Base.Enum.FromEnumSym0 :: TyFun T GHC.Num.Natural.Natural
-                                                                                   -> Type) t)
       sToEnum (sN :: Sing n)
         = id
             @(Sing (Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))))
@@ -201,19 +183,9 @@ Singletons/T190.hs:0:0:: Splicing declarations
                       (singFun1 @ErrorSym0 sError) (sing :: Sing "toEnum: bad argument"))
       sFromEnum ST = sFromInteger (sing :: Sing 0)
     instance SBounded T where
-      sMinBound :: Sing (MinBoundSym0 :: T)
-      sMaxBound :: Sing (MaxBoundSym0 :: T)
       sMinBound = ST
       sMaxBound = ST
     instance SShow T where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: T)
-               (t3 :: GHC.Types.Symbol). Sing t1
-                                         -> Sing t2
-                                            -> Sing t3
-                                               -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-                                                                                              -> Type) t1) t2) t3)
       sShowsPrec
         _
         ST

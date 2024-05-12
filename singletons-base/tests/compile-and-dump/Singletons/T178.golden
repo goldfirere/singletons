@@ -157,11 +157,6 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       toSing Opt = SomeSing SOpt
       toSing Many = SomeSing SMany
     instance SEq Occ where
-      (%==) ::
-        forall (t1 :: Occ) (t2 :: Occ). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply ((==@#@$) :: TyFun Occ ((~>) Occ Bool)
-                                                                              -> Type) t1) t2)
       (%==) SStr SStr = STrue
       (%==) SStr SOpt = SFalse
       (%==) SStr SMany = SFalse
@@ -172,11 +167,6 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       (%==) SMany SOpt = SFalse
       (%==) SMany SMany = STrue
     instance SOrd Occ where
-      sCompare ::
-        forall (t1 :: Occ) (t2 :: Occ). Sing t1
-                                        -> Sing t2
-                                           -> Sing (Apply (Apply (CompareSym0 :: TyFun Occ ((~>) Occ Ordering)
-                                                                                 -> Type) t1) t2)
       sCompare SStr SStr
         = applySing
             (applySing
@@ -202,12 +192,6 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       sCompare SMany SStr = SGT
       sCompare SMany SOpt = SGT
     instance SShow Occ where
-      sShowsPrec ::
-        forall (t1 :: Natural) (t2 :: Occ) (t3 :: Symbol). Sing t1
-                                                           -> Sing t2
-                                                              -> Sing t3
-                                                                 -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun Natural ((~>) Occ ((~>) Symbol Symbol))
-                                                                                                                -> Type) t1) t2) t3)
       sShowsPrec
         _
         SStr

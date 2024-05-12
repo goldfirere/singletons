@@ -142,14 +142,6 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
         = case (,) (toSing b :: SomeSing a) (toSing b :: SomeSing b) of
             (,) (SomeSing c) (SomeSing c) -> SomeSing (SPair c c)
     instance (SShow a, SShow b) => SShow (Pair a b) where
-      sShowsPrec ::
-        forall (t1 :: GHC.Num.Natural.Natural)
-               (t2 :: Pair a b)
-               (t3 :: Symbol). Sing t1
-                               -> Sing t2
-                                  -> Sing t3
-                                     -> Sing (Apply (Apply (Apply (ShowsPrecSym0 :: TyFun GHC.Num.Natural.Natural ((~>) (Pair a b) ((~>) Symbol Symbol))
-                                                                                    -> Type) t1) t2) t3)
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)
         (SPair (sArg_0123456789876543210 :: Sing arg_0123456789876543210)

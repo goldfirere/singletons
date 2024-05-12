@@ -634,7 +634,6 @@ instance POrd Bool where
   type Compare 'True  'True  = 'EQ
 
 instance SOrd Bool where
-  sCompare :: forall (x :: a) (y :: a). Sing x -> Sing y -> Sing (Compare x y)
   sCompare SFalse SFalse = SEQ
   sCompare SFalse STrue  = SLT
   sCompare STrue  SFalse = SGT

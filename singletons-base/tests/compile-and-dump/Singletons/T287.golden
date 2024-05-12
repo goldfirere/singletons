@@ -78,11 +78,6 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
          Sing t
          -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a) :: Type)
     instance SS b => SS ((~>) a b) where
-      (%<<>>) ::
-        (forall (t :: (~>) a b) (t :: (~>) a b).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply (<<>>@#@$) t) t :: (~>) a b) :: Type)
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = singFun1
             @(Lambda_0123456789876543210Sym0 f g)

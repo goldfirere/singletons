@@ -376,31 +376,16 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                (singFun2 @MycompareSym0 sMycompare) sA_0123456789876543210)
             sA_0123456789876543210
     instance SMyOrd Nat where
-      sMycompare ::
-        (forall (t :: Nat) (t :: Nat).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type)
       sMycompare SZero SZero = SEQ
       sMycompare SZero (SSucc _) = SLT
       sMycompare (SSucc _) SZero = SGT
       sMycompare (SSucc (sN :: Sing n)) (SSucc (sM :: Sing m))
         = applySing (applySing (singFun2 @MycompareSym0 sMycompare) sM) sN
     instance SMyOrd () where
-      sMycompare ::
-        (forall (t :: ()) (t :: ()).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type)
       sMycompare _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = applySing
             (applySing (singFun2 @ConstSym0 sConst) SEQ) sA_0123456789876543210
     instance SMyOrd Foo where
-      sMycompare ::
-        (forall (t :: Foo) (t :: Foo).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type)
       sMycompare
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -409,11 +394,6 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
                (singFun2 @FooCompareSym0 sFooCompare) sA_0123456789876543210)
             sA_0123456789876543210
     instance SEq Foo2 where
-      (%==) ::
-        forall (t1 :: Foo2) (t2 :: Foo2). Sing t1
-                                          -> Sing t2
-                                             -> Sing (Apply (Apply ((==@#@$) :: TyFun Foo2 ((~>) Foo2 Bool)
-                                                                                -> Type) t1) t2)
       (%==) SF SF = STrue
       (%==) SG SG = STrue
       (%==) SF SG = SFalse
@@ -596,11 +576,6 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         = case toSing b :: SomeSing Nat' of
             SomeSing c -> SomeSing (SSucc' c)
     instance SMyOrd Nat' where
-      sMycompare ::
-        forall (t :: Nat') (t :: Nat'). Sing t
-                                        -> Sing t
-                                           -> Sing (Apply (Apply (MycompareSym0 :: TyFun Nat' ((~>) Nat' Ordering)
-                                                                                   -> Type) t) t)
       sMycompare SZero' SZero' = SEQ
       sMycompare SZero' (SSucc' _) = SLT
       sMycompare (SSucc' _) SZero' = SGT

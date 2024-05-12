@@ -476,22 +476,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
     sing_meth :: Name -> ALetDecRHS -> SgM [DDec]
     sing_meth name rhs = do
       opts <- getOptions
-      mb_s_info <- dsReify (singledValueName opts name)
-      inst_kis <- mapM promoteType inst_tys
-      let mk_subst cls_tvbs = Map.fromList $ zip (map extractTvbName vis_cls_tvbs) inst_kis
-            where
-              -- This is a half-hearted attempt to address the underlying problem
-              -- in #358, where we can sometimes have more class type variables
-              -- (due to implicit kind arguments) than class arguments. This just
-              -- ensures that the explicit type variables are properly mapped
-              -- to the class arguments, leaving the implicit kind variables
-              -- unmapped. That could potentially cause *other* problems, but
-              -- those are perhaps best avoided by using InstanceSigs. At the
-              -- very least, this workaround will make error messages slightly
-              -- less confusing.
-              vis_cls_tvbs = drop (length cls_tvbs - length inst_kis) cls_tvbs
-
-          sing_meth_ty :: DType -> SgM DType
+      let sing_meth_ty :: DType -> SgM DType
           sing_meth_ty inner_ty = do
             -- Make sure to expand through type synonyms here! Not doing so
             -- resulted in #167.
@@ -500,24 +485,12 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
               <- singType (DConT $ defunctionalizedName0 opts name) raw_ty
             pure s_ty
 
-      s_ty <- case OMap.lookup name inst_sigs of
-        Just inst_sig ->
-          -- We have an InstanceSig, so just single that type.
-          sing_meth_ty inst_sig
-        Nothing -> case mb_s_info of
-          -- We don't have an InstanceSig, so we must compute the type to use
-          -- in the singled instance ourselves through reification.
-          Just (DVarI _ (DForallT (DForallInvis cls_tvbs) (DConstrainedT _cls_pred s_ty)) _) ->
-            pure $ substType (mk_subst cls_tvbs) s_ty
-          _ -> do
-            mb_info <- dsReify name
-            case mb_info of
-              Just (DVarI _ (DForallT (DForallInvis cls_tvbs)
-                                      (DConstrainedT _cls_pred inner_ty)) _) -> do
-                s_ty <- sing_meth_ty inner_ty
-                pure $ substType (mk_subst cls_tvbs) s_ty
-              _ -> fail $ "Cannot find type of method " ++ show name
-
+      -- If an instance signature exists, single it. Otherwise, leave it out.
+      -- Unlike most other places, we don't actually *need* explicit type
+      -- signatures for instance methods, as GHC can figure out the types of
+      -- the instance methods on its own. As such, any GADT pattern matching in
+      -- the singled instance method code will work as expected.
+      mb_s_ty <- traverse sing_meth_ty $ OMap.lookup name inst_sigs
       meth' <- singLetDecRHS
                  Map.empty -- Because we are singling an instance declaration,
                            -- we aren't generating defunctionalization symbols
@@ -525,7 +498,9 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
                            -- generating any SingI instances. Therefore, we
                            -- don't need to include anything in this Map.
                  name rhs
-      return $ map DLetDec [DSigD (singledValueName opts name) s_ty, meth']
+      return $ map DLetDec
+             $ maybeToList (DSigD (singledValueName opts name) <$> mb_s_ty)
+            ++ [meth']
 
 singLetDecEnv :: ALetDecEnv
               -> SgM a
