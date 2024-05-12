@@ -1,5 +1,5 @@
 name:           singletons
-version:        3.0.2
+version:        3.0.3
 cabal-version:  1.24
 synopsis:       Basic singleton types and definitions
 homepage:       http://www.github.com/goldfirere/singletons
