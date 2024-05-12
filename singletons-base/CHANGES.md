@@ -1,8 +1,8 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-next [????.??.??]
------------------
+3.4 [????.??.??]
+----------------
 * Require building with GHC 9.10.
 
 3.3 [2023.10.13]
