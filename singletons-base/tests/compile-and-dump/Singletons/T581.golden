@@ -1,0 +1,392 @@
+Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
+    singletons
+      [d| class C1 a where
+            m1 :: forall b. a -> Maybe (a, b)
+            m1 _ = Nothing :: Maybe (a, b)
+          class C2 a where
+            m2 :: b -> Maybe a
+            m2 _ = Nothing :: Maybe a
+          class C3 a where
+            m3 :: forall b. a -> b -> (a, b)
+            m3 x y = (x, y) :: (a, b)
+          
+          instance C1 [a] where
+            m1 :: forall b. [a] -> Maybe ([a], b)
+            m1 _ = Nothing :: Maybe ([a], b)
+          instance C2 (Maybe a) where
+            m2 _ = Nothing :: Maybe (Maybe a)
+          instance C2 [a] where
+            m2 :: b -> Maybe [a]
+            m2 _ = Nothing :: Maybe [a]
+          instance C3 [a] where
+            m3 x y = (fmap (\ xx -> (xx :: a)) x, y)
+          instance C3 (Maybe a) where
+            m3 :: Maybe a -> b -> (Maybe a, b)
+            m3 x y = (fmap (\ xx -> (xx :: a)) x, y) |]
+  ======>
+    class C1 a where
+      m1 :: forall b. a -> Maybe (a, b)
+      m1 _ = Nothing :: Maybe (a, b)
+    instance C1 [a] where
+      m1 :: forall b. [a] -> Maybe ([a], b)
+      m1 _ = Nothing :: Maybe ([a], b)
+    class C2 a where
+      m2 :: b -> Maybe a
+      m2 _ = Nothing :: Maybe a
+    instance C2 [a] where
+      m2 :: b -> Maybe [a]
+      m2 _ = Nothing :: Maybe [a]
+    instance C2 (Maybe a) where
+      m2 _ = Nothing :: Maybe (Maybe a)
+    class C3 a where
+      m3 :: forall b. a -> b -> (a, b)
+      m3 x y = (x, y) :: (a, b)
+    instance C3 (Maybe a) where
+      m3 :: Maybe a -> b -> (Maybe a, b)
+      m3 x y = (fmap (\ xx -> xx :: a) x, y)
+    instance C3 [a] where
+      m3 x y = (fmap (\ xx -> xx :: a) x, y)
+    type M1Sym0 :: forall a b. (~>) a (Maybe (a, b))
+    data M1Sym0 :: (~>) a (Maybe (a, b))
+      where
+        M1Sym0KindInference :: SameKind (Apply M1Sym0 arg) (M1Sym1 arg) =>
+                               M1Sym0 a0123456789876543210
+    type instance Apply M1Sym0 a0123456789876543210 = M1 a0123456789876543210
+    instance SuppressUnusedWarnings M1Sym0 where
+      suppressUnusedWarnings = snd ((,) M1Sym0KindInference ())
+    type M1Sym1 :: forall a b. a -> Maybe (a, b)
+    type family M1Sym1 @a @b (a0123456789876543210 :: a) :: Maybe (a,
+                                                                   b) where
+      M1Sym1 a0123456789876543210 = M1 a0123456789876543210
+    type M1_0123456789876543210 :: forall a b. a -> Maybe (a, b)
+    type family M1_0123456789876543210 @a @b (a :: a) :: Maybe (a,
+                                                                b) where
+      M1_0123456789876543210 @a @b (_ :: a) = NothingSym0 :: Maybe (a, b)
+    type M1_0123456789876543210Sym0 :: forall a b. (~>) a (Maybe (a,
+                                                                  b))
+    data M1_0123456789876543210Sym0 :: (~>) a (Maybe (a, b))
+      where
+        M1_0123456789876543210Sym0KindInference :: SameKind (Apply M1_0123456789876543210Sym0 arg) (M1_0123456789876543210Sym1 arg) =>
+                                                   M1_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M1_0123456789876543210Sym0 a0123456789876543210 = M1_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings M1_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M1_0123456789876543210Sym0KindInference ())
+    type M1_0123456789876543210Sym1 :: forall a b. a -> Maybe (a, b)
+    type family M1_0123456789876543210Sym1 @a @b (a0123456789876543210 :: a) :: Maybe (a,
+                                                                                       b) where
+      M1_0123456789876543210Sym1 a0123456789876543210 = M1_0123456789876543210 a0123456789876543210
+    class PC1 a where
+      type family M1 (arg :: a) :: Maybe (a, b)
+      type M1 a = Apply M1_0123456789876543210Sym0 a
+    type M2Sym0 :: forall b a. (~>) b (Maybe a)
+    data M2Sym0 :: (~>) b (Maybe a)
+      where
+        M2Sym0KindInference :: SameKind (Apply M2Sym0 arg) (M2Sym1 arg) =>
+                               M2Sym0 a0123456789876543210
+    type instance Apply M2Sym0 a0123456789876543210 = M2 a0123456789876543210
+    instance SuppressUnusedWarnings M2Sym0 where
+      suppressUnusedWarnings = snd ((,) M2Sym0KindInference ())
+    type M2Sym1 :: forall b a. b -> Maybe a
+    type family M2Sym1 @b @a (a0123456789876543210 :: b) :: Maybe a where
+      M2Sym1 a0123456789876543210 = M2 a0123456789876543210
+    type M2_0123456789876543210 :: forall b a. b -> Maybe a
+    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe a where
+      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe a
+    type M2_0123456789876543210Sym0 :: forall b a. (~>) b (Maybe a)
+    data M2_0123456789876543210Sym0 :: (~>) b (Maybe a)
+      where
+        M2_0123456789876543210Sym0KindInference :: SameKind (Apply M2_0123456789876543210Sym0 arg) (M2_0123456789876543210Sym1 arg) =>
+                                                   M2_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M2_0123456789876543210Sym0 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings M2_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M2_0123456789876543210Sym0KindInference ())
+    type M2_0123456789876543210Sym1 :: forall b a. b -> Maybe a
+    type family M2_0123456789876543210Sym1 @b @a (a0123456789876543210 :: b) :: Maybe a where
+      M2_0123456789876543210Sym1 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    class PC2 a where
+      type family M2 (arg :: b) :: Maybe a
+      type M2 a = Apply M2_0123456789876543210Sym0 a
+    type M3Sym0 :: forall a b. (~>) a ((~>) b (a, b))
+    data M3Sym0 :: (~>) a ((~>) b (a, b))
+      where
+        M3Sym0KindInference :: SameKind (Apply M3Sym0 arg) (M3Sym1 arg) =>
+                               M3Sym0 a0123456789876543210
+    type instance Apply M3Sym0 a0123456789876543210 = M3Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings M3Sym0 where
+      suppressUnusedWarnings = snd ((,) M3Sym0KindInference ())
+    type M3Sym1 :: forall a b. a -> (~>) b (a, b)
+    data M3Sym1 (a0123456789876543210 :: a) :: (~>) b (a, b)
+      where
+        M3Sym1KindInference :: SameKind (Apply (M3Sym1 a0123456789876543210) arg) (M3Sym2 a0123456789876543210 arg) =>
+                               M3Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (M3Sym1 a0123456789876543210) a0123456789876543210 = M3 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (M3Sym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) M3Sym1KindInference ())
+    type M3Sym2 :: forall a b. a -> b -> (a, b)
+    type family M3Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (a,
+                                                                                         b) where
+      M3Sym2 a0123456789876543210 a0123456789876543210 = M3 a0123456789876543210 a0123456789876543210
+    type M3_0123456789876543210 :: forall a b. a -> b -> (a, b)
+    type family M3_0123456789876543210 @a @b (a :: a) (a :: b) :: (a,
+                                                                   b) where
+      M3_0123456789876543210 @a @b (x :: a) (y :: b) = Apply (Apply Tuple2Sym0 x) y :: (a,
+                                                                                        b)
+    type M3_0123456789876543210Sym0 :: forall a b. (~>) a ((~>) b (a,
+                                                                   b))
+    data M3_0123456789876543210Sym0 :: (~>) a ((~>) b (a, b))
+      where
+        M3_0123456789876543210Sym0KindInference :: SameKind (Apply M3_0123456789876543210Sym0 arg) (M3_0123456789876543210Sym1 arg) =>
+                                                   M3_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M3_0123456789876543210Sym0 a0123456789876543210 = M3_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings M3_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym0KindInference ())
+    type M3_0123456789876543210Sym1 :: forall a b. a -> (~>) b (a, b)
+    data M3_0123456789876543210Sym1 (a0123456789876543210 :: a) :: (~>) b (a,
+                                                                           b)
+      where
+        M3_0123456789876543210Sym1KindInference :: SameKind (Apply (M3_0123456789876543210Sym1 a0123456789876543210) arg) (M3_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                   M3_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (M3_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (M3_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym1KindInference ())
+    type M3_0123456789876543210Sym2 :: forall a b. a -> b -> (a, b)
+    type family M3_0123456789876543210Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (a,
+                                                                                                             b) where
+      M3_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    class PC3 a where
+      type family M3 (arg :: a) (arg :: b) :: (a, b)
+      type M3 a a = Apply (Apply M3_0123456789876543210Sym0 a) a
+    type M1_0123456789876543210 :: forall a b. [a] -> Maybe ([a], b)
+    type family M1_0123456789876543210 @a @b (a :: [a]) :: Maybe ([a],
+                                                                  b) where
+      M1_0123456789876543210 @a @b (_ :: [a]) = NothingSym0 :: Maybe ([a],
+                                                                      b)
+    type M1_0123456789876543210Sym0 :: forall a
+                                              b. (~>) [a] (Maybe ([a], b))
+    data M1_0123456789876543210Sym0 :: (~>) [a] (Maybe ([a], b))
+      where
+        M1_0123456789876543210Sym0KindInference :: SameKind (Apply M1_0123456789876543210Sym0 arg) (M1_0123456789876543210Sym1 arg) =>
+                                                   M1_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M1_0123456789876543210Sym0 a0123456789876543210 = M1_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings M1_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M1_0123456789876543210Sym0KindInference ())
+    type M1_0123456789876543210Sym1 :: forall a b. [a]
+                                                   -> Maybe ([a], b)
+    type family M1_0123456789876543210Sym1 @a @b (a0123456789876543210 :: [a]) :: Maybe ([a],
+                                                                                         b) where
+      M1_0123456789876543210Sym1 a0123456789876543210 = M1_0123456789876543210 a0123456789876543210
+    instance PC1 [a] where
+      type M1 a = Apply M1_0123456789876543210Sym0 a
+    type M2_0123456789876543210 :: forall b a. b -> Maybe [a]
+    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe [a] where
+      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe [a]
+    type M2_0123456789876543210Sym0 :: forall b a. (~>) b (Maybe [a])
+    data M2_0123456789876543210Sym0 :: (~>) b (Maybe [a])
+      where
+        M2_0123456789876543210Sym0KindInference :: SameKind (Apply M2_0123456789876543210Sym0 arg) (M2_0123456789876543210Sym1 arg) =>
+                                                   M2_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M2_0123456789876543210Sym0 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings M2_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M2_0123456789876543210Sym0KindInference ())
+    type M2_0123456789876543210Sym1 :: forall b a. b -> Maybe [a]
+    type family M2_0123456789876543210Sym1 @b @a (a0123456789876543210 :: b) :: Maybe [a] where
+      M2_0123456789876543210Sym1 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    instance PC2 [a] where
+      type M2 a = Apply M2_0123456789876543210Sym0 a
+    type M2_0123456789876543210 :: forall b a. b -> Maybe (Maybe a)
+    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe (Maybe a) where
+      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe (Maybe a)
+    type M2_0123456789876543210Sym0 :: forall b
+                                              a. (~>) b (Maybe (Maybe a))
+    data M2_0123456789876543210Sym0 :: (~>) b (Maybe (Maybe a))
+      where
+        M2_0123456789876543210Sym0KindInference :: SameKind (Apply M2_0123456789876543210Sym0 arg) (M2_0123456789876543210Sym1 arg) =>
+                                                   M2_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M2_0123456789876543210Sym0 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings M2_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M2_0123456789876543210Sym0KindInference ())
+    type M2_0123456789876543210Sym1 :: forall b a. b -> Maybe (Maybe a)
+    type family M2_0123456789876543210Sym1 @b @a (a0123456789876543210 :: b) :: Maybe (Maybe a) where
+      M2_0123456789876543210Sym1 a0123456789876543210 = M2_0123456789876543210 a0123456789876543210
+    instance PC2 (Maybe a) where
+      type M2 a = Apply M2_0123456789876543210Sym0 a
+    type family Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx where
+      Lambda_0123456789876543210 a x y xx = xx :: a
+    data Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) xx0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
+    type family Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210 where
+      Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    type M3_0123456789876543210 :: forall a b. Maybe a
+                                               -> b -> (Maybe a, b)
+    type family M3_0123456789876543210 @a @b (a :: Maybe a) (a :: b) :: (Maybe a,
+                                                                         b) where
+      M3_0123456789876543210 @a @b (x :: Maybe a) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (Lambda_0123456789876543210Sym0 a x y)) x)) y
+    type M3_0123456789876543210Sym0 :: forall a
+                                              b. (~>) (Maybe a) ((~>) b (Maybe a, b))
+    data M3_0123456789876543210Sym0 :: (~>) (Maybe a) ((~>) b (Maybe a,
+                                                               b))
+      where
+        M3_0123456789876543210Sym0KindInference :: SameKind (Apply M3_0123456789876543210Sym0 arg) (M3_0123456789876543210Sym1 arg) =>
+                                                   M3_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M3_0123456789876543210Sym0 a0123456789876543210 = M3_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings M3_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym0KindInference ())
+    type M3_0123456789876543210Sym1 :: forall a b. Maybe a
+                                                   -> (~>) b (Maybe a, b)
+    data M3_0123456789876543210Sym1 (a0123456789876543210 :: Maybe a) :: (~>) b (Maybe a,
+                                                                                 b)
+      where
+        M3_0123456789876543210Sym1KindInference :: SameKind (Apply (M3_0123456789876543210Sym1 a0123456789876543210) arg) (M3_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                   M3_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (M3_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (M3_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym1KindInference ())
+    type M3_0123456789876543210Sym2 :: forall a b. Maybe a
+                                                   -> b -> (Maybe a, b)
+    type family M3_0123456789876543210Sym2 @a @b (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: b) :: (Maybe a,
+                                                                                                                   b) where
+      M3_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PC3 (Maybe a) where
+      type M3 a a = Apply (Apply M3_0123456789876543210Sym0 a) a
+    type family Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx where
+      Lambda_0123456789876543210 a x y xx = xx :: a
+    data Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+      where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) xx0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
+    type family Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210 where
+      Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 xx0123456789876543210
+    type M3_0123456789876543210 :: forall a b. [a] -> b -> ([a], b)
+    type family M3_0123456789876543210 @a @b (a :: [a]) (a :: b) :: ([a],
+                                                                     b) where
+      M3_0123456789876543210 @a @b (x :: [a]) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (Lambda_0123456789876543210Sym0 a x y)) x)) y
+    type M3_0123456789876543210Sym0 :: forall a
+                                              b. (~>) [a] ((~>) b ([a], b))
+    data M3_0123456789876543210Sym0 :: (~>) [a] ((~>) b ([a], b))
+      where
+        M3_0123456789876543210Sym0KindInference :: SameKind (Apply M3_0123456789876543210Sym0 arg) (M3_0123456789876543210Sym1 arg) =>
+                                                   M3_0123456789876543210Sym0 a0123456789876543210
+    type instance Apply M3_0123456789876543210Sym0 a0123456789876543210 = M3_0123456789876543210Sym1 a0123456789876543210
+    instance SuppressUnusedWarnings M3_0123456789876543210Sym0 where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym0KindInference ())
+    type M3_0123456789876543210Sym1 :: forall a b. [a]
+                                                   -> (~>) b ([a], b)
+    data M3_0123456789876543210Sym1 (a0123456789876543210 :: [a]) :: (~>) b ([a],
+                                                                             b)
+      where
+        M3_0123456789876543210Sym1KindInference :: SameKind (Apply (M3_0123456789876543210Sym1 a0123456789876543210) arg) (M3_0123456789876543210Sym2 a0123456789876543210 arg) =>
+                                                   M3_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
+    type instance Apply (M3_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (M3_0123456789876543210Sym1 a0123456789876543210) where
+      suppressUnusedWarnings
+        = snd ((,) M3_0123456789876543210Sym1KindInference ())
+    type M3_0123456789876543210Sym2 :: forall a b. [a] -> b -> ([a], b)
+    type family M3_0123456789876543210Sym2 @a @b (a0123456789876543210 :: [a]) (a0123456789876543210 :: b) :: ([a],
+                                                                                                               b) where
+      M3_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = M3_0123456789876543210 a0123456789876543210 a0123456789876543210
+    instance PC3 [a] where
+      type M3 a a = Apply (Apply M3_0123456789876543210Sym0 a) a
+    class SC1 a where
+      sM1 ::
+        forall b (t :: a). Sing t -> Sing (Apply M1Sym0 t :: Maybe (a, b))
+      default sM1 ::
+                forall b (t :: a). ((Apply M1Sym0 t :: Maybe (a, b))
+                                    ~ Apply M1_0123456789876543210Sym0 t) =>
+                                   Sing t -> Sing (Apply M1Sym0 t :: Maybe (a, b))
+      sM1 _ = SNothing :: Sing (NothingSym0 :: Maybe (a, b))
+    class SC2 a where
+      sM2 ::
+        (forall (t :: b).
+         Sing t -> Sing (Apply M2Sym0 t :: Maybe a) :: Type)
+      default sM2 ::
+                (forall (t :: b).
+                 ((Apply M2Sym0 t :: Maybe a)
+                  ~ Apply M2_0123456789876543210Sym0 t) =>
+                 Sing t -> Sing (Apply M2Sym0 t :: Maybe a) :: Type)
+      sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe a)
+    class SC3 a where
+      sM3 ::
+        forall b (t :: a) (t :: b). Sing t
+                                    -> Sing t -> Sing (Apply (Apply M3Sym0 t) t :: (a, b))
+      default sM3 ::
+                forall b (t :: a) (t :: b). ((Apply (Apply M3Sym0 t) t :: (a, b))
+                                             ~ Apply (Apply M3_0123456789876543210Sym0 t) t) =>
+                                            Sing t
+                                            -> Sing t -> Sing (Apply (Apply M3Sym0 t) t :: (a, b))
+      sM3 (sX :: Sing x) (sY :: Sing y)
+        = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY ::
+            Sing (Apply (Apply Tuple2Sym0 x) y :: (a, b))
+    instance SC1 [a] where
+      sM1 ::
+        forall b (t :: [a]). Sing t
+                             -> Sing (Apply M1Sym0 t :: Maybe ([a], b))
+      sM1 _ = SNothing :: Sing (NothingSym0 :: Maybe ([a], b))
+    instance SC2 [a] where
+      sM2 ::
+        (forall (t :: b).
+         Sing t -> Sing (Apply M2Sym0 t :: Maybe [a]) :: Type)
+      sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe [a])
+    instance SC2 (Maybe a) where
+      sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe (Maybe a))
+    instance SC3 (Maybe a) where
+      sM3 ::
+        (forall (t :: Maybe a) (t :: b).
+         Sing t
+         -> Sing t
+            -> Sing (Apply (Apply M3Sym0 t) t :: (Maybe a, b)) :: Type)
+      sM3 (sX :: Sing x) (sY :: Sing y)
+        = applySing
+            (applySing
+               (singFun2 @Tuple2Sym0 STuple2)
+               (applySing
+                  (applySing
+                     (singFun2 @FmapSym0 sFmap)
+                     (singFun1
+                        @(Lambda_0123456789876543210Sym0 a x y)
+                        (\ sXx -> case sXx of (_ :: Sing xx) -> sXx :: Sing (xx :: a))))
+                  sX))
+            sY
+    instance SC3 [a] where
+      sM3 (sX :: Sing x) (sY :: Sing y)
+        = applySing
+            (applySing
+               (singFun2 @Tuple2Sym0 STuple2)
+               (applySing
+                  (applySing
+                     (singFun2 @FmapSym0 sFmap)
+                     (singFun1
+                        @(Lambda_0123456789876543210Sym0 a x y)
+                        (\ sXx -> case sXx of (_ :: Sing xx) -> sXx :: Sing (xx :: a))))
+                  sX))
+            sY
+    instance SC1 a => SingI (M1Sym0 :: (~>) a (Maybe (a, b))) where
+      sing = singFun1 @M1Sym0 sM1
+    instance SC2 a => SingI (M2Sym0 :: (~>) b (Maybe a)) where
+      sing = singFun1 @M2Sym0 sM2
+    instance SC3 a => SingI (M3Sym0 :: (~>) a ((~>) b (a, b))) where
+      sing = singFun2 @M3Sym0 sM3
+    instance (SC3 a, SingI d) =>
+             SingI (M3Sym1 (d :: a) :: (~>) b (a, b)) where
+      sing = singFun1 @(M3Sym1 (d :: a)) (sM3 (sing @d))
+    instance SC3 a => SingI1 (M3Sym1 :: a -> (~>) b (a, b)) where
+      liftSing (s :: Sing (d :: a)) = singFun1 @(M3Sym1 (d :: a)) (sM3 s)

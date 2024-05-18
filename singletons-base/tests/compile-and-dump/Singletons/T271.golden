@@ -37,11 +37,12 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type IdentitySym1 :: a -> Identity a
     type family IdentitySym1 @a (a0123456789876543210 :: a) :: Identity a where
       IdentitySym1 a0123456789876543210 = Identity a0123456789876543210
-    type TFHelper_0123456789876543210 :: Constant a b
-                                         -> Constant a b -> Bool
+    type TFHelper_0123456789876543210 :: forall a b. Constant a b
+                                                     -> Constant a b -> Bool
     type family TFHelper_0123456789876543210 @a @b (a :: Constant a b) (a :: Constant a b) :: Bool where
-      TFHelper_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
-    type TFHelper_0123456789876543210Sym0 :: (~>) (Constant a b) ((~>) (Constant a b) Bool)
+      TFHelper_0123456789876543210 @a @b (Constant a_0123456789876543210 :: Constant a b) (Constant b_0123456789876543210 :: Constant a b) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_0123456789876543210Sym0 :: forall a
+                                                    b. (~>) (Constant a b) ((~>) (Constant a b) Bool)
     data TFHelper_0123456789876543210Sym0 :: (~>) (Constant a b) ((~>) (Constant a b) Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
@@ -50,8 +51,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: Constant a b
-                                             -> (~>) (Constant a b) Bool
+    type TFHelper_0123456789876543210Sym1 :: forall a b. Constant a b
+                                                         -> (~>) (Constant a b) Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Constant a b) :: (~>) (Constant a b) Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -60,17 +61,18 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: Constant a b
-                                             -> Constant a b -> Bool
+    type TFHelper_0123456789876543210Sym2 :: forall a b. Constant a b
+                                                         -> Constant a b -> Bool
     type family TFHelper_0123456789876543210Sym2 @a @b (a0123456789876543210 :: Constant a b) (a0123456789876543210 :: Constant a b) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq (Constant a b) where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
-    type Compare_0123456789876543210 :: Constant a b
-                                        -> Constant a b -> Ordering
+    type Compare_0123456789876543210 :: forall a b. Constant a b
+                                                    -> Constant a b -> Ordering
     type family Compare_0123456789876543210 @a @b (a :: Constant a b) (a :: Constant a b) :: Ordering where
-      Compare_0123456789876543210 (Constant a_0123456789876543210) (Constant b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
-    type Compare_0123456789876543210Sym0 :: (~>) (Constant a b) ((~>) (Constant a b) Ordering)
+      Compare_0123456789876543210 @a @b (Constant a_0123456789876543210 :: Constant a b) (Constant b_0123456789876543210 :: Constant a b) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
+    type Compare_0123456789876543210Sym0 :: forall a
+                                                   b. (~>) (Constant a b) ((~>) (Constant a b) Ordering)
     data Compare_0123456789876543210Sym0 :: (~>) (Constant a b) ((~>) (Constant a b) Ordering)
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
@@ -79,8 +81,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
-    type Compare_0123456789876543210Sym1 :: Constant a b
-                                            -> (~>) (Constant a b) Ordering
+    type Compare_0123456789876543210Sym1 :: forall a b. Constant a b
+                                                        -> (~>) (Constant a b) Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Constant a b) :: (~>) (Constant a b) Ordering
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -89,17 +91,17 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
-    type Compare_0123456789876543210Sym2 :: Constant a b
-                                            -> Constant a b -> Ordering
+    type Compare_0123456789876543210Sym2 :: forall a b. Constant a b
+                                                        -> Constant a b -> Ordering
     type family Compare_0123456789876543210Sym2 @a @b (a0123456789876543210 :: Constant a b) (a0123456789876543210 :: Constant a b) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Constant a b) where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type TFHelper_0123456789876543210 :: Identity a
-                                         -> Identity a -> Bool
+    type TFHelper_0123456789876543210 :: forall a. Identity a
+                                                   -> Identity a -> Bool
     type family TFHelper_0123456789876543210 @a (a :: Identity a) (a :: Identity a) :: Bool where
-      TFHelper_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
-    type TFHelper_0123456789876543210Sym0 :: (~>) (Identity a) ((~>) (Identity a) Bool)
+      TFHelper_0123456789876543210 @a (Identity a_0123456789876543210 :: Identity a) (Identity b_0123456789876543210 :: Identity a) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_0123456789876543210Sym0 :: forall a. (~>) (Identity a) ((~>) (Identity a) Bool)
     data TFHelper_0123456789876543210Sym0 :: (~>) (Identity a) ((~>) (Identity a) Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
@@ -108,8 +110,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: Identity a
-                                             -> (~>) (Identity a) Bool
+    type TFHelper_0123456789876543210Sym1 :: forall a. Identity a
+                                                       -> (~>) (Identity a) Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Identity a) :: (~>) (Identity a) Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -118,17 +120,17 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: Identity a
-                                             -> Identity a -> Bool
+    type TFHelper_0123456789876543210Sym2 :: forall a. Identity a
+                                                       -> Identity a -> Bool
     type family TFHelper_0123456789876543210Sym2 @a (a0123456789876543210 :: Identity a) (a0123456789876543210 :: Identity a) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq (Identity a) where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
-    type Compare_0123456789876543210 :: Identity a
-                                        -> Identity a -> Ordering
+    type Compare_0123456789876543210 :: forall a. Identity a
+                                                  -> Identity a -> Ordering
     type family Compare_0123456789876543210 @a (a :: Identity a) (a :: Identity a) :: Ordering where
-      Compare_0123456789876543210 (Identity a_0123456789876543210) (Identity b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
-    type Compare_0123456789876543210Sym0 :: (~>) (Identity a) ((~>) (Identity a) Ordering)
+      Compare_0123456789876543210 @a (Identity a_0123456789876543210 :: Identity a) (Identity b_0123456789876543210 :: Identity a) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
+    type Compare_0123456789876543210Sym0 :: forall a. (~>) (Identity a) ((~>) (Identity a) Ordering)
     data Compare_0123456789876543210Sym0 :: (~>) (Identity a) ((~>) (Identity a) Ordering)
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
@@ -137,8 +139,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
-    type Compare_0123456789876543210Sym1 :: Identity a
-                                            -> (~>) (Identity a) Ordering
+    type Compare_0123456789876543210Sym1 :: forall a. Identity a
+                                                      -> (~>) (Identity a) Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Identity a) :: (~>) (Identity a) Ordering
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -147,8 +149,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
-    type Compare_0123456789876543210Sym2 :: Identity a
-                                            -> Identity a -> Ordering
+    type Compare_0123456789876543210Sym2 :: forall a. Identity a
+                                                      -> Identity a -> Ordering
     type family Compare_0123456789876543210Sym2 @a (a0123456789876543210 :: Identity a) (a0123456789876543210 :: Identity a) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Identity a) where

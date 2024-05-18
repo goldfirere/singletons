@@ -1,6 +1,11 @@
 Changelog for the `singletons-th` project
 =========================================
 
+next [????.??.??]
+-----------------
+* Add support for promoting and singling type variables that scope over the
+  bodies of class method defaults and instance methods.
+
 3.4 [2024.05.12]
 ----------------
 * Require building with GHC 9.10.

@@ -55,18 +55,18 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     class PC2 a where
       type family Method2a (arg :: b) :: a
       type family Method2b (arg :: b) :: a
-    type Method1_0123456789876543210 :: [a]
+    type Method1_0123456789876543210 :: forall a. [a]
     type family Method1_0123456789876543210 @a :: [a] where
-      Method1_0123456789876543210 = NilSym0
-    type Method1_0123456789876543210Sym0 :: [a]
+      Method1_0123456789876543210 @a = NilSym0
+    type Method1_0123456789876543210Sym0 :: forall a. [a]
     type family Method1_0123456789876543210Sym0 @a :: [a] where
       Method1_0123456789876543210Sym0 = Method1_0123456789876543210
     instance PC1 [] where
       type Method1 = Method1_0123456789876543210Sym0
-    type Method2a_0123456789876543210 :: b -> [a]
+    type Method2a_0123456789876543210 :: forall b a. b -> [a]
     type family Method2a_0123456789876543210 @b @a (a :: b) :: [a] where
-      Method2a_0123456789876543210 _ = NilSym0
-    type Method2a_0123456789876543210Sym0 :: (~>) b [a]
+      Method2a_0123456789876543210 @b @a (_ :: b) = NilSym0
+    type Method2a_0123456789876543210Sym0 :: forall b a. (~>) b [a]
     data Method2a_0123456789876543210Sym0 :: (~>) b [a]
       where
         Method2a_0123456789876543210Sym0KindInference :: SameKind (Apply Method2a_0123456789876543210Sym0 arg) (Method2a_0123456789876543210Sym1 arg) =>
@@ -75,13 +75,13 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Method2a_0123456789876543210Sym0KindInference ())
-    type Method2a_0123456789876543210Sym1 :: b -> [a]
+    type Method2a_0123456789876543210Sym1 :: forall b a. b -> [a]
     type family Method2a_0123456789876543210Sym1 @b @a (a0123456789876543210 :: b) :: [a] where
       Method2a_0123456789876543210Sym1 a0123456789876543210 = Method2a_0123456789876543210 a0123456789876543210
-    type Method2b_0123456789876543210 :: b -> [a]
+    type Method2b_0123456789876543210 :: forall b a. b -> [a]
     type family Method2b_0123456789876543210 @b @a (a :: b) :: [a] where
-      Method2b_0123456789876543210 _ = NilSym0
-    type Method2b_0123456789876543210Sym0 :: (~>) b [a]
+      Method2b_0123456789876543210 @b @a (_ :: b) = NilSym0
+    type Method2b_0123456789876543210Sym0 :: forall b a. (~>) b [a]
     data Method2b_0123456789876543210Sym0 :: (~>) b [a]
       where
         Method2b_0123456789876543210Sym0KindInference :: SameKind (Apply Method2b_0123456789876543210Sym0 arg) (Method2b_0123456789876543210Sym1 arg) =>
@@ -90,7 +90,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Method2b_0123456789876543210Sym0KindInference ())
-    type Method2b_0123456789876543210Sym1 :: b -> [a]
+    type Method2b_0123456789876543210Sym1 :: forall b a. b -> [a]
     type family Method2b_0123456789876543210Sym1 @b @a (a0123456789876543210 :: b) :: [a] where
       Method2b_0123456789876543210Sym1 a0123456789876543210 = Method2b_0123456789876543210 a0123456789876543210
     instance PC2 [a] where

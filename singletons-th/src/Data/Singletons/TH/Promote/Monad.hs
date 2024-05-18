@@ -432,4 +432,170 @@ scenarios where singletons-th fails to promote scoped type variables:
 
     type LetY x :: Maybe b where
       LetY x :: Maybe b = Nothing :: Maybe b
+
+Note [Scoped type variables and class methods]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Implementing support for scoped type variables (see Note [Scoped type variables]
+as a primer) in the type signatures of class methods is surprisingly tricky.
+First, let's consider a small but illustrative example:
+
+  class C a where
+    m :: forall b. a -> b -> (a, b)
+    m x y = (x, y) :: (a, b)
+
+In the default implementation of `m`, there are /two/ levels of scoped type
+variables:
+
+* The `a` type variable from the `class C a` header.
+* The `b` type variable from the method signature `forall b. a -> b -> (a, b)`
+
+This means that in order to promote `m` to an associated type family, we need
+to ensure that both `a` and `b` are brought into scope. Roughly speaking, we
+promote `C` and `m` like so:
+
+  class PC a where
+    type M (x :: a) (y :: b) :: (a, b)
+    type M x y = MDefault x y
+
+  type MDefault :: forall a b. a -> b -> (a, b)
+  type family MDefault x y where
+    MDefault @a @b x y = '(x, y) :: (a, b)
+
+The most subtle part is defining MDefault, as we need to give it a standalone
+kind signature in order to bind `@a` and `@b` in the definition of `MDefault`.
+Note that it's not enough to promote the method signature, as that doesn't
+quantify `a`. Instead, we simply collect the free variables of the argument and
+result types (`a -> b -> a`) and quantify those, giving us `forall a b. a -> b
+-> a`. Note that the exact order of type variables doesn't matter, as the user
+doesn't invoke MDefault directly. We mainly use the `forall` to ensure /some/
+predictable ordering for the type variables so that we can match the order in
+the invisible arguments in the type family equation.
+
+A similar process applies to class instances. For example:
+
+  instance C [a] where
+    m :: forall b. [a] -> b -> ([a], b)
+    m x y = (reverse x, y) :: ([a], b)
+
+In this example, there are also two levels of scoped type variables: the `a`
+from the instance head, and the `b` in the instance signature. We would promote
+this instance similarly:
+
+  instance PC [a] where
+    type M x y = MImpl x y
+
+  type MImpl :: forall a b. [a] -> b -> ([a], b)
+  type family MImpl x y where
+    MImpl @a @b x y = '(Reverse x, y) :: ([a], b)
+
+-----
+-- Wrinkle: Partial scoping
+-----
+
+Although the examples above use two levels of scoped type variables, it is not
+necessarily the case that you /have/ to use both levels. Consider, for example:
+
+  instance C (Maybe a) where
+    m :: Maybe a -> b -> (Maybe a, b)
+    m x y = (fmap (\xx -> (xx :: a)) x, y)
+
+Note that the `a` scopes over the body of `m`'s implementation, but /not/ `b`,
+as `m`'s instance signature does not have an outermost `forall`. A more extreme
+version of this example is:
+
+  instance C (Maybe a) where
+    m x y = (fmap (\xx -> (xx :: a)) x, y)
+
+Here, `m` does not have an instance signature at all, so there is no `b` in
+sight.
+
+In both examples, we are presented with a challenge: how do we ensure that `a`
+(and only `a`) scopes? Note that singletons-th's approach to promoting class
+methods means that we will promote this instance to code that looks like:
+
+  instance PC (Maybe a) where
+    type M x y = MImpl x y
+
+  type MImpl :: forall a b. Maybe a -> b -> (Maybe a, b)
+  type family MImpl x y where
+    ...
+
+We need to give `MImpl` a standalone kind signature we ensure that we can bring
+`a` into scope over the right-hand side of `MImpl`'s type family equation. What
+does this mean for `b`? One idea is that we could bring `b` into scope over the
+right-hand side of the equation as well. This would give rise to this
+definition:
+
+  type MImpl :: forall a b. Maybe a -> b -> (Maybe a, b)
+  type family MImpl x y where
+    M @a @b x y = (Fmap (LambdaSym1 a b x y) x, y)
+
+  data LambdaSym1 a b x y xx
+  type instance Apply (LambdaSym1 a b x y) xx = Lambda a b x y xx
+
+  type family Lambda a b x y xx where
+    Lambda a b x y xx = xx :: a
+
+Note that Lambda (the lambda-lifted version of the `\xx -> (xx :: a)`
+expression) includes both `a` and `b` as local variables. Somewhat
+surprisingly, this ends up being a problem when /singling/ the instance. To see
+why, consider the singled code for the extreme version of the instance:
+
+  instance SC (Maybe a) where
+    sM (sX :: Sing x) (sY :: Sing y) =
+      ( sFmap (singFun1 @(LambdaSym1 a b x y)
+              (\(sXX :: Sing xx) -> (sXX :: Sing (xx :: a)))
+      , sY
+      )
+
+GHC will reject this code, as `b` is not in scope in the subexpression
+`singFun1 @(LambdaSym1 a b x y)`. And indeed, the original code doesn't bring
+`b` into scope, so it makes sense that `b` wouldn't be in scope in the singled
+code. We could try to infer an instance signature for `sM` that quantifies `b`
+in an outermost `forall`, but doing so is fraught with peril (see #590).
+
+Luckily, there is a relatively simple way to make this work. The reason that
+LambdaSym1 includes `b` as an argument is because we typically call
+`scopedBind` (see Note [Scoped type variables]) on all of the type variables
+bound in the outermost `forall` to bring them into scope in the right-hand
+side. For class methods, however, we need not call `scopedBind` on /every/ type
+variable in the outermost `forall`. Instead, we can only call `scopedBind` on
+the type variables that actually interact with ScopedTypeVariables, and we can
+leave all other type variables alone. Concretely, this means that we would
+generate the following code for `MImpl`:
+
+  type MImpl :: forall a b. Maybe a -> b -> (Maybe a, b)
+  type family MImpl x y where
+    M @a @b x y =
+      -- NB: Call `scopedBind [a]` here, not `scopedBind [a, b]`
+      (Fmap (LambdaSym1 a x y) x, y)
+
+  data LambdaSym1 a x y xx
+  type instance Apply (LambdaSym1 a x y) xx = Lambda a x y xx
+
+  type family Lambda a x y xx where
+    Lambda a x y xx = xx :: a
+
+Note that we still bind `@b` in an invisible argument, but we no longer pass it
+along to LambdaSym1. This means that when we generate `singFun1 @(LambdaSym1 a
+x y)` in the singled instance, we no longer reference `b` at all, avoiding the
+issue above. (Note that we don't need to bind `@b` in an invisible argument
+anymore, but it would require more work to special-case class methods in
+`promoteClause` to avoid this, and it doesn't hurt anything to leave `@b` in
+place).
+
+The `OSet Name` fields of `ClassMethodRHS` dictates which type variables to
+bring into scope via `scopedBind`. There are multiple places in the code which
+determine which type variables get put into the `OSet`:
+
+* For class declarations, the scoped type variables from the class header
+  (e.g., the `a` in `class C a`) are determined in `promoteClassDec`.
+* For instance declarations, the scoped type variables from the instance head
+  (e.g., the `a` in `instance C (Maybe a)`) are determined in
+  `promoteInstanceDec`.
+* The scoped type variables from class method signatures and instance signatures
+  are determined in `promoteMethod.promote_meth_ty`.
+
+Each of these functions have references to this Note near the particular lines
+of relevant code.
 -}

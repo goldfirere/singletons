@@ -44,22 +44,22 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type FooSym1 :: forall a. a -> [Bool]
     type family FooSym1 @a (a0123456789876543210 :: a) :: [Bool] where
       FooSym1 a0123456789876543210 = Foo a0123456789876543210
-    type family Lambda_0123456789876543210 x0123456789876543210 s where
-      Lambda_0123456789876543210 x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
-    data Lambda_0123456789876543210Sym0 x0123456789876543210 s0123456789876543210
+    type family Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s where
+      Lambda_0123456789876543210 a x s = Apply (Apply (Apply FoosPrecSym0 (FromInteger 0)) x) s
+    data Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 s0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 x0123456789876543210) arg) (Lambda_0123456789876543210Sym1 x0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym0 x0123456789876543210 s0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym0 x0123456789876543210) s0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 s0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 x0123456789876543210) where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 s0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) s0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 x0123456789876543210 s0123456789876543210 where
-      Lambda_0123456789876543210Sym1 x0123456789876543210 s0123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 s0123456789876543210
-    type Foo_0123456789876543210 :: a -> [Bool]
+    type family Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 s0123456789876543210 where
+      Lambda_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 s0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 x0123456789876543210 s0123456789876543210
+    type Foo_0123456789876543210 :: forall a. a -> [Bool]
     type family Foo_0123456789876543210 @a (a :: a) :: [Bool] where
-      Foo_0123456789876543210 x = Lambda_0123456789876543210Sym0 x
-    type Foo_0123456789876543210Sym0 :: (~>) a [Bool]
+      Foo_0123456789876543210 @a (x :: a) = Lambda_0123456789876543210Sym0 a x
+    type Foo_0123456789876543210Sym0 :: forall a. (~>) a [Bool]
     data Foo_0123456789876543210Sym0 :: (~>) a [Bool]
       where
         Foo_0123456789876543210Sym0KindInference :: SameKind (Apply Foo_0123456789876543210Sym0 arg) (Foo_0123456789876543210Sym1 arg) =>
@@ -68,7 +68,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Foo_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Foo_0123456789876543210Sym0KindInference ())
-    type Foo_0123456789876543210Sym1 :: a -> [Bool]
+    type Foo_0123456789876543210Sym1 :: forall a. a -> [Bool]
     type family Foo_0123456789876543210Sym1 @a (a0123456789876543210 :: a) :: [Bool] where
       Foo_0123456789876543210Sym1 a0123456789876543210 = Foo_0123456789876543210 a0123456789876543210
     class PFoo a where
@@ -92,7 +92,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
                  Sing t -> Sing (Apply FooSym0 t :: [Bool]) :: Type)
       sFoo (sX :: Sing x)
         = singFun1
-            @(Lambda_0123456789876543210Sym0 x)
+            @(Lambda_0123456789876543210Sym0 a x)
             (\ sS
                -> case sS of
                     (_ :: Sing s)
@@ -133,12 +133,12 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     instance SFoo a => SingI (FooSym0 :: (~>) a [Bool]) where
       sing = singFun1 @FooSym0 sFoo
 Singletons/T166.hs:0:0: error: [GHC-83865]
-    • Expecting one more argument to ‘Lambda_0123456789876543210Sym0 x’
+    • Expecting one more argument to ‘Lambda_0123456789876543210Sym0 a x’
       Expected kind ‘[Bool]’,
-        but ‘Lambda_0123456789876543210Sym0 x’ has kind ‘TyFun
-                                                           [Bool] [Bool]
-                                                         -> Type’
-    • In the type ‘Lambda_0123456789876543210Sym0 x’
+        but ‘Lambda_0123456789876543210Sym0 a x’ has kind ‘TyFun
+                                                             [Bool] [Bool]
+                                                           -> Type’
+    • In the type ‘Lambda_0123456789876543210Sym0 a x’
       In the type family declaration for ‘Foo_0123456789876543210’
   |
 6 | $(singletonsOnly [d|
