@@ -335,46 +335,49 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Nat where
       type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
-    type TFHelper_0123456789876543210 :: Foo a b c d
-                                         -> Foo a b c d -> Bool
+    type TFHelper_0123456789876543210 :: forall a b c d. Foo a b c d
+                                                         -> Foo a b c d -> Bool
     type family TFHelper_0123456789876543210 @a @b @c @d (a :: Foo a b c d) (a :: Foo a b c d) :: Bool where
-      TFHelper_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-      TFHelper_0123456789876543210 (A _ _ _ _) (B _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (A _ _ _ _) (C _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (A _ _ _ _) (D _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (A _ _ _ _) (E _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (A _ _ _ _) (F _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (B _ _ _ _) (A _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-      TFHelper_0123456789876543210 (B _ _ _ _) (C _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (B _ _ _ _) (D _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (B _ _ _ _) (E _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (B _ _ _ _) (F _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (C _ _ _ _) (A _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (C _ _ _ _) (B _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-      TFHelper_0123456789876543210 (C _ _ _ _) (D _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (C _ _ _ _) (E _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (C _ _ _ _) (F _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (D _ _ _ _) (A _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (D _ _ _ _) (B _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (D _ _ _ _) (C _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-      TFHelper_0123456789876543210 (D _ _ _ _) (E _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (D _ _ _ _) (F _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (E _ _ _ _) (A _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (E _ _ _ _) (B _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (E _ _ _ _) (C _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (E _ _ _ _) (D _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-      TFHelper_0123456789876543210 (E _ _ _ _) (F _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F _ _ _ _) (A _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F _ _ _ _) (B _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F _ _ _ _) (C _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F _ _ _ _) (D _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F _ _ _ _) (E _ _ _ _) = FalseSym0
-      TFHelper_0123456789876543210 (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
-    type TFHelper_0123456789876543210Sym0 :: (~>) (Foo a b c d) ((~>) (Foo a b c d) Bool)
+      TFHelper_0123456789876543210 @a @b @c @d (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+      TFHelper_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = FalseSym0
+      TFHelper_0123456789876543210 @a @b @c @d (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)))
+    type TFHelper_0123456789876543210Sym0 :: forall a
+                                                    b
+                                                    c
+                                                    d. (~>) (Foo a b c d) ((~>) (Foo a b c d) Bool)
     data TFHelper_0123456789876543210Sym0 :: (~>) (Foo a b c d) ((~>) (Foo a b c d) Bool)
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
@@ -383,8 +386,10 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: Foo a b c d
-                                             -> (~>) (Foo a b c d) Bool
+    type TFHelper_0123456789876543210Sym1 :: forall a
+                                                    b
+                                                    c
+                                                    d. Foo a b c d -> (~>) (Foo a b c d) Bool
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Foo a b c d) :: (~>) (Foo a b c d) Bool
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -393,52 +398,57 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: Foo a b c d
-                                             -> Foo a b c d -> Bool
+    type TFHelper_0123456789876543210Sym2 :: forall a
+                                                    b
+                                                    c
+                                                    d. Foo a b c d -> Foo a b c d -> Bool
     type family TFHelper_0123456789876543210Sym2 @a @b @c @d (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Bool where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq (Foo a b c d) where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
-    type Compare_0123456789876543210 :: Foo a b c d
-                                        -> Foo a b c d -> Ordering
+    type Compare_0123456789876543210 :: forall a b c d. Foo a b c d
+                                                        -> Foo a b c d -> Ordering
     type family Compare_0123456789876543210 @a @b @c @d (a :: Foo a b c d) (a :: Foo a b c d) :: Ordering where
-      Compare_0123456789876543210 (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
-      Compare_0123456789876543210 (A _ _ _ _) (B _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (A _ _ _ _) (C _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (A _ _ _ _) (D _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (A _ _ _ _) (E _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (A _ _ _ _) (F _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (B _ _ _ _) (A _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (B _ _ _ _) (C _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (B _ _ _ _) (D _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (B _ _ _ _) (E _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (B _ _ _ _) (F _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (C _ _ _ _) (A _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (C _ _ _ _) (B _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (C _ _ _ _) (D _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (C _ _ _ _) (E _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (C _ _ _ _) (F _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (D _ _ _ _) (A _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (D _ _ _ _) (B _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (D _ _ _ _) (C _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (D _ _ _ _) (E _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (D _ _ _ _) (F _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (E _ _ _ _) (A _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (E _ _ _ _) (B _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (E _ _ _ _) (C _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (E _ _ _ _) (D _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (E _ _ _ _) (F _ _ _ _) = LTSym0
-      Compare_0123456789876543210 (F _ _ _ _) (A _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (F _ _ _ _) (B _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (F _ _ _ _) (C _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (F _ _ _ _) (D _ _ _ _) = GTSym0
-      Compare_0123456789876543210 (F _ _ _ _) (E _ _ _ _) = GTSym0
-    type Compare_0123456789876543210Sym0 :: (~>) (Foo a b c d) ((~>) (Foo a b c d) Ordering)
+      Compare_0123456789876543210 @a @b @c @d (A a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (A b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (B a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (B b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (C a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (C b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (D a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (D b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (E a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (E b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (F a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: Foo a b c d) (F b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 b_0123456789876543210 :: Foo a b c d) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))))
+      Compare_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (A _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (B _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (C _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (D _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (E _ _ _ _ :: Foo a b c d) (F _ _ _ _ :: Foo a b c d) = LTSym0
+      Compare_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (A _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (B _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (C _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (D _ _ _ _ :: Foo a b c d) = GTSym0
+      Compare_0123456789876543210 @a @b @c @d (F _ _ _ _ :: Foo a b c d) (E _ _ _ _ :: Foo a b c d) = GTSym0
+    type Compare_0123456789876543210Sym0 :: forall a
+                                                   b
+                                                   c
+                                                   d. (~>) (Foo a b c d) ((~>) (Foo a b c d) Ordering)
     data Compare_0123456789876543210Sym0 :: (~>) (Foo a b c d) ((~>) (Foo a b c d) Ordering)
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
@@ -447,8 +457,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
-    type Compare_0123456789876543210Sym1 :: Foo a b c d
-                                            -> (~>) (Foo a b c d) Ordering
+    type Compare_0123456789876543210Sym1 :: forall a b c d. Foo a b c d
+                                                            -> (~>) (Foo a b c d) Ordering
     data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Foo a b c d) :: (~>) (Foo a b c d) Ordering
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -457,8 +467,8 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
-    type Compare_0123456789876543210Sym2 :: Foo a b c d
-                                            -> Foo a b c d -> Ordering
+    type Compare_0123456789876543210Sym2 :: forall a b c d. Foo a b c d
+                                                            -> Foo a b c d -> Ordering
     type family Compare_0123456789876543210Sym2 @a @b @c @d (a0123456789876543210 :: Foo a b c d) (a0123456789876543210 :: Foo a b c d) :: Ordering where
       Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd (Foo a b c d) where

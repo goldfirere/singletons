@@ -15,6 +15,7 @@ import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
+import Language.Haskell.TH.Desugar.OSet (OSet)
 import Data.Singletons.TH.Deriving.Bounded
 import Data.Singletons.TH.Deriving.Enum
 import Data.Singletons.TH.Deriving.Eq
@@ -256,7 +257,7 @@ promoteDataDec (DataDecl _ _ _ ctors) = do
 
 promoteClassDec :: UClassDecl -> PrM AClassDecl
 promoteClassDec decl@(ClassDecl { cd_name = cls_name
-                                , cd_tvbs = tvbs
+                                , cd_tvbs = cls_tvbs
                                 , cd_fds  = fundeps
                                 , cd_atfs = atfs
                                 , cd_lde  = lde@LetDecEnv
@@ -269,18 +270,19 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       meth_names     = map fst meth_sigs_list
       defaults_list  = OMap.assocs defaults
       defaults_names = map fst defaults_list
+      cls_tvb_names  = map extractTvbName cls_tvbs
   mb_cls_sak <- dsReifyType cls_name
   sig_decs <- mapM (uncurry promote_sig) meth_sigs_list
   (default_decs, ann_rhss, prom_rhss)
-    <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs) defaults_list
-  defunAssociatedTypeFamilies tvbs atfs
+    <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs cls_tvb_names) defaults_list
+  defunAssociatedTypeFamilies cls_tvbs atfs
 
   infix_decls' <- mapMaybeM (uncurry (promoteInfixDecl Nothing)) $
                   OMap.assocs infix_decls
   cls_infix_decls <- promoteReifiedInfixDecls $ cls_name:meth_names
 
   -- no need to do anything to the fundeps. They work as is!
-  let pro_cls_dec = DClassD [] pClsName tvbs fundeps
+  let pro_cls_dec = DClassD [] pClsName cls_tvbs fundeps
                             (sig_decs ++ default_decs ++ infix_decls')
       mb_pro_cls_sak = fmap (DKiSigD pClsName) mb_cls_sak
   emitDecs $ maybeToList mb_pro_cls_sak ++ pro_cls_dec:cls_infix_decls
@@ -376,8 +378,9 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
       cls_tvb_names = map extractTvbName cls_tvbs
       subst         = Map.fromList $ zip cls_tvb_names inst_kis
       meth_impl     = InstanceMethods inst_sigs subst
+      inst_ki_fvs   = map extractTvbName $ toposortTyVarsOf inst_kis
   (meths', ann_rhss, _)
-    <- mapAndUnzip3M (promoteMethod meth_impl orig_meth_sigs) meths
+    <- mapAndUnzip3M (promoteMethod meth_impl orig_meth_sigs inst_ki_fvs) meths
   emitDecs [DInstanceD Nothing Nothing [] (foldType (DConT pClsName)
                                             inst_kis) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -459,12 +462,28 @@ data MethodSort
 
 promoteMethod :: MethodSort
               -> OMap Name DType    -- method types
+              -> [Name] -- The names of the type variables bound by the class
+                        -- header (e.g., the @a@ in @class C a where ...@).
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, DType)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
-promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
+promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
   opts <- getOptions
-  (meth_arg_kis, meth_res_ki) <- promote_meth_ty
+  (meth_tvbs, meth_arg_kis, meth_res_ki) <- promote_meth_ty
+  -- If ScopedTypeVariables is enabled, bring type variables into scope over the
+  -- RHS. These type variables can come from the class/instance header, the
+  -- method type signature/instance signature, or both, depending on how the
+  -- class or instance declaration is written. See
+  -- Note [Scoped type variables and class methods] in D.S.TH.Promote.Monad.
+  -- See also (Wrinkle: Partial scoping) from that Note for a scenario in which
+  -- we bring class/instance header type variables into scope but /not/
+  -- type variables from the class method/instance signature.
+  scoped_tvs_ext <- qIsExtEnabled LangExt.ScopedTypeVariables
+  let meth_scoped_tvs
+        | scoped_tvs_ext
+        = OSet.fromList (cls_tvb_names ++ map extractTvbName meth_tvbs)
+        | otherwise
+        = OSet.empty
   meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
   let proName = promotedTopLevelValueName opts meth_name
       helperNameBase = case nameBase proName of
@@ -487,7 +506,7 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
   helperName <- newUniqueName helperNameBase
   let helperDefunName = defunctionalizedName0 opts helperName
   (pro_decs, defun_decs, ann_rhs)
-    <- promoteLetDecRHS (ClassMethodRHS meth_arg_kis meth_res_ki)
+    <- promoteLetDecRHS (ClassMethodRHS meth_scoped_tvs meth_arg_kis meth_res_ki)
                         OMap.empty OMap.empty
                         Nothing helperName meth_rhs
   emitDecs (pro_decs ++ defun_decs)
@@ -504,7 +523,19 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
     -- the types in the instance head. (e.g., if you have `class C a` and
     -- `instance C T`, then the substitution [a |-> T] must be applied to the
     -- original method's type.)
-    promote_meth_ty :: PrM ([DKind], DKind)
+    --
+    -- This returns three things in a tuple:
+    --
+    -- * The list of scoped type variables from the class method signature or
+    --   instance signature. If an instance method lacks an instance signature,
+    --   this will be an empty list. These type variables will be brought into
+    --   scope over the RHS of the method: see Note [Scoped type variables and
+    --   class methods] in D.S.TH.Promote.Monad.
+    --
+    -- * The promoted argument kinds.
+    --
+    -- * The promoted result kind.
+    promote_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -518,28 +549,29 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
               -- We have an InstanceSig. These are easy: we can just use the
               -- instance signature's type directly, and no substitution for
               -- class variables is required.
-              (_tvbs, arg_kis, res_ki) <- promoteUnraveled ty
-              pure (arg_kis, res_ki)
+              promoteUnraveled ty
             Nothing -> do
               -- We don't have an InstanceSig, so we must compute the kind to use
               -- ourselves.
-              (arg_kis, res_ki) <- lookup_meth_ty
+              (_, arg_kis, res_ki) <- lookup_meth_ty
               -- Substitute for the class variables in the method's type.
               -- See Note [Promoted class method kinds]
               let arg_kis' = map (substKind cls_subst) arg_kis
                   res_ki'  = substKind cls_subst res_ki
-              pure (arg_kis', res_ki')
+              -- If there is no instance signature, then there are no additional
+              -- type variables to bring into scope, so return an empty list of
+              -- scoped type variables.
+              pure ([], arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM ([DKind], DKind)
+    lookup_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
       case OMap.lookup meth_name orig_sigs_map of
         Just ty -> do
           -- The type of the method is in scope, so promote that.
-          (_tvbs, arg_kis, res_ki) <- promoteUnraveled ty
-          pure (arg_kis, res_ki)
+          promoteUnraveled ty
         Nothing -> do
           -- If the type of the method is not in scope, the only other option
           -- is to try reifying the promoted method name.
@@ -549,7 +581,10 @@ promoteMethod meth_sort orig_sigs_map (meth_name, meth_rhs) = do
             Just (DTyConI (DOpenTypeFamilyD (DTypeFamilyHead _ tvbs mb_res_ki _)) _)
               -> let arg_kis = map (defaultMaybeToTypeKind . extractTvbKind) tvbs
                      res_ki  = defaultMaybeToTypeKind (resultSigToMaybeKind mb_res_ki)
-                  in pure (arg_kis, res_ki)
+                  -- If there is no instance signature, then there are no
+                  -- additional type variables to bring into scope, so return an
+                  -- empty list of scoped type variables.
+                  in pure ([], arg_kis, res_ki)
             _ -> fail $ "Cannot find type annotation for " ++ show proName
 
 {-
@@ -688,8 +723,12 @@ data LetDecRHSSort
     -- The right-hand side of a class method (either a default method or a
     -- method in an instance declaration).
   | ClassMethodRHS
-      [DKind] DKind
-      -- The RHS's promoted argument and result types. Needed to fix #136.
+      (OSet Name) -- The scoped type variables to bring into scope over
+                  -- the RHS of the class method. See
+                  -- Note [Scoped type variables and class methods]
+                  -- in D.S.TH.Promote.Monad.
+      [DKind]     -- The RHS's promoted argument kinds. Needed to fix #136.
+      DKind       -- The RHS's promoted result kind. Needed to fix #136.
   deriving Show
 
 -- This function is used both to promote class method defaults and normal
@@ -772,9 +811,8 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                 , mk_tf_head arg_tvbs DNoSig
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
-              Just (LDRKI m_sak tvbs argKs resK) ->
-                let arg_tvbs = zipWith (`DKindedTV` BndrReq) tyvarNames argKs
-                    lde_kvs_to_bind' = OSet.fromList (map extractTvbName tvbs) in
+              Just (LDRKI m_sak lde_kvs_to_bind' tvbs argKs resK) ->
+                let arg_tvbs = zipWith (`DKindedTV` BndrReq) tyvarNames argKs in
                 case m_sak of
                   -- 2(a). We do not have a standalone kind signature.
                   Nothing ->
@@ -832,15 +870,19 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                                  --    will default to the earlier Int argument.
     promote_let_dec_ty all_locals default_num_args =
       case rhs_sort of
-        ClassMethodRHS arg_kis res_ki
-          -> -- For class method RHS helper functions, don't bother quantifying
-             -- any type variables in their SAKS. We could certainly try, but
-             -- given that these functions are only used internally, there's no
-             -- point in trying to get the order of type variables correct,
-             -- since we don't apply these functions with visible kind
-             -- applications.
-             let sak = ravelVanillaDType [] [] arg_kis res_ki in
-             return (Just (LDRKI (Just sak) [] arg_kis res_ki), length arg_kis)
+        ClassMethodRHS scoped_tvs arg_kis res_ki
+          -> -- Class method RHS helper functions are only used internally, so
+             -- there's no point in trying to get the order of type variables
+             -- correct. Nevertheless, we /do/ want to bind the type variables
+             -- in an outermost `forall` so that we can bring any scoped type
+             -- variables into scope. As such, we simply quantify the type
+             -- variables from left to right.
+             -- See Note [Scoped type variables and class methods] in
+             -- D.S.TH.Promote.Monad.
+             let sak_tvbs = changeDTVFlags SpecifiedSpec $
+                            toposortTyVarsOf $ arg_kis ++ [res_ki]
+                 sak = ravelVanillaDType sak_tvbs [] arg_kis res_ki in
+             return (Just (LDRKI (Just sak) scoped_tvs sak_tvbs arg_kis res_ki), length arg_kis)
         LetBindingRHS
           |  Just ty <- OMap.lookup name type_env
           -> do
@@ -852,8 +894,15 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                       -- don't give it a SAK.
                       -- See Note [No SAKs for let-decs with local variables]
                     | otherwise       = Nothing
+          -- If ScopedTypeVariables is enabled, bring all of the type variables
+          -- from the outermost forall into scope over the RHS.
+          scoped_tvs_ext <- qIsExtEnabled LangExt.ScopedTypeVariables
+          let scoped_tvs | scoped_tvs_ext
+                         = OSet.fromList (map extractTvbName tvbs)
+                         | otherwise
+                         = OSet.empty
           -- invariant: count_args ty == length argKs
-          return (Just (LDRKI m_sak tvbs argKs resultK), length argKs)
+          return (Just (LDRKI m_sak scoped_tvs tvbs argKs resultK), length argKs)
 
           |  otherwise
           -> return (Nothing, default_num_args)
@@ -884,6 +933,13 @@ data LetDecRHSKindInfo =
                          -- This will be Nothing if the let-dec RHS has local
                          -- variables that it closes over.
                          -- See Note [No SAKs for let-decs with local variables]
+        (OSet Name)      -- The scoped type variables to bring into scope over
+                         -- the RHS of the let-dec. This will be a subset of the
+                         -- type variables of the kind (see the field below),
+                         -- but not necessarily the same. See
+                         -- Note [Scoped type variables and class methods]
+                         -- (Wrinkle: Partial scoping) in D.S.TH.Promote.Monad
+                         -- for an example where this can be a proper subset.
         [DTyVarBndrSpec] -- The type variable binders of the kind.
         [DKind]          -- The argument kinds.
         DKind            -- The result kind.
@@ -1034,11 +1090,10 @@ promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
   -- in the promoted type family equation with its kind.
   -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
   -- explanation of why we do this.
-  scoped_tvs <- qIsExtEnabled LangExt.ScopedTypeVariables
   let types_w_kinds =
         case m_ldrki of
-          Just (LDRKI _ tvbs kinds _)
-            |  not (null tvbs) && scoped_tvs
+          Just (LDRKI _ scoped_tvs _ kinds _)
+            |  not (OSet.null scoped_tvs)
             -> zipWith DSigT types kinds
           _ -> types
   let PromDPatInfos { prom_dpat_vars    = new_vars
@@ -1219,7 +1274,7 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
   let proName = promotedValueName opts name mb_let_uniq
       type_args =
         case m_ldrki of
-          Just (LDRKI m_sak tvbs _ _)
+          Just (LDRKI m_sak _ tvbs _ _)
             |  isJust m_sak
                -- Per the comments on LetDecRHSKindInfo, `isJust m_sak` is only True
                -- if there are no local variables. Convert the scoped type variables

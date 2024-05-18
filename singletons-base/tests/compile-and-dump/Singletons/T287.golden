@@ -31,23 +31,24 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       (<<>>@#@$$$) a0123456789876543210 a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
     class PS a where
       type family (<<>>) (arg :: a) (arg :: a) :: a
-    type family Lambda_0123456789876543210 f0123456789876543210 g0123456789876543210 x where
-      Lambda_0123456789876543210 f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
-    data Lambda_0123456789876543210Sym0 f0123456789876543210 g0123456789876543210 x0123456789876543210
+    type family Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x where
+      Lambda_0123456789876543210 a b f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
+    data Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
       where
-        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 f0123456789876543210 g0123456789876543210) arg) (Lambda_0123456789876543210Sym1 f0123456789876543210 g0123456789876543210 arg) =>
-                                                       Lambda_0123456789876543210Sym0 f0123456789876543210 g0123456789876543210 x0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym0 f0123456789876543210 g0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
-    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 f0123456789876543210 g0123456789876543210) where
+        Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 arg) =>
+                                                       Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
+    type instance Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
+    instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
-    type family Lambda_0123456789876543210Sym1 f0123456789876543210 g0123456789876543210 x0123456789876543210 where
-      Lambda_0123456789876543210Sym1 f0123456789876543210 g0123456789876543210 x0123456789876543210 = Lambda_0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
-    type TFHelper_0123456789876543210 :: (~>) a b
-                                         -> (~>) a b -> (~>) a b
+    type family Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210 where
+      Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
+    type TFHelper_0123456789876543210 :: forall a b. (~>) a b
+                                                     -> (~>) a b -> (~>) a b
     type family TFHelper_0123456789876543210 @a @b (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
-      TFHelper_0123456789876543210 f g = Lambda_0123456789876543210Sym0 f g
-    type TFHelper_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
+      TFHelper_0123456789876543210 @a @b (f :: (~>) a b) (g :: (~>) a b) = Lambda_0123456789876543210Sym0 a b f g
+    type TFHelper_0123456789876543210Sym0 :: forall a
+                                                    b. (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
     data TFHelper_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
@@ -56,8 +57,8 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: (~>) a b
-                                             -> (~>) ((~>) a b) ((~>) a b)
+    type TFHelper_0123456789876543210Sym1 :: forall a b. (~>) a b
+                                                         -> (~>) ((~>) a b) ((~>) a b)
     data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a b) :: (~>) ((~>) a b) ((~>) a b)
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
@@ -66,8 +67,8 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: (~>) a b
-                                             -> (~>) a b -> (~>) a b
+    type TFHelper_0123456789876543210Sym2 :: forall a b. (~>) a b
+                                                         -> (~>) a b -> (~>) a b
     type family TFHelper_0123456789876543210Sym2 @a @b (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: (~>) a b) :: (~>) a b where
       TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PS ((~>) a b) where
@@ -80,7 +81,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance SS b => SS ((~>) a b) where
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = singFun1
-            @(Lambda_0123456789876543210Sym0 f g)
+            @(Lambda_0123456789876543210Sym0 a b f g)
             (\ sX
                -> case sX of
                     (_ :: Sing x)
