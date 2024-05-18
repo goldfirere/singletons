@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 {- Data/Singletons/TH/Promote.hs
 
 (c) Richard Eisenberg 2013
@@ -35,7 +37,8 @@ import Control.Arrow (second)
 import Control.Monad
 import Control.Monad.Trans.Maybe
 import Control.Monad.Writer
-import Data.List (nub)
+import Data.Either (partitionEithers)
+import Data.List (nub, partition)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict ( Map )
 import Data.Maybe
@@ -712,7 +715,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
       (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals 0
       if ty_num_args == 0
       then do
-        prom_fun_lhs <- promoteLetDecName mb_let_uniq name m_ldrki all_locals
+        prom_fun_lhs <- promoteLetDecName mb_let_uniq name m_ldrki [] [] all_locals
         promote_let_dec_rhs all_locals m_ldrki 0 (promoteExp exp)
                             (\exp' -> [DTySynEqn Nothing prom_fun_lhs exp'])
                             AValue
@@ -727,9 +730,10 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     promote_function_rhs :: [Name]
                          -> [DClause] -> PrM ([DDec], [DDec], ALetDecRHS)
     promote_function_rhs all_locals clauses = do
-      numArgs <- count_args clauses
-      (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals numArgs
-      expClauses <- mapM (etaContractOrExpand ty_num_args numArgs) clauses
+      (num_invis_args, num_vis_args) <- count_args clauses
+      (m_ldrki, ty_num_args) <- promote_let_dec_ty all_locals num_vis_args
+      expClauses <-
+        mapM (etaContractOrExpand ty_num_args num_invis_args num_vis_args) clauses
       let promote_clause = promoteClause mb_let_uniq name m_ldrki all_locals
       promote_let_dec_rhs all_locals m_ldrki ty_num_args
                           (mapAndUnzipM promote_clause expClauses)
@@ -859,22 +863,30 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
           |  otherwise
           -> return (Nothing, default_num_args)
 
-    etaContractOrExpand :: Int -> Int -> DClause -> PrM DClause
-    etaContractOrExpand ty_num_args clause_num_args (DClause pats exp)
+    -- TODO RGS: Docs
+    etaContractOrExpand :: Int -> Int -> Int -> DClause -> PrM DClause
+    etaContractOrExpand ty_num_args clause_num_invis_args clause_num_vis_args (DClause pats exp)
       | n >= 0 = do -- Eta-expand
           names <- replicateM n (newUniqueName "a")
           let newPats = map DVarP names
               newArgs = map DVarE names
           return $ DClause (pats ++ newPats) (foldExp exp newArgs)
       | otherwise = do -- Eta-contract
-          let (clausePats, lamPats) = splitAt ty_num_args pats
+          let (clausePats, lamPats) = splitAt (ty_num_args + clause_num_invis_args) pats
           lamExp <- mkDLamEFromDPats lamPats exp
           return $ DClause clausePats lamExp
       where
-        n = ty_num_args - clause_num_args
+        n = ty_num_args - clause_num_vis_args
 
-    count_args :: [DClause] -> PrM Int
-    count_args (DClause pats _ : _) = return $ length pats
+    -- TODO RGS: Docs
+    count_args :: [DClause] -> PrM (Int, Int)
+    count_args (DClause pats _ : _) =
+      let (invis_pats, vis_pats) =
+            partition
+              (\case DInvisP {} -> True
+                     _          -> False)
+              pats in
+      pure (length invis_pats, length vis_pats)
     count_args _ = fail $ "Impossible! A function without clauses."
 
 -- An auxiliary data type used in promoteLetDecRHS that describes information
@@ -1030,26 +1042,19 @@ promoteClause :: Maybe Uniq
 promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
   -- promoting the patterns creates variable bindings. These are passed
   -- to the function promoted the RHS
-  ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
-  -- If the function has scoped type variables, then we annotate each argument
-  -- in the promoted type family equation with its kind.
-  -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
-  -- explanation of why we do this.
-  scoped_tvs <- qIsExtEnabled LangExt.ScopedTypeVariables
-  let types_w_kinds =
-        case m_ldrki of
-          Just (LDRKI _ tvbs kinds _)
-            |  not (null tvbs) && scoped_tvs
-            -> zipWith DSigT types kinds
-          _ -> types
+  (types_and_pats, prom_pat_infos) <-
+    evalForPair $ traverse promoteClausePat pats
+  let (invis_types, vis_types_and_pats) = partitionEithers types_and_pats
+      (vis_types, pats') = unzip vis_types_and_pats
   let PromDPatInfos { prom_dpat_vars    = new_vars
                     , prom_dpat_sig_kvs = sig_kvs } = prom_pat_infos
   (ty, ann_exp) <- scopedBind sig_kvs $
                    lambdaBind new_vars $
                    promoteExp exp
-  pro_clause_fun <- promoteLetDecName mb_let_uniq name m_ldrki all_locals
-  return ( DTySynEqn Nothing (foldType pro_clause_fun types_w_kinds) ty
-         , ADClause new_vars pats' ann_exp )
+  pro_clause_fun <-
+    promoteLetDecName mb_let_uniq name m_ldrki invis_types vis_types all_locals
+  return ( DTySynEqn Nothing pro_clause_fun ty
+         , ADClause new_vars invis_types pats' ann_exp )
 
 promoteMatch :: DType -- What to use as the LHS of the promoted type family
                       -- equation. This should consist of the promoted name of
@@ -1067,6 +1072,11 @@ promoteMatch pro_case_fun (DMatch pat exp) = do
                     promoteExp exp
   return $ ( DTySynEqn Nothing (pro_case_fun `DAppT` ty) rhs
            , ADMatch new_vars pat' ann_exp)
+
+-- | TODO RGS: Docs
+promoteClausePat :: DPat -> QWithAux PromDPatInfos PrM (Either DType (DType, ADPat))
+promoteClausePat (DInvisP ty) = pure $ Left ty
+promoteClausePat pat          = Right <$> promotePat pat
 
 -- promotes a term pattern into a type pattern, accumulating bound variable names
 promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
@@ -1104,8 +1114,12 @@ promotePat (DSigP pat ty) = do
   tell $ PromDPatInfos [] (fvDType ki)
   return (DSigT promoted ki, ADSigP promoted pat' ki)
 promotePat DWildP = return (DWildCardT, ADWildP)
+promotePat p@(DInvisP _) = fail $ unlines
+  [ "Invisible type pattern cannot be promoted in this context: " ++ show p
+  , "Currently, `singletons-th` only supports promoting invisible type pattterns"
+  , "on the left-hand sides of function clauses."
+  ]
 promotePat p@(DTypeP _) = fail ("Embedded type patterns cannot be promoted: " ++ show p)
-promotePat p@(DInvisP _) = fail ("Invisible type patterns cannot be promoted: " ++ show p)
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
@@ -1213,13 +1227,17 @@ promoteLetDecName ::
      -- ^ Name of the function being promoted
   -> Maybe LetDecRHSKindInfo
      -- ^ Information about the promoted kind (if present)
+  -> [DType]
+     -- ^ TODO RGS: What is this?
+  -> [DType]
+     -- ^ TODO RGS: What is this?
   -> [Name]
      -- ^ The local variables currently in scope
   -> PrM DType
-promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
+promoteLetDecName mb_let_uniq name m_ldrki invis_pats vis_pats all_locals = do
   opts <- getOptions
   let proName = promotedValueName opts name mb_let_uniq
-      type_args =
+      (invis_subst, invis_args) =
         case m_ldrki of
           Just (LDRKI m_sak tvbs _ _)
             |  isJust m_sak
@@ -1240,11 +1258,102 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
                --
                -- Note that we apply `a` in `Konst @a` but _not_ `b`, as `b` is
                -- bound using an inferred type variable binder.
-            -> map dTyVarBndrVisToDTypeArg $ tvbSpecsToBndrVis tvbs
+            -> let (subst, args) =
+                     wat invis_pats $
+                     tvbSpecsToBndrVis tvbs in
+               (subst, map dTyVarBndrVisToDTypeArg args)
+          _ -> -- ...otherwise, return the local variables as explicit arguments
+               -- using DTANormal.
+               (Map.empty, map (DTANormal . DVarT) all_locals)
+  -- If the function has scoped type variables, then we annotate each argument
+  -- in the promoted type family equation with its kind.
+  -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
+  -- explanation of why we do this.
+  scoped_tvs <- qIsExtEnabled LangExt.ScopedTypeVariables
+  let vis_pats_w_kinds =
+        case m_ldrki of
+          Just (LDRKI _ tvbs kinds _)
+            |  not (null tvbs) && scoped_tvs
+            -> zipWith DSigT vis_pats (map (substType invis_subst) kinds)
+          _ -> vis_pats
+      all_args = invis_args ++ map DTANormal vis_pats_w_kinds
+  pure $ applyDType (DConT proName) all_args
+
+{-
+-- | TODO RGS: Delete me
+applyPromotedLetDecName pro_name m_ldrki invis_pats = do
+  -- If the function has scoped type variables, then we annotate each argument
+  -- in the promoted type family equation with its kind.
+  -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
+  -- explanation of why we do this.
+  scoped_tvs <- qIsExtEnabled LangExt.ScopedTypeVariables
+  let (invis_subst, invis_args) =
+        case m_ldrki of
+          Just (LDRKI m_sak tvbs _ _)
+            |  isJust m_sak
+               -- Per the comments on LetDecRHSKindInfo, `isJust m_sak` is only True
+               -- if there are no local variables. Convert the scoped type variables
+               -- `tvbs` to invisible arguments, making sure to use
+               -- `tvbSpecsToBndrVis` to filter out any inferred type variable
+               -- binders. For instance, we want to promote this example (from #585):
+               --
+               --   konst :: forall a {b}. a -> b -> a
+               --   konst x _ = x
+               --
+               -- To this type family:
+               --
+               --   type Konst :: forall a {b}. a -> b -> a
+               --   type family Konst @a x y where
+               --     Konst @a (x :: a) (_ :: b) = x
+               --
+               -- Note that we apply `a` in `Konst @a` but _not_ `b`, as `b` is
+               -- bound using an inferred type variable binder.
+            -> let (subst, args) =
+                     wat invis_pats $
+                     tvbSpecsToBndrVis tvbs in
+               (subst, map dTyVarBndrVisToDTypeArg args)
           _ -> -- ...otherwise, return the local variables as explicit arguments
                -- using DTANormal.
                map (DTANormal . DVarT) all_locals
-  pure $ applyDType (DConT proName) type_args
+  pure $ applyDType (DConT pro_name) invis_args
+  where
+  {-
+  -- TODO RGS: Delete me
+  let vis_types_w_kinds =
+        case m_ldrki of
+          Just (LDRKI _ tvbs kinds _)
+            |  not (null tvbs) && scoped_tvs
+            -> zipWith DSigT vis_types kinds
+          _ -> vis_types
+  -}
+-}
+
+-- | TODO RGS: Docs
+wat :: [DType] -> [DTyVarBndrVis] -> (DSubst, [DTyVarBndrVis])
+wat = go
+  where
+    go (invis_pat:invis_pats) (tvb:tvbs) =
+      let (subst0, tvbs') = go invis_pats tvbs
+          subst1 = Map.insert (extractTvbName tvb) invis_pat subst0 in
+      (subst1, invis_pat_to_tvb invis_pat : tvbs')
+    go [] tvbs =
+      (Map.empty, tvbs)
+    go invis_pats [] =
+      (Map.empty, map invis_pat_to_tvb invis_pats)
+
+    -- TODO RGS: Docs
+    invis_pat_to_tvb :: DType -> DTyVarBndrVis
+    invis_pat_to_tvb (DSigT ty k) =
+      DKindedTV (extract_invis_pat_var_name ty) BndrInvis k
+    invis_pat_to_tvb ty =
+      DPlainTV (extract_invis_pat_var_name ty) BndrInvis
+
+    -- TODO RGS: Docs
+    extract_invis_pat_var_name :: DType -> Name
+    extract_invis_pat_var_name (DVarT a) = a
+    extract_invis_pat_var_name ty = error $
+      "Unexpected invisible type pattern which is not a type variable: " ++
+      show ty
 
 -- Construct a 'DTypeFamilyHead' that closes over some local variables. We
 -- apply `noExactName` to each local variable to avoid GHC#11812.

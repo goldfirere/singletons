@@ -722,10 +722,12 @@ singLetDecRHS cxts name ld_rhs = do
               mapM singClause clauses
 
 singClause :: ADClause -> SgM DClause
-singClause (ADClause var_proms pats exp) = do
+singClause (ADClause var_proms invis_pats vis_pats exp) = do
   opts <- getOptions
-  (sPats, sigPaExpsSigs) <- evalForPair $ mapM (singPat (Map.fromList var_proms)) pats
-  let lambda_binds = map (\(n,_) -> (n, singledValueName opts n)) var_proms
+  (sVisPats, sigPaExpsSigs) <-
+    evalForPair $ mapM (singPat (Map.fromList var_proms)) vis_pats
+  let sPats = map DInvisP invis_pats ++ sVisPats
+      lambda_binds = map (\(n,_) -> (n, singledValueName opts n)) var_proms
   sBody <- bindLambdas lambda_binds $ singExp exp
   return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody
 

@@ -141,6 +141,8 @@ data ADClause =
     VarPromotions
     -- ^ Map of term-level pattern variable names to their corresponding
     -- type-level names.
+    [DType]
+    -- ^ TODO RGS: Docs
     [ADPat]
     -- ^ The left-hand-side patterns.
     ADExp
