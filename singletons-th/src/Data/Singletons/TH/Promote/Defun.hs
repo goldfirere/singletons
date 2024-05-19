@@ -172,7 +172,7 @@ defunReify name tvbs m_res_kind = do
   let defun = defunctionalize name m_fixity
   case m_sak of
     Just sak -> defun $ DefunSAK sak
-    Nothing  -> defun $ DefunNoSAK tvbs m_res_kind
+    Nothing  -> defun $ DefunNoSAK [] tvbs m_res_kind
 
 -- Generate symbol data types, Apply instances, and other declarations required
 -- for defunctionalization.
@@ -190,13 +190,13 @@ defunctionalize name m_fixity defun_ki = do
         -- If the kind isn't vanilla, use the fallback approach.
         -- See Note [Defunctionalization game plan],
         -- Wrinkle 2: Non-vanilla kinds.
-        Left _ -> defun_fallback [] (Just sak)
+        Left _ -> defun_fallback [] [] (Just sak)
         -- Otherwise, proceed with defun_vanilla_sak.
         Right (sak_tvbs, _sak_cxt, sak_arg_kis, sak_res_ki)
                -> defun_vanilla_sak sak_tvbs sak_arg_kis sak_res_ki
     -- If a declaration lacks a SAK, it likely has a partial kind.
     -- See Note [Defunctionalization game plan], Wrinkle 1: Partial kinds.
-    DefunNoSAK tvbs m_res -> defun_fallback tvbs m_res
+    DefunNoSAK locals tvbs m_res -> defun_fallback locals tvbs m_res
   where
     -- Generate defunctionalization symbols for things with vanilla SAKs.
     -- The symbols themselves will also be given SAKs.
@@ -291,12 +291,13 @@ defunctionalize name m_fixity defun_ki = do
     -- (see Note [Defunctionalization game plan], Wrinkle 1: Partial kinds)
     -- or a non-vanilla kind
     -- (see Note [Defunctionalization game plan], Wrinkle 2: Non-vanilla kinds).
-    defun_fallback :: [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
-    defun_fallback tvbs' m_res' = do
+    defun_fallback :: [Name] -> [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
+    defun_fallback locals tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
       -- Use noExactTyVars below to avoid GHC#11812.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
+      let locals' = map noExactName locals
       (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
 
       let tvbs_n = length tvbs
@@ -323,15 +324,16 @@ defunctionalize name m_fixity defun_ki = do
           --   the result kind is not always fully known.
           go :: Int -> [DTyVarBndrVis] -> [DTyVarBndrVis] -> (Maybe DKind, [DDec])
           go n arg_tvbs res_tvbss =
+            let all_tvbs = map (`DPlainTV` BndrReq) locals' ++ arg_tvbs in
             case res_tvbss of
               [] ->
-                let sat_decs = mk_sat_decs opts n [] arg_tvbs m_res
+                let sat_decs = mk_sat_decs opts n [] all_tvbs m_res
                 in (m_res, sat_decs)
               res_tvb:res_tvbs ->
                 let (m_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
                     m_tyfun          = buildTyFunArrow_maybe (extractTvbKind res_tvb)
                                                              m_res_ki
-                    defun_decs'      = mk_defun_decs opts n tvbs_n arg_tvbs
+                    defun_decs'      = mk_defun_decs opts n tvbs_n all_tvbs
                                                      (extractTvbName res_tvb)
                                                      extra_name m_tyfun
                 in (m_tyfun, defun_decs' ++ decs)
@@ -452,8 +454,15 @@ defunctionalize name m_fixity defun_ki = do
 -- See Note [Defunctionalization game plan] for details on how this
 -- information is used.
 data DefunKindInfo
-  = DefunSAK DKind
-  | DefunNoSAK [DTyVarBndrVis] (Maybe DKind)
+  = -- The thing being defunctionalized has a standalone kind signature.
+    DefunSAK DKind
+    -- The thing being defunctionalized does not have a standalone kind
+    -- signature. See Note [Defunctionalization game plan] (Wrinkle 1: Partial
+    -- kinds) for examples.
+  | DefunNoSAK
+      [Name]          -- The local variables currently in scope
+      [DTyVarBndrVis] -- The arguments, along with their kinds (if known)
+      (Maybe DKind)   -- The result kind (if known)
 
 -- Shorthand for building (k1 ~> k2)
 buildTyFunArrow :: DKind -> DKind -> DKind
@@ -603,6 +612,46 @@ of Bar, here are the defunctionalization symbols that would be generated:
   data BarSym1 x :: Nat ~> Nat ~> Nat where ...
   data BarSym2 x (y :: Nat) :: Nat ~> Nat where ...
   type family BarSym3 x (y :: Nat) (z :: Nat) :: Nat where ...
+
+A variation on this theme is local definitions, such as `x` in this definition:
+
+  $(singletons
+    [d| f :: forall a b c. a -> Either a (b, c)
+        f x = let g y = Left y :: Either a (b, c)
+              in g x
+      |])
+
+Because `a`, `b`, and `c` scope over the right-hand side of `f`, they must be in
+scope in the definition of `g`. As such, we will promote `g` to the following
+type family:
+
+  type LetG a b c x y where
+    LetG a b c x y = Left y :: Either a (b, c)
+
+How should we defunctionalize LetG? It's tempting to do this:
+
+  data LetGSym0 f
+  data LetGSym1 a f
+  data LetGSym2 a b f
+  data LetGSym3 a b c f
+  data LetGSym4 a b c x f
+  type family LetGSym5 a b c x y where ...
+
+Doing so would be somewhat wasteful, however. This is because `a`, `b`, `c`,
+and `x` are local variables, and as such, we will /always/ fully apply them to
+LetG's defunctionalization symbols. That is to say: there is never a situation
+where we will need to partially apply LetG at 0, 1, 2, or 3 arguments. This
+means that we can get away with a much simpler approach:
+
+  data LetGSym0 a b c x f
+  type family LetGSym1 a b c x y where ...
+
+Now there are only two defunctionalization-related definitions instead of a
+whopping six. This means that the <N> in LetGSym<N> only refers to the number
+of direct arguments to `g` in the original code, not including any local
+variables currently in scope.
+
+All of these cases are captured by the DefunNoSAK constructor of DefunKindInfo.
 
 -----
 -- Wrinkle 2: Non-vanilla kinds
