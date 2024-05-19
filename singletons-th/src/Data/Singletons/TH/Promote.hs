@@ -211,7 +211,7 @@ promoteLetDecs mb_let_uniq decls = do
   let binds = [ (name, foldType (DConT sym) (map DVarT all_locals))
               | (name, _) <- OMap.assocs $ lde_defns let_dec_env
               , let proName = promotedValueName opts name mb_let_uniq
-                    sym = defunctionalizedName opts proName (length all_locals) ]
+                    sym = defunctionalizedName0 opts proName ]
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv mb_let_uniq let_dec_env
   emitDecs decs
   return (binds, let_dec_env' { lde_proms = OMap.fromList binds })
@@ -754,7 +754,6 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
       opts <- getOptions
       tyvarNames <- replicateM ty_num_args (qNewName "a")
       let proName    = promotedValueName opts name mb_let_uniq
-          local_tvbs = map (`DPlainTV` BndrReq) all_locals
           m_fixity   = OMap.lookup name fix_env
 
           mk_tf_head :: [DTyVarBndrVis] -> DFamilyResultSig -> DTypeFamilyHead
@@ -769,7 +768,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                 let arg_tvbs = map (`DPlainTV` BndrReq) tyvarNames in
                 ( OSet.empty
                 , Nothing
-                , DefunNoSAK (local_tvbs ++ arg_tvbs) Nothing
+                , DefunNoSAK all_locals arg_tvbs Nothing
                 , mk_tf_head arg_tvbs DNoSig
                 )
               -- 2. We have some kind information in the form of a LetDecRHSKindInfo.
@@ -781,7 +780,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                   Nothing ->
                     ( lde_kvs_to_bind'
                     , Nothing
-                    , DefunNoSAK (local_tvbs ++ arg_tvbs) (Just resK)
+                    , DefunNoSAK all_locals arg_tvbs (Just resK)
                     , mk_tf_head arg_tvbs (DKindSig resK)
                     )
                   -- 2(b). We have a standalone kind signature.
@@ -1130,16 +1129,15 @@ promoteExp (DLamE names exp) = do
   all_locals <- allLocals
   let tvbs     = map (`DPlainTV` BndrReq) tyNames
       all_args = all_locals ++ tyNames
-      all_tvbs = map (`DPlainTV` BndrReq) all_args
       tfh      = dTypeFamilyHead_with_locals lambdaName all_locals tvbs DNoSig
   emitDecs [DClosedTypeFamilyD
               tfh
               [DTySynEqn Nothing
                          (foldType (DConT lambdaName) (map DVarT all_args))
                          rhs]]
-  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK all_tvbs Nothing
-  let promLambda = foldApply (DConT (defunctionalizedName opts lambdaName 0))
-                             (map DVarT all_locals)
+  emitDecsM $ defunctionalize lambdaName Nothing $ DefunNoSAK all_locals tvbs Nothing
+  let promLambda = foldType (DConT (defunctionalizedName opts lambdaName 0))
+                            (map DVarT all_locals)
   return (promLambda, ADLamE tyNames promLambda names ann_exp)
 promoteExp (DCaseE exp matches) = do
   caseTFName <- newUniqueName "Case"
