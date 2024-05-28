@@ -874,7 +874,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
 
 -- This is heavily inspired by the `swizzleTcb` function in GHC:
 -- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2741-2755
-swizzleTvb :: Map Name Name -> DSubst -> DTyVarBndrSpec -> (DSubst, DTyVarBndrSpec)
+swizzleTvb :: Map Name Name -> DSubst -> DTyVarBndr flag -> (DSubst, DTyVarBndr flag)
 swizzleTvb swizzle_env subst tvb =
   (subst', tvb2)
   where
