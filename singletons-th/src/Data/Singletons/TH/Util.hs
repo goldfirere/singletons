@@ -719,3 +719,168 @@ mapAndUnzip3M f (x:xs) = do
 -- is it a letter or underscore?
 isHsLetter :: Char -> Bool
 isHsLetter c = isLetter c || c == '_'
+
+-- Match the quantifiers in a data type's standalone kind signature with the
+-- binders in the data type declaration. This function assumes the following
+-- preconditions:
+--
+-- 1. The number of required binders in the data type declaration is equal to
+--    the number of visible quantifiers (i.e., the number of function arrows
+--    plus the number of visible @forall@–bound variables) in the standalone
+--    kind signature.
+--
+-- 2. The number of invisible \@-binders in the data type declaration is less
+--    than or equal to the number of invisible quantifiers (i.e., the number of
+--    invisible @forall@–bound variables) in the standalone kind signature.
+--
+-- The implementation of this function is heavily based on a GHC function of
+-- the same name:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/1464a2a8de082f66ae250d63ab9d94dbe2ef8620/compiler/GHC/Tc/Gen/HsType.hs#L2645-2715
+matchUpSigWithDecl ::
+     forall q.
+     MonadFail q
+  => DFunArgs
+     -- ^ The quantifiers in the data type's standalone kind signature
+  -> [DTyVarBndrVis]
+     -- ^ The user-written binders in the data type declaration
+  -> q [DTyVarBndrSpec]
+matchUpSigWithDecl = go_fun_args Map.empty
+  where
+    go_fun_args ::
+         DSubst
+         -- ^ A substitution from the names of @forall@-bound variables in the
+         -- standalone kind signature to corresponding binder names in the
+         -- user-written binders. This is because we want to reuse type variable
+         -- names from the user-written binders whenever possible. For example:
+         --
+         -- @
+         -- type T :: forall a. forall b -> Maybe (a, b) -> Type
+         -- data T @x y z
+         -- @
+         --
+         -- After matching up the @a@ in @forall a.@ with @x@ and
+         -- the @b@ in @forall b ->@ with @y@, this substitution will be
+         -- extended with @[a :-> x, b :-> y]@. This ensures that we will
+         -- produce @Maybe (x, y)@ instead of @Maybe (a, b)@ in
+         -- the kind for @z@.
+      -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+    go_fun_args _ DFANil [] =
+      pure []
+    -- This should not happen, per the function's precondition
+    go_fun_args _ DFANil data_bndrs =
+      fail $ "matchUpSigWithDecl.go_fun_args: Too many binders: " ++ show data_bndrs
+    -- GHC now disallows kind-level constraints, per this GHC proposal:
+    -- https://github.com/ghc-proposals/ghc-proposals/blob/b0687d96ce8007294173b7f628042ac4260cc738/proposals/0547-no-kind-equalities.rst
+    go_fun_args _ (DFACxt{}) _ =
+      fail "matchUpSigWithDecl.go_fun_args: Unexpected kind-level constraint"
+    go_fun_args subst (DFAForalls (DForallInvis tvbs) sig_args) data_bndrs =
+      go_invis_tvbs subst tvbs sig_args data_bndrs
+    go_fun_args subst (DFAForalls (DForallVis tvbs) sig_args) data_bndrs =
+      go_vis_tvbs subst tvbs sig_args data_bndrs
+    go_fun_args subst (DFAAnon anon sig_args) (data_bndr:data_bndrs) = do
+      let data_bndr_name = extractTvbName data_bndr
+          mb_data_bndr_kind = extractTvbKind data_bndr
+          anon' = substType subst anon
+
+          anon'' =
+            case mb_data_bndr_kind of
+              Nothing -> anon'
+              Just data_bndr_kind ->
+                let mb_match_subst = matchTy NoIgnore data_bndr_kind anon' in
+                maybe data_bndr_kind (`substType` data_bndr_kind) mb_match_subst
+      sig_args' <- go_fun_args subst sig_args data_bndrs
+      pure $ DKindedTV data_bndr_name SpecifiedSpec anon'' : sig_args'
+    -- This should not happen, per precondition (1).
+    go_fun_args _ _ [] =
+      fail "matchUpSigWithDecl.go_fun_args: Too few binders"
+
+    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+    go_invis_tvbs subst [] sig_args data_bndrs =
+      go_fun_args subst sig_args data_bndrs
+    -- This should not happen, per precondition (2).
+    go_invis_tvbs _ (_:_) _ [] =
+      fail $ "matchUpSigWithDecl.go_invis_tvbs: Too few binders"
+    go_invis_tvbs subst (invis_tvb:invis_tvbs) sig_args data_bndrss@(data_bndr:data_bndrs) =
+      case extractTvbFlag data_bndr of
+        -- If the next data_bndr is required, then we have a invisible forall in
+        -- the kind without a corresponding invisible @-binder, which is
+        -- allowed. In this case, we simply apply the substitution and recurse.
+        BndrReq -> do
+          let (subst', invis_tvb') = substTvb subst invis_tvb
+          sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrss
+          pure $ invis_tvb' : sig_args'
+        -- If the next data_bndr is an invisible @-binder, then we must match it
+        -- against the invisible forall–bound variable in the kind.
+        BndrInvis -> do
+          let (subst', sig_tvb) = match_tvbs subst invis_tvb data_bndr
+          sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args data_bndrs
+          pure (sig_tvb : sig_args')
+
+    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+    go_vis_tvbs subst [] sig_args data_bndrs =
+      go_fun_args subst sig_args data_bndrs
+    -- This should not happen, per precondition (1).
+    go_vis_tvbs _ (_:_) _ [] =
+      fail $ "matchUpSigWithDecl.go_vis_tvbs: Too few binders"
+    go_vis_tvbs subst (vis_tvb:vis_tvbs) sig_args (data_bndr:data_bndrs) = do
+      case extractTvbFlag data_bndr of
+        -- If the next data_bndr is required, then we must match it against the
+        -- visible forall–bound variable in the kind.
+        BndrReq -> do
+          let (subst', sig_tvb) = match_tvbs subst vis_tvb data_bndr
+          sig_args' <- go_vis_tvbs subst' vis_tvbs sig_args data_bndrs
+          pure (sig_tvb : sig_args')
+        -- We have a visible forall in the kind, but an invisible @-binder as
+        -- the next data_bndr. This is ill kinded, so throw an error.
+        BndrInvis ->
+          fail $ "matchUpSigWithDecl.go_vis_tvbs: Expected visible binder, encountered invisible binder: "
+              ++ show data_bndr
+
+    -- @match_tvbs subst sig_tvb data_bndr@ will match the kind of @data_bndr@
+    -- against the kind of @sig_tvb@ to produce a new kind. This function
+    -- produces two values as output:
+    --
+    -- 1. A new @subst@ that has been extended such that the name of @sig_tvb@
+    --    maps to the name of @data_bndr@. (See the Haddocks for the 'DSubst'
+    --    argument to @go_fun_args@ for an explanation of why we do this.)
+    --
+    -- 2. A 'DTyVarBndrSpec' that has the name of @data_bndr@, but with the new
+    --    kind resulting from matching.
+    match_tvbs :: DSubst -> DTyVarBndr flag -> DTyVarBndrVis -> (DSubst, DTyVarBndrSpec)
+    match_tvbs subst sig_tvb data_bndr =
+      let data_bndr_name = extractTvbName data_bndr
+          mb_data_bndr_kind = extractTvbKind data_bndr
+
+          sig_tvb_name = extractTvbName sig_tvb
+          mb_sig_tvb_kind = substType subst <$> extractTvbKind sig_tvb
+
+          mb_kind :: Maybe DKind
+          mb_kind =
+            case (mb_data_bndr_kind, mb_sig_tvb_kind) of
+              (Nothing,             Nothing)           -> Nothing
+              (Just data_bndr_kind, Nothing)           -> Just data_bndr_kind
+              (Nothing,             Just sig_tvb_kind) -> Just sig_tvb_kind
+              (Just data_bndr_kind, Just sig_tvb_kind) -> do
+                match_subst <- matchTy NoIgnore data_bndr_kind sig_tvb_kind
+                Just $ substType match_subst data_bndr_kind
+
+          subst' = Map.insert sig_tvb_name (DVarT data_bndr_name) subst
+          sig_tvb' = case mb_kind of
+            Nothing   -> DPlainTV  data_bndr_name SpecifiedSpec
+            Just kind -> DKindedTV data_bndr_name SpecifiedSpec kind in
+
+      (subst', sig_tvb')
+
+-- This is heavily inspired by the `swizzleTcb` function in GHC:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2741-2755
+swizzleTvb :: Map Name Name -> DSubst -> DTyVarBndrSpec -> (DSubst, DTyVarBndrSpec)
+swizzleTvb swizzle_env subst tvb =
+  (subst', tvb2)
+  where
+    subst' = Map.insert tvb_name (DVarT (extractTvbName tvb2)) subst
+    tvb_name = extractTvbName tvb
+    tvb1 = mapDTVKind (substType subst) tvb
+    tvb2 =
+      case Map.lookup tvb_name swizzle_env of
+        Just user_name -> mapDTVName (const user_name) tvb1
+        Nothing        -> tvb1
