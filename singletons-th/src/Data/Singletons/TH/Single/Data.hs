@@ -329,10 +329,29 @@ singDataSAK data_sak data_bndrs data_k = do
         Map.fromList $ zip invis_data_sak_arg_nms invis_data_bndr_nms
       (_, swizzled_sing_sak_tvbs) =
         mapAccumL (swizzleTvb swizzle_env) Map.empty sing_sak_tvbs
+      swizzled_sing_sak_tvbs' =
+        map (fmap mk_data_sak_spec) swizzled_sing_sak_tvbs
 
   -- (4) Finally, construct the kind of the singled data type.
-  pure $ DForallT (DForallInvis swizzled_sing_sak_tvbs)
+  pure $ DForallT (DForallInvis swizzled_sing_sak_tvbs')
        $ DArrowT `DAppT` data_k `DAppT` DConT typeKindName
+  where
+    -- Convert a ForAllTyFlag value to a Specificity value, i.e., a binder
+    -- suitable for use in an invisible `forall`. We convert Required values
+    -- to SpecifiedSpec values because all of the binders in the `forall` are
+    -- invisible. For instance, we would single this data type:
+    --
+    --   type T :: forall k -> k -> Type
+    --   data T k (a :: k) where ...
+    --
+    -- Like so:
+    --
+    --   -- Note: the `k` is invisible, not visible
+    --   type ST :: forall k (a :: k). T k a -> Type
+    --   data ST z where ...
+    mk_data_sak_spec :: ForAllTyFlag -> Specificity
+    mk_data_sak_spec (Invisible spec) = spec
+    mk_data_sak_spec Required         = SpecifiedSpec
 
 {-
 Note [singletons-th and record selectors]

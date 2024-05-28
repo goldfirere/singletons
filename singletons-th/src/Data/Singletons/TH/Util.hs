@@ -744,7 +744,7 @@ matchUpSigWithDecl ::
      -- ^ The quantifiers in the declaration's standalone kind signature
   -> [DTyVarBndrVis]
      -- ^ The user-written binders in the declaration
-  -> q [DTyVarBndrSpec]
+  -> q [DTyVarBndr ForAllTyFlag]
 matchUpSigWithDecl = go_fun_args Map.empty
   where
     go_fun_args ::
@@ -764,7 +764,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
          -- extended with @[a :-> x, b :-> y]@. This ensures that we will
          -- produce @Maybe (x, y)@ instead of @Maybe (a, b)@ in
          -- the kind for @z@.
-      -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+      -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndr ForAllTyFlag]
     go_fun_args _ DFANil [] =
       pure []
     -- This should not happen, per the function's precondition
@@ -790,12 +790,12 @@ matchUpSigWithDecl = go_fun_args Map.empty
                 let mb_match_subst = matchTy NoIgnore decl_bndr_kind anon' in
                 maybe decl_bndr_kind (`substType` decl_bndr_kind) mb_match_subst
       sig_args' <- go_fun_args subst sig_args decl_bndrs
-      pure $ DKindedTV decl_bndr_name SpecifiedSpec anon'' : sig_args'
+      pure $ DKindedTV decl_bndr_name Required anon'' : sig_args'
     -- This should not happen, per precondition (1).
     go_fun_args _ _ [] =
       fail "matchUpSigWithDecl.go_fun_args: Too few binders"
 
-    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+    go_invis_tvbs :: DSubst -> [DTyVarBndrSpec] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndr ForAllTyFlag]
     go_invis_tvbs subst [] sig_args decl_bndrs =
       go_fun_args subst sig_args decl_bndrs
     -- This should not happen, per precondition (2).
@@ -809,15 +809,15 @@ matchUpSigWithDecl = go_fun_args Map.empty
         BndrReq -> do
           let (subst', invis_tvb') = substTvb subst invis_tvb
           sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args decl_bndrss
-          pure $ invis_tvb' : sig_args'
+          pure $ fmap Invisible invis_tvb' : sig_args'
         -- If the next decl_bndr is an invisible @-binder, then we must match it
         -- against the invisible forall–bound variable in the kind.
         BndrInvis -> do
           let (subst', sig_tvb) = match_tvbs subst invis_tvb decl_bndr
           sig_args' <- go_invis_tvbs subst' invis_tvbs sig_args decl_bndrs
-          pure (sig_tvb : sig_args')
+          pure (fmap Invisible sig_tvb : sig_args')
 
-    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndrSpec]
+    go_vis_tvbs :: DSubst -> [DTyVarBndrUnit] -> DFunArgs -> [DTyVarBndrVis] -> q [DTyVarBndr ForAllTyFlag]
     go_vis_tvbs subst [] sig_args decl_bndrs =
       go_fun_args subst sig_args decl_bndrs
     -- This should not happen, per precondition (1).
@@ -830,7 +830,7 @@ matchUpSigWithDecl = go_fun_args Map.empty
         BndrReq -> do
           let (subst', sig_tvb) = match_tvbs subst vis_tvb decl_bndr
           sig_args' <- go_vis_tvbs subst' vis_tvbs sig_args decl_bndrs
-          pure (sig_tvb : sig_args')
+          pure ((Required <$ sig_tvb) : sig_args')
         -- We have a visible forall in the kind, but an invisible @-binder as
         -- the next decl_bndr. This is ill kinded, so throw an error.
         BndrInvis ->
@@ -847,12 +847,13 @@ matchUpSigWithDecl = go_fun_args Map.empty
     --
     -- 2. A 'DTyVarBndrSpec' that has the name of @decl_bndr@, but with the new
     --    kind resulting from matching.
-    match_tvbs :: DSubst -> DTyVarBndr flag -> DTyVarBndrVis -> (DSubst, DTyVarBndrSpec)
+    match_tvbs :: DSubst -> DTyVarBndr flag -> DTyVarBndrVis -> (DSubst, DTyVarBndr flag)
     match_tvbs subst sig_tvb decl_bndr =
       let decl_bndr_name = extractTvbName decl_bndr
           mb_decl_bndr_kind = extractTvbKind decl_bndr
 
           sig_tvb_name = extractTvbName sig_tvb
+          sig_tvb_flag = extractTvbFlag sig_tvb
           mb_sig_tvb_kind = substType subst <$> extractTvbKind sig_tvb
 
           mb_kind :: Maybe DKind
@@ -867,8 +868,8 @@ matchUpSigWithDecl = go_fun_args Map.empty
 
           subst' = Map.insert sig_tvb_name (DVarT decl_bndr_name) subst
           sig_tvb' = case mb_kind of
-            Nothing   -> DPlainTV  decl_bndr_name SpecifiedSpec
-            Just kind -> DKindedTV decl_bndr_name SpecifiedSpec kind in
+            Nothing   -> DPlainTV  decl_bndr_name sig_tvb_flag
+            Just kind -> DKindedTV decl_bndr_name sig_tvb_flag kind in
 
       (subst', sig_tvb')
 
@@ -885,3 +886,17 @@ swizzleTvb swizzle_env subst tvb =
       case Map.lookup tvb_name swizzle_env of
         Just user_name -> mapDTVName (const user_name) tvb1
         Nothing        -> tvb1
+
+-- The visibility of a binder in a type-level declaration. This generalizes
+-- 'Specificity' (which lacks an equivalent to 'Required') and 'BndrVis' (which
+-- lacks an equivalent to @'Invisible' 'Inferred'@).
+--
+-- This is heavily inspired by a data type of the same name in GHC:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/98597ad5fca81544d74f721fb508295fd2650232/compiler/GHC/Types/Var.hs#L458-465
+data ForAllTyFlag
+  = Invisible !Specificity
+    -- ^ If the 'Specificity' value is 'SpecifiedSpec', then the binder is
+    -- permitted by request. If the 'Specificity' value is 'InferredSpec', then
+    -- the binder is prohibited from appearing in source Haskell.
+  | Required
+    -- ^ The binder is required to appear in source Haskell
