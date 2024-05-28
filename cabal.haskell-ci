@@ -4,6 +4,5 @@ unconstrained:          False
 jobs-selection:         any
 -- Needed to avoid https://github.com/haskell/cabal/issues/5423
 haddock-components:     libs
--- Using `active-repositories: ..., head.hackage.ghc.haskell.org:override`
--- tends not to work well with singletons-base's custom Setup script.
-head-hackage-override:  False
+-- Needed to avoid https://github.com/haskell/cabal/issues/9917
+installed:              +all -Cabal -Cabal-syntax
