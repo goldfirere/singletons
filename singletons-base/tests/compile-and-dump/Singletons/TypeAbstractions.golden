@@ -168,7 +168,10 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type MkD4Sym1 :: forall a. a -> D4 @a
     type family MkD4Sym1 @a (a0123456789876543210 :: a) :: D4 @a where
       MkD4Sym1 a0123456789876543210 = MkD4 a0123456789876543210
-    type Meth1Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+    type Meth1Sym0 :: forall j
+                             k
+                             (a :: j)
+                             (b :: k). (~>) (Proxy a) (Proxy b)
     data Meth1Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth1Sym0KindInference :: SameKind (Apply Meth1Sym0 arg) (Meth1Sym1 arg) =>
@@ -176,13 +179,16 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Meth1Sym0 a0123456789876543210 = Meth1 a0123456789876543210
     instance SuppressUnusedWarnings Meth1Sym0 where
       suppressUnusedWarnings = snd ((,) Meth1Sym0KindInference ())
-    type Meth1Sym1 :: forall a b. Proxy a -> Proxy b
-    type family Meth1Sym1 @a @b (a0123456789876543210 :: Proxy a) :: Proxy b where
+    type Meth1Sym1 :: forall j k (a :: j) (b :: k). Proxy a -> Proxy b
+    type family Meth1Sym1 @j @k @(a :: j) @(b :: k) (a0123456789876543210 :: Proxy a) :: Proxy b where
       Meth1Sym1 a0123456789876543210 = Meth1 a0123456789876543210
     type PC1 :: forall j k. j -> k -> Constraint
     class PC1 @j @k (a :: j) (b :: k) where
-      type family Meth1 (arg :: Proxy a) :: Proxy b
-    type Meth2Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+      type family Meth1 @j @k @(a :: j) @(b :: k) (arg :: Proxy a) :: Proxy b
+    type Meth2Sym0 :: forall x
+                             y
+                             (a :: x)
+                             (b :: y). (~>) (Proxy a) (Proxy b)
     data Meth2Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth2Sym0KindInference :: SameKind (Apply Meth2Sym0 arg) (Meth2Sym1 arg) =>
@@ -190,13 +196,16 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Meth2Sym0 a0123456789876543210 = Meth2 a0123456789876543210
     instance SuppressUnusedWarnings Meth2Sym0 where
       suppressUnusedWarnings = snd ((,) Meth2Sym0KindInference ())
-    type Meth2Sym1 :: forall a b. Proxy a -> Proxy b
-    type family Meth2Sym1 @a @b (a0123456789876543210 :: Proxy a) :: Proxy b where
+    type Meth2Sym1 :: forall x y (a :: x) (b :: y). Proxy a -> Proxy b
+    type family Meth2Sym1 @x @y @(a :: x) @(b :: y) (a0123456789876543210 :: Proxy a) :: Proxy b where
       Meth2Sym1 a0123456789876543210 = Meth2 a0123456789876543210
     type PC2 :: forall j k. j -> k -> Constraint
     class PC2 @x @y (a :: x) (b :: y) where
-      type family Meth2 (arg :: Proxy a) :: Proxy b
-    type Meth3Sym0 :: forall a b. (~>) (Proxy a) (Proxy b)
+      type family Meth2 @x @y @(a :: x) @(b :: y) (arg :: Proxy a) :: Proxy b
+    type Meth3Sym0 :: forall j
+                             (a :: j)
+                             k
+                             (b :: k). (~>) (Proxy a) (Proxy b)
     data Meth3Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth3Sym0KindInference :: SameKind (Apply Meth3Sym0 arg) (Meth3Sym1 arg) =>
@@ -204,18 +213,18 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply Meth3Sym0 a0123456789876543210 = Meth3 a0123456789876543210
     instance SuppressUnusedWarnings Meth3Sym0 where
       suppressUnusedWarnings = snd ((,) Meth3Sym0KindInference ())
-    type Meth3Sym1 :: forall a b. Proxy a -> Proxy b
-    type family Meth3Sym1 @a @b (a0123456789876543210 :: Proxy a) :: Proxy b where
+    type Meth3Sym1 :: forall j (a :: j) k (b :: k). Proxy a -> Proxy b
+    type family Meth3Sym1 @j @(a :: j) @k @(b :: k) (a0123456789876543210 :: Proxy a) :: Proxy b where
       Meth3Sym1 a0123456789876543210 = Meth3 a0123456789876543210
     type PC3 :: forall j. j -> forall k. k -> Constraint
     class PC3 @j (a :: j) @k (b :: k) where
-      type family Meth3 (arg :: Proxy a) :: Proxy b
-    type Meth4Sym0 :: forall a. a
-    type family Meth4Sym0 @a :: a where
+      type family Meth3 @j @(a :: j) @k @(b :: k) (arg :: Proxy a) :: Proxy b
+    type Meth4Sym0 :: forall (a :: Type). a
+    type family Meth4Sym0 @(a :: Type) :: a where
       Meth4Sym0 = Meth4
     type PC4 :: forall (a :: Type). Constraint
-    class PC4 @a where
-      type family Meth4 :: a
+    class PC4 @(a :: Type) where
+      type family Meth4 @(a :: Type) :: a
     type SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
     data SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
       where

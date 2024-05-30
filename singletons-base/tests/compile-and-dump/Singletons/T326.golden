@@ -1,7 +1,7 @@
 Singletons/T326.hs:0:0:: Splicing declarations
     genPromotions [''C1]
   ======>
-    type (<%>@#@$) :: forall a. (~>) a ((~>) a a)
+    type (<%>@#@$) :: forall (a :: Type). (~>) a ((~>) a a)
     data (<%>@#@$) :: (~>) a ((~>) a a)
       where
         (:<%>@#@$###) :: SameKind (Apply (<%>@#@$) arg) ((<%>@#@$$) arg) =>
@@ -10,7 +10,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings (<%>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<%>@#@$###) ())
     infixl 9 <%>@#@$
-    type (<%>@#@$$) :: forall a. a -> (~>) a a
+    type (<%>@#@$$) :: forall (a :: Type). a -> (~>) a a
     data (<%>@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
         (:<%>@#@$$###) :: SameKind (Apply ((<%>@#@$$) a0123456789876543210) arg) ((<%>@#@$$$) a0123456789876543210 arg) =>
@@ -19,18 +19,18 @@ Singletons/T326.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings ((<%>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<%>@#@$$###) ())
     infixl 9 <%>@#@$$
-    type (<%>@#@$$$) :: forall a. a -> a -> a
-    type family (<%>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
+    type (<%>@#@$$$) :: forall (a :: Type). a -> a -> a
+    type family (<%>@#@$$$) @(a :: Type) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<%>@#@$$$) a0123456789876543210 a0123456789876543210 = (<%>) a0123456789876543210 a0123456789876543210
     infixl 9 <%>@#@$$$
     type PC1 :: Type -> Constraint
     class PC1 (a :: Type) where
-      type family (<%>) (arg :: a) (arg :: a) :: a
+      type family (<%>) @(a :: Type) (arg :: a) (arg :: a) :: a
     infixl 9 <%>
 Singletons/T326.hs:0:0:: Splicing declarations
     genSingletons [''C2]
   ======>
-    type (<%%>@#@$) :: forall a. (~>) a ((~>) a a)
+    type (<%%>@#@$) :: forall (a :: Type). (~>) a ((~>) a a)
     data (<%%>@#@$) :: (~>) a ((~>) a a)
       where
         (:<%%>@#@$###) :: SameKind (Apply (<%%>@#@$) arg) ((<%%>@#@$$) arg) =>
@@ -39,7 +39,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings (<%%>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<%%>@#@$###) ())
     infixl 9 <%%>@#@$
-    type (<%%>@#@$$) :: forall a. a -> (~>) a a
+    type (<%%>@#@$$) :: forall (a :: Type). a -> (~>) a a
     data (<%%>@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
         (:<%%>@#@$$###) :: SameKind (Apply ((<%%>@#@$$) a0123456789876543210) arg) ((<%%>@#@$$$) a0123456789876543210 arg) =>
@@ -48,13 +48,13 @@ Singletons/T326.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings ((<%%>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<%%>@#@$$###) ())
     infixl 9 <%%>@#@$$
-    type (<%%>@#@$$$) :: forall a. a -> a -> a
-    type family (<%%>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
+    type (<%%>@#@$$$) :: forall (a :: Type). a -> a -> a
+    type family (<%%>@#@$$$) @(a :: Type) (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (<%%>@#@$$$) a0123456789876543210 a0123456789876543210 = (<%%>) a0123456789876543210 a0123456789876543210
     infixl 9 <%%>@#@$$$
     type PC2 :: Type -> Constraint
     class PC2 (a :: Type) where
-      type family (<%%>) (arg :: a) (arg :: a) :: a
+      type family (<%%>) @(a :: Type) (arg :: a) (arg :: a) :: a
     infixl 9 <%%>
     class SC2 (a :: Type) where
       (%<%%>) ::

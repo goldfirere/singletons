@@ -70,7 +70,7 @@ Singletons/T414.hs:(0,0)-(0,0): Splicing declarations
     type family T3Sym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Type) :: Type where
       T3Sym2 a0123456789876543210 a0123456789876543210 = T3 a0123456789876543210 a0123456789876543210
     type PC3 :: Bool -> Constraint
-    class PC3 a
+    class PC3 (a :: Bool)
     class SC1 (a :: Bool)
     class SC2 a
     class SC3 a

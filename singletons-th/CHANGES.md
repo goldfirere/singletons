@@ -5,6 +5,10 @@ next [????.??.??]
 -----------------
 * Add support for promoting and singling type variables that scope over the
   bodies of class method defaults and instance methods.
+* When promoting a class with a standalone kind signature, `singletons-th` will
+  now guarantee that the promoted class methods will quantify their kind
+  variables in the exact same order as the type variables in the original class
+  methods' types.
 
 3.4 [2024.05.12]
 ----------------
