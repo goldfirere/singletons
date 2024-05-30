@@ -267,6 +267,14 @@ maybeSigT ty (Just ki) = ty `DSigT` ki
 -- @
 --
 -- Note that note of @b@, @d@, or @e@ appear in the list.
+--
+-- See also 'tvbForAllTyFlagsToBndrVis', which takes a list of @'DTyVarBndr'
+-- 'ForAllTyFlag'@ as arguments instead of a list of 'DTyVarBndrSpec's. Note
+-- that @'tvbSpecsToBndrVis' . 'tvbForAllTyFlagsToSpecs'@ is /not/ the same
+-- thing as 'tvbForAllTyFlagsToBndrVis'. This is because 'tvbSpecsToBndrVis'
+-- only produces 'BndrInvis' binders as output, whereas
+-- 'tvbForAllTyFlagsToBndrVis' can produce both 'BndrReq' and 'BndrInvis'
+-- binders.
 tvbSpecsToBndrVis :: [DTyVarBndrSpec] -> [DTyVarBndrVis]
 tvbSpecsToBndrVis = mapMaybe (traverse specificityToBndrVis)
   where
@@ -720,6 +728,96 @@ mapAndUnzip3M f (x:xs) = do
 isHsLetter :: Char -> Bool
 isHsLetter c = isLetter c || c == '_'
 
+-- @'matchUpSAKWithDecl' decl_sak decl_bndrs@ produces @'DTyVarBndr'
+-- 'ForAllTyFlag'@s for a declaration, using the original declaration's
+-- standalone kind signature (@decl_sak@) and its user-written binders
+-- (@decl_bndrs@) as a template. For this example:
+--
+-- @
+-- type D :: forall j k. k -> j -> Type
+-- data D \@j \@l (a :: l) b = ...
+-- @
+--
+-- We would produce the following @'DTyVarBndr' 'ForAllTyFlag'@s:
+--
+-- @
+-- \@j \@l (a :: l) (b :: j)
+-- @
+--
+-- From here, these @'DTyVarBndr' 'ForAllTyFlag'@s can be converted into other
+-- forms of 'DTyVarBndr's:
+--
+-- * They can be converted to 'DTyVarBndrSpec's using 'tvbForAllTyFlagsToSpecs'.
+--   (See, for example, 'singDataSAK' in "Data.Singletons.TH.Single.Data", which
+--   does this to construct the invisible @forall@s in the standalone kind
+--   signature for a singled @data@ declaration.)
+--
+-- * They can be converted to 'DTyVarBndrVis'es using 'tvbForAllTyFlagsToVis'.
+--   (See, for example, 'promoteClassDec' in "Data.Singletons.TH.Promote", which
+--   does this to compute the \"full\" user-written binders for a promoted class
+--   declaration, as described in @Note [Promoted class methods and kind variable
+--   ordering] (Case 1: Case 1: Parent class with standalone kind signature).)
+--
+-- Note that:
+--
+-- * This function has a precondition that the length of @decl_bndrs@ must
+--   always be equal to the number of visible quantifiers (i.e., the number of
+--   function arrows plus the number of visible @forall@–bound variables) in
+--   @decl_sak@.
+--
+-- * Whenever possible, this function reuses type variable names from the
+--   declaration's user-written binders. This is why the @'DTyVarBndr'
+--   'ForAllTyFlag'@ use @\@j \@l@ instead of @\@j \@k@, since the @(a :: l)@
+--   binder uses @l@ instead of @k@. We could have just as well chose the other
+--   way around, but we chose to pick variable names from the user-written
+--   binders since they scope over other parts of the declaration. (For example,
+--   the user-written binders of a @data@ declaration scope over the type
+--   variables mentioned in a @deriving@ clause.) As such, keeping these names
+--   avoids having to perform some alpha-renaming.
+--
+-- This function's implementation was heavily inspired by parts of GHC's
+-- kcCheckDeclHeader_sig function:
+-- https://gitlab.haskell.org/ghc/ghc/-/blob/1464a2a8de082f66ae250d63ab9d94dbe2ef8620/compiler/GHC/Tc/Gen/HsType.hs#L2524-2643
+matchUpSAKWithDecl ::
+     forall q.
+     MonadFail q
+  => DKind
+     -- ^ The declaration's standalone kind signature
+  -> [DTyVarBndrVis]
+     -- ^ The user-written binders in the declaration
+  -> q [DTyVarBndr ForAllTyFlag]
+matchUpSAKWithDecl decl_sak decl_bndrs = do
+  -- (1) First, explicitly quantify any free kind variables in `decl_sak` using
+  -- an invisible @forall@. This is done to ensure that precondition (2) in
+  -- `matchUpSigWithDecl` is upheld. (See the Haddocks for that function).
+  let decl_sak_free_tvbs =
+        changeDTVFlags SpecifiedSpec $ toposortTyVarsOf [decl_sak]
+      decl_sak' = DForallT (DForallInvis decl_sak_free_tvbs) decl_sak
+
+  -- (2) Next, compute type variable binders using `matchUpSigWithDecl`. Note
+  -- that these can be biased towards type variable names mention in `decl_sak`
+  -- over names mentioned in `decl_bndrs`, but we will fix that up in the next
+  -- step.
+  let (decl_sak_args, _) = unravelDType decl_sak'
+  sing_sak_tvbs <- matchUpSigWithDecl decl_sak_args decl_bndrs
+
+  -- (3) Finally, swizzle the type variable names so that names in `decl_bndrs`
+  -- are preferred over names in `decl_sak`.
+  --
+  -- This is heavily inspired by similar code in GHC:
+  -- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2607-2616
+  let invis_decl_sak_args = filterInvisTvbArgs decl_sak_args
+      invis_decl_sak_arg_nms = map extractTvbName invis_decl_sak_args
+
+      invis_decl_bndrs = toposortKindVarsOfTvbs decl_bndrs
+      invis_decl_bndr_nms = map extractTvbName invis_decl_bndrs
+
+      swizzle_env =
+        Map.fromList $ zip invis_decl_sak_arg_nms invis_decl_bndr_nms
+      (_, swizzled_sing_sak_tvbs) =
+        mapAccumL (swizzleTvb swizzle_env) Map.empty sing_sak_tvbs
+  pure swizzled_sing_sak_tvbs
+
 -- Match the quantifiers in a type-level declaration's standalone kind signature
 -- with the user-written binders in the declaration. This function assumes the
 -- following preconditions:
@@ -896,7 +994,67 @@ swizzleTvb swizzle_env subst tvb =
 data ForAllTyFlag
   = Invisible !Specificity
     -- ^ If the 'Specificity' value is 'SpecifiedSpec', then the binder is
-    -- permitted by request. If the 'Specificity' value is 'InferredSpec', then
-    -- the binder is prohibited from appearing in source Haskell.
+    -- permitted by request (e.g., @\@a@). If the 'Specificity' value is
+    -- 'InferredSpec', then the binder is prohibited from appearing in source
+    -- Haskell (e.g., @\@{a}@).
   | Required
-    -- ^ The binder is required to appear in source Haskell
+    -- ^ The binder is required to appear in source Haskell (e.g., @a@).
+
+-- | Convert a list of @'DTyVarBndr' 'ForAllTyFlag'@s to a list of
+-- 'DTyVarBndrSpec's, which is suitable for use in an invisible @forall@.
+-- Specifically:
+--
+-- * Variable binders that use @'Invisible' spec@ are converted to @spec@.
+--
+-- * Variable binders that are 'Required' are converted to 'SpecifiedSpec',
+--   as all of the 'DTyVarBndrSpec's are invisible. As an example of how this
+--   is used, consider what would happen when singling this data type:
+--
+--   @
+--   type T :: forall k -> k -> Type
+--   data T k (a :: k) where ...
+--   @
+--
+--   Here, the @k@ binder is 'Required'. When we produce the standalone kind
+--   signature for the singled data type, we use 'tvbForAllTyFlagsToSpecs' to
+--   produce the type variable binders in the outermost @forall@:
+--
+--   @
+--   type ST :: forall k (a :: k). T k a -> Type
+--   data ST z where ...
+--   @
+--
+--   Note that the @k@ is bound visibily (i.e., using 'SpecifiedSpec') in the
+--   outermost, invisible @forall@.
+tvbForAllTyFlagsToSpecs :: [DTyVarBndr ForAllTyFlag] -> [DTyVarBndrSpec]
+tvbForAllTyFlagsToSpecs = map (fmap to_spec)
+  where
+   to_spec :: ForAllTyFlag -> Specificity
+   to_spec (Invisible spec) = spec
+   to_spec Required         = SpecifiedSpec
+
+-- | Convert a list of @'DTyVarBndr' 'ForAllTyFlag'@s to a list of
+-- 'DTyVarBndrVis'es, which is suitable for use in a type-level declaration
+-- (e.g., the @var_1 ... var_n@ in @class C var_1 ... var_n@). Specifically:
+--
+-- * Variable binders that use @'Invisible' 'InferredSpec'@ are dropped
+--   entirely. Such binders cannot be represented in source Haskell.
+--
+-- * Variable binders that use @'Invisible' 'SpecifiedSpec'@ are converted to
+--   'BndrInvis'.
+--
+-- * Variable binders that are 'Required' are converted to 'BndrReq'.
+--
+-- See also 'tvbSpecsToBndrVis', which takes a list of 'DTyVarBndrSpec's as
+-- arguments instead of a list of @'DTyVarBndr' 'ForAllTyFlag'@s. Note that
+-- @'tvbSpecsToBndrVis' . 'tvbForAllTyFlagsToSpecs'@ is /not/ the same thing as
+-- 'tvbForAllTyFlagsToBndrVis'. This is because 'tvbSpecsToBndrVis' only
+-- produces 'BndrInvis' binders as output, whereas 'tvbForAllTyFlagsToBndrVis'
+-- can produce both 'BndrReq' and 'BndrInvis' binders.
+tvbForAllTyFlagsToBndrVis :: [DTyVarBndr ForAllTyFlag] -> [DTyVarBndrVis]
+tvbForAllTyFlagsToBndrVis = catMaybes . map (traverse to_spec_maybe)
+  where
+    to_spec_maybe :: ForAllTyFlag -> Maybe BndrVis
+    to_spec_maybe (Invisible InferredSpec) = Nothing
+    to_spec_maybe (Invisible SpecifiedSpec) = Just BndrInvis
+    to_spec_maybe Required = Just BndrReq

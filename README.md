@@ -1178,32 +1178,67 @@ for the following constructs:
   yourself!
 
 * Kind signatures of promoted class methods.
-  The order of type variables will often "just work" by happy coincidence, but
-  there are some situations where this does not happen. Consider the following
-  class:
+  The order of type variables is only guaranteed to be preserved if the parent
+  class has a standalone kind signature. For example, given this class:
 
   ```haskell
-  class C (b :: Type) where
+  type C :: Type -> Constraint
+  class C b where
     m :: forall a. a -> b -> a
   ```
 
   The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
-  `b` before `a`. This order is preserved when singling `m`, but *not* when
-  promoting `m`. This is because the `C` class is promoted as follows:
+  `b` before `a`. Because `C` has a standalone kind signature, the order of
+  type variables is preserved when promoting and singling `m`:
+
+  ```hs
+  type PC :: Type -> Constraint
+  class PC b where
+    type M @b @a (x :: a) (y :: b) :: a
+
+  type MSym0 :: forall b a. a ~> b ~> a
+  type MSym1 :: forall b a. a -> b ~> a
+
+  type SC :: Type -> Constraint
+  class SC b where
+    sM :: forall a (x :: a) (y :: b).
+          Sing x -> Sing y -> Sing (M x y)
+  ```
+
+  Note that `M`, `M`'s defunctionalization symbols, and `sM` all quantify `b`
+  before `a` in their types. The key to making this work is by using the
+  `TypeAbstractions` language extension in declaration for `M`, which is only
+  possible due to `PC` having a standalone kind signature.
+
+  If the parent class does _not_ have a standalone kind signature, then
+  `singletons-th` does not make any guarantees about the order of kind
+  variables in the promoted methods' kinds. The order will often "just work" by
+  happy coincidence, but there are some situations where this does not happen.
+  Consider the following variant of the class example above:
 
   ```haskell
-  class PC (b :: Type) where
+  -- No standalone kind signature
+  class C b where
+    m :: forall a. a -> b -> a
+  ```
+
+  Again, the full type of `m` is `forall b. C b => forall a. a -> b -> a`,
+  which binds `b` before `a`. This order is preserved when singling `m`, but
+  *not* when promoting `m`. This is because the `C` class is promoted as
+  follows:
+
+  ```haskell
+  -- No standalone kind signature
+  class PC b where
     type M (x :: a) (y :: b) :: a
   ```
 
-  Due to the way GHC kind-checks associated type families, the kind of `M` is
-  `forall a b. a -> b -> a`, which binds `b` *after* `a`. Moreover, the
-  `StandaloneKindSignatures` extension does not provide a way to explicitly
-  declare the full kind of an associated type family, so this limitation is
-  not easy to work around.
-
-  The defunctionalization symbols for `M` will also follow a similar
-  order of type variables:
+  This time, `PC` does not have a standalone kind signature, so we cannot use
+  `TypeAbstractions` in the declaration for `M`. As such, GHC will quantify the
+  kind variables in left-to-right order, so the kind of `M` will be inferred to
+  be `forall a b. a -> b -> a`, which binds `b` *after* `a`. The
+  defunctionalization symbols for `M` will also follow a similar order of type
+  variables:
 
   ```haskell
   type MSym0 :: forall a b. a ~> b ~> a

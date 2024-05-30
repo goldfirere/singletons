@@ -74,7 +74,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type family F @b @a (a :: a) (a :: b) :: () where
       F @b @a (_ :: a) (_ :: b) = Tuple0Sym0
     type PC :: forall b a. a -> b -> Constraint
-    class PC x y
+    class PC @b @a (x :: a) (y :: b)
     sNatMinus ::
       (forall (t :: Nat) (t :: Nat).
        Sing t

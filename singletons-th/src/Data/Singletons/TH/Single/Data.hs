@@ -13,9 +13,7 @@ module Data.Singletons.TH.Single.Data
 
 import Language.Haskell.TH.Desugar as Desugar
 import Language.Haskell.TH.Syntax
-import qualified Data.Map.Strict as Map
 import Data.Maybe
-import Data.Traversable (mapAccumL)
 import Data.Singletons.TH.Names
 import Data.Singletons.TH.Options
 import Data.Singletons.TH.Promote.Type
@@ -269,26 +267,12 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
 -- type SD :: forall j l (a :: l) (b :: j). D @j @l (a :: l) b -> Type
 -- @
 --
--- Note that:
+-- Note that the order of the invisible quantifiers is preserved, so both
+-- @D \@Bool \@Ordering@ and @SD \@Bool \@Ordering@ will work the way you would
+-- expect it to.
 --
--- * This function has a precondition that the length of @data_bndrs@ must
---   always be equal to the number of visible quantifiers (i.e., the number of
---   function arrows plus the number of visible @forall@–bound variables) in
---   @sak@. @singletons-th@ maintains this invariant when constructing a
---   'DataDecl' (see the 'buildDataDTvbs' function).
---
--- * The order of the invisible quantifiers is preserved, so both
---   @D \@Bool \@Ordering@ and @SD \@Bool \@Ordering@ will work the way you would
---   expect it to.
---
--- * Whenever possible, this function reuses type variable names from the data
---   type's user-written binders. This is why the standalone kind signature uses
---   @forall j l@ instead of @forall j k@, since the @(a :: l)@ binder uses @l@
---   instead of @k@. We could have just as well chose the other way around, but
---   we chose to pick variable names from the data type binders since they scope
---   over other parts of the data type declaration (e.g., in @deriving@
---   clauses), so keeping these names avoids having to perform some
---   alpha-renaming.
+-- See also the comments on the 'matchUpSAKWithDecl' function (in
+-- "Data.Singletons.TH.Util"), which also apply here.
 singDataSAK ::
      MonadFail q
   => DKind
@@ -300,58 +284,10 @@ singDataSAK ::
   -> q DKind
      -- ^ The standalone kind signature for the singled data type
 singDataSAK data_sak data_bndrs data_k = do
-  -- (1) First, explicitly quantify any free kind variables in `data_sak` using
-  -- an invisible @forall@. This is done to ensure that precondition (2) in
-  -- `matchUpSigWithDecl` is upheld. (See the Haddocks for that function).
-  let data_sak_free_tvbs =
-        changeDTVFlags SpecifiedSpec $ toposortTyVarsOf [data_sak]
-      data_sak' = DForallT (DForallInvis data_sak_free_tvbs) data_sak
-
-  -- (2) Next, compute type variable binders for the singled data type's
-  -- standalone kind signature using `matchUpSigWithDecl`. Note that these can
-  -- be biased towards type variable names mention in `data_sak` over names
-  -- mentioned in `data_bndrs`, but we will fix that up in the next step.
-  let (data_sak_args, _) = unravelDType data_sak'
-  sing_sak_tvbs <- matchUpSigWithDecl data_sak_args data_bndrs
-
-  -- (3) Swizzle the type variable names so that names in `data_bndrs` are
-  -- preferred over names in `data_sak`.
-  --
-  -- This is heavily inspired by similar code in GHC:
-  -- https://gitlab.haskell.org/ghc/ghc/-/blob/cec903899234bf9e25ea404477ba846ac1e963bb/compiler/GHC/Tc/Gen/HsType.hs#L2607-2616
-  let invis_data_sak_args = filterInvisTvbArgs data_sak_args
-      invis_data_sak_arg_nms = map extractTvbName invis_data_sak_args
-
-      invis_data_bndrs = toposortKindVarsOfTvbs data_bndrs
-      invis_data_bndr_nms = map extractTvbName invis_data_bndrs
-
-      swizzle_env =
-        Map.fromList $ zip invis_data_sak_arg_nms invis_data_bndr_nms
-      (_, swizzled_sing_sak_tvbs) =
-        mapAccumL (swizzleTvb swizzle_env) Map.empty sing_sak_tvbs
-      swizzled_sing_sak_tvbs' =
-        map (fmap mk_data_sak_spec) swizzled_sing_sak_tvbs
-
-  -- (4) Finally, construct the kind of the singled data type.
-  pure $ DForallT (DForallInvis swizzled_sing_sak_tvbs')
+  sing_sak_tvbs <- matchUpSAKWithDecl data_sak data_bndrs
+  let sing_sak_tvbs' = tvbForAllTyFlagsToSpecs sing_sak_tvbs
+  pure $ DForallT (DForallInvis sing_sak_tvbs')
        $ DArrowT `DAppT` data_k `DAppT` DConT typeKindName
-  where
-    -- Convert a ForAllTyFlag value to a Specificity value, i.e., a binder
-    -- suitable for use in an invisible `forall`. We convert Required values
-    -- to SpecifiedSpec values because all of the binders in the `forall` are
-    -- invisible. For instance, we would single this data type:
-    --
-    --   type T :: forall k -> k -> Type
-    --   data T k (a :: k) where ...
-    --
-    -- Like so:
-    --
-    --   -- Note: the `k` is invisible, not visible
-    --   type ST :: forall k (a :: k). T k a -> Type
-    --   data ST z where ...
-    mk_data_sak_spec :: ForAllTyFlag -> Specificity
-    mk_data_sak_spec (Invisible spec) = spec
-    mk_data_sak_spec Required         = SpecifiedSpec
 
 {-
 Note [singletons-th and record selectors]

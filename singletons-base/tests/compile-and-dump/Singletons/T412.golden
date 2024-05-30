@@ -201,7 +201,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
 Singletons/T412.hs:0:0:: Splicing declarations
     genSingletons [''C2, ''T2a, ''T2b, ''D2]
   ======>
-    type M2Sym0 :: forall a b. (~>) a ((~>) b Bool)
+    type M2Sym0 :: forall (a :: Type) (b :: Type). (~>) a ((~>) b Bool)
     data M2Sym0 :: (~>) a ((~>) b Bool)
       where
         M2Sym0KindInference :: SameKind (Apply M2Sym0 arg) (M2Sym1 arg) =>
@@ -210,7 +210,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings M2Sym0 where
       suppressUnusedWarnings = snd ((,) M2Sym0KindInference ())
     infix 6 `M2Sym0`
-    type M2Sym1 :: forall a b. a -> (~>) b Bool
+    type M2Sym1 :: forall (a :: Type) (b :: Type). a -> (~>) b Bool
     data M2Sym1 (a0123456789876543210 :: a) :: (~>) b Bool
       where
         M2Sym1KindInference :: SameKind (Apply (M2Sym1 a0123456789876543210) arg) (M2Sym2 a0123456789876543210 arg) =>
@@ -219,13 +219,13 @@ Singletons/T412.hs:0:0:: Splicing declarations
     instance SuppressUnusedWarnings (M2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) M2Sym1KindInference ())
     infix 6 `M2Sym1`
-    type M2Sym2 :: forall a b. a -> b -> Bool
-    type family M2Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
+    type M2Sym2 :: forall (a :: Type) (b :: Type). a -> b -> Bool
+    type family M2Sym2 @(a :: Type) @(b :: Type) (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
       M2Sym2 a0123456789876543210 a0123456789876543210 = M2 a0123456789876543210 a0123456789876543210
     infix 6 `M2Sym2`
     type PC2 :: Type -> Type -> Constraint
     class PC2 (a :: Type) (b :: Type) where
-      type family M2 (arg :: a) (arg :: b) :: Bool
+      type family M2 @(a :: Type) @(b :: Type) (arg :: a) (arg :: b) :: Bool
     infix 5 `PC2`
     infix 6 `M2`
     class SC2 (a :: Type) (b :: Type) where
