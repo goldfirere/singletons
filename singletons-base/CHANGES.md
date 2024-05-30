@@ -1,6 +1,29 @@
 Changelog for the `singletons-base` project
 ===========================================
 
+next [????.??.??]
+-----------------
+* The types of `sError`, `sErrorWithoutStackTrace`, and `sUndefined` are now
+  less polymorphic than they were before:
+
+  ```diff
+  -sError :: forall a (str :: Symbol). HasCallStack => Sing str -> a
+  +sError :: forall a (str :: Symbol). HasCallStack => Sing str -> Sing (Error @a str)
+
+  -sErrorWithoutStackTrace :: forall a (str :: Symbol). Sing str -> a
+  +sErrorWithoutStackTrace :: forall a (str :: Symbol). Sing str -> Sing (ErrorWithoutStackTrace @a str)
+
+  -sUndefined :: forall a. HasCallStack => a
+  +sUndefined :: forall a. HasCallStack => Sing (Undefined @a)
+  ```
+
+  This is because the old type signatures were _too_ polymorphic, and they
+  required _ad hoc_ special casing in `singletons-th` in order to make them
+  work in generated code. The more specific type signatures that these functions
+  now have improve type inference and avoid the need for special casing. If you
+  truly need the full polymorphism of the old type signatures, use `error`,
+  `errorWithoutStackTrace`, or `undefined` instead.
+
 3.4 [2024.05.12]
 ----------------
 * Require building with GHC 9.10.

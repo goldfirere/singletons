@@ -499,7 +499,10 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                              (sFromInteger (sing :: Sing 1))
                        of
                          STrue -> SS2
-                         SFalse -> sError (sing :: Sing "toEnum: bad argument")))
+                         SFalse
+                           -> applySing
+                                (singFun1 @ErrorSym0 sError)
+                                (sing :: Sing "toEnum: bad argument")))
       sFromEnum SS1 = sFromInteger (sing :: Sing 0)
       sFromEnum SS2 = sFromInteger (sing :: Sing 1)
     instance SDecide a => SDecide (T a ()) where

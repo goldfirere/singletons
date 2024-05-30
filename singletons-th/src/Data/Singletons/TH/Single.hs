@@ -792,20 +792,6 @@ mkSigPaCaseE exps_with_sigs exp
 -- Note [The id hack; or, how singletons-th learned to stop worrying and avoid
 -- kind generalization] for an explanation of why we do this.
 
--- Note [Why error is so special]
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Some of the transformations that happen before this point produce impossible
--- case matches. We must be careful when processing these so as not to make
--- an error GHC will complain about. When binding the case-match variables, we
--- normally include an equality constraint saying that the scrutinee is equal
--- to the matched pattern. But, we can't do this in inaccessible matches, because
--- equality is bogus, and GHC (rightly) complains. However, we then have another
--- problem, because GHC doesn't have enough information when type-checking the
--- RHS of the inaccessible match to deem it type-safe. The solution: treat error
--- as super-special, so that GHC doesn't look too hard at singletonized error
--- calls. Specifically, DON'T do the applySing stuff. Just use sError, which
--- has a custom type (Sing x -> a) anyway.
-
 -- Note [Singling pattern signatures]
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- We want to single a pattern signature, like so:
@@ -883,22 +869,13 @@ mkSigPaCaseE exps_with_sigs exp
 --    And now everything is hunky-dory.
 
 singExp :: ADExp -> SgM DExp
-  -- See Note [Why error is so special]
-singExp (ADVarE err `ADAppE` arg)
-  | err == errorName = do opts <- getOptions
-                          DAppE (DVarE (singledValueName opts err)) <$>
-                            singExp arg
 singExp (ADVarE name) = lookupVarE name
 singExp (ADConE name) = lookupConE name
 singExp (ADLitE lit)  = singLit lit
 singExp (ADAppE e1 e2) = do
   e1' <- singExp e1
   e2' <- singExp e2
-  -- `applySing undefined x` kills type inference, because GHC can't figure
-  -- out the type of `undefined`. So we don't emit `applySing` there.
-  if isException e1'
-  then return $ e1' `DAppE` e2'
-  else return $ (DVarE applySingName) `DAppE` e1' `DAppE` e2'
+  pure $ DVarE applySingName `DAppE` e1' `DAppE` e2'
 singExp (ADLamE ty_names prom_lam names exp) = do
   opts <- getOptions
   let sNames = map (singledValueName opts) names
@@ -988,22 +965,6 @@ singDerivedShowDecs (DerivedDecl { ded_mb_cxt     = mb_cxt
         show_inst = DStandaloneDerivD Nothing Nothing show_cxt
                       (DConT showName `DAppT` (DConT sty_tycon `DAppT` DSigT (DVarT z) ki))
     pure [show_inst]
-
-isException :: DExp -> Bool
-isException (DVarE n)             = nameBase n == "sUndefined"
-isException (DConE {})            = False
-isException (DLitE {})            = False
-isException (DAppE (DVarE fun) _) | nameBase fun == "sError" = True
-isException (DAppE fun _)         = isException fun
-isException (DAppTypeE e _)       = isException e
-isException (DLamE _ _)           = False
-isException (DCaseE e _)          = isException e
-isException (DLetE _ e)           = isException e
-isException (DSigE e _)           = isException e
-isException (DStaticE e)          = isException e
-isException (DTypedBracketE e)    = isException e
-isException (DTypedSpliceE e)     = isException e
-isException (DTypeE _)            = False
 
 singMatch :: ADMatch -> SgM DMatch
 singMatch (ADMatch var_proms pat exp) = do

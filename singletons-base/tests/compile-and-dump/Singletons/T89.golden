@@ -73,7 +73,9 @@ Singletons/T89.hs:0:0:: Splicing declarations
              of
                STrue -> SFoo
                SFalse
-                 -> sError (sFromString (sing :: Sing "toEnum: bad argument")))
+                 -> applySing
+                      (singFun1 @ErrorSym0 sError)
+                      (sFromString (sing :: Sing "toEnum: bad argument")))
       sFromEnum SFoo = sFromInteger (sing :: Sing 0)
     instance SingI Foo where
       sing = SFoo
