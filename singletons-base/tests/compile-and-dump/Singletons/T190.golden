@@ -196,7 +196,9 @@ Singletons/T190.hs:0:0:: Splicing declarations
                    (sFromInteger (sing :: Sing 0))
              of
                STrue -> ST
-               SFalse -> sError (sing :: Sing "toEnum: bad argument"))
+               SFalse
+                 -> applySing
+                      (singFun1 @ErrorSym0 sError) (sing :: Sing "toEnum: bad argument"))
       sFromEnum ST = sFromInteger (sing :: Sing 0)
     instance SBounded T where
       sMinBound :: Sing (MinBoundSym0 :: T)

@@ -131,7 +131,10 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
                                        (sFromInteger (sing :: Sing 2))
                                  of
                                    STrue -> SBum
-                                   SFalse -> sError (sing :: Sing "toEnum: bad argument"))))
+                                   SFalse
+                                     -> applySing
+                                          (singFun1 @ErrorSym0 sError)
+                                          (sing :: Sing "toEnum: bad argument"))))
       sFromEnum SBar = sFromInteger (sing :: Sing 0)
       sFromEnum SBaz = sFromInteger (sing :: Sing 1)
       sFromEnum SBum = sFromInteger (sing :: Sing 2)
@@ -218,6 +221,9 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
                              (sFromInteger (sing :: Sing 1))
                        of
                          STrue -> SQ2
-                         SFalse -> sError (sing :: Sing "toEnum: bad argument")))
+                         SFalse
+                           -> applySing
+                                (singFun1 @ErrorSym0 sError)
+                                (sing :: Sing "toEnum: bad argument")))
       sFromEnum SQ1 = sFromInteger (sing :: Sing 0)
       sFromEnum SQ2 = sFromInteger (sing :: Sing 1)

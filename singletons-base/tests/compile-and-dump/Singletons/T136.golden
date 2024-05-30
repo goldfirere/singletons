@@ -135,7 +135,8 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
         = applySing
             (applySing (singFun2 @(:@#@$) SCons) SFalse)
             (applySing (singFun1 @SuccSym0 sSucc) sAs)
-      sPred SNil = sError (sing :: Sing "pred 0")
+      sPred SNil
+        = applySing (singFun1 @ErrorSym0 sError) (sing :: Sing "pred 0")
       sPred (SCons SFalse (sAs :: Sing as))
         = applySing
             (applySing (singFun2 @(:@#@$) SCons) STrue)
@@ -154,7 +155,9 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
                              (applySing (singFun2 @(<@#@$) (%<)) sI)
                              (sFromInteger (sing :: Sing 0))
                        of
-                         STrue -> sError (sing :: Sing "negative toEnum")
+                         STrue
+                           -> applySing
+                                (singFun1 @ErrorSym0 sError) (sing :: Sing "negative toEnum")
                          SFalse
                            -> id
                                 @(Sing (Case_0123456789876543210 i arg_0123456789876543210 (Apply (Apply (==@#@$) i) (FromInteger 0))))

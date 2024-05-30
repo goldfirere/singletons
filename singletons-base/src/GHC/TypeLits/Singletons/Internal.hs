@@ -218,7 +218,7 @@ instance SingI (ErrorSym0 :: TL.Symbol ~> a) where
   sing = singFun1 sError
 
 -- | The singleton for 'error'.
-sError :: HasCallStack => Sing (str :: TL.Symbol) -> a
+sError :: forall a (str :: TL.Symbol). HasCallStack => Sing str -> Sing (Error @a str)
 sError sstr = error (T.unpack (fromSing sstr))
 
 -- | The promotion of 'errorWithoutStackTrace'.
@@ -229,7 +229,7 @@ instance SingI (ErrorWithoutStackTraceSym0 :: TL.Symbol ~> a) where
   sing = singFun1 sErrorWithoutStackTrace
 
 -- | The singleton for 'errorWithoutStackTrace'.
-sErrorWithoutStackTrace :: Sing (str :: TL.Symbol) -> a
+sErrorWithoutStackTrace :: forall a (str :: TL.Symbol). Sing str -> Sing (ErrorWithoutStackTrace @a str)
 sErrorWithoutStackTrace sstr = errorWithoutStackTrace (T.unpack (fromSing sstr))
 
 -- | The promotion of 'undefined'.
@@ -238,7 +238,7 @@ type family Undefined :: a where {}
 $(genDefunSymbols [''Undefined])
 
 -- | The singleton for 'undefined'.
-sUndefined :: HasCallStack => a
+sUndefined :: forall a. HasCallStack => Sing (Undefined @a)
 sUndefined = undefined
 
 -- | The singleton analogue of '(TN.^)' for 'Natural's.
