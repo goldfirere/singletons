@@ -293,7 +293,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs cls_tvb_names) defaults_list
   defunAssociatedTypeFamilies orig_cls_tvbs atfs
 
-  infix_decls' <- mapMaybeM (uncurry (promoteInfixDecl Nothing)) $
+  infix_decls' <- mapMaybeM (\(n, (f, ns)) -> promoteInfixDecl Nothing n f ns) $
                   OMap.assocs infix_decls
   cls_infix_decls <- promoteReifiedInfixDecls $ cls_name:meth_names
 
@@ -830,14 +830,14 @@ promoteLetDecEnv :: Maybe Uniq -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
                                         , lde_types = type_env
                                         , lde_infix = fix_env }) = do
-  infix_decls <- mapMaybeM (uncurry (promoteInfixDecl mb_let_uniq)) $
+  infix_decls <- mapMaybeM (\(n, (f, ns)) -> promoteInfixDecl mb_let_uniq n f ns) $
                  OMap.assocs fix_env
 
     -- promote all the declarations, producing annotated declarations
   let (names, rhss) = unzip $ OMap.assocs value_env
   (pro_decs, defun_decss, ann_rhss)
     <- fmap unzip3 $
-       zipWithM (promoteLetDecRHS LetBindingRHS type_env fix_env mb_let_uniq)
+       zipWithM (promoteLetDecRHS LetBindingRHS type_env (fmap fst fix_env) mb_let_uniq)
                 names rhss
 
   emitDecs $ concat defun_decss
@@ -854,8 +854,15 @@ promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
 
 -- Promote a fixity declaration.
 promoteInfixDecl :: forall q. OptionsMonad q
-                 => Maybe Uniq -> Name -> Fixity -> q (Maybe DDec)
-promoteInfixDecl mb_let_uniq name fixity = do
+                 => Maybe Uniq -> Name -> Fixity
+                 -> NamespaceSpecifier
+                    -- The namespace specifier for the fixity declaration. We
+                    -- only pass this for the sake of checking if we need to
+                    -- avoid promoting a fixity declaration (see `promote_val`
+                    -- below). The actual namespace used in the promoted fixity
+                    -- declaration will always be `type`.
+                 -> q (Maybe DDec)
+promoteInfixDecl mb_let_uniq name fixity ns = do
   opts <- getOptions
   fld_sels <- qIsExtEnabled LangExt.FieldSelectors
   mb_ns <- reifyNameSpace name
@@ -874,9 +881,10 @@ promoteInfixDecl mb_let_uniq name fixity = do
           -> finish $ promotedClassName opts name
         _ -> never_mind
   where
-    -- Produce the fixity declaration.
+    -- Produce the fixity declaration. Promoted names always inhabit the `type`
+    -- namespace (i.e., `TypeNamespaceSpecifier`).
     finish :: Name -> q (Maybe DDec)
-    finish = pure . Just . DLetDec . DInfixD fixity NoNamespaceSpecifier
+    finish = pure . Just . DLetDec . DInfixD fixity TypeNamespaceSpecifier
 
     -- Don't produce a fixity declaration at all. This can happen in the
     -- following circumstances:
@@ -892,16 +900,23 @@ promoteInfixDecl mb_let_uniq name fixity = do
     never_mind = pure Nothing
 
     -- Certain value names do not change when promoted (e.g., infix names).
-    -- Therefore, don't bother promoting their fixity declarations if
-    -- 'genQuotedDecs' is set to 'True', since that will run the risk of
-    -- generating duplicate fixity declarations.
+    -- Therefore, don't bother promoting their fixity declarations if the
+    -- following hold:
+    --
+    -- - 'genQuotedDecs' is set to 'True'.
+    --
+    -- - The name lacks an explicit namespace specifier.
+    --
+    -- Doing so will run the risk of generating duplicate fixity declarations.
     -- See Note [singletons-th and fixity declarations] in D.S.TH.Single.Fixity, wrinkle 1.
     promote_val :: q (Maybe DDec)
     promote_val = do
       opts <- getOptions
       let promoted_name :: Name
           promoted_name = promotedValueName opts name mb_let_uniq
-      if nameBase name == nameBase promoted_name && genQuotedDecs opts
+      if nameBase name == nameBase promoted_name
+         && genQuotedDecs opts
+         && ns == NoNamespaceSpecifier
          then never_mind
          else finish promoted_name
 
@@ -918,7 +933,15 @@ promoteReifiedInfixDecls = mapMaybeM tryPromoteFixityDeclaration
         mFixity <- qReifyFixity name
         case mFixity of
           Nothing     -> pure Nothing
-          Just fixity -> promoteInfixDecl Nothing name fixity
+          -- NB: We don't have a NamespaceSpecifier in hand here. We could try
+          -- to look one up, but it doesn't actually matter which namespace we
+          -- pass here. If we reach this point in the code, we know we have a
+          -- non-quoted Name (as reification would failed earlier if the Name
+          -- were quoted). As such, the special case described in
+          -- [singletons-th and fixity declarations] in D.S.TH.Single.Fixity,
+          -- wrinkle 1 won't apply, and we only pass a namespace specifier for
+          -- the sake of checking this special case.
+          Just fixity -> promoteInfixDecl Nothing name fixity NoNamespaceSpecifier
 
 -- Which sort of let-bound declaration's right-hand side is being promoted?
 data LetDecRHSSort

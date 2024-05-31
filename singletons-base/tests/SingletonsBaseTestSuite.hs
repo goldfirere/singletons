@@ -153,6 +153,7 @@ tests =
     , compileAndDumpStdTest "T567"
     , compileAndDumpStdTest "T571"
     , compileAndDumpStdTest "T581"
+    , compileAndDumpStdTest "T582"
     , compileAndDumpStdTest "T585"
     , compileAndDumpStdTest "TypeAbstractions"
     , compileAndDumpStdTest "T589"

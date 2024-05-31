@@ -811,6 +811,7 @@ The following constructs are fully supported:
 * constructors
 * if statements
 * infix expressions and types
+* fixity declarations for infix expressions and types
 * `_` patterns
 * aliased patterns
 * lists (including list comprehensions)
@@ -1540,7 +1541,6 @@ The following constructs are either unsupported or almost never work:
 * Irrefutable patterns
 * `{-# UNPACK #-}` pragmas
 * partial application of the `(->)` type
-* namespace specifiers in fixity declarations
 * invisible type patterns
 
 See the following sections for more details.
@@ -1727,19 +1727,6 @@ quantification cannot be unpacked. See
 arguments. Attempting to promote `(->)` to zero or one argument will result in
 an error. As a consequence, it is impossible to promote instances like the
 `Functor ((->) r)` instance, so `singletons-base` does not provide them.
-
-### Namespace specifiers in fixity declarations
-
-`singletons-th` will currently ignore namespace specifiers attached to fixity
-declarations. For instance, if you attempt to promote this:
-
-```hs
-infixl 4 data `f`
-f :: a -> a -> a
-```
-
-Then it will be the same as if you had written `` infixl 4 `f` ``. See [this
-`singletons` issue](https://github.com/goldfirere/singletons/issues/582).
 
 ### Invisible type patterns
 

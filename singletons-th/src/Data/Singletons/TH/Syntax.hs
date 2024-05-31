@@ -158,7 +158,7 @@ type ULetDecRHS = LetDecRHS Unannotated
 data LetDecEnv ann = LetDecEnv
                    { lde_defns :: OMap Name (LetDecRHS ann)
                    , lde_types :: OMap Name DType  -- type signatures
-                   , lde_infix :: OMap Name Fixity -- infix declarations
+                   , lde_infix :: OMap Name (Fixity, NamespaceSpecifier) -- infix declarations
                    , lde_proms :: IfAnn ann (OMap Name DType) () -- possibly, promotions
                    }
 type ALetDecEnv = LetDecEnv Annotated
@@ -177,8 +177,8 @@ valueBinding n v = emptyLetDecEnv { lde_defns = OMap.singleton n v }
 typeBinding :: Name -> DType -> ULetDecEnv
 typeBinding n t = emptyLetDecEnv { lde_types = OMap.singleton n t }
 
-infixDecl :: Fixity -> Name -> ULetDecEnv
-infixDecl f n = emptyLetDecEnv { lde_infix = OMap.singleton n f }
+infixDecl :: Fixity -> NamespaceSpecifier -> Name -> ULetDecEnv
+infixDecl f ns n = emptyLetDecEnv { lde_infix = OMap.singleton n (f, ns) }
 
 emptyLetDecEnv :: ULetDecEnv
 emptyLetDecEnv = mempty
@@ -196,8 +196,8 @@ buildLetDecEnv = go emptyLetDecEnv
       go acc (flattened ++ rest)
     go acc (DSigD name ty : rest) =
       go (typeBinding name ty <> acc) rest
-    go acc (DInfixD f _ n : rest) =
-      go (infixDecl f n <> acc) rest
+    go acc (DInfixD f ns n : rest) =
+      go (infixDecl f ns n <> acc) rest
     go acc (DPragmaD{} : rest) = go acc rest
 
 -- See Note [DerivedDecl]
