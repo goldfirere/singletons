@@ -401,7 +401,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                                       tyvar_names res_kis
     sing_meths <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)))
                        (OMap.assocs default_defns)
-    fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs fixities
+    fixities' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs $ fmap fst fixities
     cls_cxt' <- mapM singPred cls_cxt
     return $ DClassD cls_cxt'
                      sing_cls_name
@@ -519,7 +519,7 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
   let prom_list = OMap.assocs proms
   (typeSigs, letBinds, _tyvarNames, cxts, _res_kis, singIDefunss)
     <- unzip6 <$> mapM (uncurry (singTySig defns types)) prom_list
-  infix_decls' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs infix_decls
+  infix_decls' <- mapMaybeM (uncurry singInfixDecl) $ OMap.assocs $ fmap fst infix_decls
   bindLets letBinds $ do
     let_decs <- mapM (uncurry (singLetDecRHS (Map.fromList cxts)))
                      (OMap.assocs defns)

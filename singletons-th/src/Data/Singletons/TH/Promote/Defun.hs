@@ -445,7 +445,7 @@ defunctionalize name m_fixity defun_ki = do
                            (noExactName <$> qNewName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec
-    mk_fix_decl n f = DLetDec $ DInfixD f NoNamespaceSpecifier n
+    mk_fix_decl n f = DLetDec $ DInfixD f TypeNamespaceSpecifier n
 
 -- Indicates whether the type being defunctionalized has a standalone kind
 -- signature. If it does, DefunSAK contains the kind. If not, DefunNoSAK
@@ -529,10 +529,10 @@ Some things to note:
   to as "fully saturated" defunctionalization symbols.
   See Note [Fully saturated defunctionalization symbols].
 
-* If Foo had a fixity declaration (e.g., infixl 4 `Foo`), then we would also
-  generate fixity declarations for each defunctionalization symbol (e.g.,
-  infixl 4 `FooSym0`).
-  See Note [Fixity declarations for defunctionalization symbols].
+* If Foo had a fixity declaration (e.g., infixl 4 type `Foo`), then we would
+  also generate fixity declarations for each defunctionalization symbol (e.g.,
+  infixl 4 type `FooSym0`). See Note [Fixity declarations for
+  defunctionalization symbols].
 
 * Foo has a vanilla kind signature. (See
   Note [Vanilla-type validity checking during promotion] in D.S.TH.Promote.Type
@@ -883,7 +883,7 @@ following scenario:
 
   (.) :: (b -> c) -> (a -> b) -> (a -> c)
   (f . g) x = f (g x)
-  infixr 9 .
+  infixr 9 data .
 
 One often writes (f . g . h) at the value level, but because (.) is promoted
 to a type family with three arguments, this doesn't directly translate to the
@@ -892,6 +892,6 @@ type level. Instead, one must write this:
   f .@#@$$$ g .@#@$$$ h
 
 But in order to ensure that this associates to the right as expected, one must
-generate an `infixr 9 .@#@#$$$` declaration. This is why defunctionalize accepts
-a Maybe Fixity argument.
+generate an `infixr 9 type .@#@#$$$` declaration. This is why defunctionalize
+accepts a Maybe Fixity argument.
 -}

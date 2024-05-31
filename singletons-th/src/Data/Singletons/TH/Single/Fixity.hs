@@ -17,24 +17,24 @@ singInfixDecl name fixity = do
   case mb_ns of
     -- If we can't find the Name for some odd reason,
     -- fall back to singValName
-    Nothing          -> finish $ singledValueName   opts name
-    Just VarName     -> finish $ singledValueName   opts name
+    Nothing          -> finish DataNamespaceSpecifier $ singledValueName   opts name
+    Just VarName     -> finish DataNamespaceSpecifier $ singledValueName   opts name
     Just (FldName _)
-      | fld_sels     -> finish $ singledValueName   opts name
+      | fld_sels     -> finish DataNamespaceSpecifier $ singledValueName   opts name
       | otherwise    -> never_mind
-    Just DataName    -> finish $ singledDataConName opts name
+    Just DataName    -> finish DataNamespaceSpecifier $ singledDataConName opts name
     Just TcClsName   -> do
       mb_info <- dsReify name
       case mb_info of
         Just (DTyConI DClassD{} _)
-          -> finish $ singledClassName opts name
+          -> finish TypeNamespaceSpecifier $ singledClassName opts name
         _ -> never_mind
           -- Don't produce anything for other type constructors (type synonyms,
           -- type families, data types, etc.).
           -- See [singletons-th and fixity declarations], wrinkle 1.
   where
-    finish :: Name -> q (Maybe DLetDec)
-    finish = pure . Just . DInfixD fixity NoNamespaceSpecifier
+    finish :: NamespaceSpecifier -> Name -> q (Maybe DLetDec)
+    finish ns n = pure $ Just $ DInfixD fixity ns n
 
     never_mind :: q (Maybe DLetDec)
     never_mind = pure Nothing
@@ -68,15 +68,15 @@ one:
 
 singletons-th will produce promoted and singled versions of them:
 
-  infixl 5 `Foo`
-  infixl 5 `sFoo`
+  infixl 5 type `Foo`
+  infixl 5 data `sFoo`
 
 singletons-th will also produce fixity declarations for its defunctionalization
 symbols (see Note [Fixity declarations for defunctionalization symbols] in
 D.S.TH.Promote.Defun):
 
-  infixl 5 `FooSym0`
-  infixl 5 `FooSym1`
+  infixl 5 type `FooSym0`
+  infixl 5 type `FooSym1`
   ...
 
 -----
@@ -94,14 +94,15 @@ versions of fixity declarations:
   - Type synonyms
   - Type families
   - Data constructors
-  - Infix values
+  - Infix values (when their fixity declaration lack explicit namespaces)
 
   We exclude the first four because the promoted versions of these names are
   the same as the originals, so generating an extra fixity declaration for them
   would run the risk of having duplicates, which GHC would reject with an error.
 
-  We exclude infix value because while their promoted versions are different,
-  they share the same name base. In concrete terms, this:
+  We exclude infix values when their fixity declarations lack explicit
+  namespaces because while their promoted versions are different, they share
+  the same name base. In concrete terms, this:
 
     $(promote [d|
       infixl 4 ###
@@ -112,22 +113,41 @@ versions of fixity declarations:
 
     type family (###) (x :: a) (y :: a) :: a where ...
 
-  So giving the type-level (###) a fixity declaration would clash with the
-  existing one for the value-level (###).
+  Note that the original `infixl 4 ###` declaration lacks an explicit
+  namespace, which means that it applies to both the term-level *and*
+  type-level (###) definitions. This means that giving the type-level (###) a
+  fixity declaration would clash with the original fixity declaration.
 
-  There *is* a scenario where we should generate a fixity declaration for the
-  type-level (###), however. Imagine the above example used the `promoteOnly`
-  function instead of `promote`. Then the type-level (###) would lack a fixity
-  declaration altogether because the original fixity declaration was discarded
-  by `promoteOnly`! The same problem would arise if one had to choose between
-  the `singletons` and `singletonsOnly` functions.
+  There *are* scenarios where we should generate a fixity declaration for the
+  type-level (###), however:
 
-  The difference between `promote` and `promoteOnly` (as well as `singletons`
-  and `singletonsOnly`) is whether the `genQuotedDecs` option is set to `True`
-  or `False`, respectively. Therefore, if `genQuotedDecs` is set to `False`
-  when promoting the fixity declaration for an infix value, we opt to generate
-  a fixity declaration (with the same name base) so that the type-level version
-  of that value gets one.
+  - Imagine if the fixity declaration had an explicit `data` namespace:
+
+      $(promote [d|
+        infixl 4 data ###
+        (###) :: a -> a -> a
+        |])
+
+    Then it would be fine to give the promoted (###) definition this fixity
+    declaration:
+
+      infixl 4 type ###
+
+    This is because the two fixity declarations would refer to distinct names
+    in a different namespaces, so the two fixity declarations would not clash.
+
+  - Imagine the above example used the `promoteOnly` function instead of
+    `promote`. Then the type-level (###) would lack a fixity declaration
+    altogether because the original fixity declaration was discarded by
+    `promoteOnly`! The same problem would arise if one had to choose between
+    the `singletons` and `singletonsOnly` functions.
+
+    The difference between `promote` and `promoteOnly` (as well as `singletons`
+    and `singletonsOnly`) is whether the `genQuotedDecs` option is set to
+    `True` or `False`, respectively. Therefore, if `genQuotedDecs` is set to
+    `False` when promoting the fixity declaration for an infix value, we opt to
+    generate a fixity declaration (with the same name base) so that the
+    type-level version of that value gets one.
 
 * During singling, the following things will not have their fixity declarations
   singled:
