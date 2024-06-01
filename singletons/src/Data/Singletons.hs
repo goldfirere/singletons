@@ -233,7 +233,7 @@ various drawbacks:
 -- constraint, whereas using 'fromSing' requires a 'SingKind K' constraint.
 --
 -- If you need to satisfy this constraint with an explicit singleton, please
--- see 'withSingI' or the 'Sing' pattern synonym.
+-- see 'withSingI' or the v'Sing' pattern synonym.
 #if __GLASGOW_HASKELL__ >= 900
 type SingI :: forall {k}. k -> Constraint
 #endif
