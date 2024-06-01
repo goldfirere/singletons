@@ -151,12 +151,12 @@ type SameKind (a :: k) (b :: k) = (() :: Constraint)
 
 -- | The singleton kind-indexed type family.
 #if __GLASGOW_HASKELL__ >= 810
-type Sing :: k -> Type
+type Sing :: t -> Type
 #endif
 #if __GLASGOW_HASKELL__ >= 910
-type family Sing @k :: k -> Type
+type family Sing @t :: t -> Type
 #else
-type family Sing :: k -> Type
+type family Sing :: t -> Type
 #endif
 
 {-
@@ -164,52 +164,52 @@ Note [The kind of Sing]
 ~~~~~~~~~~~~~~~~~~~~~~~
 It is important to define Sing like this:
 
-  type Sing :: k -> Type
+  type Sing :: t -> Type
   type family Sing
 
 Or, equivalently,
 
-  type family Sing :: k -> Type
+  type family Sing :: t -> Type
 
 There are other conceivable ways to define Sing, but they all suffer from
 various drawbacks:
 
-* type family Sing :: forall k. k -> Type
+* type family Sing :: forall t. t -> Type
 
-  Surprisingly, this is /not/ equivalent to `type family Sing :: k -> Type`.
+  Surprisingly, this is /not/ equivalent to `type family Sing :: t -> Type`.
   The difference lies in their arity, i.e., the number of arguments that must
   be supplied in order to apply Sing. The former declaration has arity 0, while
   the latter has arity 1 (this is more obvious if you write the declaration as
   GHCi would display it with -fprint-explicit-kinds enabled:
-  `type family Sing @k :: k -> Type`).
+  `type family Sing @t :: t -> Type`).
 
   The former declaration having arity 0 is actually what makes it useless. If
   we were to adopt an arity-0 definition of `Sing`, then in order to write
   `type instance Sing = SFoo`, GHC would require that `SFoo` must have the kind
-  `forall k. k -> Type`, and moreover, the kind /must/ be polymorphic in `k`.
+  `forall t. t -> Type`, and moreover, the kind /must/ be polymorphic in `t`.
   This is undesirable, because in practice, every single `Sing` instance in the
-  wild must monomorphize `k` (e.g., `SBool` monomorphizes it to `Bool`), so an
+  wild must monomorphize `t` (e.g., `SBool` monomorphizes it to `Bool`), so an
   arity-0 `Sing` simply won't work. In contrast, the current arity-1 definition
-  of `Sing` /does/ let you monomorphize `k` in type family instances.
+  of `Sing` /does/ let you monomorphize `t` in type family instances.
 
-* type family Sing (a :: k) = (r :: Type) | r -> a
+* type family Sing (a :: t) = (r :: Type) | r -> a
 
-  Again, this is not equivalent to `type family Sing :: k -> Type`. This
-  version of `Sing` has arity 2, since one must supply both `k` and `a` in
+  Again, this is not equivalent to `type family Sing :: t -> Type`. This
+  version of `Sing` has arity 2, since one must supply both `t` and `a` in
   order to apply it. While an arity-2 `Sing` is not suffer from the same
   polymorphism issues as the arity-0 `Sing` in the previous bullet point, it
   does suffer from another issue in that it cannot be partially applied. This
   is because its `a` argument /must/ be supplied, whereas with the arity-1
   `Sing`, it is perfectly admissible to write `Sing` without an explicit `a`
-  argument. (Its invisible `k` argument is filled in automatically behind the
+  argument. (Its invisible `t` argument is filled in automatically behind the
   scenes.)
 
-* type family Sing = (r :: k -> Type) | r -> k
+* type family Sing = (r :: t -> Type) | r -> t
 
-  This is the same as `type family Sing :: k -> Type`, but with an injectivity
+  This is the same as `type family Sing :: t -> Type`, but with an injectivity
   annotation. Technically, this definition isn't /wrong/, but the injectivity
   annotation is actually unnecessary. Because the return kind of `Sing` is
-  declared to be `k -> Type`, the `Sing` type constructor is automatically
+  declared to be `t -> Type`, the `Sing` type constructor is automatically
   injective, so `Sing a1 ~ Sing a2` implies `a1 ~~ a2`.
 
   Another way of phrasing this, using the terminology of Dependent Haskell, is
@@ -225,17 +225,17 @@ various drawbacks:
 -- this code:
 --
 -- @
--- f = fromSing (sing @(T :: K))
+-- f = fromSing (sing @(A :: T))
 -- @
 --
 -- Here, @f@ uses methods from both 'SingI' and 'SingKind'. However, the shape
--- of each constraint is rather different: using 'sing' requires a @SingI T@
--- constraint, whereas using 'fromSing' requires a @SingKind K@ constraint.
+-- of each constraint is rather different: using 'sing' requires a @SingI A@
+-- constraint, whereas using 'fromSing' requires a @SingKind T@ constraint.
 --
 -- If you need to satisfy this constraint with an explicit singleton, please
 -- see 'withSingI' or the v'Sing' pattern synonym.
 #if __GLASGOW_HASKELL__ >= 900
-type SingI :: forall {k}. k -> Constraint
+type SingI :: forall {t}. t -> Constraint
 #endif
 class SingI a where
   -- | Produce the singleton explicitly. You will likely need the @ScopedTypeVariables@
@@ -244,7 +244,7 @@ class SingI a where
 
 -- | A version of the 'SingI' class lifted to unary type constructors.
 #if __GLASGOW_HASKELL__ >= 900
-type SingI1 :: forall {k1} {k2}. (k1 -> k2) -> Constraint
+type SingI1 :: forall {t1} {t2}. (t1 -> t2) -> Constraint
 #endif
 class
 #if __GLASGOW_HASKELL__ >= 806
@@ -264,7 +264,7 @@ sing1 = liftSing sing
 
 -- | A version of the 'SingI' class lifted to binary type constructors.
 #if __GLASGOW_HASKELL__ >= 900
-type SingI2 :: forall {k1} {k2} {k3}. (k1 -> k2 -> k3) -> Constraint
+type SingI2 :: forall {t1} {t2} {t3}. (t1 -> t2 -> t3) -> Constraint
 #endif
 class
 #if __GLASGOW_HASKELL__ >= 806
@@ -292,7 +292,7 @@ sing2 = liftSing2 sing sing
 #if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE Sing #-}
 #endif
-pattern Sing :: forall k (a :: k). () => SingI a => Sing a
+pattern Sing :: forall t (a :: t). () => SingI a => Sing a
 pattern Sing <- (singInstance -> SingInstance)
   where Sing = sing
 
@@ -316,17 +316,17 @@ pattern Sing <- (singInstance -> SingInstance)
 #if __GLASGOW_HASKELL__ >= 810
 type SingKind :: Type -> Constraint
 #endif
-class SingKind k where
+class SingKind t where
   -- | Get a base type from the promoted kind. For example,
   -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
   -- match. For example, @Demote Nat@ is @Natural@.
-  type Demote k = (r :: Type) | r -> k
+  type Demote t = (r :: Type) | r -> t
 
   -- | Convert a singleton to its unrefined version.
-  fromSing :: Sing (a :: k) -> Demote k
+  fromSing :: Sing (a :: t) -> Demote t
 
   -- | Convert an unrefined type to an existentially-quantified singleton type.
-  toSing   :: Demote k -> SomeSing k
+  toSing   :: Demote t -> SomeSing t
 
 -- | An /existentially-quantified/ singleton. This type is useful when you want a
 -- singleton type, but there is no way of knowing, at compile-time, what the type
@@ -341,8 +341,8 @@ class SingKind k where
 #if __GLASGOW_HASKELL__ >= 810
 type SomeSing :: Type -> Type
 #endif
-data SomeSing k where
-  SomeSing :: Sing (a :: k) -> SomeSing k
+data SomeSing t where
+  SomeSing :: Sing (a :: t) -> SomeSing t
 
 -- | An explicitly bidirectional pattern synonym for going between a
 -- singleton and the corresponding demoted term.
@@ -375,7 +375,7 @@ data SomeSing k where
 #if __GLASGOW_HASKELL__ >= 802
 {-# COMPLETE FromSing #-}
 #endif
-pattern FromSing :: SingKind k => forall (a :: k). Sing a -> Demote k
+pattern FromSing :: SingKind t => forall (a :: t). Sing a -> Demote t
 pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> SomeSing sng)
   where FromSing sng = fromSing sng
 
@@ -387,30 +387,30 @@ pattern FromSing sng <- ((\demotedVal -> withSomeSing demotedVal SomeSing) -> So
 --
 -- Since 'Sing' is a type family, it cannot be used directly in type class
 -- instances. As one example, one cannot write a catch-all
--- @instance 'SDecide' k => 'TestEquality' ('Sing' k)@. On the other hand,
+-- @instance 'SDecide' t => 'TestEquality' ('Sing' t)@. On the other hand,
 -- 'WrappedSing' is a perfectly ordinary data type, which means that it is
 -- quite possible to define an
--- @instance 'SDecide' k => 'TestEquality' ('WrappedSing' k)@.
+-- @instance 'SDecide' t => 'TestEquality' ('WrappedSing' t)@.
 #if __GLASGOW_HASKELL__ >= 810
-type WrappedSing :: k -> Type
+type WrappedSing :: t -> Type
 #endif
-newtype WrappedSing :: forall k. k -> Type where
-  WrapSing :: forall k (a :: k). { unwrapSing :: Sing a } -> WrappedSing a
+newtype WrappedSing :: forall t. t -> Type where
+  WrapSing :: forall t (a :: t). { unwrapSing :: Sing a } -> WrappedSing a
 
 -- | The singleton for 'WrappedSing's. Informally, this is the singleton type
 -- for other singletons.
 #if __GLASGOW_HASKELL__ >= 810
-type SWrappedSing :: forall k (a :: k). WrappedSing a -> Type
+type SWrappedSing :: forall t (a :: t). WrappedSing a -> Type
 #endif
-newtype SWrappedSing :: forall k (a :: k). WrappedSing a -> Type where
-  SWrapSing :: forall k (a :: k) (ws :: WrappedSing a).
+newtype SWrappedSing :: forall t (a :: t). WrappedSing a -> Type where
+  SWrapSing :: forall t (a :: t) (ws :: WrappedSing a).
                { sUnwrapSing :: Sing a } -> SWrappedSing ws
 type instance Sing = SWrappedSing
 
 #if __GLASGOW_HASKELL__ >= 810
-type UnwrapSing :: forall k (a :: k). WrappedSing a -> Sing a
+type UnwrapSing :: forall t (a :: t). WrappedSing a -> Sing a
 #endif
-type family UnwrapSing (ws :: WrappedSing (a :: k)) :: Sing a where
+type family UnwrapSing (ws :: WrappedSing (a :: t)) :: Sing a where
   UnwrapSing ('WrapSing s) = s
 
 instance SingKind (WrappedSing a) where
@@ -427,13 +427,13 @@ instance forall a (s :: Sing a). SingI a => SingI ('WrapSing s) where
 
 -- | A 'SingInstance' wraps up a 'SingI' instance for explicit handling.
 #if __GLASGOW_HASKELL__ >= 810
-type SingInstance :: k -> Type
+type SingInstance :: t -> Type
 #endif
-data SingInstance (a :: k) where
+data SingInstance (a :: t) where
   SingInstance :: SingI a => SingInstance a
 
 -- | Get an implicit singleton (a 'SingI' instance) from an explicit one.
-singInstance :: forall k (a :: k). Sing a -> SingInstance a
+singInstance :: forall t (a :: t). Sing a -> SingInstance a
 singInstance s = with_sing_i SingInstance
   where
     with_sing_i :: (SingI a => SingInstance a) -> SingInstance a
@@ -587,7 +587,7 @@ type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
 -- elsewhere in the library to write SingI instances for different TyCons,
 -- which relies on partial applications of ApplyTyCon:
 --
---   instance forall k1 k2 (f :: k1 -> k2).
+--   instance forall t1 k2 (f :: k1 -> k2).
 --            ( forall a. SingI a => SingI (f a)
 --            , (ApplyTyCon :: (k1 -> k2) -> (k1 ~> k2)) ~ ApplyTyConAux1
 --            ) => SingI (TyCon1 f) where
@@ -733,7 +733,7 @@ newtype SLambda (f :: k1 ~> k2) =
 type instance Sing = SLambda
 
 -- | An infix synonym for `applySing`
-(@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
+(@@) :: forall t1 t2 (f :: t1 ~> t2) (a :: t1). Sing f -> Sing a -> Sing (f @@ a)
 (@@) f = applySing f
 
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
@@ -909,10 +909,10 @@ withSingI sn r =
 
 -- | Convert a normal datatype (like 'Bool') to a singleton for that datatype,
 -- passing it into a continuation.
-withSomeSing :: forall k r
-              . SingKind k
-             => Demote k                          -- ^ The original datatype
-             -> (forall (a :: k). Sing a -> r)    -- ^ Function expecting a singleton
+withSomeSing :: forall t r
+              . SingKind t
+             => Demote t                          -- ^ The original datatype
+             -> (forall (a :: t). Sing a -> r)    -- ^ Function expecting a singleton
              -> r
 withSomeSing x f =
   case toSing x of
@@ -959,8 +959,8 @@ withSing2 f = f sing2
 -- property.  If the singleton does not satisfy the property, then the function
 -- returns 'Nothing'. The property is expressed in terms of the underlying
 -- representation of the singleton.
-singThat :: forall k (a :: k). (SingKind k, SingI a)
-         => (Demote k -> Bool) -> Maybe (Sing a)
+singThat :: forall t (a :: t). (SingKind t, SingI a)
+         => (Demote t -> Bool) -> Maybe (Sing a)
 singThat p = withSing $ \x -> if p (fromSing x) then Just x else Nothing
 
 -- | A convenience function that names a singleton for a unary type constructor
@@ -1028,7 +1028,7 @@ singByProxy2# _ = sing2
 -- (True,EQ)
 demote ::
 #if __GLASGOW_HASKELL__ >= 900
-  forall {k} (a :: k). (SingKind k, SingI a) => Demote k
+  forall {t} (a :: t). (SingKind t, SingI a) => Demote t
 #else
   forall a. (SingKind (KindOf a), SingI a) => Demote (KindOf a)
 #endif
@@ -1167,14 +1167,14 @@ type instance Apply DemoteSym0 x = Demote x
 -----
 
 #if __GLASGOW_HASKELL__ >= 810
-type SameKindSym0 :: forall k. k ~> k ~> Constraint
-type SameKindSym1 :: forall k. k -> k ~> Constraint
-type SameKindSym2 :: forall k. k -> k -> Constraint
+type SameKindSym0 :: forall t. t ~> t ~> Constraint
+type SameKindSym1 :: forall t. t -> t ~> Constraint
+type SameKindSym2 :: forall t. t -> t -> Constraint
 #endif
 
-data SameKindSym0 :: forall k. k ~> k ~> Constraint
-data SameKindSym1 :: forall k. k -> k ~> Constraint
-type SameKindSym2 (x :: k) (y :: k) = SameKind x y
+data SameKindSym0 :: forall t. t ~> t ~> Constraint
+data SameKindSym1 :: forall t. t -> t ~> Constraint
+type SameKindSym2 (x :: t) (y :: t) = SameKind x y
 
 type instance Apply SameKindSym0 x = SameKindSym1 x
 type instance Apply (SameKindSym1 x) y = SameKind x y
@@ -1182,11 +1182,11 @@ type instance Apply (SameKindSym1 x) y = SameKind x y
 -----
 
 #if __GLASGOW_HASKELL__ >= 810
-type KindOfSym0 :: forall k. k ~> Type
-type KindOfSym1 :: forall k. k -> Type
+type KindOfSym0 :: forall t. t ~> Type
+type KindOfSym1 :: forall t. t -> Type
 #endif
 
-data KindOfSym0 :: forall k. k ~> Type
+data KindOfSym0 :: forall t. t ~> Type
 type KindOfSym1 (x :: k) = KindOf x
 
 type instance Apply KindOfSym0 x = KindOf x
@@ -1273,8 +1273,8 @@ about singletons of other arbitrary singletons without the need to generate a
 bazillion instances. For reference, here is the definition of 'SWrappedSing':
 
 @
-newtype 'SWrappedSing' :: forall k (a :: k). 'WrappedSing' a -> Type where
-  'SWrapSing' :: forall k (a :: k) (ws :: 'WrappedSing' a).
+newtype 'SWrappedSing' :: forall t (a :: t). 'WrappedSing' a -> Type where
+  'SWrapSing' :: forall t (a :: t) (ws :: 'WrappedSing' a).
                  { 'sUnwrapSing' :: 'Sing' a } -> 'SWrappedSing' ws
 type instance 'Sing' \@('WrappedSing' a) = 'SWrappedSing'
 @
