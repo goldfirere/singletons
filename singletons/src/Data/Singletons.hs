@@ -229,8 +229,8 @@ various drawbacks:
 -- @
 --
 -- Here, @f@ uses methods from both 'SingI' and 'SingKind'. However, the shape
--- of each constraint is rather different: using 'sing' requires a 'SingI T'
--- constraint, whereas using 'fromSing' requires a 'SingKind K' constraint.
+-- of each constraint is rather different: using 'sing' requires a @SingI T@
+-- constraint, whereas using 'fromSing' requires a @SingKind K@ constraint.
 --
 -- If you need to satisfy this constraint with an explicit singleton, please
 -- see 'withSingI' or the v'Sing' pattern synonym.
