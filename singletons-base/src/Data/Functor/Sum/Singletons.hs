@@ -53,7 +53,7 @@ data SSum :: Sum f g a -> Type where
           Sing x -> SSum ('InL @f @g @a x)
   SInR :: forall f g a (y :: g a).
           Sing y -> SSum ('InR @f @g @a y)
-type instance Sing = SSum
+type instance Sing @(Sum f g a) = SSum
 instance SingI x => SingI ('InL x) where
   sing = SInL sing
 instance SingI1 'InL where

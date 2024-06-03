@@ -66,7 +66,7 @@ import Data.Text ( Text )
 ----------------------------------------------------------------------
 
 -- SNat
-type instance Sing = TN.SNat
+type instance Sing @Natural = TN.SNat
 
 instance TN.KnownNat n => SingI n where
   sing = TN.natSing
@@ -77,7 +77,7 @@ instance SingKind Natural where
   toSing n = TN.withSomeSNat n SomeSing
 
 -- STL.Symbol
-type instance Sing = TL.SSymbol
+type instance Sing @TL.Symbol = TL.SSymbol
 
 -- | An alias for the 'TL.SSymbol' pattern synonym.
 pattern SSym :: forall s. () => TL.KnownSymbol s => TL.SSymbol s
@@ -93,7 +93,7 @@ instance SingKind TL.Symbol where
   toSing s = TL.withSomeSSymbol (T.unpack s) SomeSing
 
 -- SChar
-type instance Sing = TL.SChar
+type instance Sing @Char = TL.SChar
 
 instance TL.KnownChar c => SingI c where
   sing = TL.charSing

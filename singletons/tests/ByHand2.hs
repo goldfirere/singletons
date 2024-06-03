@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds, PolyKinds, TypeFamilies, GADTs, TypeOperators,
              DefaultSignatures, ScopedTypeVariables, InstanceSigs,
              MultiParamTypeClasses, FunctionalDependencies,
-             UndecidableInstances, CPP #-}
+             UndecidableInstances, CPP, TypeApplications #-}
 {-# OPTIONS_GHC -Wno-missing-signatures -Wno-orphans #-}
 
 #if __GLASGOW_HASKELL__ < 806
@@ -27,7 +27,12 @@ type SNat :: Nat -> Type
 data SNat :: Nat -> Type where
   SZero :: SNat 'Zero
   SSucc :: SNat n -> SNat ('Succ n)
-type instance Sing = SNat
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Nat =
+#else
+type instance Sing =
+#endif
+  SNat
 
 {-
 type Bool :: Type
@@ -40,7 +45,12 @@ type SBool :: Bool -> Type
 data SBool :: Bool -> Type where
   SFalse :: SBool 'False
   STrue  :: SBool 'True
-type instance Sing = SBool
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Bool =
+#else
+type instance Sing =
+#endif
+  SBool
 
 {-
 type Ordering :: Type
@@ -54,7 +64,12 @@ data SOrdering :: Ordering -> Type where
   SLT :: SOrdering 'LT
   SEQ :: SOrdering 'EQ
   SGT :: SOrdering 'GT
-type instance Sing = SOrdering
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Ordering =
+#else
+type instance Sing =
+#endif
+  SOrdering
 
 {-
 not :: Bool -> Bool

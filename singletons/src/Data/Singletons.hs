@@ -405,7 +405,12 @@ type SWrappedSing :: forall k (a :: k). WrappedSing a -> Type
 newtype SWrappedSing :: forall k (a :: k). WrappedSing a -> Type where
   SWrapSing :: forall k (a :: k) (ws :: WrappedSing a).
                { sUnwrapSing :: Sing a } -> SWrappedSing ws
-type instance Sing = SWrappedSing
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(WrappedSing a) =
+#else
+type instance Sing =
+#endif
+  SWrappedSing
 
 #if __GLASGOW_HASKELL__ >= 810
 type UnwrapSing :: forall k (a :: k). WrappedSing a -> Sing a
@@ -591,7 +596,12 @@ type family ApplyTyCon :: (k1 -> k2) -> (k1 ~> unmatchable_fun) where
 --            ( forall a. SingI a => SingI (f a)
 --            , (ApplyTyCon :: (k1 -> k2) -> (k1 ~> k2)) ~ ApplyTyConAux1
 --            ) => SingI (TyCon1 f) where
-type instance Apply (TyCon f) x = ApplyTyCon f @@ x
+#if __GLASGOW_HASKELL__ >= 808
+type instance Apply @k1 @k3 (TyCon @k1 @k2 @(k1 ~> k3) f) x =
+#else
+type instance Apply (TyCon f) x =
+#endif
+  ApplyTyCon f @@ x
 
 -- | An \"internal\" defunctionalization symbol used primarily in the
 -- definition of 'ApplyTyCon', as well as the 'SingI' instances for 'TyCon1',
@@ -730,7 +740,12 @@ type SLambda :: (k1 ~> k2) -> Type
 #endif
 newtype SLambda (f :: k1 ~> k2) =
   SLambda { applySing :: forall t. Sing t -> Sing (f @@ t) }
-type instance Sing = SLambda
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(k1 ~> k2) =
+#else
+type instance Sing =
+#endif
+  SLambda
 
 -- | An infix synonym for `applySing`
 (@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)

@@ -98,9 +98,15 @@ type SNat :: Nat -> Type
 data SNat :: Nat -> Type where
   SZero :: SNat Zero
   SSucc :: SNat n -> SNat (Succ n)
-type instance Sing = SNat
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Nat =
+#else
+type instance Sing =
+#endif
+  SNat
 
-#if __GLASGOW_HASKELL__ >= 810
+#if _
+_GLASGOW_HASKELL__ >= 810
 type SuccSym0 :: Nat ~> Nat
 #endif
 data SuccSym0 :: Nat ~> Nat
@@ -152,7 +158,12 @@ type SBool :: Bool -> Type
 data SBool :: Bool -> Type where
   SFalse :: SBool False
   STrue :: SBool True
-type instance Sing = SBool
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Bool =
+#else
+type instance Sing =
+#endif
+  SBool
 
 {-
 (&&) :: Bool -> Bool -> Bool
@@ -192,7 +203,12 @@ type SMaybe :: forall k. Maybe k -> Type
 data SMaybe :: forall k. Maybe k -> Type where
   SNothing :: SMaybe Nothing
   SJust :: forall k (a :: k). Sing a -> SMaybe (Just a)
-type instance Sing = SMaybe
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(Maybe k) =
+#else
+type instance Sing =
+#endif
+  SMaybe
 
 #if __GLASGOW_HASKELL__ >= 810
 type EqualsMaybe :: Maybe k -> Maybe k -> Bool
@@ -242,7 +258,12 @@ type SList :: forall k. List k -> Type
 data SList :: forall k. List k -> Type where
   SNil :: SList Nil
   SCons :: forall k (h :: k) (t :: List k). Sing h -> SList t -> SList (Cons h t)
-type instance Sing = SList
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(List k) =
+#else
+type instance Sing =
+#endif
+  SList
 
 #if __GLASGOW_HASKELL__ >= 810
 type NilSym0 :: List a
@@ -315,7 +336,12 @@ type SEither :: forall k1 k2. Either k1 k2 -> Type
 data SEither :: forall k1 k2. Either k1 k2 -> Type where
   SLeft :: forall k1 (a :: k1). Sing a -> SEither (Left a)
   SRight :: forall k2 (b :: k2). Sing b -> SEither (Right b)
-type instance Sing = SEither
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(Either k1 k2) =
+#else
+type instance Sing =
+#endif
+  SEither
 
 instance (SingI a) => SingI (Left (a :: k)) where
   sing = SLeft sing
@@ -361,7 +387,12 @@ type SComposite :: forall k1 k2. Composite k1 k2 -> Type
 #endif
 data SComposite :: forall k1 k2. Composite k1 k2 -> Type where
   SMkComp :: forall k1 k2 (a :: Either (Maybe k1) k2). SEither a -> SComposite (MkComp a)
-type instance Sing = SComposite
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(Composite k1 k2) =
+#else
+type instance Sing =
+#endif
+  SComposite
 
 instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
@@ -393,7 +424,12 @@ type SEmpty :: Empty -> Type
 #endif
 data SEmpty :: Empty -> Type
 
-type instance Sing = SEmpty
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Empty =
+#else
+type instance Sing =
+#endif
+  SEmpty
 instance SingKind Empty where
   type Demote Empty = Empty
   fromSing = \case
@@ -420,7 +456,12 @@ data SRep :: Type -> Type where
   SNat :: SRep Nat
   SMaybe :: SRep a -> SRep (Maybe a)
   SVec :: SRep a -> SNat n -> SRep (Vec a n)
-type instance Sing = SRep
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @Type =
+#else
+type instance Sing =
+#endif
+  SRep
 
 instance SingI Nat where
   sing = SNat
@@ -1039,4 +1080,9 @@ type SG :: forall a. G a -> Type
 #endif
 data SG :: forall a. G a -> Type where
   SMkG :: SG MkG
-type instance Sing = SG
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(G a) =
+#else
+type instance Sing =
+#endif
+  SG

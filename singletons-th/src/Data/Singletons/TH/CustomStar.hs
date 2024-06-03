@@ -66,7 +66,7 @@ import Language.Haskell.TH.Desugar
 -- >   SNat :: Sing Nat
 -- >   SBool :: Sing Bool
 -- >   SMaybe :: Sing a -> Sing (Maybe a)
--- > type instance Sing = SRep
+-- > type instance Sing @(*) = SRep
 --
 -- The unexpected part is that @Nat@, @Bool@, and @Maybe@ above are the real @Nat@,
 -- @Bool@, and @Maybe@, not just promoted data constructors.

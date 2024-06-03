@@ -53,7 +53,7 @@ type SCompose :: Compose f g a -> Type
 data SCompose :: Compose f g a -> Type where
   SCompose :: forall f g a (x :: f (g a)).
               Sing x -> SCompose ('Compose @f @g @a x)
-type instance Sing = SCompose
+type instance Sing @(Compose f g a) = SCompose
 instance SingI x => SingI ('Compose x) where
   sing = SCompose sing
 instance SingI1 'Compose where
