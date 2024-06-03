@@ -275,12 +275,15 @@ defunctionalize name m_fixity defun_ki = do
                     sat_decs = mk_sat_decs opts n sak_tvbs' arg_tvbs (Just sak_res_ki)
                 in (sak_res_ki, sat_sak_dec:sat_decs)
               res_nk:res_nks ->
-                let (res_ki, decs)   = go (n+1) (arg_nks ++ [res_nk]) res_nks
-                    tyfun            = buildTyFunArrow (snd res_nk) res_ki
+                let (tyfun_res_ki, decs) = go (n+1) (arg_nks ++ [res_nk]) res_nks
+                    tyfun_arg_ki     = snd res_nk
+                    tyfun            = buildTyFunArrow tyfun_arg_ki tyfun_res_ki
                     defun_sak_dec    = mk_sak_dec tyfun
                     defun_other_decs = mk_defun_decs opts n sak_arg_n
                                                      arg_tvbs (fst res_nk)
-                                                     extra_name (Just tyfun)
+                                                     (Just tyfun_arg_ki)
+                                                     (Just tyfun_res_ki)
+                                                     extra_name
                 in (tyfun, defun_sak_dec:defun_other_decs ++ decs)
 
       pure $ snd $ go 0 [] $ zip arg_names sak_arg_kis
@@ -330,12 +333,14 @@ defunctionalize name m_fixity defun_ki = do
                 let sat_decs = mk_sat_decs opts n [] all_tvbs m_res
                 in (m_res, sat_decs)
               res_tvb:res_tvbs ->
-                let (m_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
-                    m_tyfun          = buildTyFunArrow_maybe (extractTvbKind res_tvb)
-                                                             m_res_ki
-                    defun_decs'      = mk_defun_decs opts n tvbs_n all_tvbs
-                                                     (extractTvbName res_tvb)
-                                                     extra_name m_tyfun
+                let (m_tyfun_res_ki, decs) = go (n+1) (arg_tvbs ++ [res_tvb]) res_tvbs
+                    m_tyfun_arg_ki = extractTvbKind res_tvb
+                    m_tyfun        = buildTyFunArrow_maybe m_tyfun_arg_ki
+                                                           m_tyfun_res_ki
+                    defun_decs'    = mk_defun_decs opts n tvbs_n all_tvbs
+                                                   (extractTvbName res_tvb)
+                                                   m_tyfun_arg_ki m_tyfun_res_ki
+                                                   extra_name
                 in (m_tyfun, defun_decs' ++ decs)
 
       pure $ snd $ go 0 [] tvbs
@@ -345,10 +350,11 @@ defunctionalize name m_fixity defun_ki = do
                   -> Int
                   -> [DTyVarBndrVis]
                   -> Name
-                  -> Name
                   -> Maybe DKind
+                  -> Maybe DKind
+                  -> Name
                   -> [DDec]
-    mk_defun_decs opts n fully_sat_n arg_tvbs tyfun_name extra_name m_tyfun =
+    mk_defun_decs opts n fully_sat_n arg_tvbs tyfun_name m_tyfun_arg_ki m_tyfun_res_ki extra_name =
       let data_name   = defunctionalizedName opts name n
           next_name   = defunctionalizedName opts name (n+1)
           con_name    = prefixName "" ":" $ suffixName "KindInference" "###" data_name
@@ -362,12 +368,23 @@ defunctionalize name m_fixity defun_ki = do
                              (foldTypeTvbs (DConT data_name) params)
           data_decl   = DDataD Data [] data_name args m_tyfun [con_decl] []
             where
+              m_tyfun = buildTyFunArrow_maybe m_tyfun_arg_ki m_tyfun_res_ki
+
               args | isJust m_tyfun = arg_tvbs
                    | otherwise      = params
           app_data_ty = foldTypeTvbs (DConT data_name) arg_tvbs
           app_eqn     = DTySynEqn Nothing
-                                  (DConT applyName `DAppT` app_data_ty
-                                                   `DAppT` DVarT tyfun_name)
+                                  (DConT applyName
+                                    -- If possible, specify kind arguments to
+                                    -- Apply using explicit kind applications,
+                                    -- falling back on type wildcards when the
+                                    -- kinds are not known. See
+                                    -- Note [Defunctionalization game plan],
+                                    -- Wrinkle 2: Non-vanilla kinds.
+                                    `DAppKindT` fromMaybe DWildCardT m_tyfun_arg_ki
+                                    `DAppKindT` fromMaybe DWildCardT m_tyfun_res_ki
+                                    `DAppT` app_data_ty
+                                    `DAppT` DVarT tyfun_name)
                                   (foldTypeTvbs (DConT app_eqn_rhs_name) params)
           -- If the next defunctionalization symbol is fully saturated, then
           -- use the original declaration name instead.
@@ -725,9 +742,35 @@ for Quux. Once again, we fall back to the partial kind algorithm:
   type family QuuxSym2 (k :: Type) (x :: k) :: Type where ...
 
 The catch is that the kind of QuuxSym0, `forall k. Type ~> k ~> Type`, is
-slightly more general than it ought to be. In practice, however, this is
-unlikely to be a problem as long as you apply QuuxSym0 to arguments of the
-right kinds.
+slightly more general than it ought to be. In practice, however, this is not a
+problem as long as we apply QuuxSym0 to arguments of the right kinds. In
+particular, we must be careful when generating an `Apply` instance for
+`QuuxSym0`. In particular, we do /not/ want to generate this instance:
+
+  type instance Apply QuuxSym0 k = QuuxSym1 k
+
+When GHC kind-checks this instance, it will determine what the kind of the
+right-hand side should be by only looking at the left-hand side. As a result,
+GHC will conclude that the instance should have this shape:
+
+  type instance Apply @Type @(k1 ~> Type) PSym0 k =
+    QuuxSym1 k :: k1 ~> Type
+
+Where `k1` is distinct from `k`. This is wrong, because `QuuxSym1 k` has kind
+`k1 ~> Type`, not `k ~> Type`! As such, GHC would reject this instance.
+
+The tricky part is that `QuuxSym0`'s kind does not require its second argument
+to have the same kind as its first argument, so `Apply PSym0 k :: k1 ~> Type`
+is the most general kind it can have. We want to prevent GHC from doing this
+sort of kind generalization, so we instead generate this Apply instance:
+
+  type instance Apply @Type @(k ~> Type) QuuxSym0 k = QuuxSym1 k
+
+Now the right-hand side is required to have kind `k ~> Type`, and all is well.
+
+Of course, not all Apply instances that we generate will know what kinds to use.
+If we don't know what kinds to use, we generate `type instance Apply @_ @_ ...`
+instead, using type wildcards to let GHC infer the kinds.
 
 Note [Fully saturated defunctionalization symbols]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

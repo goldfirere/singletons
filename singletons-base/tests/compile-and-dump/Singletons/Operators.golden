@@ -30,7 +30,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (::+:@#@$###) :: SameKind (Apply (:+:@#@$) arg) ((:+:@#@$$) arg) =>
                          (:+:@#@$) a0123456789876543210
-    type instance Apply (:+:@#@$) a0123456789876543210 = (:+:@#@$$) a0123456789876543210
+    type instance Apply @Foo @((~>) Foo Foo) (:+:@#@$) a0123456789876543210 = (:+:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:+:@#@$) where
       suppressUnusedWarnings = snd ((,) (::+:@#@$###) ())
     type (:+:@#@$$) :: Foo -> (~>) Foo Foo
@@ -38,7 +38,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (::+:@#@$$###) :: SameKind (Apply ((:+:@#@$$) a0123456789876543210) arg) ((:+:@#@$$$) a0123456789876543210 arg) =>
                           (:+:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:+:@#@$$) a0123456789876543210) a0123456789876543210 = (:+:) a0123456789876543210 a0123456789876543210
+    type instance Apply @Foo @Foo ((:+:@#@$$) a0123456789876543210) a0123456789876543210 = (:+:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:+:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::+:@#@$$###) ())
     type (:+:@#@$$$) :: Foo -> Foo -> Foo
@@ -49,7 +49,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (:+@#@$###) :: SameKind (Apply (+@#@$) arg) ((+@#@$$) arg) =>
                        (+@#@$) a0123456789876543210
-    type instance Apply (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Nat) (+@#@$) a0123456789876543210 = (+@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (+@#@$) where
       suppressUnusedWarnings = snd ((,) (:+@#@$###) ())
     type (+@#@$$) :: Nat -> (~>) Nat Nat
@@ -57,7 +57,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         (:+@#@$$###) :: SameKind (Apply ((+@#@$$) a0123456789876543210) arg) ((+@#@$$$) a0123456789876543210 arg) =>
                         (+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Nat ((+@#@$$) a0123456789876543210) a0123456789876543210 = (+) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((+@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:+@#@$$###) ())
     type (+@#@$$$) :: Nat -> Nat -> Nat
@@ -68,7 +68,7 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       where
         ChildSym0KindInference :: SameKind (Apply ChildSym0 arg) (ChildSym1 arg) =>
                                   ChildSym0 a0123456789876543210
-    type instance Apply ChildSym0 a0123456789876543210 = Child a0123456789876543210
+    type instance Apply @Foo @Foo ChildSym0 a0123456789876543210 = Child a0123456789876543210
     instance SuppressUnusedWarnings ChildSym0 where
       suppressUnusedWarnings = snd ((,) ChildSym0KindInference ())
     type ChildSym1 :: Foo -> Foo

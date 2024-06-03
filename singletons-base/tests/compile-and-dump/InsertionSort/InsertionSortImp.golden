@@ -10,7 +10,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         SuccSym0KindInference :: SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
                                  SuccSym0 a0123456789876543210
-    type instance Apply SuccSym0 a0123456789876543210 = Succ a0123456789876543210
+    type instance Apply @Nat @Nat SuccSym0 a0123456789876543210 = Succ a0123456789876543210
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: Nat -> Nat
@@ -73,7 +73,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         InsertionSortSym0KindInference :: SameKind (Apply InsertionSortSym0 arg) (InsertionSortSym1 arg) =>
                                           InsertionSortSym0 a0123456789876543210
-    type instance Apply InsertionSortSym0 a0123456789876543210 = InsertionSort a0123456789876543210
+    type instance Apply @[Nat] @[Nat] InsertionSortSym0 a0123456789876543210 = InsertionSort a0123456789876543210
     instance SuppressUnusedWarnings InsertionSortSym0 where
       suppressUnusedWarnings
         = snd ((,) InsertionSortSym0KindInference ())
@@ -85,7 +85,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         InsertSym0KindInference :: SameKind (Apply InsertSym0 arg) (InsertSym1 arg) =>
                                    InsertSym0 a0123456789876543210
-    type instance Apply InsertSym0 a0123456789876543210 = InsertSym1 a0123456789876543210
+    type instance Apply @Nat @((~>) [Nat] [Nat]) InsertSym0 a0123456789876543210 = InsertSym1 a0123456789876543210
     instance SuppressUnusedWarnings InsertSym0 where
       suppressUnusedWarnings = snd ((,) InsertSym0KindInference ())
     type InsertSym1 :: Nat -> (~>) [Nat] [Nat]
@@ -93,7 +93,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         InsertSym1KindInference :: SameKind (Apply (InsertSym1 a0123456789876543210) arg) (InsertSym2 a0123456789876543210 arg) =>
                                    InsertSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (InsertSym1 a0123456789876543210) a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
+    type instance Apply @[Nat] @[Nat] (InsertSym1 a0123456789876543210) a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (InsertSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) InsertSym1KindInference ())
     type InsertSym2 :: Nat -> [Nat] -> [Nat]
@@ -104,7 +104,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         LeqSym0KindInference :: SameKind (Apply LeqSym0 arg) (LeqSym1 arg) =>
                                 LeqSym0 a0123456789876543210
-    type instance Apply LeqSym0 a0123456789876543210 = LeqSym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Bool) LeqSym0 a0123456789876543210 = LeqSym1 a0123456789876543210
     instance SuppressUnusedWarnings LeqSym0 where
       suppressUnusedWarnings = snd ((,) LeqSym0KindInference ())
     type LeqSym1 :: Nat -> (~>) Nat Bool
@@ -112,7 +112,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
       where
         LeqSym1KindInference :: SameKind (Apply (LeqSym1 a0123456789876543210) arg) (LeqSym2 a0123456789876543210 arg) =>
                                 LeqSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (LeqSym1 a0123456789876543210) a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Bool (LeqSym1 a0123456789876543210) a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LeqSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) LeqSym1KindInference ())
     type LeqSym2 :: Nat -> Nat -> Bool

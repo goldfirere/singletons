@@ -16,7 +16,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply @Foo @() FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: Foo -> ()
@@ -43,7 +43,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
       where
         BSym0KindInference :: SameKind (Apply BSym0 arg) (BSym1 arg) =>
                               BSym0 a0123456789876543210
-    type instance Apply BSym0 a0123456789876543210 = B a0123456789876543210
+    type instance Apply @Bar @() BSym0 a0123456789876543210 = B a0123456789876543210
     instance SuppressUnusedWarnings BSym0 where
       suppressUnusedWarnings = snd ((,) BSym0KindInference ())
     type BSym1 :: Bar -> ()

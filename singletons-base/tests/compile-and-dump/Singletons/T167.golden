@@ -13,7 +13,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrecSym0KindInference :: SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
                                      FoosPrecSym0 a0123456789876543210
-    type instance Apply FoosPrecSym0 a0123456789876543210 = FoosPrecSym1 a0123456789876543210
+    type instance Apply @Natural @((~>) a ((~>) [Bool] [Bool])) FoosPrecSym0 a0123456789876543210 = FoosPrecSym1 a0123456789876543210
     instance SuppressUnusedWarnings FoosPrecSym0 where
       suppressUnusedWarnings = snd ((,) FoosPrecSym0KindInference ())
     type FoosPrecSym1 :: forall a. Natural
@@ -22,7 +22,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrecSym1KindInference :: SameKind (Apply (FoosPrecSym1 a0123456789876543210) arg) (FoosPrecSym2 a0123456789876543210 arg) =>
                                      FoosPrecSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FoosPrecSym1 a0123456789876543210) a0123456789876543210 = FoosPrecSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @a @((~>) [Bool] [Bool]) (FoosPrecSym1 a0123456789876543210) a0123456789876543210 = FoosPrecSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FoosPrecSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FoosPrecSym1KindInference ())
     type FoosPrecSym2 :: forall a. Natural -> a -> (~>) [Bool] [Bool]
@@ -30,7 +30,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrecSym2KindInference :: SameKind (Apply (FoosPrecSym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrecSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                      FoosPrecSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (FoosPrecSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @[Bool] @[Bool] (FoosPrecSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FoosPrecSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FoosPrecSym2KindInference ())
     type FoosPrecSym3 :: forall a. Natural -> a -> [Bool] -> [Bool]
@@ -41,7 +41,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FooListSym0KindInference :: SameKind (Apply FooListSym0 arg) (FooListSym1 arg) =>
                                     FooListSym0 a0123456789876543210
-    type instance Apply FooListSym0 a0123456789876543210 = FooListSym1 a0123456789876543210
+    type instance Apply @a @((~>) [Bool] [Bool]) FooListSym0 a0123456789876543210 = FooListSym1 a0123456789876543210
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings = snd ((,) FooListSym0KindInference ())
     type FooListSym1 :: forall a. a -> (~>) [Bool] [Bool]
@@ -49,7 +49,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FooListSym1KindInference :: SameKind (Apply (FooListSym1 a0123456789876543210) arg) (FooListSym2 a0123456789876543210 arg) =>
                                     FooListSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooListSym1 a0123456789876543210) a0123456789876543210 = FooList a0123456789876543210 a0123456789876543210
+    type instance Apply @[Bool] @[Bool] (FooListSym1 a0123456789876543210) a0123456789876543210 = FooList a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FooListSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FooListSym1KindInference ())
     type FooListSym2 :: forall a. a -> [Bool] -> [Bool]
@@ -63,7 +63,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FooList_0123456789876543210Sym0KindInference :: SameKind (Apply FooList_0123456789876543210Sym0 arg) (FooList_0123456789876543210Sym1 arg) =>
                                                         FooList_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FooList_0123456789876543210Sym0 a0123456789876543210 = FooList_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @a @((~>) [Bool] [Bool]) FooList_0123456789876543210Sym0 a0123456789876543210 = FooList_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings FooList_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) FooList_0123456789876543210Sym0KindInference ())
@@ -73,7 +73,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FooList_0123456789876543210Sym1KindInference :: SameKind (Apply (FooList_0123456789876543210Sym1 a0123456789876543210) arg) (FooList_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         FooList_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooList_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FooList_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @[Bool] @[Bool] (FooList_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FooList_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FooList_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) FooList_0123456789876543210Sym1KindInference ())
@@ -94,7 +94,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrec_0123456789876543210Sym0KindInference :: SameKind (Apply FoosPrec_0123456789876543210Sym0 arg) (FoosPrec_0123456789876543210Sym1 arg) =>
                                                          FoosPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FoosPrec_0123456789876543210Sym0 a0123456789876543210 = FoosPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Natural @((~>) [a] ((~>) [Bool] [Bool])) FoosPrec_0123456789876543210Sym0 a0123456789876543210 = FoosPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings FoosPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) FoosPrec_0123456789876543210Sym0KindInference ())
@@ -104,7 +104,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (FoosPrec_0123456789876543210Sym1 a0123456789876543210) arg) (FoosPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          FoosPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FoosPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @[a] @((~>) [Bool] [Bool]) (FoosPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FoosPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) FoosPrec_0123456789876543210Sym1KindInference ())
@@ -114,7 +114,7 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       where
         FoosPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                          FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @[Bool] @[Bool] (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FoosPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) FoosPrec_0123456789876543210Sym2KindInference ())

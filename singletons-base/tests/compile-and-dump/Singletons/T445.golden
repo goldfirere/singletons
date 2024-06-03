@@ -6,7 +6,7 @@ Singletons/T445.hs:0:0:: Splicing declarations
       where
         LitSym0KindInference :: SameKind (Apply LitSym0 arg) (LitSym1 arg) =>
                                 LitSym0 a0123456789876543210
-    type instance Apply LitSym0 a0123456789876543210 = Lit a0123456789876543210
+    type instance Apply @Natural @Nat LitSym0 a0123456789876543210 = Lit a0123456789876543210
     instance SuppressUnusedWarnings LitSym0 where
       suppressUnusedWarnings = snd ((,) LitSym0KindInference ())
     type LitSym1 :: Natural -> Nat
@@ -27,7 +27,7 @@ Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
       where
         Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (Lambda_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210 x0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x0123456789876543210
+    type instance Apply @_ @_ (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a_01234567898765432100123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
@@ -38,7 +38,7 @@ Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
       where
         FilterEvenGt7Sym0KindInference :: SameKind (Apply FilterEvenGt7Sym0 arg) (FilterEvenGt7Sym1 arg) =>
                                           FilterEvenGt7Sym0 a0123456789876543210
-    type instance Apply FilterEvenGt7Sym0 a0123456789876543210 = FilterEvenGt7 a0123456789876543210
+    type instance Apply @[Nat] @[Nat] FilterEvenGt7Sym0 a0123456789876543210 = FilterEvenGt7 a0123456789876543210
     instance SuppressUnusedWarnings FilterEvenGt7Sym0 where
       suppressUnusedWarnings
         = snd ((,) FilterEvenGt7Sym0KindInference ())
@@ -50,7 +50,7 @@ Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
       where
         EvenbSym0KindInference :: SameKind (Apply EvenbSym0 arg) (EvenbSym1 arg) =>
                                   EvenbSym0 a0123456789876543210
-    type instance Apply EvenbSym0 a0123456789876543210 = Evenb a0123456789876543210
+    type instance Apply @Nat @Bool EvenbSym0 a0123456789876543210 = Evenb a0123456789876543210
     instance SuppressUnusedWarnings EvenbSym0 where
       suppressUnusedWarnings = snd ((,) EvenbSym0KindInference ())
     type EvenbSym1 :: Nat -> Bool

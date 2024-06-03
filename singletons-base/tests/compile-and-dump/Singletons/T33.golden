@@ -10,7 +10,8 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply @(Bool,
+                          Bool) @() FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: (Bool, Bool) -> ()
@@ -26,7 +27,6 @@ Singletons/T33.hs:(0,0)-(0,0): Splicing declarations
     sFoo (STuple2 _ _) = STuple0
     instance SingI (FooSym0 :: (~>) (Bool, Bool) ()) where
       sing = singFun1 @FooSym0 sFoo
-
 Singletons/T33.hs:0:0: warning: [GHC-39584]
     Lazy pattern converted into regular pattern during singleton generation.
   |
@@ -38,3 +38,4 @@ Singletons/T33.hs:0:0: warning: [GHC-39584]
   |
 6 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...
+

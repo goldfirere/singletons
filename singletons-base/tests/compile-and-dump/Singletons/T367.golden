@@ -8,7 +8,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       where
         Const'Sym0KindInference :: SameKind (Apply Const'Sym0 arg) (Const'Sym1 arg) =>
                                    Const'Sym0 a0123456789876543210
-    type instance Apply Const'Sym0 a0123456789876543210 = Const'Sym1 a0123456789876543210
+    type instance Apply @a @((~>) b a) Const'Sym0 a0123456789876543210 = Const'Sym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings Const'Sym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) Const'Sym0KindInference ())
@@ -17,7 +17,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       where
         Const'Sym1KindInference :: SameKind (Apply (Const'Sym1 a0123456789876543210) arg) (Const'Sym2 a0123456789876543210 arg) =>
                                    Const'Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
+    type instance Apply @b @a (Const'Sym1 a0123456789876543210) a0123456789876543210 = Const' a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (Const'Sym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) Const'Sym1KindInference ())

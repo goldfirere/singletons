@@ -15,7 +15,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       where
         MkAgeSym0KindInference :: SameKind (Apply MkAgeSym0 arg) (MkAgeSym1 arg) =>
                                   MkAgeSym0 a0123456789876543210
-    type instance Apply MkAgeSym0 a0123456789876543210 = MkAge a0123456789876543210
+    type instance Apply @Natural @Age MkAgeSym0 a0123456789876543210 = MkAge a0123456789876543210
     instance SuppressUnusedWarnings MkAgeSym0 where
       suppressUnusedWarnings = snd ((,) MkAgeSym0KindInference ())
     type MkAgeSym1 :: Natural -> Age
@@ -26,7 +26,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       where
         AddAgeSym0KindInference :: SameKind (Apply AddAgeSym0 arg) (AddAgeSym1 arg) =>
                                    AddAgeSym0 a0123456789876543210
-    type instance Apply AddAgeSym0 a0123456789876543210 = AddAgeSym1 a0123456789876543210
+    type instance Apply @Age @((~>) Age Age) AddAgeSym0 a0123456789876543210 = AddAgeSym1 a0123456789876543210
     instance SuppressUnusedWarnings AddAgeSym0 where
       suppressUnusedWarnings = snd ((,) AddAgeSym0KindInference ())
     type AddAgeSym1 :: Age -> (~>) Age Age
@@ -34,7 +34,7 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       where
         AddAgeSym1KindInference :: SameKind (Apply (AddAgeSym1 a0123456789876543210) arg) (AddAgeSym2 a0123456789876543210 arg) =>
                                    AddAgeSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AddAgeSym1 a0123456789876543210) a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
+    type instance Apply @Age @Age (AddAgeSym1 a0123456789876543210) a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AddAgeSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) AddAgeSym1KindInference ())
     type AddAgeSym2 :: Age -> Age -> Age

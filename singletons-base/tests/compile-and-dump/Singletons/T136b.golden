@@ -10,7 +10,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
       where
         MethSym0KindInference :: SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
                                  MethSym0 a0123456789876543210
-    type instance Apply MethSym0 a0123456789876543210 = Meth a0123456789876543210
+    type instance Apply @a @a MethSym0 a0123456789876543210 = Meth a0123456789876543210
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
@@ -38,7 +38,7 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
       where
         Meth_0123456789876543210Sym0KindInference :: SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
                                                      Meth_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @Bool Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Meth_0123456789876543210Sym0KindInference ())

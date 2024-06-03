@@ -17,7 +17,7 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
       where
         SymIdSym0KindInference :: SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
                                   SymIdSym0 a0123456789876543210
-    type instance Apply SymIdSym0 a0123456789876543210 = SymId a0123456789876543210
+    type instance Apply @Symbol @Symbol SymIdSym0 a0123456789876543210 = SymId a0123456789876543210
     instance SuppressUnusedWarnings SymIdSym0 where
       suppressUnusedWarnings = snd ((,) SymIdSym0KindInference ())
     type SymIdSym1 :: Symbol -> Symbol

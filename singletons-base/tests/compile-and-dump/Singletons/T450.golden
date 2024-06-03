@@ -41,7 +41,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         PMkMessageSym0KindInference :: SameKind (Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
                                        PMkMessageSym0 a0123456789876543210
-    type instance Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    type instance Apply @Symbol @PMessage PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
     instance SuppressUnusedWarnings PMkMessageSym0 where
       suppressUnusedWarnings = snd ((,) PMkMessageSym0KindInference ())
     type PMkMessageSym1 :: Symbol -> PMessage
@@ -73,7 +73,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         AppendMessageSym0KindInference :: SameKind (Apply AppendMessageSym0 arg) (AppendMessageSym1 arg) =>
                                           AppendMessageSym0 a0123456789876543210
-    type instance Apply AppendMessageSym0 a0123456789876543210 = AppendMessageSym1 a0123456789876543210
+    type instance Apply @PMessage @((~>) PMessage PMessage) AppendMessageSym0 a0123456789876543210 = AppendMessageSym1 a0123456789876543210
     instance SuppressUnusedWarnings AppendMessageSym0 where
       suppressUnusedWarnings
         = snd ((,) AppendMessageSym0KindInference ())
@@ -82,7 +82,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         AppendMessageSym1KindInference :: SameKind (Apply (AppendMessageSym1 a0123456789876543210) arg) (AppendMessageSym2 a0123456789876543210 arg) =>
                                           AppendMessageSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AppendMessageSym1 a0123456789876543210) a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
+    type instance Apply @PMessage @PMessage (AppendMessageSym1 a0123456789876543210) a0123456789876543210 = AppendMessage a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AppendMessageSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) AppendMessageSym1KindInference ())
@@ -123,7 +123,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         PMkFunctionSym0KindInference :: SameKind (Apply PMkFunctionSym0 arg) (PMkFunctionSym1 arg) =>
                                         PMkFunctionSym0 a0123456789876543210
-    type instance Apply PMkFunctionSym0 a0123456789876543210 = 'PMkFunction a0123456789876543210
+    type instance Apply @((~>) a b) @(PFunction a b) PMkFunctionSym0 a0123456789876543210 = 'PMkFunction a0123456789876543210
     instance SuppressUnusedWarnings PMkFunctionSym0 where
       suppressUnusedWarnings = snd ((,) PMkFunctionSym0KindInference ())
     type PMkFunctionSym1 :: forall (a :: Type) (b :: Type). (~>) a b
@@ -160,7 +160,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         ComposeFunctionSym0KindInference :: SameKind (Apply ComposeFunctionSym0 arg) (ComposeFunctionSym1 arg) =>
                                             ComposeFunctionSym0 a0123456789876543210
-    type instance Apply ComposeFunctionSym0 a0123456789876543210 = ComposeFunctionSym1 a0123456789876543210
+    type instance Apply @(PFunction b c) @((~>) (PFunction a b) (PFunction a c)) ComposeFunctionSym0 a0123456789876543210 = ComposeFunctionSym1 a0123456789876543210
     instance SuppressUnusedWarnings ComposeFunctionSym0 where
       suppressUnusedWarnings
         = snd ((,) ComposeFunctionSym0KindInference ())
@@ -170,7 +170,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       where
         ComposeFunctionSym1KindInference :: SameKind (Apply (ComposeFunctionSym1 a0123456789876543210) arg) (ComposeFunctionSym2 a0123456789876543210 arg) =>
                                             ComposeFunctionSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ComposeFunctionSym1 a0123456789876543210) a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
+    type instance Apply @(PFunction a b) @(PFunction a c) (ComposeFunctionSym1 a0123456789876543210) a0123456789876543210 = ComposeFunction a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ComposeFunctionSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ComposeFunctionSym1KindInference ())

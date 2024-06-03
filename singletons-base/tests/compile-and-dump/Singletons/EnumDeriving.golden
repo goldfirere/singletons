@@ -41,7 +41,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @Foo ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
@@ -59,7 +59,7 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @Foo @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
@@ -157,7 +157,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @Quux ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
@@ -175,7 +175,7 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @Quux @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())

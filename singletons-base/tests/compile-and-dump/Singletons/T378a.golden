@@ -35,7 +35,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       where
         ConstBASym0KindInference :: SameKind (Apply ConstBASym0 arg) (ConstBASym1 arg) =>
                                     ConstBASym0 a0123456789876543210
-    type instance Apply ConstBASym0 a0123456789876543210 = ConstBASym1 a0123456789876543210
+    type instance Apply @a @((~>) b a) ConstBASym0 a0123456789876543210 = ConstBASym1 a0123456789876543210
     instance SuppressUnusedWarnings ConstBASym0 where
       suppressUnusedWarnings = snd ((,) ConstBASym0KindInference ())
     type ConstBASym1 :: forall b a. a -> (~>) b a
@@ -43,7 +43,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       where
         ConstBASym1KindInference :: SameKind (Apply (ConstBASym1 a0123456789876543210) arg) (ConstBASym2 a0123456789876543210 arg) =>
                                     ConstBASym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ConstBASym1 a0123456789876543210) a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
+    type instance Apply @b @a (ConstBASym1 a0123456789876543210) a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ConstBASym1KindInference ())
     type ConstBASym2 :: forall b a. a -> b -> a

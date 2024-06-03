@@ -79,7 +79,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Let0123456789876543210GSym0KindInference :: SameKind (Apply (Let0123456789876543210GSym0 x0123456789876543210) arg) (Let0123456789876543210GSym1 x0123456789876543210 arg) =>
                                                     Let0123456789876543210GSym0 x0123456789876543210 a0123456789876543210
-    type instance Apply (Let0123456789876543210GSym0 x0123456789876543210) a0123456789876543210 = Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210
+    type instance Apply @b0123456789876543210 @((~>) a0123456789876543210 b0123456789876543210) (Let0123456789876543210GSym0 x0123456789876543210) a0123456789876543210 = Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210GSym0 x0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Let0123456789876543210GSym0KindInference ())
@@ -87,7 +87,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Let0123456789876543210GSym1KindInference :: SameKind (Apply (Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210) arg) (Let0123456789876543210GSym2 x0123456789876543210 a0123456789876543210 arg) =>
                                                     Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210) a0123456789876543210 = Let0123456789876543210G x0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @a0123456789876543210 @b0123456789876543210 (Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210) a0123456789876543210 = Let0123456789876543210G x0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210GSym1 x0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Let0123456789876543210GSym1KindInference ())
@@ -111,7 +111,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Let0123456789876543210GSym0KindInference :: SameKind (Apply (Let0123456789876543210GSym0 local0123456789876543210) arg) (Let0123456789876543210GSym1 local0123456789876543210 arg) =>
                                                     Let0123456789876543210GSym0 local0123456789876543210 a0123456789876543210
-    type instance Apply (Let0123456789876543210GSym0 local0123456789876543210) a0123456789876543210 = Let0123456789876543210G local0123456789876543210 a0123456789876543210
+    type instance Apply @a0123456789876543210 @a0123456789876543210 (Let0123456789876543210GSym0 local0123456789876543210) a0123456789876543210 = Let0123456789876543210G local0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Let0123456789876543210GSym0 local0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Let0123456789876543210GSym0KindInference ())
@@ -124,7 +124,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id8Sym0KindInference :: SameKind (Apply Id8Sym0 arg) (Id8Sym1 arg) =>
                                 Id8Sym0 a0123456789876543210
-    type instance Apply Id8Sym0 a0123456789876543210 = Id8 a0123456789876543210
+    type instance Apply @a @a Id8Sym0 a0123456789876543210 = Id8 a0123456789876543210
     instance SuppressUnusedWarnings Id8Sym0 where
       suppressUnusedWarnings = snd ((,) Id8Sym0KindInference ())
     type Id8Sym1 :: a -> a
@@ -134,7 +134,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id7Sym0KindInference :: SameKind (Apply Id7Sym0 arg) (Id7Sym1 arg) =>
                                 Id7Sym0 a0123456789876543210
-    type instance Apply Id7Sym0 a0123456789876543210 = Id7 a0123456789876543210
+    type instance Apply @_ @_ Id7Sym0 a0123456789876543210 = Id7 a0123456789876543210
     instance SuppressUnusedWarnings Id7Sym0 where
       suppressUnusedWarnings = snd ((,) Id7Sym0KindInference ())
     type family Id7Sym1 a0123456789876543210 where
@@ -144,7 +144,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id6Sym0KindInference :: SameKind (Apply Id6Sym0 arg) (Id6Sym1 arg) =>
                                 Id6Sym0 a0123456789876543210
-    type instance Apply Id6Sym0 a0123456789876543210 = Id6 a0123456789876543210
+    type instance Apply @a @a Id6Sym0 a0123456789876543210 = Id6 a0123456789876543210
     instance SuppressUnusedWarnings Id6Sym0 where
       suppressUnusedWarnings = snd ((,) Id6Sym0KindInference ())
     type Id6Sym1 :: a -> a
@@ -155,7 +155,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id5Sym0KindInference :: SameKind (Apply Id5Sym0 arg) (Id5Sym1 arg) =>
                                 Id5Sym0 a0123456789876543210
-    type instance Apply Id5Sym0 a0123456789876543210 = Id5 a0123456789876543210
+    type instance Apply @a @a Id5Sym0 a0123456789876543210 = Id5 a0123456789876543210
     instance SuppressUnusedWarnings Id5Sym0 where
       suppressUnusedWarnings = snd ((,) Id5Sym0KindInference ())
     type Id5Sym1 :: forall a. a -> a
@@ -166,7 +166,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id4Sym0KindInference :: SameKind (Apply Id4Sym0 arg) (Id4Sym1 arg) =>
                                 Id4Sym0 a0123456789876543210
-    type instance Apply Id4Sym0 a0123456789876543210 = Id4 a0123456789876543210
+    type instance Apply @a @a Id4Sym0 a0123456789876543210 = Id4 a0123456789876543210
     instance SuppressUnusedWarnings Id4Sym0 where
       suppressUnusedWarnings = snd ((,) Id4Sym0KindInference ())
     type Id4Sym1 :: forall a. a -> a
@@ -177,7 +177,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id3Sym0KindInference :: SameKind (Apply Id3Sym0 arg) (Id3Sym1 arg) =>
                                 Id3Sym0 a0123456789876543210
-    type instance Apply Id3Sym0 a0123456789876543210 = Id3 a0123456789876543210
+    type instance Apply @a @a Id3Sym0 a0123456789876543210 = Id3 a0123456789876543210
     instance SuppressUnusedWarnings Id3Sym0 where
       suppressUnusedWarnings = snd ((,) Id3Sym0KindInference ())
     type Id3Sym1 :: a -> a
@@ -188,7 +188,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Id2Sym0KindInference :: SameKind (Apply Id2Sym0 arg) (Id2Sym1 arg) =>
                                 Id2Sym0 a0123456789876543210
-    type instance Apply Id2Sym0 a0123456789876543210 = Id2 a0123456789876543210
+    type instance Apply @a @a Id2Sym0 a0123456789876543210 = Id2 a0123456789876543210
     instance SuppressUnusedWarnings Id2Sym0 where
       suppressUnusedWarnings = snd ((,) Id2Sym0KindInference ())
     type Id2Sym1 :: forall a. a -> a
@@ -199,7 +199,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply @a @() FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: forall a. a -> ()
@@ -209,7 +209,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply @_ @_ FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type family FSym1 a0123456789876543210 where
@@ -219,7 +219,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Konst2Sym0KindInference :: SameKind (Apply Konst2Sym0 arg) (Konst2Sym1 arg) =>
                                    Konst2Sym0 a0123456789876543210
-    type instance Apply Konst2Sym0 a0123456789876543210 = Konst2Sym1 a0123456789876543210
+    type instance Apply @a @((~>) (Maybe Bool) a) Konst2Sym0 a0123456789876543210 = Konst2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Konst2Sym0 where
       suppressUnusedWarnings = snd ((,) Konst2Sym0KindInference ())
     type Konst2Sym1 :: a -> (~>) (Maybe Bool) a
@@ -227,7 +227,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Konst2Sym1KindInference :: SameKind (Apply (Konst2Sym1 a0123456789876543210) arg) (Konst2Sym2 a0123456789876543210 arg) =>
                                    Konst2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Konst2Sym1 a0123456789876543210) a0123456789876543210 = Konst2 a0123456789876543210 a0123456789876543210
+    type instance Apply @(Maybe Bool) @a (Konst2Sym1 a0123456789876543210) a0123456789876543210 = Konst2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Konst2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Konst2Sym1KindInference ())
     type Konst2Sym2 :: a -> Maybe Bool -> a
@@ -238,7 +238,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Konst1Sym0KindInference :: SameKind (Apply Konst1Sym0 arg) (Konst1Sym1 arg) =>
                                    Konst1Sym0 a0123456789876543210
-    type instance Apply Konst1Sym0 a0123456789876543210 = Konst1Sym1 a0123456789876543210
+    type instance Apply @a @((~>) Bool a) Konst1Sym0 a0123456789876543210 = Konst1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Konst1Sym0 where
       suppressUnusedWarnings = snd ((,) Konst1Sym0KindInference ())
     type Konst1Sym1 :: a -> (~>) Bool a
@@ -246,7 +246,7 @@ Singletons/T433.hs:(0,0)-(0,0): Splicing declarations
       where
         Konst1Sym1KindInference :: SameKind (Apply (Konst1Sym1 a0123456789876543210) arg) (Konst1Sym2 a0123456789876543210 arg) =>
                                    Konst1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Konst1Sym1 a0123456789876543210) a0123456789876543210 = Konst1 a0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @a (Konst1Sym1 a0123456789876543210) a0123456789876543210 = Konst1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Konst1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Konst1Sym1KindInference ())
     type Konst1Sym2 :: a -> Bool -> a

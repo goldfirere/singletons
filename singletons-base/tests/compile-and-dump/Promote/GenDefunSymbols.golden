@@ -7,7 +7,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         LiftMaybeSym0KindInference :: Data.Singletons.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
                                       LiftMaybeSym0 a0123456789876543210
-    type instance Apply LiftMaybeSym0 a0123456789876543210 = LiftMaybeSym1 a0123456789876543210
+    type instance Apply @((~>) a b) @((~>) (Maybe a) (Maybe b)) LiftMaybeSym0 a0123456789876543210 = LiftMaybeSym1 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings LiftMaybeSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) LiftMaybeSym0KindInference ())
@@ -17,7 +17,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         LiftMaybeSym1KindInference :: Data.Singletons.SameKind (Apply (LiftMaybeSym1 a0123456789876543210) arg) (LiftMaybeSym2 a0123456789876543210 arg) =>
                                       LiftMaybeSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
+    type instance Apply @(Maybe a) @(Maybe b) (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) LiftMaybeSym1KindInference ())
@@ -33,7 +33,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         SuccSym0KindInference :: Data.Singletons.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
                                  SuccSym0 a0123456789876543210
-    type instance Apply SuccSym0 a0123456789876543210 = 'Succ a0123456789876543210
+    type instance Apply @NatT @NatT SuccSym0 a0123456789876543210 = 'Succ a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings SuccSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) SuccSym0KindInference ())
@@ -45,7 +45,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         (::+@#@$###) :: Data.Singletons.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
                         (:+@#@$) a0123456789876543210
-    type instance Apply (:+@#@$) a0123456789876543210 = (:+@#@$$) a0123456789876543210
+    type instance Apply @Natural @((~>) Natural Natural) (:+@#@$) a0123456789876543210 = (:+@#@$$) a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (:+@#@$) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) (::+@#@$###) ())
@@ -54,7 +54,7 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
       where
         (::+@#@$$###) :: Data.Singletons.SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
                          (:+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
+    type instance Apply @Natural @Natural ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) (::+@#@$$###) ())

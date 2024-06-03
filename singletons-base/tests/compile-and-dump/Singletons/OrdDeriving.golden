@@ -31,7 +31,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         SuccSym0KindInference :: SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
                                  SuccSym0 a0123456789876543210
-    type instance Apply SuccSym0 a0123456789876543210 = Succ a0123456789876543210
+    type instance Apply @Nat @Nat SuccSym0 a0123456789876543210 = Succ a0123456789876543210
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: Nat -> Nat
@@ -45,7 +45,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ASym0KindInference :: SameKind (Apply ASym0 arg) (ASym1 arg) =>
                               ASym0 a0123456789876543210
-    type instance Apply ASym0 a0123456789876543210 = ASym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) ASym0 a0123456789876543210 = ASym1 a0123456789876543210
     instance SuppressUnusedWarnings ASym0 where
       suppressUnusedWarnings = snd ((,) ASym0KindInference ())
     type ASym1 :: forall a b c d. a
@@ -54,7 +54,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ASym1KindInference :: SameKind (Apply (ASym1 a0123456789876543210) arg) (ASym2 a0123456789876543210 arg) =>
                               ASym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ASym1 a0123456789876543210) a0123456789876543210 = ASym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (ASym1 a0123456789876543210) a0123456789876543210 = ASym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ASym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ASym1KindInference ())
     type ASym2 :: forall a b c d. a
@@ -63,7 +63,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ASym2KindInference :: SameKind (Apply (ASym2 a0123456789876543210 a0123456789876543210) arg) (ASym3 a0123456789876543210 a0123456789876543210 arg) =>
                               ASym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ASym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (ASym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ASym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ASym2KindInference ())
     type ASym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -71,7 +71,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ASym3KindInference :: SameKind (Apply (ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (ASym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = A a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = A a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ASym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ASym3KindInference ())
     type ASym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -85,7 +85,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         BSym0KindInference :: SameKind (Apply BSym0 arg) (BSym1 arg) =>
                               BSym0 a0123456789876543210
-    type instance Apply BSym0 a0123456789876543210 = BSym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) BSym0 a0123456789876543210 = BSym1 a0123456789876543210
     instance SuppressUnusedWarnings BSym0 where
       suppressUnusedWarnings = snd ((,) BSym0KindInference ())
     type BSym1 :: forall a b c d. a
@@ -94,7 +94,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         BSym1KindInference :: SameKind (Apply (BSym1 a0123456789876543210) arg) (BSym2 a0123456789876543210 arg) =>
                               BSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (BSym1 a0123456789876543210) a0123456789876543210 = BSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (BSym1 a0123456789876543210) a0123456789876543210 = BSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BSym1KindInference ())
     type BSym2 :: forall a b c d. a
@@ -103,7 +103,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         BSym2KindInference :: SameKind (Apply (BSym2 a0123456789876543210 a0123456789876543210) arg) (BSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               BSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (BSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (BSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BSym2KindInference ())
     type BSym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -111,7 +111,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         BSym3KindInference :: SameKind (Apply (BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (BSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = B a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = B a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BSym3KindInference ())
     type BSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -125,7 +125,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         CSym0KindInference :: SameKind (Apply CSym0 arg) (CSym1 arg) =>
                               CSym0 a0123456789876543210
-    type instance Apply CSym0 a0123456789876543210 = CSym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) CSym0 a0123456789876543210 = CSym1 a0123456789876543210
     instance SuppressUnusedWarnings CSym0 where
       suppressUnusedWarnings = snd ((,) CSym0KindInference ())
     type CSym1 :: forall a b c d. a
@@ -134,7 +134,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         CSym1KindInference :: SameKind (Apply (CSym1 a0123456789876543210) arg) (CSym2 a0123456789876543210 arg) =>
                               CSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (CSym1 a0123456789876543210) a0123456789876543210 = CSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (CSym1 a0123456789876543210) a0123456789876543210 = CSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (CSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) CSym1KindInference ())
     type CSym2 :: forall a b c d. a
@@ -143,7 +143,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         CSym2KindInference :: SameKind (Apply (CSym2 a0123456789876543210 a0123456789876543210) arg) (CSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               CSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (CSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (CSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (CSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) CSym2KindInference ())
     type CSym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -151,7 +151,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         CSym3KindInference :: SameKind (Apply (CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (CSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = C a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = C a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (CSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) CSym3KindInference ())
     type CSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -165,7 +165,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         DSym0KindInference :: SameKind (Apply DSym0 arg) (DSym1 arg) =>
                               DSym0 a0123456789876543210
-    type instance Apply DSym0 a0123456789876543210 = DSym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) DSym0 a0123456789876543210 = DSym1 a0123456789876543210
     instance SuppressUnusedWarnings DSym0 where
       suppressUnusedWarnings = snd ((,) DSym0KindInference ())
     type DSym1 :: forall a b c d. a
@@ -174,7 +174,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         DSym1KindInference :: SameKind (Apply (DSym1 a0123456789876543210) arg) (DSym2 a0123456789876543210 arg) =>
                               DSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (DSym1 a0123456789876543210) a0123456789876543210 = DSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (DSym1 a0123456789876543210) a0123456789876543210 = DSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) DSym1KindInference ())
     type DSym2 :: forall a b c d. a
@@ -183,7 +183,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         DSym2KindInference :: SameKind (Apply (DSym2 a0123456789876543210 a0123456789876543210) arg) (DSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               DSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (DSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (DSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) DSym2KindInference ())
     type DSym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -191,7 +191,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         DSym3KindInference :: SameKind (Apply (DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (DSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = D a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = D a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) DSym3KindInference ())
     type DSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -205,7 +205,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ESym0KindInference :: SameKind (Apply ESym0 arg) (ESym1 arg) =>
                               ESym0 a0123456789876543210
-    type instance Apply ESym0 a0123456789876543210 = ESym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) ESym0 a0123456789876543210 = ESym1 a0123456789876543210
     instance SuppressUnusedWarnings ESym0 where
       suppressUnusedWarnings = snd ((,) ESym0KindInference ())
     type ESym1 :: forall a b c d. a
@@ -214,7 +214,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ESym1KindInference :: SameKind (Apply (ESym1 a0123456789876543210) arg) (ESym2 a0123456789876543210 arg) =>
                               ESym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ESym1 a0123456789876543210) a0123456789876543210 = ESym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (ESym1 a0123456789876543210) a0123456789876543210 = ESym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ESym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ESym1KindInference ())
     type ESym2 :: forall a b c d. a
@@ -223,7 +223,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ESym2KindInference :: SameKind (Apply (ESym2 a0123456789876543210 a0123456789876543210) arg) (ESym3 a0123456789876543210 a0123456789876543210 arg) =>
                               ESym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ESym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (ESym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ESym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ESym2KindInference ())
     type ESym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -231,7 +231,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         ESym3KindInference :: SameKind (Apply (ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (ESym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = E a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = E a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ESym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ESym3KindInference ())
     type ESym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -245,7 +245,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) c ((~>) d (Foo a b c d)))) FSym0 a0123456789876543210 = FSym1 a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: forall a b c d. a
@@ -254,7 +254,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
                               FSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FSym1 a0123456789876543210) a0123456789876543210 = FSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) c ((~>) d (Foo a b c d))) (FSym1 a0123456789876543210) a0123456789876543210 = FSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: forall a b c d. a
@@ -263,7 +263,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym2KindInference :: SameKind (Apply (FSym2 a0123456789876543210 a0123456789876543210) arg) (FSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               FSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (FSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @c @((~>) d (Foo a b c d)) (FSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FSym2KindInference ())
     type FSym3 :: forall a b c d. a -> b -> c -> (~>) d (Foo a b c d)
@@ -271,7 +271,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym3KindInference :: SameKind (Apply (FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (FSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
                               FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @d @(Foo a b c d) (FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FSym3KindInference ())
     type FSym4 :: forall a b c d. a -> b -> c -> d -> Foo a b c d
@@ -288,7 +288,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -297,7 +297,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
@@ -317,7 +317,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
@@ -326,7 +326,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
@@ -382,7 +382,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @(Foo a b c d) @((~>) (Foo a b c d) Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -394,7 +394,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @(Foo a b c d) @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
@@ -453,7 +453,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @(Foo a b c d) @((~>) (Foo a b c d) Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
@@ -463,7 +463,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @(Foo a b c d) @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())

@@ -10,7 +10,7 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply @a @a FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: a -> a
@@ -36,7 +36,7 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
       where
         GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
-    type instance Apply GSym0 a0123456789876543210 = GSym1 a0123456789876543210
+    type instance Apply @((~>) a a) @((~>) a a) GSym0 a0123456789876543210 = GSym1 a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings = snd ((,) GSym0KindInference ())
     type GSym1 :: (~>) a a -> (~>) a a
@@ -44,7 +44,7 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
       where
         GSym1KindInference :: SameKind (Apply (GSym1 a0123456789876543210) arg) (GSym2 a0123456789876543210 arg) =>
                               GSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (GSym1 a0123456789876543210) a0123456789876543210 = G a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a (GSym1 a0123456789876543210) a0123456789876543210 = G a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (GSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) GSym1KindInference ())
     type GSym2 :: (~>) a a -> a -> a

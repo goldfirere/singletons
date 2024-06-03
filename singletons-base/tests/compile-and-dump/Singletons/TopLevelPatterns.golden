@@ -16,7 +16,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+    type instance Apply @Bool @((~>) Bool Foo) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) BarSym0KindInference ())
@@ -25,7 +25,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
                                 BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @Foo (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) BarSym1KindInference ())
@@ -157,7 +157,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         ISym0KindInference :: SameKind (Apply ISym0 arg) (ISym1 arg) =>
                               ISym0 a0123456789876543210
-    type instance Apply ISym0 a0123456789876543210 = I a0123456789876543210
+    type instance Apply @Bool @Bool ISym0 a0123456789876543210 = I a0123456789876543210
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) ISym0KindInference ())
@@ -169,7 +169,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         HSym0KindInference :: SameKind (Apply HSym0 arg) (HSym1 arg) =>
                               HSym0 a0123456789876543210
-    type instance Apply HSym0 a0123456789876543210 = H a0123456789876543210
+    type instance Apply @Bool @Bool HSym0 a0123456789876543210 = H a0123456789876543210
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) HSym0KindInference ())
@@ -183,7 +183,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
                               GSym0 a0123456789876543210
-    type instance Apply GSym0 a0123456789876543210 = G a0123456789876543210
+    type instance Apply @Bool @Bool GSym0 a0123456789876543210 = G a0123456789876543210
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) GSym0KindInference ())
@@ -195,7 +195,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply @Bool @Bool FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) FSym0KindInference ())
@@ -211,7 +211,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         NotSym0KindInference :: SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
                                 NotSym0 a0123456789876543210
-    type instance Apply NotSym0 a0123456789876543210 = Not a0123456789876543210
+    type instance Apply @Bool @Bool NotSym0 a0123456789876543210 = Not a0123456789876543210
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) NotSym0KindInference ())
@@ -223,7 +223,7 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       where
         IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
                                IdSym0 a0123456789876543210
-    type instance Apply IdSym0 a0123456789876543210 = Id a0123456789876543210
+    type instance Apply @a @a IdSym0 a0123456789876543210 = Id a0123456789876543210
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) IdSym0KindInference ())

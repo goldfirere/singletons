@@ -11,7 +11,7 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
       where
         MkFooSym0KindInference :: SameKind (Apply MkFooSym0 arg) (MkFooSym1 arg) =>
                                   MkFooSym0 a0123456789876543210
-    type instance Apply MkFooSym0 a0123456789876543210 = MkFoo a0123456789876543210
+    type instance Apply @Bool @Foo MkFooSym0 a0123456789876543210 = MkFoo a0123456789876543210
     instance SuppressUnusedWarnings MkFooSym0 where
       suppressUnusedWarnings = snd ((,) MkFooSym0KindInference ())
     type MkFooSym1 :: Bool -> Foo
@@ -43,7 +43,7 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
       where
         UnFoo'Sym0KindInference :: SameKind (Apply UnFoo'Sym0 arg) (UnFoo'Sym1 arg) =>
                                    UnFoo'Sym0 a0123456789876543210
-    type instance Apply UnFoo'Sym0 a0123456789876543210 = UnFoo' a0123456789876543210
+    type instance Apply @Foo @Bool UnFoo'Sym0 a0123456789876543210 = UnFoo' a0123456789876543210
     instance SuppressUnusedWarnings UnFoo'Sym0 where
       suppressUnusedWarnings = snd ((,) UnFoo'Sym0KindInference ())
     type UnFoo'Sym1 :: Foo -> Bool
@@ -59,7 +59,6 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
       = applySing sUnFoo sA_0123456789876543210
     instance SingI (UnFoo'Sym0 :: (~>) Foo Bool) where
       sing = singFun1 @UnFoo'Sym0 sUnFoo'
-
 Singletons/T563.hs:0:0: error: [GHC-76037]
     Not in scope: type constructor or class ‘UnFooSym0’
     Suggested fix:
@@ -69,3 +68,4 @@ Singletons/T563.hs:0:0: error: [GHC-76037]
    |
 13 | $(singletonsOnly [d|
    |  ^^^^^^^^^^^^^^^^^^^...
+

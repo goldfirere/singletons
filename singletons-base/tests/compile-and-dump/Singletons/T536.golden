@@ -27,7 +27,7 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
       where
         PMkMessageSym0KindInference :: Data.Singletons.SameKind (Data.Singletons.Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
                                        PMkMessageSym0 a0123456789876543210
-    type instance Data.Singletons.Apply PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    type instance Data.Singletons.Apply @Symbol @PMessage PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings PMkMessageSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) PMkMessageSym0KindInference ())

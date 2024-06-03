@@ -14,7 +14,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply @Nat @Foo FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Nat -> Foo
@@ -25,7 +25,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
+    type instance Apply @Nat @Bar BarSym0 a0123456789876543210 = Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Nat -> Bar
@@ -36,7 +36,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         UnBarSym0KindInference :: SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
                                   UnBarSym0 a0123456789876543210
-    type instance Apply UnBarSym0 a0123456789876543210 = UnBar a0123456789876543210
+    type instance Apply @Bar @Nat UnBarSym0 a0123456789876543210 = UnBar a0123456789876543210
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings = snd ((,) UnBarSym0KindInference ())
     type UnBarSym1 :: Bar -> Nat
@@ -53,7 +53,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Foo @((~>) Foo Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -62,7 +62,7 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Foo @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())

@@ -13,7 +13,7 @@ Promote/T605.hs:(0,0)-(0,0): Splicing declarations
       where
         Traverse'Sym0KindInference :: SameKind (Apply Traverse'Sym0 arg) (Traverse'Sym1 arg) =>
                                       Traverse'Sym0 a0123456789876543210
-    type instance Apply Traverse'Sym0 a0123456789876543210 = Traverse'Sym1 a0123456789876543210
+    type instance Apply @((~>) a (f b)) @((~>) (t a) (t (f b))) Traverse'Sym0 a0123456789876543210 = Traverse'Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Traverse'Sym0 where
       suppressUnusedWarnings = snd ((,) Traverse'Sym0KindInference ())
     type Traverse'Sym1 :: forall (t :: Type -> Type)
@@ -24,7 +24,7 @@ Promote/T605.hs:(0,0)-(0,0): Splicing declarations
       where
         Traverse'Sym1KindInference :: SameKind (Apply (Traverse'Sym1 a0123456789876543210) arg) (Traverse'Sym2 a0123456789876543210 arg) =>
                                       Traverse'Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Traverse'Sym1 a0123456789876543210) a0123456789876543210 = Traverse' a0123456789876543210 a0123456789876543210
+    type instance Apply @(t a) @(t (f b)) (Traverse'Sym1 a0123456789876543210) a0123456789876543210 = Traverse' a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Traverse'Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Traverse'Sym1KindInference ())
     type Traverse'Sym2 :: forall (t :: Type -> Type)

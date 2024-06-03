@@ -15,7 +15,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         SuccSym0KindInference :: SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
                                  SuccSym0 a0123456789876543210
-    type instance Apply SuccSym0 a0123456789876543210 = Succ a0123456789876543210
+    type instance Apply @Nat @Nat SuccSym0 a0123456789876543210 = Succ a0123456789876543210
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: Nat -> Nat
@@ -32,7 +32,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -41,7 +41,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
@@ -61,7 +61,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
@@ -70,7 +70,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
@@ -273,7 +273,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         VECSym0KindInference :: SameKind (Apply VECSym0 arg) (VECSym1 arg) =>
                                 VECSym0 a0123456789876543210
-    type instance Apply VECSym0 a0123456789876543210 = VECSym1 a0123456789876543210
+    type instance Apply @U @((~>) Nat U) VECSym0 a0123456789876543210 = VECSym1 a0123456789876543210
     instance SuppressUnusedWarnings VECSym0 where
       suppressUnusedWarnings = snd ((,) VECSym0KindInference ())
     type VECSym1 :: U -> (~>) Nat U
@@ -281,7 +281,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         VECSym1KindInference :: SameKind (Apply (VECSym1 a0123456789876543210) arg) (VECSym2 a0123456789876543210 arg) =>
                                 VECSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (VECSym1 a0123456789876543210) a0123456789876543210 = VEC a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @U (VECSym1 a0123456789876543210) a0123456789876543210 = VEC a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (VECSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) VECSym1KindInference ())
     type VECSym2 :: U -> Nat -> U
@@ -370,7 +370,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AttrSym0KindInference :: SameKind (Apply AttrSym0 arg) (AttrSym1 arg) =>
                                  AttrSym0 a0123456789876543210
-    type instance Apply AttrSym0 a0123456789876543210 = AttrSym1 a0123456789876543210
+    type instance Apply @[AChar] @((~>) U Attribute) AttrSym0 a0123456789876543210 = AttrSym1 a0123456789876543210
     instance SuppressUnusedWarnings AttrSym0 where
       suppressUnusedWarnings = snd ((,) AttrSym0KindInference ())
     type AttrSym1 :: [AChar] -> (~>) U Attribute
@@ -378,7 +378,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AttrSym1KindInference :: SameKind (Apply (AttrSym1 a0123456789876543210) arg) (AttrSym2 a0123456789876543210 arg) =>
                                  AttrSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AttrSym1 a0123456789876543210) a0123456789876543210 = Attr a0123456789876543210 a0123456789876543210
+    type instance Apply @U @Attribute (AttrSym1 a0123456789876543210) a0123456789876543210 = Attr a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AttrSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) AttrSym1KindInference ())
     type AttrSym2 :: [AChar] -> U -> Attribute
@@ -389,7 +389,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         SchSym0KindInference :: SameKind (Apply SchSym0 arg) (SchSym1 arg) =>
                                 SchSym0 a0123456789876543210
-    type instance Apply SchSym0 a0123456789876543210 = Sch a0123456789876543210
+    type instance Apply @[Attribute] @Schema SchSym0 a0123456789876543210 = Sch a0123456789876543210
     instance SuppressUnusedWarnings SchSym0 where
       suppressUnusedWarnings = snd ((,) SchSym0KindInference ())
     type SchSym1 :: [Attribute] -> Schema
@@ -407,7 +407,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         LookupSym0KindInference :: SameKind (Apply LookupSym0 arg) (LookupSym1 arg) =>
                                    LookupSym0 a0123456789876543210
-    type instance Apply LookupSym0 a0123456789876543210 = LookupSym1 a0123456789876543210
+    type instance Apply @[AChar] @((~>) Schema U) LookupSym0 a0123456789876543210 = LookupSym1 a0123456789876543210
     instance SuppressUnusedWarnings LookupSym0 where
       suppressUnusedWarnings = snd ((,) LookupSym0KindInference ())
     type LookupSym1 :: [AChar] -> (~>) Schema U
@@ -415,7 +415,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         LookupSym1KindInference :: SameKind (Apply (LookupSym1 a0123456789876543210) arg) (LookupSym2 a0123456789876543210 arg) =>
                                    LookupSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (LookupSym1 a0123456789876543210) a0123456789876543210 = Lookup a0123456789876543210 a0123456789876543210
+    type instance Apply @Schema @U (LookupSym1 a0123456789876543210) a0123456789876543210 = Lookup a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (LookupSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) LookupSym1KindInference ())
     type LookupSym2 :: [AChar] -> Schema -> U
@@ -426,7 +426,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         OccursSym0KindInference :: SameKind (Apply OccursSym0 arg) (OccursSym1 arg) =>
                                    OccursSym0 a0123456789876543210
-    type instance Apply OccursSym0 a0123456789876543210 = OccursSym1 a0123456789876543210
+    type instance Apply @[AChar] @((~>) Schema Bool) OccursSym0 a0123456789876543210 = OccursSym1 a0123456789876543210
     instance SuppressUnusedWarnings OccursSym0 where
       suppressUnusedWarnings = snd ((,) OccursSym0KindInference ())
     type OccursSym1 :: [AChar] -> (~>) Schema Bool
@@ -434,7 +434,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         OccursSym1KindInference :: SameKind (Apply (OccursSym1 a0123456789876543210) arg) (OccursSym2 a0123456789876543210 arg) =>
                                    OccursSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (OccursSym1 a0123456789876543210) a0123456789876543210 = Occurs a0123456789876543210 a0123456789876543210
+    type instance Apply @Schema @Bool (OccursSym1 a0123456789876543210) a0123456789876543210 = Occurs a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (OccursSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) OccursSym1KindInference ())
     type OccursSym2 :: [AChar] -> Schema -> Bool
@@ -445,7 +445,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         DisjointSym0KindInference :: SameKind (Apply DisjointSym0 arg) (DisjointSym1 arg) =>
                                      DisjointSym0 a0123456789876543210
-    type instance Apply DisjointSym0 a0123456789876543210 = DisjointSym1 a0123456789876543210
+    type instance Apply @Schema @((~>) Schema Bool) DisjointSym0 a0123456789876543210 = DisjointSym1 a0123456789876543210
     instance SuppressUnusedWarnings DisjointSym0 where
       suppressUnusedWarnings = snd ((,) DisjointSym0KindInference ())
     type DisjointSym1 :: Schema -> (~>) Schema Bool
@@ -453,7 +453,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         DisjointSym1KindInference :: SameKind (Apply (DisjointSym1 a0123456789876543210) arg) (DisjointSym2 a0123456789876543210 arg) =>
                                      DisjointSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (DisjointSym1 a0123456789876543210) a0123456789876543210 = Disjoint a0123456789876543210 a0123456789876543210
+    type instance Apply @Schema @Bool (DisjointSym1 a0123456789876543210) a0123456789876543210 = Disjoint a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (DisjointSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) DisjointSym1KindInference ())
     type DisjointSym2 :: Schema -> Schema -> Bool
@@ -464,7 +464,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AttrNotInSym0KindInference :: SameKind (Apply AttrNotInSym0 arg) (AttrNotInSym1 arg) =>
                                       AttrNotInSym0 a0123456789876543210
-    type instance Apply AttrNotInSym0 a0123456789876543210 = AttrNotInSym1 a0123456789876543210
+    type instance Apply @Attribute @((~>) Schema Bool) AttrNotInSym0 a0123456789876543210 = AttrNotInSym1 a0123456789876543210
     instance SuppressUnusedWarnings AttrNotInSym0 where
       suppressUnusedWarnings = snd ((,) AttrNotInSym0KindInference ())
     type AttrNotInSym1 :: Attribute -> (~>) Schema Bool
@@ -472,7 +472,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AttrNotInSym1KindInference :: SameKind (Apply (AttrNotInSym1 a0123456789876543210) arg) (AttrNotInSym2 a0123456789876543210 arg) =>
                                       AttrNotInSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AttrNotInSym1 a0123456789876543210) a0123456789876543210 = AttrNotIn a0123456789876543210 a0123456789876543210
+    type instance Apply @Schema @Bool (AttrNotInSym1 a0123456789876543210) a0123456789876543210 = AttrNotIn a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AttrNotInSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) AttrNotInSym1KindInference ())
     type AttrNotInSym2 :: Attribute -> Schema -> Bool
@@ -483,7 +483,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AppendSym0KindInference :: SameKind (Apply AppendSym0 arg) (AppendSym1 arg) =>
                                    AppendSym0 a0123456789876543210
-    type instance Apply AppendSym0 a0123456789876543210 = AppendSym1 a0123456789876543210
+    type instance Apply @Schema @((~>) Schema Schema) AppendSym0 a0123456789876543210 = AppendSym1 a0123456789876543210
     instance SuppressUnusedWarnings AppendSym0 where
       suppressUnusedWarnings = snd ((,) AppendSym0KindInference ())
     type AppendSym1 :: Schema -> (~>) Schema Schema
@@ -491,7 +491,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         AppendSym1KindInference :: SameKind (Apply (AppendSym1 a0123456789876543210) arg) (AppendSym2 a0123456789876543210 arg) =>
                                    AppendSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (AppendSym1 a0123456789876543210) a0123456789876543210 = Append a0123456789876543210 a0123456789876543210
+    type instance Apply @Schema @Schema (AppendSym1 a0123456789876543210) a0123456789876543210 = Append a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (AppendSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) AppendSym1KindInference ())
     type AppendSym2 :: Schema -> Schema -> Schema
@@ -539,7 +539,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @U @((~>) U Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -548,7 +548,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @U @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
@@ -569,7 +569,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @((~>) U ((~>) Symbol Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
@@ -579,7 +579,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @U @((~>) Symbol Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
@@ -589,7 +589,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Symbol @Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
@@ -633,7 +633,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @((~>) AChar ((~>) Symbol Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
@@ -643,7 +643,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @AChar @((~>) Symbol Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
@@ -653,7 +653,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Symbol @Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
@@ -1346,7 +1346,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @AChar @((~>) AChar Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -1355,7 +1355,7 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @AChar @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())

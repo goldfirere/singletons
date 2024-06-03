@@ -33,7 +33,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+    type instance Apply @a @((~>) a a) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     infixl 4 `BarSym0`
@@ -42,7 +42,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
                                 BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BarSym1KindInference ())
     infixl 4 `BarSym1`
@@ -55,7 +55,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         (:!!!@#@$###) :: SameKind (Apply (!!!@#@$) arg) ((!!!@#@$$) arg) =>
                          (!!!@#@$) a0123456789876543210
-    type instance Apply (!!!@#@$) a0123456789876543210 = (!!!@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) a a) (!!!@#@$) a0123456789876543210 = (!!!@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (!!!@#@$) where
       suppressUnusedWarnings = snd ((,) (:!!!@#@$###) ())
     infixl 4 !!!@#@$
@@ -64,7 +64,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         (:!!!@#@$$###) :: SameKind (Apply ((!!!@#@$$) a0123456789876543210) arg) ((!!!@#@$$$) a0123456789876543210 arg) =>
                           (!!!@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((!!!@#@$$) a0123456789876543210) a0123456789876543210 = (!!!) a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a ((!!!@#@$$) a0123456789876543210) a0123456789876543210 = (!!!) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((!!!@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:!!!@#@$$###) ())
     infixl 4 !!!@#@$$
@@ -77,7 +77,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         (:%%%@#@$###) :: SameKind (Apply (%%%@#@$) arg) ((%%%@#@$$) arg) =>
                          (%%%@#@$) a0123456789876543210
-    type instance Apply (%%%@#@$) a0123456789876543210 = (%%%@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) a a) (%%%@#@$) a0123456789876543210 = (%%%@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (%%%@#@$) where
       suppressUnusedWarnings = snd ((,) (:%%%@#@$###) ())
     infixl 4 %%%@#@$
@@ -86,7 +86,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         (:%%%@#@$$###) :: SameKind (Apply ((%%%@#@$$) a0123456789876543210) arg) ((%%%@#@$$$) a0123456789876543210 arg) =>
                           (%%%@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((%%%@#@$$) a0123456789876543210) a0123456789876543210 = (%%%) a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a ((%%%@#@$$) a0123456789876543210) a0123456789876543210 = (%%%) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((%%%@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:%%%@#@$$###) ())
     infixl 4 %%%@#@$$
@@ -99,7 +99,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
+    type instance Apply @a @((~>) a a) FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     infixl 4 `FooSym0`
@@ -108,7 +108,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym1KindInference :: SameKind (Apply (FooSym1 a0123456789876543210) arg) (FooSym2 a0123456789876543210 arg) =>
                                 FooSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (FooSym1 a0123456789876543210) a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a (FooSym1 a0123456789876543210) a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FooSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FooSym1KindInference ())
     infixl 4 `FooSym1`
