@@ -75,7 +75,7 @@ type SConst :: Const a b -> Type
 data SConst :: Const a b -> Type where
   SConst :: forall {k} a (b :: k) (x :: a).
             Sing x -> SConst ('Const @a @b x)
-type instance Sing = SConst
+type instance Sing @(Const a b) = SConst
 instance SingKind a => SingKind (Const a b) where
   type Demote (Const a b) = Const (Demote a) b
   fromSing (SConst sa) = Const (fromSing sa)

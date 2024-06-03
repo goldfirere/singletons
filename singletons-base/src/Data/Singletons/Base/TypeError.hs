@@ -82,7 +82,7 @@ data SErrorMessage :: PErrorMessage -> Type where
 infixl 6 :%<>:
 infixl 5 :%$$:
 
-type instance Sing = SErrorMessage
+type instance Sing @PErrorMessage = SErrorMessage
 
 instance SingKind PErrorMessage where
   type Demote PErrorMessage = ErrorMessage

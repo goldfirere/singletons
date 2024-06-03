@@ -127,7 +127,7 @@ newtype Endo a = Endo (a ~> a)
 type SEndo :: Endo a -> Type
 data SEndo e where
   SEndo :: Sing x -> SEndo ('Endo x)
-type instance Sing = SEndo
+type instance Sing @(Endo a) = SEndo
 type EndoSym0 :: (a ~> a) ~> Endo a
 data EndoSym0 tf
 type instance Apply EndoSym0 x = 'Endo x

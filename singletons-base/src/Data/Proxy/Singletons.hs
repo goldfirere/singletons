@@ -60,7 +60,7 @@ module for more details on this choice.)
 type SProxy :: Proxy t -> Type
 data SProxy :: Proxy t -> Type where
   SProxy :: forall t. SProxy ('Proxy @t)
-type instance Sing = SProxy
+type instance Sing @(Proxy t) = SProxy
 instance SingKind (Proxy t) where
   type Demote (Proxy t) = Proxy t
   fromSing SProxy = Proxy

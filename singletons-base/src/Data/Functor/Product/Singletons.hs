@@ -57,7 +57,7 @@ type SProduct :: Product f g a -> Type
 data SProduct :: Product f g a -> Type where
   SPair :: forall f g a (x :: f a) (y :: g a).
            Sing x -> Sing y -> SProduct ('Pair @f @g @a x y)
-type instance Sing = SProduct
+type instance Sing @(Product f g a) = SProduct
 instance (SingI x, SingI y) => SingI ('Pair x y) where
   sing = SPair sing sing
 instance SingI x => SingI1 ('Pair x) where

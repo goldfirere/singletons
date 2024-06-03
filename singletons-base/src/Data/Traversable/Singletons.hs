@@ -64,7 +64,7 @@ newtype StateL s a = StateL (s ~> (s, a))
 type SStateL :: forall s a. StateL s a -> Type
 data SStateL state where
   SStateL :: Sing x -> SStateL ('StateL x)
-type instance Sing = SStateL
+type instance Sing @(StateL s a) = SStateL
 type StateLSym0 :: forall s a. (s ~> (s, a)) ~> StateL s a
 data StateLSym0 z
 type instance Apply StateLSym0 x = 'StateL x
@@ -74,7 +74,7 @@ newtype StateR s a = StateR (s ~> (s, a))
 type SStateR :: forall s a. StateR s a -> Type
 data SStateR state where
   SStateR :: Sing x -> SStateR ('StateR x)
-type instance Sing = SStateR
+type instance Sing @(StateR s a) = SStateR
 type StateRSym0 :: forall s a. (s ~> (s, a)) ~> StateR s a
 data StateRSym0 z
 type instance Apply StateRSym0 x = 'StateR x

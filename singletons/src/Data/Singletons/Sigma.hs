@@ -99,7 +99,12 @@ data SSigma :: forall s t. Sigma s t -> Type where
   (:%&:) :: forall s t (fst :: s) (sfst :: Sing fst) (snd :: t @@ fst).
             Sing ('WrapSing sfst) -> Sing snd -> SSigma (sfst ':&: snd :: Sigma s t)
 infixr 4 :%&:
-type instance Sing = SSigma
+#if __GLASGOW_HASKELL__ >= 808
+type instance Sing @(Sigma s t) =
+#else
+type instance Sing =
+#endif
+  SSigma
 
 instance forall s t (fst :: s) (a :: Sing fst) (b :: t @@ fst).
        (SingI fst, SingI b)
