@@ -25,7 +25,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       where
         MSym0KindInference :: SameKind (Apply MSym0 arg) (MSym1 arg) =>
                               MSym0 a0123456789876543210
-    type instance Apply MSym0 a0123456789876543210 = MSym1 a0123456789876543210
+    type instance Apply @a @((~>) b ((~>) Bool Bool)) MSym0 a0123456789876543210 = MSym1 a0123456789876543210
     instance SuppressUnusedWarnings MSym0 where
       suppressUnusedWarnings = snd ((,) MSym0KindInference ())
     type MSym1 :: a -> (~>) b ((~>) Bool Bool)
@@ -33,7 +33,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       where
         MSym1KindInference :: SameKind (Apply (MSym1 a0123456789876543210) arg) (MSym2 a0123456789876543210 arg) =>
                               MSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MSym1 a0123456789876543210) a0123456789876543210 = MSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((~>) Bool Bool) (MSym1 a0123456789876543210) a0123456789876543210 = MSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MSym1KindInference ())
     type MSym2 :: a -> b -> (~>) Bool Bool
@@ -41,7 +41,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
       where
         MSym2KindInference :: SameKind (Apply (MSym2 a0123456789876543210 a0123456789876543210) arg) (MSym3 a0123456789876543210 a0123456789876543210 arg) =>
                               MSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (MSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @Bool (MSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = M a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MSym2KindInference ())
     type MSym3 :: a -> b -> Bool -> Bool

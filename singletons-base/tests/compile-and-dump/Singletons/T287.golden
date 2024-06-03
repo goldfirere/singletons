@@ -15,7 +15,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       where
         (:<<>>@#@$###) :: SameKind (Apply (<<>>@#@$) arg) ((<<>>@#@$$) arg) =>
                           (<<>>@#@$) a0123456789876543210
-    type instance Apply (<<>>@#@$) a0123456789876543210 = (<<>>@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) a a) (<<>>@#@$) a0123456789876543210 = (<<>>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<<>>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<<>>@#@$###) ())
     type (<<>>@#@$$) :: forall a. a -> (~>) a a
@@ -23,7 +23,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       where
         (:<<>>@#@$$###) :: SameKind (Apply ((<<>>@#@$$) a0123456789876543210) arg) ((<<>>@#@$$$) a0123456789876543210 arg) =>
                            (<<>>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((<<>>@#@$$) a0123456789876543210) a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a ((<<>>@#@$$) a0123456789876543210) a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<<>>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<<>>@#@$$###) ())
     type (<<>>@#@$$$) :: forall a. a -> a -> a
@@ -37,7 +37,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       where
         Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) arg) (Lambda_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
+    type instance Apply @_ @_ (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) x0123456789876543210 = Lambda_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 x0123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
@@ -53,7 +53,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @((~>) a b) @((~>) ((~>) a b) ((~>) a b)) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -63,7 +63,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @((~>) a b) @((~>) a b) (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())

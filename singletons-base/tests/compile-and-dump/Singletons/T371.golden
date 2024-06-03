@@ -21,7 +21,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
-    type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
+    type instance Apply @(Y a) @(X a) X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
     type X2Sym1 :: forall (a :: Type). Y a -> X a
@@ -35,7 +35,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         Y2Sym0KindInference :: SameKind (Apply Y2Sym0 arg) (Y2Sym1 arg) =>
                                Y2Sym0 a0123456789876543210
-    type instance Apply Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
+    type instance Apply @(X a) @(Y a) Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
     instance SuppressUnusedWarnings Y2Sym0 where
       suppressUnusedWarnings = snd ((,) Y2Sym0KindInference ())
     type Y2Sym1 :: forall (a :: Type). X a -> Y a
@@ -51,7 +51,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @((~>) (X a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
@@ -61,7 +61,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @(X a) @((~>) GHC.Types.Symbol GHC.Types.Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
@@ -72,7 +72,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Types.Symbol @GHC.Types.Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
@@ -93,7 +93,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @((~>) (Y a) ((~>) GHC.Types.Symbol GHC.Types.Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
@@ -103,7 +103,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @(Y a) @((~>) GHC.Types.Symbol GHC.Types.Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
@@ -114,7 +114,7 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Types.Symbol @GHC.Types.Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())

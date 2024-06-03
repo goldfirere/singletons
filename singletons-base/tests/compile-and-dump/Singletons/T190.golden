@@ -18,7 +18,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
                                                          TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @T @((~>) T Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
@@ -27,7 +27,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                          TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @T @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
@@ -44,7 +44,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
                                                         Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @T @((~>) T Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym0KindInference ())
@@ -53,7 +53,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                         Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @T @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Compare_0123456789876543210Sym1KindInference ())
@@ -73,7 +73,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
                                                        ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @T ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
@@ -88,7 +88,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
                                                          FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
+    type instance Apply @T @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
@@ -123,7 +123,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
                                                           ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @GHC.Num.Natural.Natural @((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
@@ -133,7 +133,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @T @((~>) GHC.Types.Symbol GHC.Types.Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
@@ -143,7 +143,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       where
         ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
                                                           ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @GHC.Types.Symbol @GHC.Types.Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())

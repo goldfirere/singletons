@@ -19,7 +19,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       where
         MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
                                  MkT1Sym0 a0123456789876543210
-    type instance Apply MkT1Sym0 a0123456789876543210 = MkT1 a0123456789876543210
+    type instance Apply @a @(T a) MkT1Sym0 a0123456789876543210 = MkT1 a0123456789876543210
     instance SuppressUnusedWarnings MkT1Sym0 where
       suppressUnusedWarnings = snd ((,) MkT1Sym0KindInference ())
     type MkT1Sym1 :: a -> T a
@@ -30,7 +30,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       where
         MkT2Sym0KindInference :: SameKind (Apply MkT2Sym0 arg) (MkT2Sym1 arg) =>
                                  MkT2Sym0 a0123456789876543210
-    type instance Apply MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
+    type instance Apply @Void @(T a) MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
     instance SuppressUnusedWarnings MkT2Sym0 where
       suppressUnusedWarnings = snd ((,) MkT2Sym0KindInference ())
     type MkT2Sym1 :: Void -> T a
@@ -41,7 +41,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       where
         MkSSym0KindInference :: SameKind (Apply MkSSym0 arg) (MkSSym1 arg) =>
                                 MkSSym0 a0123456789876543210
-    type instance Apply MkSSym0 a0123456789876543210 = MkS a0123456789876543210
+    type instance Apply @Bool @S MkSSym0 a0123456789876543210 = MkS a0123456789876543210
     instance SuppressUnusedWarnings MkSSym0 where
       suppressUnusedWarnings = snd ((,) MkSSym0KindInference ())
     type MkSSym1 :: Bool -> S

@@ -8,7 +8,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
       where
         ReplaceAllGTypesSym0KindInference :: SameKind (Apply ReplaceAllGTypesSym0 arg) (ReplaceAllGTypesSym1 arg) =>
                                              ReplaceAllGTypesSym0 a0123456789876543210
-    type instance Apply ReplaceAllGTypesSym0 a0123456789876543210 = ReplaceAllGTypesSym1 a0123456789876543210
+    type instance Apply @((~>) a ((~>) Type a)) @((~>) [Type] ((~>) [a] [a])) ReplaceAllGTypesSym0 a0123456789876543210 = ReplaceAllGTypesSym1 a0123456789876543210
     instance SuppressUnusedWarnings ReplaceAllGTypesSym0 where
       suppressUnusedWarnings
         = snd ((,) ReplaceAllGTypesSym0KindInference ())
@@ -18,7 +18,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
       where
         ReplaceAllGTypesSym1KindInference :: SameKind (Apply (ReplaceAllGTypesSym1 a0123456789876543210) arg) (ReplaceAllGTypesSym2 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ReplaceAllGTypesSym1 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @[Type] @((~>) [a] [a]) (ReplaceAllGTypesSym1 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ReplaceAllGTypesSym1KindInference ())
@@ -28,7 +28,7 @@ Singletons/T316.hs:(0,0)-(0,0): Splicing declarations
       where
         ReplaceAllGTypesSym2KindInference :: SameKind (Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) arg) (ReplaceAllGTypesSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                              ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @[a] @[a] (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ReplaceAllGTypes a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ReplaceAllGTypesSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) ReplaceAllGTypesSym2KindInference ())

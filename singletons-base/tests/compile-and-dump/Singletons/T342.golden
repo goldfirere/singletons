@@ -11,7 +11,7 @@ Singletons/T342.hs:(0,0)-(0,0): Splicing declarations
       where
         MyIdSym0KindInference :: SameKind (Apply MyIdSym0 arg) (MyIdSym1 arg) =>
                                  MyIdSym0 a0123456789876543210
-    type instance Apply MyIdSym0 a0123456789876543210 = MyId a0123456789876543210
+    type instance Apply @_ @_ MyIdSym0 a0123456789876543210 = MyId a0123456789876543210
     instance SuppressUnusedWarnings MyIdSym0 where
       suppressUnusedWarnings = snd ((,) MyIdSym0KindInference ())
     type family MyIdSym1 a0123456789876543210 where

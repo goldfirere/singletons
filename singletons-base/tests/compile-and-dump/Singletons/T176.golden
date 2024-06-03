@@ -30,7 +30,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Lambda_0123456789876543210Sym0KindInference :: SameKind (Apply (Lambda_0123456789876543210Sym0 x0123456789876543210) arg) (Lambda_0123456789876543210Sym1 x0123456789876543210 arg) =>
                                                        Lambda_0123456789876543210Sym0 x0123456789876543210 arg_01234567898765432100123456789876543210
-    type instance Apply (Lambda_0123456789876543210Sym0 x0123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 arg_01234567898765432100123456789876543210
+    type instance Apply @_ @_ (Lambda_0123456789876543210Sym0 x0123456789876543210) arg_01234567898765432100123456789876543210 = Lambda_0123456789876543210 x0123456789876543210 arg_01234567898765432100123456789876543210
     instance SuppressUnusedWarnings (Lambda_0123456789876543210Sym0 x0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Lambda_0123456789876543210Sym0KindInference ())
@@ -41,7 +41,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Quux2Sym0KindInference :: SameKind (Apply Quux2Sym0 arg) (Quux2Sym1 arg) =>
                                   Quux2Sym0 a0123456789876543210
-    type instance Apply Quux2Sym0 a0123456789876543210 = Quux2 a0123456789876543210
+    type instance Apply @a @a Quux2Sym0 a0123456789876543210 = Quux2 a0123456789876543210
     instance SuppressUnusedWarnings Quux2Sym0 where
       suppressUnusedWarnings = snd ((,) Quux2Sym0KindInference ())
     type Quux2Sym1 :: a -> a
@@ -52,7 +52,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Quux1Sym0KindInference :: SameKind (Apply Quux1Sym0 arg) (Quux1Sym1 arg) =>
                                   Quux1Sym0 a0123456789876543210
-    type instance Apply Quux1Sym0 a0123456789876543210 = Quux1 a0123456789876543210
+    type instance Apply @a @a Quux1Sym0 a0123456789876543210 = Quux1 a0123456789876543210
     instance SuppressUnusedWarnings Quux1Sym0 where
       suppressUnusedWarnings = snd ((,) Quux1Sym0KindInference ())
     type Quux1Sym1 :: a -> a
@@ -69,7 +69,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Bar1Sym0KindInference :: SameKind (Apply Bar1Sym0 arg) (Bar1Sym1 arg) =>
                                  Bar1Sym0 a0123456789876543210
-    type instance Apply Bar1Sym0 a0123456789876543210 = Bar1Sym1 a0123456789876543210
+    type instance Apply @a @((~>) ((~>) a b) b) Bar1Sym0 a0123456789876543210 = Bar1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Bar1Sym0 where
       suppressUnusedWarnings = snd ((,) Bar1Sym0KindInference ())
     type Bar1Sym1 :: forall a b. a -> (~>) ((~>) a b) b
@@ -77,7 +77,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Bar1Sym1KindInference :: SameKind (Apply (Bar1Sym1 a0123456789876543210) arg) (Bar1Sym2 a0123456789876543210 arg) =>
                                  Bar1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Bar1Sym1 a0123456789876543210) a0123456789876543210 = Bar1 a0123456789876543210 a0123456789876543210
+    type instance Apply @((~>) a b) @b (Bar1Sym1 a0123456789876543210) a0123456789876543210 = Bar1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Bar1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Bar1Sym1KindInference ())
     type Bar1Sym2 :: forall a b. a -> (~>) a b -> b
@@ -94,7 +94,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Bar2Sym0KindInference :: SameKind (Apply Bar2Sym0 arg) (Bar2Sym1 arg) =>
                                  Bar2Sym0 a0123456789876543210
-    type instance Apply Bar2Sym0 a0123456789876543210 = Bar2Sym1 a0123456789876543210
+    type instance Apply @a @((~>) b b) Bar2Sym0 a0123456789876543210 = Bar2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Bar2Sym0 where
       suppressUnusedWarnings = snd ((,) Bar2Sym0KindInference ())
     type Bar2Sym1 :: forall a b. a -> (~>) b b
@@ -102,7 +102,7 @@ Singletons/T176.hs:(0,0)-(0,0): Splicing declarations
       where
         Bar2Sym1KindInference :: SameKind (Apply (Bar2Sym1 a0123456789876543210) arg) (Bar2Sym2 a0123456789876543210 arg) =>
                                  Bar2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Bar2Sym1 a0123456789876543210) a0123456789876543210 = Bar2 a0123456789876543210 a0123456789876543210
+    type instance Apply @b @b (Bar2Sym1 a0123456789876543210) a0123456789876543210 = Bar2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Bar2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) Bar2Sym1KindInference ())
     type Bar2Sym2 :: forall a b. a -> b -> b

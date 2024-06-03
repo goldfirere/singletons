@@ -28,7 +28,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         MethSym0KindInference :: SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
                                  MethSym0 a0123456789876543210
-    type instance Apply MethSym0 a0123456789876543210 = Meth a0123456789876543210
+    type instance Apply @a @a MethSym0 a0123456789876543210 = Meth a0123456789876543210
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
@@ -39,7 +39,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         L2rSym0KindInference :: SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
                                 L2rSym0 a0123456789876543210
-    type instance Apply L2rSym0 a0123456789876543210 = L2r a0123456789876543210
+    type instance Apply @a @b L2rSym0 a0123456789876543210 = L2r a0123456789876543210
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings = snd ((,) L2rSym0KindInference ())
     type L2rSym1 :: forall a b. a -> b
@@ -56,7 +56,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         Meth_0123456789876543210Sym0KindInference :: SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
                                                      Meth_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @Bool Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Meth_0123456789876543210Sym0KindInference ())
@@ -72,7 +72,7 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
       where
         L2r_0123456789876543210Sym0KindInference :: SameKind (Apply L2r_0123456789876543210Sym0 arg) (L2r_0123456789876543210Sym1 arg) =>
                                                     L2r_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @Natural L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) L2r_0123456789876543210Sym0KindInference ())

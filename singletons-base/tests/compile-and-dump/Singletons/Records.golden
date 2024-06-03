@@ -8,7 +8,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       where
         MkRecordSym0KindInference :: SameKind (Apply MkRecordSym0 arg) (MkRecordSym1 arg) =>
                                      MkRecordSym0 a0123456789876543210
-    type instance Apply MkRecordSym0 a0123456789876543210 = MkRecordSym1 a0123456789876543210
+    type instance Apply @a @((~>) Bool (Record a)) MkRecordSym0 a0123456789876543210 = MkRecordSym1 a0123456789876543210
     instance SuppressUnusedWarnings MkRecordSym0 where
       suppressUnusedWarnings = snd ((,) MkRecordSym0KindInference ())
     type MkRecordSym1 :: forall a. a -> (~>) Bool (Record a)
@@ -16,7 +16,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       where
         MkRecordSym1KindInference :: SameKind (Apply (MkRecordSym1 a0123456789876543210) arg) (MkRecordSym2 a0123456789876543210 arg) =>
                                      MkRecordSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkRecordSym1 a0123456789876543210) a0123456789876543210 = MkRecord a0123456789876543210 a0123456789876543210
+    type instance Apply @Bool @(Record a) (MkRecordSym1 a0123456789876543210) a0123456789876543210 = MkRecord a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkRecordSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkRecordSym1KindInference ())
     type MkRecordSym2 :: forall a. a -> Bool -> Record a
@@ -27,7 +27,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       where
         Field2Sym0KindInference :: SameKind (Apply Field2Sym0 arg) (Field2Sym1 arg) =>
                                    Field2Sym0 a0123456789876543210
-    type instance Apply Field2Sym0 a0123456789876543210 = Field2 a0123456789876543210
+    type instance Apply @(Record a) @Bool Field2Sym0 a0123456789876543210 = Field2 a0123456789876543210
     instance SuppressUnusedWarnings Field2Sym0 where
       suppressUnusedWarnings = snd ((,) Field2Sym0KindInference ())
     type Field2Sym1 :: forall a. Record a -> Bool
@@ -38,7 +38,7 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       where
         Field1Sym0KindInference :: SameKind (Apply Field1Sym0 arg) (Field1Sym1 arg) =>
                                    Field1Sym0 a0123456789876543210
-    type instance Apply Field1Sym0 a0123456789876543210 = Field1 a0123456789876543210
+    type instance Apply @(Record a) @a Field1Sym0 a0123456789876543210 = Field1 a0123456789876543210
     instance SuppressUnusedWarnings Field1Sym0 where
       suppressUnusedWarnings = snd ((,) Field1Sym0KindInference ())
     type Field1Sym1 :: forall a. Record a -> a

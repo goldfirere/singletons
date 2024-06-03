@@ -35,7 +35,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       where
         Method2aSym0KindInference :: SameKind (Apply Method2aSym0 arg) (Method2aSym1 arg) =>
                                      Method2aSym0 a0123456789876543210
-    type instance Apply Method2aSym0 a0123456789876543210 = Method2a a0123456789876543210
+    type instance Apply @b @a Method2aSym0 a0123456789876543210 = Method2a a0123456789876543210
     instance SuppressUnusedWarnings Method2aSym0 where
       suppressUnusedWarnings = snd ((,) Method2aSym0KindInference ())
     type Method2aSym1 :: forall b a. b -> a
@@ -46,7 +46,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       where
         Method2bSym0KindInference :: SameKind (Apply Method2bSym0 arg) (Method2bSym1 arg) =>
                                      Method2bSym0 a0123456789876543210
-    type instance Apply Method2bSym0 a0123456789876543210 = Method2b a0123456789876543210
+    type instance Apply @b @a Method2bSym0 a0123456789876543210 = Method2b a0123456789876543210
     instance SuppressUnusedWarnings Method2bSym0 where
       suppressUnusedWarnings = snd ((,) Method2bSym0KindInference ())
     type Method2bSym1 :: forall b a. b -> a
@@ -71,7 +71,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       where
         Method2a_0123456789876543210Sym0KindInference :: SameKind (Apply Method2a_0123456789876543210Sym0 arg) (Method2a_0123456789876543210Sym1 arg) =>
                                                          Method2a_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210 a0123456789876543210
+    type instance Apply @b @[a] Method2a_0123456789876543210Sym0 a0123456789876543210 = Method2a_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Method2a_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Method2a_0123456789876543210Sym0KindInference ())
@@ -86,7 +86,7 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       where
         Method2b_0123456789876543210Sym0KindInference :: SameKind (Apply Method2b_0123456789876543210Sym0 arg) (Method2b_0123456789876543210Sym1 arg) =>
                                                          Method2b_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210 a0123456789876543210
+    type instance Apply @b @[a] Method2b_0123456789876543210Sym0 a0123456789876543210 = Method2b_0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings Method2b_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Method2b_0123456789876543210Sym0KindInference ())

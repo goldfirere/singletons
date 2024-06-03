@@ -12,7 +12,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
       where
         ContainsSym0KindInference :: SameKind (Apply ContainsSym0 arg) (ContainsSym1 arg) =>
                                      ContainsSym0 a0123456789876543210
-    type instance Apply ContainsSym0 a0123456789876543210 = ContainsSym1 a0123456789876543210
+    type instance Apply @a @((~>) [a] Bool) ContainsSym0 a0123456789876543210 = ContainsSym1 a0123456789876543210
     instance SuppressUnusedWarnings ContainsSym0 where
       suppressUnusedWarnings = snd ((,) ContainsSym0KindInference ())
     type ContainsSym1 :: a -> (~>) [a] Bool
@@ -20,7 +20,7 @@ Singletons/Contains.hs:(0,0)-(0,0): Splicing declarations
       where
         ContainsSym1KindInference :: SameKind (Apply (ContainsSym1 a0123456789876543210) arg) (ContainsSym2 a0123456789876543210 arg) =>
                                      ContainsSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (ContainsSym1 a0123456789876543210) a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
+    type instance Apply @[a] @Bool (ContainsSym1 a0123456789876543210) a0123456789876543210 = Contains a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (ContainsSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) ContainsSym1KindInference ())
     type ContainsSym2 :: a -> [a] -> Bool

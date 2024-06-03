@@ -25,7 +25,7 @@ Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
       where
         ConsExSym0KindInference :: SameKind (Apply ConsExSym0 arg) (ConsExSym1 arg) =>
                                    ConsExSym0 a0123456789876543210
-    type instance Apply ConsExSym0 a0123456789876543210 = ConsEx a0123456789876543210
+    type instance Apply @Char @Symbol ConsExSym0 a0123456789876543210 = ConsEx a0123456789876543210
     instance SuppressUnusedWarnings ConsExSym0 where
       suppressUnusedWarnings = snd ((,) ConsExSym0KindInference ())
     type ConsExSym1 :: Char -> Symbol

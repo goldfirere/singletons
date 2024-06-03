@@ -14,7 +14,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       where
         (::*:@#@$###) :: SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
                          (:*:@#@$) a0123456789876543210
-    type instance Apply (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) b ((:*:) a b)) (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$###) ())
     type (:*:@#@$$) :: forall a b. a -> (~>) b ((:*:) a b)
@@ -22,7 +22,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       where
         (::*:@#@$$###) :: SameKind (Apply ((:*:@#@$$) a0123456789876543210) arg) ((:*:@#@$$$) a0123456789876543210 arg) =>
                           (:*:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
+    type instance Apply @b @((:*:) a b) ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
     type (:*:@#@$$$) :: forall a b. a -> b -> (:*:) a b
@@ -33,7 +33,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       where
         MkPairSym0KindInference :: SameKind (Apply MkPairSym0 arg) (MkPairSym1 arg) =>
                                    MkPairSym0 a0123456789876543210
-    type instance Apply MkPairSym0 a0123456789876543210 = MkPairSym1 a0123456789876543210
+    type instance Apply @a @((~>) b (Pair a b)) MkPairSym0 a0123456789876543210 = MkPairSym1 a0123456789876543210
     instance SuppressUnusedWarnings MkPairSym0 where
       suppressUnusedWarnings = snd ((,) MkPairSym0KindInference ())
     infixr 9 `MkPairSym0`
@@ -42,7 +42,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
       where
         MkPairSym1KindInference :: SameKind (Apply (MkPairSym1 a0123456789876543210) arg) (MkPairSym2 a0123456789876543210 arg) =>
                                    MkPairSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (MkPairSym1 a0123456789876543210) a0123456789876543210 = MkPair a0123456789876543210 a0123456789876543210
+    type instance Apply @b @(Pair a b) (MkPairSym1 a0123456789876543210) a0123456789876543210 = MkPair a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkPairSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkPairSym1KindInference ())
     infixr 9 `MkPairSym1`

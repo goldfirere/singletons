@@ -18,7 +18,7 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
       where
         FlurmpSym0KindInference :: SameKind (Apply FlurmpSym0 arg) (FlurmpSym1 arg) =>
                                    FlurmpSym0 a0123456789876543210
-    type instance Apply FlurmpSym0 a0123456789876543210 = Flurmp a0123456789876543210
+    type instance Apply @(Maybe ()) @() FlurmpSym0 a0123456789876543210 = Flurmp a0123456789876543210
     instance SuppressUnusedWarnings FlurmpSym0 where
       suppressUnusedWarnings = snd ((,) FlurmpSym0KindInference ())
     type FlurmpSym1 :: Maybe () -> ()
@@ -29,7 +29,7 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
       where
         BlahSym0KindInference :: SameKind (Apply BlahSym0 arg) (BlahSym1 arg) =>
                                  BlahSym0 a0123456789876543210
-    type instance Apply BlahSym0 a0123456789876543210 = Blah a0123456789876543210
+    type instance Apply @(Maybe a) @[a] BlahSym0 a0123456789876543210 = Blah a0123456789876543210
     instance SuppressUnusedWarnings BlahSym0 where
       suppressUnusedWarnings = snd ((,) BlahSym0KindInference ())
     type BlahSym1 :: Maybe a -> [a]

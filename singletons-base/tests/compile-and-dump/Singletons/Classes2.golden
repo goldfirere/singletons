@@ -22,7 +22,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       where
         SuccFooSym0KindInference :: SameKind (Apply SuccFooSym0 arg) (SuccFooSym1 arg) =>
                                     SuccFooSym0 a0123456789876543210
-    type instance Apply SuccFooSym0 a0123456789876543210 = SuccFoo a0123456789876543210
+    type instance Apply @NatFoo @NatFoo SuccFooSym0 a0123456789876543210 = SuccFoo a0123456789876543210
     instance SuppressUnusedWarnings SuccFooSym0 where
       suppressUnusedWarnings = snd ((,) SuccFooSym0KindInference ())
     type SuccFooSym1 :: NatFoo -> NatFoo
@@ -39,7 +39,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym0KindInference :: SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
                                                           Mycompare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
+    type instance Apply @NatFoo @((~>) NatFoo Ordering) Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
     instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
       suppressUnusedWarnings
         = snd ((,) Mycompare_0123456789876543210Sym0KindInference ())
@@ -49,7 +49,7 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       where
         Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
                                                           Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @NatFoo @Ordering (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
       suppressUnusedWarnings
         = snd ((,) Mycompare_0123456789876543210Sym1KindInference ())

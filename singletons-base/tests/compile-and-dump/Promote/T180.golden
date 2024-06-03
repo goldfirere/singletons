@@ -13,7 +13,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
       where
         X1Sym0KindInference :: SameKind (Apply X1Sym0 arg) (X1Sym1 arg) =>
                                X1Sym0 a0123456789876543210
-    type instance Apply X1Sym0 a0123456789876543210 = X1 a0123456789876543210
+    type instance Apply @Symbol @X X1Sym0 a0123456789876543210 = X1 a0123456789876543210
     instance SuppressUnusedWarnings X1Sym0 where
       suppressUnusedWarnings = snd ((,) X1Sym0KindInference ())
     type X1Sym1 :: Symbol -> X
@@ -24,7 +24,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
                                X2Sym0 a0123456789876543210
-    type instance Apply X2Sym0 a0123456789876543210 = X2 a0123456789876543210
+    type instance Apply @Symbol @X X2Sym0 a0123456789876543210 = X2 a0123456789876543210
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
     type X2Sym1 :: Symbol -> X
@@ -34,7 +34,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
       where
         ZSym0KindInference :: SameKind (Apply ZSym0 arg) (ZSym1 arg) =>
                               ZSym0 a0123456789876543210
-    type instance Apply ZSym0 a0123456789876543210 = Z a0123456789876543210
+    type instance Apply @_ @_ ZSym0 a0123456789876543210 = Z a0123456789876543210
     instance SuppressUnusedWarnings ZSym0 where
       suppressUnusedWarnings = snd ((,) ZSym0KindInference ())
     type family ZSym1 a0123456789876543210 where
@@ -44,7 +44,7 @@ Promote/T180.hs:(0,0)-(0,0): Splicing declarations
       where
         YSym0KindInference :: SameKind (Apply YSym0 arg) (YSym1 arg) =>
                               YSym0 a0123456789876543210
-    type instance Apply YSym0 a0123456789876543210 = Y a0123456789876543210
+    type instance Apply @X @Symbol YSym0 a0123456789876543210 = Y a0123456789876543210
     instance SuppressUnusedWarnings YSym0 where
       suppressUnusedWarnings = snd ((,) YSym0KindInference ())
     type YSym1 :: X -> Symbol

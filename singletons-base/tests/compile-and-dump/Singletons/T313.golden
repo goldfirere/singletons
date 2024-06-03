@@ -26,7 +26,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         PFoo1Sym0KindInference :: SameKind (Apply PFoo1Sym0 arg) (PFoo1Sym1 arg) =>
                                   PFoo1Sym0 a0123456789876543210
-    type instance Apply PFoo1Sym0 a0123456789876543210 = PFoo1 a0123456789876543210
+    type instance Apply @_ @_ PFoo1Sym0 a0123456789876543210 = PFoo1 a0123456789876543210
     instance SuppressUnusedWarnings PFoo1Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo1Sym0KindInference ())
     type family PFoo1Sym1 a0123456789876543210 where
@@ -35,7 +35,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         PFoo3Sym0KindInference :: SameKind (Apply PFoo3Sym0 arg) (PFoo3Sym1 arg) =>
                                   PFoo3Sym0 a0123456789876543210
-    type instance Apply PFoo3Sym0 a0123456789876543210 = PFoo3 a0123456789876543210
+    type instance Apply @_ @_ PFoo3Sym0 a0123456789876543210 = PFoo3 a0123456789876543210
     instance SuppressUnusedWarnings PFoo3Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo3Sym0KindInference ())
     type family PFoo3Sym1 a0123456789876543210 where
@@ -44,7 +44,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         PFoo2Sym0KindInference :: SameKind (Apply PFoo2Sym0 arg) (PFoo2Sym1 arg) =>
                                   PFoo2Sym0 a0123456789876543210
-    type instance Apply PFoo2Sym0 a0123456789876543210 = PFoo2 a0123456789876543210
+    type instance Apply @Type @Type PFoo2Sym0 a0123456789876543210 = PFoo2 a0123456789876543210
     instance SuppressUnusedWarnings PFoo2Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo2Sym0KindInference ())
     type family PFoo2Sym1 (a0123456789876543210 :: Type) :: Type where
@@ -53,7 +53,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         PFoo4Sym0KindInference :: SameKind (Apply PFoo4Sym0 arg) (PFoo4Sym1 arg) =>
                                   PFoo4Sym0 a0123456789876543210
-    type instance Apply PFoo4Sym0 a0123456789876543210 = PFoo4 a0123456789876543210
+    type instance Apply @Type @_ PFoo4Sym0 a0123456789876543210 = PFoo4 a0123456789876543210
     instance SuppressUnusedWarnings PFoo4Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo4Sym0KindInference ())
     type family PFoo4Sym1 (a0123456789876543210 :: Type) where
@@ -88,7 +88,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         SFoo1Sym0KindInference :: SameKind (Apply SFoo1Sym0 arg) (SFoo1Sym1 arg) =>
                                   SFoo1Sym0 a0123456789876543210
-    type instance Apply SFoo1Sym0 a0123456789876543210 = SFoo1 a0123456789876543210
+    type instance Apply @_ @_ SFoo1Sym0 a0123456789876543210 = SFoo1 a0123456789876543210
     instance SuppressUnusedWarnings SFoo1Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo1Sym0KindInference ())
     type family SFoo1Sym1 a0123456789876543210 where
@@ -97,7 +97,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         SFoo3Sym0KindInference :: SameKind (Apply SFoo3Sym0 arg) (SFoo3Sym1 arg) =>
                                   SFoo3Sym0 a0123456789876543210
-    type instance Apply SFoo3Sym0 a0123456789876543210 = SFoo3 a0123456789876543210
+    type instance Apply @_ @_ SFoo3Sym0 a0123456789876543210 = SFoo3 a0123456789876543210
     instance SuppressUnusedWarnings SFoo3Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo3Sym0KindInference ())
     type family SFoo3Sym1 a0123456789876543210 where
@@ -106,7 +106,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         SFoo2Sym0KindInference :: SameKind (Apply SFoo2Sym0 arg) (SFoo2Sym1 arg) =>
                                   SFoo2Sym0 a0123456789876543210
-    type instance Apply SFoo2Sym0 a0123456789876543210 = SFoo2 a0123456789876543210
+    type instance Apply @Type @Type SFoo2Sym0 a0123456789876543210 = SFoo2 a0123456789876543210
     instance SuppressUnusedWarnings SFoo2Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo2Sym0KindInference ())
     type family SFoo2Sym1 (a0123456789876543210 :: Type) :: Type where
@@ -115,7 +115,7 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       where
         SFoo4Sym0KindInference :: SameKind (Apply SFoo4Sym0 arg) (SFoo4Sym1 arg) =>
                                   SFoo4Sym0 a0123456789876543210
-    type instance Apply SFoo4Sym0 a0123456789876543210 = SFoo4 a0123456789876543210
+    type instance Apply @Type @_ SFoo4Sym0 a0123456789876543210 = SFoo4 a0123456789876543210
     instance SuppressUnusedWarnings SFoo4Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo4Sym0KindInference ())
     type family SFoo4Sym1 (a0123456789876543210 :: Type) where

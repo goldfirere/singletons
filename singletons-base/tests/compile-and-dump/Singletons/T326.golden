@@ -6,7 +6,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       where
         (:<%>@#@$###) :: SameKind (Apply (<%>@#@$) arg) ((<%>@#@$$) arg) =>
                          (<%>@#@$) a0123456789876543210
-    type instance Apply (<%>@#@$) a0123456789876543210 = (<%>@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) a a) (<%>@#@$) a0123456789876543210 = (<%>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<%>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<%>@#@$###) ())
     infixl 9 <%>@#@$
@@ -15,7 +15,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       where
         (:<%>@#@$$###) :: SameKind (Apply ((<%>@#@$$) a0123456789876543210) arg) ((<%>@#@$$$) a0123456789876543210 arg) =>
                           (<%>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((<%>@#@$$) a0123456789876543210) a0123456789876543210 = (<%>) a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a ((<%>@#@$$) a0123456789876543210) a0123456789876543210 = (<%>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<%>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<%>@#@$$###) ())
     infixl 9 <%>@#@$$
@@ -35,7 +35,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       where
         (:<%%>@#@$###) :: SameKind (Apply (<%%>@#@$) arg) ((<%%>@#@$$) arg) =>
                           (<%%>@#@$) a0123456789876543210
-    type instance Apply (<%%>@#@$) a0123456789876543210 = (<%%>@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) a a) (<%%>@#@$) a0123456789876543210 = (<%%>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<%%>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<%%>@#@$###) ())
     infixl 9 <%%>@#@$
@@ -44,7 +44,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
       where
         (:<%%>@#@$$###) :: SameKind (Apply ((<%%>@#@$$) a0123456789876543210) arg) ((<%%>@#@$$$) a0123456789876543210 arg) =>
                            (<%%>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((<%%>@#@$$) a0123456789876543210) a0123456789876543210 = (<%%>) a0123456789876543210 a0123456789876543210
+    type instance Apply @a @a ((<%%>@#@$$) a0123456789876543210) a0123456789876543210 = (<%%>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<%%>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<%%>@#@$$###) ())
     infixl 9 <%%>@#@$$

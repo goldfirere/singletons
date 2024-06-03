@@ -39,7 +39,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         BazSym0KindInference :: SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
                                 BazSym0 a0123456789876543210
-    type instance Apply BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat ((~>) Nat Baz)) BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd ((,) BazSym0KindInference ())
     type BazSym1 :: Nat -> (~>) Nat ((~>) Nat Baz)
@@ -47,7 +47,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         BazSym1KindInference :: SameKind (Apply (BazSym1 a0123456789876543210) arg) (BazSym2 a0123456789876543210 arg) =>
                                 BazSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (BazSym1 a0123456789876543210) a0123456789876543210 = BazSym2 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @((~>) Nat Baz) (BazSym1 a0123456789876543210) a0123456789876543210 = BazSym2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BazSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BazSym1KindInference ())
     type BazSym2 :: Nat -> Nat -> (~>) Nat Baz
@@ -55,7 +55,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         BazSym2KindInference :: SameKind (Apply (BazSym2 a0123456789876543210 a0123456789876543210) arg) (BazSym3 a0123456789876543210 a0123456789876543210 arg) =>
                                 BazSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply (BazSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type instance Apply @Nat @Baz (BazSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BazSym2 a0123456789876543210 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BazSym2KindInference ())
     type BazSym3 :: Nat -> Nat -> Nat -> Baz
@@ -98,7 +98,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply @[Nat] @[Nat] FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: [Nat] -> [Nat]
@@ -109,7 +109,8 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         TupSym0KindInference :: SameKind (Apply TupSym0 arg) (TupSym1 arg) =>
                                 TupSym0 a0123456789876543210
-    type instance Apply TupSym0 a0123456789876543210 = Tup a0123456789876543210
+    type instance Apply @(Nat, Nat) @(Nat,
+                                      Nat) TupSym0 a0123456789876543210 = Tup a0123456789876543210
     instance SuppressUnusedWarnings TupSym0 where
       suppressUnusedWarnings = snd ((,) TupSym0KindInference ())
     type TupSym1 :: (Nat, Nat) -> (Nat, Nat)
@@ -121,7 +122,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         Baz_Sym0KindInference :: SameKind (Apply Baz_Sym0 arg) (Baz_Sym1 arg) =>
                                  Baz_Sym0 a0123456789876543210
-    type instance Apply Baz_Sym0 a0123456789876543210 = Baz_ a0123456789876543210
+    type instance Apply @(Maybe Baz) @(Maybe Baz) Baz_Sym0 a0123456789876543210 = Baz_ a0123456789876543210
     instance SuppressUnusedWarnings Baz_Sym0 where
       suppressUnusedWarnings = snd ((,) Baz_Sym0KindInference ())
     type Baz_Sym1 :: Maybe Baz -> Maybe Baz
@@ -132,7 +133,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
+    type instance Apply @(Maybe Nat) @(Maybe Nat) BarSym0 a0123456789876543210 = Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Maybe Nat -> Maybe Nat
@@ -143,7 +144,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       where
         MaybePlusSym0KindInference :: SameKind (Apply MaybePlusSym0 arg) (MaybePlusSym1 arg) =>
                                       MaybePlusSym0 a0123456789876543210
-    type instance Apply MaybePlusSym0 a0123456789876543210 = MaybePlus a0123456789876543210
+    type instance Apply @(Maybe Nat) @(Maybe Nat) MaybePlusSym0 a0123456789876543210 = MaybePlus a0123456789876543210
     instance SuppressUnusedWarnings MaybePlusSym0 where
       suppressUnusedWarnings = snd ((,) MaybePlusSym0KindInference ())
     type MaybePlusSym1 :: Maybe Nat -> Maybe Nat

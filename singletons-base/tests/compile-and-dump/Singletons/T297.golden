@@ -35,7 +35,7 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
                               FSym0 a0123456789876543210
-    type instance Apply FSym0 a0123456789876543210 = F a0123456789876543210
+    type instance Apply @_ @_ FSym0 a0123456789876543210 = F a0123456789876543210
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type family FSym1 a0123456789876543210 where

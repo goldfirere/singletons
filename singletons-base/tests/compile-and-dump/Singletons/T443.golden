@@ -20,7 +20,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       where
         SSym0KindInference :: SameKind (Apply SSym0 arg) (SSym1 arg) =>
                               SSym0 a0123456789876543210
-    type instance Apply SSym0 a0123456789876543210 = S a0123456789876543210
+    type instance Apply @Nat @Nat SSym0 a0123456789876543210 = S a0123456789876543210
     instance SuppressUnusedWarnings SSym0 where
       suppressUnusedWarnings = snd ((,) SSym0KindInference ())
     type SSym1 :: Nat -> Nat
@@ -34,7 +34,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       where
         (::>@#@$###) :: SameKind (Apply (:>@#@$) arg) ((:>@#@$$) arg) =>
                         (:>@#@$) a0123456789876543210
-    type instance Apply (:>@#@$) a0123456789876543210 = (:>@#@$$) a0123456789876543210
+    type instance Apply @a @((~>) (Vec n a) (Vec (S n) a)) (:>@#@$) a0123456789876543210 = (:>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:>@#@$) where
       suppressUnusedWarnings = snd ((,) (::>@#@$###) ())
     type (:>@#@$$) :: a -> (~>) (Vec n a) (Vec (S n) a)
@@ -42,7 +42,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       where
         (::>@#@$$###) :: SameKind (Apply ((:>@#@$$) a0123456789876543210) arg) ((:>@#@$$$) a0123456789876543210 arg) =>
                          (:>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:>@#@$$) a0123456789876543210) a0123456789876543210 = (:>) a0123456789876543210 a0123456789876543210
+    type instance Apply @(Vec n a) @(Vec (S n) a) ((:>@#@$$) a0123456789876543210) a0123456789876543210 = (:>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::>@#@$$###) ())
     type (:>@#@$$$) :: a -> Vec n a -> Vec (S n) a
@@ -53,7 +53,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       where
         TailSym0KindInference :: SameKind (Apply TailSym0 arg) (TailSym1 arg) =>
                                  TailSym0 a0123456789876543210
-    type instance Apply TailSym0 a0123456789876543210 = Tail a0123456789876543210
+    type instance Apply @(Vec (S n) a) @(Vec n a) TailSym0 a0123456789876543210 = Tail a0123456789876543210
     instance SuppressUnusedWarnings TailSym0 where
       suppressUnusedWarnings = snd ((,) TailSym0KindInference ())
     type TailSym1 :: Vec (S n) a -> Vec n a
@@ -64,7 +64,7 @@ Singletons/T443.hs:(0,0)-(0,0): Splicing declarations
       where
         HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
                                  HeadSym0 a0123456789876543210
-    type instance Apply HeadSym0 a0123456789876543210 = Head a0123456789876543210
+    type instance Apply @(Vec (S n) a) @a HeadSym0 a0123456789876543210 = Head a0123456789876543210
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd ((,) HeadSym0KindInference ())
     type HeadSym1 :: Vec (S n) a -> a

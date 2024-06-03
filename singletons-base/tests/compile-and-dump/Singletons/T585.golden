@@ -10,7 +10,7 @@ Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
       where
         KonstSym0KindInference :: SameKind (Apply KonstSym0 arg) (KonstSym1 arg) =>
                                   KonstSym0 a0123456789876543210
-    type instance Apply KonstSym0 a0123456789876543210 = KonstSym1 a0123456789876543210
+    type instance Apply @a @((~>) b a) KonstSym0 a0123456789876543210 = KonstSym1 a0123456789876543210
     instance SuppressUnusedWarnings KonstSym0 where
       suppressUnusedWarnings = snd ((,) KonstSym0KindInference ())
     type KonstSym1 :: forall a {b}. a -> (~>) b a
@@ -18,7 +18,7 @@ Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
       where
         KonstSym1KindInference :: SameKind (Apply (KonstSym1 a0123456789876543210) arg) (KonstSym2 a0123456789876543210 arg) =>
                                   KonstSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (KonstSym1 a0123456789876543210) a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    type instance Apply @b @a (KonstSym1 a0123456789876543210) a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (KonstSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) KonstSym1KindInference ())
     type KonstSym2 :: forall a {b}. a -> b -> a

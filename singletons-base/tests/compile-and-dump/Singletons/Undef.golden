@@ -14,7 +14,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
                                 BarSym0 a0123456789876543210
-    type instance Apply BarSym0 a0123456789876543210 = Bar a0123456789876543210
+    type instance Apply @Bool @Bool BarSym0 a0123456789876543210 = Bar a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> Bool
@@ -25,7 +25,7 @@ Singletons/Undef.hs:(0,0)-(0,0): Splicing declarations
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
                                 FooSym0 a0123456789876543210
-    type instance Apply FooSym0 a0123456789876543210 = Foo a0123456789876543210
+    type instance Apply @Bool @Bool FooSym0 a0123456789876543210 = Foo a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Bool -> Bool

@@ -63,7 +63,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         C1Sym0KindInference :: SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
                                C1Sym0 a0123456789876543210
-    type instance Apply C1Sym0 a0123456789876543210 = C1Sym1 a0123456789876543210
+    type instance Apply @T0 @((~>) T1 T1) C1Sym0 a0123456789876543210 = C1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings = snd ((,) C1Sym0KindInference ())
     infixr 5 `C1Sym0`
@@ -72,7 +72,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         C1Sym1KindInference :: SameKind (Apply (C1Sym1 a0123456789876543210) arg) (C1Sym2 a0123456789876543210 arg) =>
                                C1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (C1Sym1 a0123456789876543210) a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
+    type instance Apply @T1 @T1 (C1Sym1 a0123456789876543210) a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (C1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) C1Sym1KindInference ())
     infixr 5 `C1Sym1`
@@ -85,7 +85,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         (::&&@#@$###) :: SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
                          (:&&@#@$) a0123456789876543210
-    type instance Apply (:&&@#@$) a0123456789876543210 = (:&&@#@$$) a0123456789876543210
+    type instance Apply @T0 @((~>) T1 T1) (:&&@#@$) a0123456789876543210 = (:&&@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings = snd ((,) (::&&@#@$###) ())
     infixr 5 :&&@#@$
@@ -94,7 +94,7 @@ Singletons/T159.hs:0:0:: Splicing declarations
       where
         (::&&@#@$$###) :: SameKind (Apply ((:&&@#@$$) a0123456789876543210) arg) ((:&&@#@$$$) a0123456789876543210 arg) =>
                           (:&&@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
+    type instance Apply @T1 @T1 ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:&&@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::&&@#@$$###) ())
     infixr 5 :&&@#@$$
@@ -174,7 +174,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         C2Sym0KindInference :: SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
                                C2Sym0 a0123456789876543210
-    type instance Apply C2Sym0 a0123456789876543210 = C2Sym1 a0123456789876543210
+    type instance Apply @T0 @((~>) T2 T2) C2Sym0 a0123456789876543210 = C2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings = snd ((,) C2Sym0KindInference ())
     infixr 5 `C2Sym0`
@@ -183,7 +183,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         C2Sym1KindInference :: SameKind (Apply (C2Sym1 a0123456789876543210) arg) (C2Sym2 a0123456789876543210 arg) =>
                                C2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply (C2Sym1 a0123456789876543210) a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
+    type instance Apply @T2 @T2 (C2Sym1 a0123456789876543210) a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (C2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) C2Sym1KindInference ())
     infixr 5 `C2Sym1`
@@ -196,7 +196,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         (::||@#@$###) :: SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
                          (:||@#@$) a0123456789876543210
-    type instance Apply (:||@#@$) a0123456789876543210 = (:||@#@$$) a0123456789876543210
+    type instance Apply @T0 @((~>) T2 T2) (:||@#@$) a0123456789876543210 = (:||@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings = snd ((,) (::||@#@$###) ())
     infixr 5 :||@#@$
@@ -205,7 +205,7 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       where
         (::||@#@$$###) :: SameKind (Apply ((:||@#@$$) a0123456789876543210) arg) ((:||@#@$$$) a0123456789876543210 arg) =>
                           (:||@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
+    type instance Apply @T2 @T2 ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:||@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::||@#@$$###) ())
     infixr 5 :||@#@$$

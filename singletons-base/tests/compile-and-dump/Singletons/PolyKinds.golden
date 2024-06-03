@@ -10,7 +10,7 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
       where
         FffSym0KindInference :: SameKind (Apply FffSym0 arg) (FffSym1 arg) =>
                                 FffSym0 a0123456789876543210
-    type instance Apply FffSym0 a0123456789876543210 = Fff a0123456789876543210
+    type instance Apply @(Proxy (a :: k)) @() FffSym0 a0123456789876543210 = Fff a0123456789876543210
     instance SuppressUnusedWarnings FffSym0 where
       suppressUnusedWarnings = snd ((,) FffSym0KindInference ())
     type FffSym1 :: forall k (a :: k). Proxy (a :: k) -> ()
