@@ -184,7 +184,7 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
       Meth1Sym1 a0123456789876543210 = Meth1 a0123456789876543210
     type PC1 :: forall j k. j -> k -> Constraint
     class PC1 @j @k (a :: j) (b :: k) where
-      type family Meth1 @j @k @(a :: j) @(b :: k) (arg :: Proxy a) :: Proxy b
+      type family Meth1 (arg :: Proxy a) :: Proxy b
     type Meth2Sym0 :: forall x
                              y
                              (a :: x)
@@ -201,7 +201,7 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
       Meth2Sym1 a0123456789876543210 = Meth2 a0123456789876543210
     type PC2 :: forall j k. j -> k -> Constraint
     class PC2 @x @y (a :: x) (b :: y) where
-      type family Meth2 @x @y @(a :: x) @(b :: y) (arg :: Proxy a) :: Proxy b
+      type family Meth2 (arg :: Proxy a) :: Proxy b
     type Meth3Sym0 :: forall j
                              (a :: j)
                              k
@@ -218,13 +218,13 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
       Meth3Sym1 a0123456789876543210 = Meth3 a0123456789876543210
     type PC3 :: forall j. j -> forall k. k -> Constraint
     class PC3 @j (a :: j) @k (b :: k) where
-      type family Meth3 @j @(a :: j) @k @(b :: k) (arg :: Proxy a) :: Proxy b
+      type family Meth3 (arg :: Proxy a) :: Proxy b
     type Meth4Sym0 :: forall (a :: Type). a
     type family Meth4Sym0 @(a :: Type) :: a where
       Meth4Sym0 = Meth4
     type PC4 :: forall (a :: Type). Constraint
-    class PC4 @(a :: Type) where
-      type family Meth4 @(a :: Type) :: a
+    class PC4 @a where
+      type family Meth4 :: a
     type SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
     data SD1 :: forall j k (a :: j) (b :: k). D1 @j @k a b -> Type
       where

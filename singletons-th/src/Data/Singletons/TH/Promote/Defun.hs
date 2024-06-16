@@ -773,77 +773,23 @@ equation, we could use a type synonym to define ConstSym2:
   type ConstSym2 :: a -> b -> a
   type ConstSym2 x y = Const x y
 
-This approach has various downsides which make it impractical:
+This approach has a downside which makes it impractical: type synonyms are
+often not expanded in the output of GHCi's :kind! command. As issue #445
+chronicles, this can significantly impact the readability of even simple :kind!
+queries. It can be the difference between this:
 
-* Type synonyms are often not expanded in the output of GHCi's :kind! command.
-  As issue #445 chronicles, this can significantly impact the readability of
-  even simple :kind! queries. It can be the difference between this:
+  λ> :kind! Map IdSym0 '[1,2,3]
+  Map IdSym0 '[1,2,3] :: [Nat]
+  = 1 :@#@$$$ '[2, 3]
 
-    λ> :kind! Map IdSym0 '[1,2,3]
-    Map IdSym0 '[1,2,3] :: [Nat]
-    = 1 :@#@$$$ '[2, 3]
+And this:
 
-  And this:
+  λ> :kind! Map IdSym0 '[1,2,3]
+  Map IdSym0 '[1,2,3] :: [Nat]
+  = '[1, 2, 3]
 
-    λ> :kind! Map IdSym0 '[1,2,3]
-    Map IdSym0 '[1,2,3] :: [Nat]
-    = '[1, 2, 3]
-
-  Making fully saturated defunctionalization symbols like (:@#@$$$) type
-  families makes this issue moot, since :kind! always expands type families.
-* There are a handful of corner cases where using type synonyms can actually
-  make fully saturated defunctionalization symbols fail to typecheck.
-  Here is one such corner case:
-
-    $(promote [d|
-      class Applicative f where
-        pure :: a -> f a
-        ...
-        (*>) :: f a -> f b -> f b
-      |])
-
-    ==>
-
-    class PApplicative f where
-      type Pure (x :: a) :: f a
-      type (*>) (x :: f a) (y :: f b) :: f b
-
-  What would happen if we were to defunctionalize the promoted version of (*>)?
-  We'd end up with the following defunctionalization symbols:
-
-    type (*>@#@$)   :: f a ~> f b ~> f b
-    data (*>@#@$) f where ...
-
-    type (*>@#@$$)  :: f a -> f b ~> f b
-    data (*>@#@$$) x f where ...
-
-    type (*>@#@$$$) :: f a -> f b -> f b
-    type (*>@#@$$$) x y = (*>) x y
-
-  It turns out, however, that (*>@#@$$$) will not kind-check. Because (*>@#@$$$)
-  has a standalone kind signature, it is kind-generalized *before* kind-checking
-  the actual definition itself. Therefore, the full kind is:
-
-    type (*>@#@$$$) :: forall {k} (f :: k -> Type) (a :: k) (b :: k).
-                       f a -> f b -> f b
-    type (*>@#@$$$) x y = (*>) x y
-
-  However, the kind of (*>) is
-  `forall (f :: Type -> Type) (a :: Type) (b :: Type). f a -> f b -> f b`.
-  This is not general enough for (*>@#@$$$), which expects kind-polymorphic `f`,
-  `a`, and `b`, leading to a kind error. You might think that we could somehow
-  infer this information, but note the quoted definition of Applicative (and
-  PApplicative, as a consequence) omits the kinds of `f`, `a`, and `b` entirely.
-  Unless we were to implement full-blown kind inference inside of Template
-  Haskell (which is a tall order), the kind `f a -> f b -> f b` is about as good
-  as we can get.
-
-  Making (*>@#@$$$) a type family rather than a type synonym avoids this issue
-  since type family equations are allowed to match on kind arguments. In this
-  example, (*>@#@$$$) would have kind-polymorphic `f`, `a`, and `b` in its kind
-  signature, but its equation would implicitly equate `k` with `Type`. Note
-  that (*>@#@$) and (*>@#@$$), which are GADTs, also use a similar trick by
-  equating `k` with `Type` in their GADT constructors.
+Making fully saturated defunctionalization symbols like (:@#@$$$) type families
+makes this issue moot, since :kind! always expands type families.
 
 -----
 -- Wrinkle: avoiding reduction stack overflows

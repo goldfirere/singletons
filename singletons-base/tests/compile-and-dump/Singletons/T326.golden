@@ -25,7 +25,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
     infixl 9 <%>@#@$$$
     type PC1 :: Type -> Constraint
     class PC1 (a :: Type) where
-      type family (<%>) @(a :: Type) (arg :: a) (arg :: a) :: a
+      type family (<%>) (arg :: a) (arg :: a) :: a
     infixl 9 <%>
 Singletons/T326.hs:0:0:: Splicing declarations
     genSingletons [''C2]
@@ -54,7 +54,7 @@ Singletons/T326.hs:0:0:: Splicing declarations
     infixl 9 <%%>@#@$$$
     type PC2 :: Type -> Constraint
     class PC2 (a :: Type) where
-      type family (<%%>) @(a :: Type) (arg :: a) (arg :: a) :: a
+      type family (<%%>) (arg :: a) (arg :: a) :: a
     infixl 9 <%%>
     class SC2 (a :: Type) where
       (%<%%>) ::
