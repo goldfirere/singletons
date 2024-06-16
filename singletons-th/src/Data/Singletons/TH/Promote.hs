@@ -277,16 +277,9 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
   -- If the class has a standalone kind signature, we take the original,
   -- user-written class binders (`orig_cls_tvbs`) and fill them out using
   -- `matchUpSAKWithDecl` to produce the "full" binders, as described in
-  -- Note [Promoted class methods and kind variable ordering] (Case 1:
-  -- Parent class with standalone kind signature).
+  -- Note [Propagating kind information from class standalone kind signatures].
   mb_full_cls_tvbs <-
     traverse (\cls_sak -> matchUpSAKWithDecl cls_sak orig_cls_tvbs) mb_cls_sak
-  -- Compute the DTyVarBndrVis binders to use in the promoted class declaration.
-  -- If the class has a standalone kind signature, these will be the full
-  -- binders (see `mb_full_cls_tvbs above`). Otherwise, these will be the
-  -- original binders (`orig_cls_tvbs`).
-  let pro_cls_tvbs_vis =
-        maybe orig_cls_tvbs tvbForAllTyFlagsToBndrVis mb_full_cls_tvbs
 
   sig_decs <- mapM (uncurry (promote_sig mb_full_cls_tvbs)) meth_sigs_list
   (default_decs, ann_rhss, prom_rhss)
@@ -298,7 +291,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
   cls_infix_decls <- promoteReifiedInfixDecls $ cls_name:meth_names
 
   -- no need to do anything to the fundeps. They work as is!
-  let pro_cls_dec = DClassD [] pClsName pro_cls_tvbs_vis fundeps
+  let pro_cls_dec = DClassD [] pClsName orig_cls_tvbs fundeps
                             (sig_decs ++ default_decs ++ infix_decls')
       mb_pro_cls_sak = fmap (DKiSigD pClsName) mb_cls_sak
   emitDecs $ maybeToList mb_pro_cls_sak ++ pro_cls_dec:cls_infix_decls
@@ -312,10 +305,9 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
          Maybe [DTyVarBndr ForAllTyFlag]
          -- ^ If the parent class has a standalone kind signature, then this
          -- will be @'Just' full_bndrs@, where @full_bndrs@ are the full type
-         -- variable binders described in
-         -- @Note [Promoted class methods and kind variable ordering]@ (Case 1:
-         -- Parent class with standalone kind signature). Otherwise, this will
-         -- be 'Nothing'.
+         -- variable binders described in @Note [Propagating kind information
+         -- from class standalone kind signatures]@. Otherwise, this will be
+         -- 'Nothing'.
       -> Name
          -- ^ The class method's name.
       -> DType
@@ -325,69 +317,47 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
     promote_sig mb_full_cls_tvbs name meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts name
-      (meth_expl_tvbs, meth_arg_kis, meth_res_ki) <- promoteUnraveled meth_ty
+      (_, meth_arg_kis, meth_res_ki) <- promoteUnraveled meth_ty
       args <- mapM (const $ qNewName "arg") meth_arg_kis
       let pro_meth_args = zipWith (`DKindedTV` BndrReq) args meth_arg_kis
-          -- Compute the type variables to use in the invisible `forall`s in the
-          -- defunctionalization symbols' standalone kind signatures.
+          -- Binders for all of the type variables mentioned in the argument and
+          -- result kinds of the promoted class method. This includes both class
+          -- variables and variables that only scope over the method itself.
+          --
+          -- This quantifies the variables in a simple left-to-right order,
+          -- which may not be the same order in which the original method's type
+          -- quantifies them. This is a known limitation: see
+          -- Note [Promoted class methods and kind variable ordering].
+          meth_tvbs = changeDTVFlags SpecifiedSpec $
+                      toposortTyVarsOf $ meth_arg_kis ++ [meth_res_ki]
+          -- The type variable binders to use in the standalone kind signatures
+          -- for the promoted class method's defunctionalization symbols.
           meth_sak_tvbs =
             case tvbForAllTyFlagsToSpecs <$> mb_full_cls_tvbs of
-              -- If the parent class has a standalone kind signature, then make
-              -- sure that the order of type variables in the `forall`s matches
-              -- the order in the method's original type signature. As described
-              -- in Note [Promoted class methods and kind variable ordering]
-              -- (Case 1: Parent class with standalone kind signature), this
-              -- consists of the class variables (`full_cls_tvbs_spec`) followed
-              -- by the method variables (see `meth_tvbs` below).
+              -- If the parent class has a standalone kind signature, then
+              -- propagate as much of the kind information as possible by
+              -- incorporating the full class binders. See Note [Propagating
+              -- kind information from class standalone kind signatures].
               Just full_cls_tvbs_spec ->
-                -- Compute the type variabes that the method's type signature
-                -- quantifies.
-                let meth_tvbs
-                      -- If the method's type signature lacks an explicit
-                      -- `forall`, then we infer the order in which the method
-                      -- implicitly quantifies its type variables using
-                      -- `toposortTyVarsOf`. Make sure to exclude the type
-                      -- variables already bound by the class header, as we
-                      -- don't want to re-quantify them.
-                      | null meth_expl_tvbs
-                      = deleteFirstsBy
-                          ((==) `on` extractTvbName)
-                          (changeDTVFlags SpecifiedSpec
-                             (toposortTyVarsOf (meth_arg_kis ++ [meth_res_ki])))
-                          full_cls_tvbs_spec
-                      -- If the method's type signature has an explicit
-                      -- `forall`,then just use the type variables quantified by
-                      -- that `forall`.
-                      | otherwise
-                      = meth_expl_tvbs in
-                full_cls_tvbs_spec ++ meth_tvbs
+                -- `meth_tvbs` can include class binder names, so make sure to
+                -- delete type variables from `meth_tvbs` whose names are also
+                -- bound by the full class binders.
+                let meth_tvbs_without_cls_tvbs =
+                      deleteFirstsBy
+                        ((==) `on` extractTvbName)
+                        meth_tvbs
+                        full_cls_tvbs_spec in
+                full_cls_tvbs_spec ++ meth_tvbs_without_cls_tvbs
               -- If the parent class lacks a standalone kind signature, then we
-              -- cannot make any guarantees about the order in which the type
-              -- variables appear. Still, we should at least pick /some/ order
-              -- for the type variables. We compute the type variable binders in
-              -- a left-to-right order, since that is the same order that the
-              -- promoted method's kind will use. See
-              -- Note [Promoted class methods and kind variable ordering]
-              -- (Case 2: Parent class without standalone kind signature).
+              -- simply return `meth_tvbs`.
               Nothing ->
-                changeDTVFlags SpecifiedSpec $
-                toposortTyVarsOf $ meth_arg_kis ++ [meth_res_ki]
+                meth_tvbs
           meth_sak = ravelVanillaDType meth_sak_tvbs [] meth_arg_kis meth_res_ki
-          -- All of the type variable binders to use in the promoted method
-          -- declaration. If the parent class has a standalone kind signature,
-          -- these will include both invisible binders (`meth_sak_tvbs`) and
-          -- visible binders (`pro_meth_args`). Otherwise, this will only
-          -- include visible binders (`pro_meth_args`).
-          all_meth_tvbs
-            | isJust mb_full_cls_tvbs
-            = tvbSpecsToBndrVis meth_sak_tvbs ++ pro_meth_args
-            | otherwise
-            = pro_meth_args
       m_fixity <- reifyFixityWithLocals name
       emitDecsM $ defunctionalize proName m_fixity $ DefunSAK meth_sak
 
       return $ DOpenTypeFamilyD (DTypeFamilyHead proName
-                                                 all_meth_tvbs
+                                                 pro_meth_args
                                                  (DKindSig meth_res_ki)
                                                  Nothing)
 
@@ -395,172 +365,159 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
 Note [Promoted class methods and kind variable ordering]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In general, we make an effort to preserve the order of type variables when
-promoting type signatures, but there is a corner case where this is difficult:
-class methods.
+promoting type signatures, but there is an annoying corner case where this is
+difficult: class methods. When promoting class methods, the order of kind
+variables in their kinds will often "just work" by happy coincidence, but
+there are some situations where this does not happen. Consider the following
+class:
 
-Specifically, we are able only able to preserve the order of type variables in
-class method types when the parent class has a standalone kind signature. This
-is because we use the TypeAbstractions language extension to explicitly bind
-the promoted classes' kind variables in the intended order, and one can only
-use TypeAbstractions in associated type families when the parent class has a
-standalone kind signature. (Let's call this Case 1.)
-
-The flip side is that when the parent class lacks a standalone kind signature,
-we cannot use TypeAbstractions in the promoted classes. In such cases, we
-cannot make any guarantees about the order of kind variables for promoted
-classes. (Let's call this Case 2.)
-
------
--- Case 1: Parent class with standalone kind signature
------
-
-As an example, consider:
-
-  type C :: Type -> Constraint
-  class C b where
-    m :: forall a. a -> b -> a
-
-The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
-`b` before `a`. Because `C` has a standalone kind signature, the order of
-type variables is preserved when promoting `m`:
-
-  type PC :: Type -> Constraint
-  class PC b where
-    type M @b @a (x :: a) (y :: b) :: a
-
-Here, we use TypeAbstractions to explicitly bind `b` before `a` in the
-declaration for `M`, thus ensuring that `M :: forall b a. a -> b -> a`. We
-preserve this order of kind variables in `M`'s defunctionalization symbols as
-well:
-
-  type MSym0 :: forall b a. a ~> b ~> a
-  type MSym1 :: forall b a. a -> b ~> a
-
-Therefore, the trick is to figure out what variables to bind with
-TypeAbstractions in the promoted class declarations. Roughly speaking, we have
-the following formula:
-
-  type M @<class variables> ... @<method variables> ... <method arguments> ... :: <method result>
-
-In the example above:
-
-* The class variables are: @b
-* The method variables are: @a
-* The method arguments are: (x :: a) (y :: b)
-* The method result is: a
-
-The hardest part of this formula to get right are the class variables. Here is
-a slightly more interesting example which illustrates the challenges:
-
-  type C :: k -> Constraint
-  class C b where
-    m :: forall a. a -> Proxy b
-
-A naïve attempt at promoting `C` would be:
-
-  type PC :: k -> Constraint
-  class PC b where
-    type M @b @a (x :: a) :: Proxy b
-
-However, this is not quite right. This is because `k` is specified in the type
-of `m`:
-
-  m :: forall k (b :: k). C b => forall a. a -> Proxy b
-
-But `k` is /inferred/ in the kind of `M`:
-
-  M :: forall {k} (b :: k) a. a -> Proxy b
-
-The reason this happens is because GHC determines the visibilities of kind
-variables for associated type families independently of the parent class's
-standalone kind signature. That is, it only considers `type M @b @a (x :: a) ::
-Proxy b` in isolation, and since we didn't write out `k` explicitly in this
-declaration, GHC considers `k` to be inferred.
-
-In order to make `k` specified in `M`'s kind, we need to instead promote `C` to
-something that looks closer to this:
-
-  type PC :: k -> Constraint
-  class PC @k (b :: k) where
-    type M @k @(b :: k) @a (x :: a) :: Proxy b
-    -- Because we wrote out `k`, we now have:
-    -- M :: forall {k} (b :: k) a. a -> Proxy b
-
-In the declaration for `M`, we have:
-
-* The class variables are: @k @(b :: k)
-* The method variables are: @a
-* The method arguments are: (x :: a)
-* The method result is: Proxy b
-
-Note that we now have `class PC @k (b :: k)` instead of simply `class PC b`.
-This is a slight departure from what the user originally wrote (without any @
-binders), but it is a necessary departure, as `k` would not be in scope over
-the definition of `M` otherwise.
-
-As such, we need a way to go from `class PC b` (which lacks the `k` from the
-standalone kind signature) to `class PC @k (b :: k)` (which does include `k`).
-Let's call the former's type variable binders the /original/ binders, and let's
-call the latter's type variable binders the /full/ binders. (They are "full" in
-the sense that we have filled them out using type variable binders from the
-standalone kind signature.)
-
-We use the `matchUpSAKWithDecl` function to take the original binders (plus the
-parent class's standalone kind signature) as input and produce the full binders
-as output. With the full binders in hand, we can complete the rest of the
-promoted class declaration:
-
-* We can produce the `@k (b :: k)` part of `class PC @k (b :: k)` by calling
-  `tvbForAllTyFlagsToVis` on the full binders.
-* For each promoted method `M`, we can produce the <class variables> in
-  `type M @<class variables> ...` by calling
-  `tvbSpecsToBndrVis . tvbForAllTyFlagsToSpecs` on the full binders. Note that
-  this is /not/ the same thing as calling `tvbForAllTyFlagsToVis`, as we want
-  all of the <class variables> to be invisible, which `tvbSpecsToBndrVis`
-  accomplishes.
-
------
--- Case 2: Parent class without standalone kind signature
------
-
-If the parent class does /not/ have a standalone kind signature, then we do not
-make any guarantees about the order of kind variables in the promoted methods'
-kinds. The order will often "just work" by happy coincidence, but there are
-some situations where this does not happen. Consider the following class:
-
-  -- No standalone kind signature
-  class C b where
+  class C (b :: Type) where
     m :: forall a. a -> b -> a
 
 The full type of `m` is `forall b. C b => forall a. a -> b -> a`, which binds
 `b` before `a`. This order is preserved when singling `m`, but *not* when
 promoting `m`. This is because the `C` class is promoted as follows:
 
-  -- No standalone kind signature
-  class PC b where
+  class PC (b :: Type) where
     type M (x :: a) (y :: b) :: a
 
-Because `PC` does not have a standalone kind signature, we cannot use
-`TypeAbstractions` in the declaration for `M`. As such, GHC will quantify the
-kind variables in left-to-right order, so the kind of `M` will be inferred to
-be `forall a b. a -> b -> a`, which binds `b` *after* `a`. The
-defunctionalization symbols for `M` will also follow a similar order of type
-variables:
+Due to the way GHC kind-checks associated type families, the kind of `M` is
+`forall a b. a -> b -> a`, which binds `b` *after* `a`. Moreover, the
+`StandaloneKindSignatures` extension does not provide a way to explicitly
+declare the full kind of an associated type family, so this limitation is
+not easy to work around.
+
+The defunctionalization symbols for `M` will also follow a similar
+order of type variables:
 
   type MSym0 :: forall a b. a ~> b ~> a
   type MSym1 :: forall a b. a -> b ~> a
 
-There is one potential hack we could use to rectify this:
+In the past, we have considered different ways to rectify this, but none of
+the approaches that we have tried are quite satisfactory:
 
-  type FlipConst x y = y
-  class PC b where
-    type M (x :: FlipConst '(b, a) a) (y :: b) :: a
+* We could hackily specify the order of kind variables using a type synonym
+  like `FlipConst`:
 
-Using `FlipConst` would cause `b` to be mentioned before `a`, which would give
-`M` the kind `forall b a. FlipConst '(b, a) a -> b -> a`. While the order of
-type variables would be preserved, the downside is that the ugly `FlipConst`
-type synonym leaks into the kind. I'm not particularly fond of this, so I have
-decided not to use this hack unless someone specifically requests it.
+    type FlipConst x y = y
+    class PC (b :: Type) where
+      type M (x :: FlipConst '(b, a) a) (y :: b) :: a
+
+  Using `FlipConst` would cause `b` to be mentioned before `a`, which would give
+  `M` the kind `forall b a. FlipConst '(b, a) a -> b -> a`. While the order of
+  type variables would be preserved, the downside is that the ugly `FlipConst`
+  type synonym leaks into the kind. I'm not particularly fond of this, so I have
+  decided not to use this hack unless someone specifically requests it.
+
+* We could specify the order of kind variables using the TypeAbstractions
+  language extension:
+
+    class PC (b :: Type) where
+      type M @(b :: Type) @a (x :: a) (y :: b) :: a
+
+  This is much nicer to look at than the `FlipConst` hack above. However, this
+  approach has its own drawbacks. For one thing, GHC only permits using
+  TypeAbstractions in an associated type family declaration if its parent class
+  also has a standalone kind signature. As such, this trick would only work some
+  of the time.
+
+  Even if we /did/ give the parent class a standalone kind signature, however,
+  it is still not guaranteed that the promoted method would kind-check. Consider
+  what would happen if you promoted this class:
+
+    type Traversable :: (Type -> Type) -> Constraint
+    class (Functor t, Foldable t) => Traversable t where
+      traverse :: Applicative f => (a -> f b) -> t a -> t (f b)
+
+  This would be promoted to:
+
+    type PTraversable :: (Type -> Type) -> Constraint
+    class PTraversable t where
+      type PTraverse @(t :: Type -> Type) @f @a @b
+                     (x :: a ~> f b) (y :: t a) :: t (f b)
+
+  There is a subtle problem with this definition: because the `@f` binder lacks
+  an explicit kind signature, GHC defaults its kind to `Type`. This is very bad,
+  however, because `f`'s kind must be `Type -> Type`, not `Type`! Nor would it
+  be straightforward to generate `@(f :: Type -> Type)`, as nothing in the
+  original definition of `traverse` explicitly indicates that `f` has the kind
+  `Type -> Type`.
+
+  In theory, we could implement kind inference inside of Template Haskell to
+  infer that `f :: Type -> Type`, but this is a tall order. Best to keep things
+  simple and not do this.
+
+Note [Propagating kind information from class standalone kind signatures]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Consider what happens when you promote this example:
+
+  type Alternative :: (Type -> Type) -> Constraint
+  class Applicative f => Alternative f where
+    empty :: f a
+    ...
+
+We want the promoted `Empty` type family, as well as the `EmptySym0`
+defunctionalization symbol, to have the kind
+`forall (f :: Type -> Type) a. f a`. Giving `Empty` the appropriate kind is
+easy enough, as we can simply copy over `Alternative`'s standalone kind
+signature to `PAltenative`, its promoted counterpart:
+
+  type PAlternative :: (Type -> Type) -> Constraint
+  class PAlternative f where
+    type Empty :: f a
+    ...
+
+Giving `EmptySym0` the appropriate kind is trickier, however. A naïve approach
+would be to generate this:
+
+  type EmptySym0 :: f a
+  type family EmptySym0 where
+    EmptySym0 = Empty
+
+This would give EmptySym0 a more general kind than what we want, however, as
+GHC will generalize this to:
+
+  EmptySym0 :: forall {k} (f :: k -> Type) (a :: k). f a
+
+This is undesirable, as now `EmptySym0` can be called on kinds that cannot have
+`PAlternative` instances. What's more, if GHC proposal #425 were fully
+implemented (see
+https://github.com/ghc-proposals/ghc-proposals/blob/8443acc903437cef1a7fbb56de79b6dce77b1a09/proposals/0425-decl-invis-binders.rst#proposed-change-specification-instances),
+then this code would simply not kind-check, as the left-hand side of the
+`EmptySym0 = Empty` would be too general for its right-hand side.
+
+Instead, we strive to generate this code for `EmptySym0` instead:
+
+  type EmptySym0 :: forall (f :: Type -> Type) a. f a
+  type family EmptySym0 where
+    EmptySym0 = Empty
+
+This is very doable because the user gave `Alternative` a standalone kind
+signature, so it should be possible to match up the `Type -> Type` part of the
+standalone kind signature with `f`. And that is exactly what we do:
+
+* In `promoteClassDec`, we use the `matchUpSAKWithDecl` function to take the
+  original class type variable binders and the class standalone kind signature
+  as input and produce a new set of class binders as output, where the new
+  binders have been annotated with kinds taken from the standalone kind
+  signature. We will call these new class type variable binders the /full/
+  binders.
+
+* When generating a defunctionalization symbol for a promoted class method, we
+  always quantify the defunctionalization symbol's kind using an explicit
+  `forall`, where the `forall` looks like:
+
+    forall <full class type variable binders> <method type variable binders>. ...
+
+  This ensures that the kind information from the full class binders is
+  propagated through to the defunctionalization symbol. (Note that we do not
+  make any guarantees about the /order/ of these type variables, however. See
+  Note [Promoted class methods and kind variable ordering].)
+
+If the parent class lacks a standalone kind signature, then we skip all of this
+and simply quantify the the defunctionalization symbols' kind variables in a
+left-to-right order. Again, the order of these kind variables in unspecified, so
+we are free to choose a simpler implementation that makes our lives easier.
 -}
 
 -- returns (unpromoted method name, ALetDecRHS) pairs

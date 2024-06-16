@@ -156,7 +156,6 @@ tests =
     , compileAndDumpStdTest "T582"
     , compileAndDumpStdTest "T585"
     , compileAndDumpStdTest "TypeAbstractions"
-    , compileAndDumpStdTest "T589"
     ],
     testCompileAndDumpGroup "Promote"
     [ compileAndDumpStdTest "Constructors"
@@ -167,6 +166,7 @@ tests =
     , compileAndDumpStdTest "Prelude"
     , compileAndDumpStdTest "T180"
     , compileAndDumpStdTest "T361"
+    , compileAndDumpStdTest "T605"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

@@ -225,7 +225,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     infix 6 `M2Sym2`
     type PC2 :: Type -> Type -> Constraint
     class PC2 (a :: Type) (b :: Type) where
-      type family M2 @(a :: Type) @(b :: Type) (arg :: a) (arg :: b) :: Bool
+      type family M2 (arg :: a) (arg :: b) :: Bool
     infix 5 `PC2`
     infix 6 `M2`
     class SC2 (a :: Type) (b :: Type) where
