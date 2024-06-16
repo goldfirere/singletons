@@ -25,6 +25,7 @@ module Control.Monad.Fail.Singletons (
   ) where
 
 import Control.Monad.Singletons.Internal
+import Data.Kind
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
 
@@ -49,6 +50,10 @@ $(singletonsOnly [d|
   -- @
   -- fail _ = mzero
   -- @
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  -- in Control.Monad.Singletons.Internal.
+  type MonadFail :: (Type -> Type) -> Constraint
   class Monad m => MonadFail m where
       fail :: String -> m a
 

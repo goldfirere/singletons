@@ -171,6 +171,10 @@ $(singletonsOnly [d|
   --    equivalent to traversal with a constant applicative functor
   --    ('foldMapDefault').
   --
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  -- in Control.Monad.Singletons.Internal.
+  type Traversable :: (Type -> Type) -> Constraint
   class (Functor t, Foldable t) => Traversable t where
       -- {-# MINIMAL traverse | sequenceA #-}
 

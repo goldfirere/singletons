@@ -33,6 +33,7 @@ module Control.Monad.Singletons.Internal where
 
 import Control.Applicative
 import Control.Monad
+import Data.Kind
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
@@ -51,6 +52,8 @@ $(singletonsOnly [d|
   satisfy these laws.
   -}
 
+  -- See Note [Using standalone kind signatures not present in the base library]
+  type   Functor :: (Type -> Type) -> Constraint
   class  Functor f  where
       fmap        :: (a -> b) -> f a -> f b
 
@@ -126,6 +129,8 @@ $(singletonsOnly [d|
   --
   -- (which implies that 'pure' and '<*>' satisfy the applicative functor laws).
 
+  -- See Note [Using standalone kind signatures not present in the base library]
+  type Applicative :: (Type -> Type) -> Constraint
   class Functor f => Applicative f where
       -- {-# MINIMAL pure, ((<*>) | liftA2) #-}
       -- -| Lift a value.
@@ -243,6 +248,9 @@ $(singletonsOnly [d|
   The instances of 'Monad' for lists, 'Data.Maybe.Maybe' and 'System.IO.IO'
   defined in the "Prelude" satisfy these laws.
   -}
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  type Monad :: (Type -> Type) -> Constraint
   class Applicative m => Monad m where
       -- -| Sequentially compose two actions, passing any value produced
       -- by the first as an argument to the second.
@@ -352,6 +360,9 @@ $(singletonsOnly [d|
   -- -* @'some' v = (:) '<$>' v '<*>' 'many' v@
   --
   -- -* @'many' v = 'some' v '<|>' 'pure' []@
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  type Alternative :: (Type -> Type) -> Constraint
   class Applicative f => Alternative f where
       -- -| The identity of '<|>'
       empty :: f a
@@ -386,6 +397,9 @@ $(singletonsOnly [d|
   -- The MonadPlus class definition
 
   -- -| Monads that also support choice and failure.
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  type MonadPlus :: (Type -> Type) -> Constraint
   class (Alternative m, Monad m) => MonadPlus m where
      -- -| The identity of 'mplus'.  It should also satisfy the equations
      --
@@ -479,3 +493,18 @@ $(singletonsOnly [d|
   instance MonadPlus Maybe
   instance MonadPlus []
   |])
+
+{-
+Note [Using standalone kind signatures not present in the base library]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Various type class definitions in singletons-base (Functor, Foldable,
+Alternative, etc.) are defined using standalone kind signatures. These
+standalone kind signatures are /not/ present in the original `base` library,
+however: these are specifically required by singletons-th. More precisely, all
+of these classes are parameterized by a type variable of kind `Type -> Type`,
+and we want to ensure that the promoted class (and the defunctionalization
+symbols for its class methods) all use `Type -> Type` in their kinds as well.
+For more details on why singletons-th requires this, see Note [Propagating kind
+information from class standalone kind signatures] in D.S.TH.Promote in
+singletons-th.
+-}

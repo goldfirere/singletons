@@ -215,6 +215,9 @@ $(singletonsOnly [d|
   --
   -- > foldMap f . fmap g = foldMap (f . g)
 
+  -- See Note [Using standalone kind signatures not present in the base library]
+  -- in Control.Monad.Singletons.Internal.
+  type Foldable :: (Type -> Type) -> Constraint
   class Foldable t where
       -- {-# MINIMAL foldMap | foldr #-}
 
