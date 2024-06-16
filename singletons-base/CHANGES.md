@@ -23,6 +23,26 @@ next [????.??.??]
   now have improve type inference and avoid the need for special casing. If you
   truly need the full polymorphism of the old type signatures, use `error`,
   `errorWithoutStackTrace`, or `undefined` instead.
+* The kinds of `PAlternative` (and other classes in `singletons-base` that are
+  parameterized over a higher-kinded type variable) are less polymorphic than
+  they were before:
+
+  ```diff
+  -type PAlternative :: (k    -> Type) -> Constraint
+  +type PAlternative :: (Type -> Type) -> Constraint
+
+  -type PMonadZip :: (k    -> Type) -> Constraint
+  +type PMonadZip :: (Type -> Type) -> Constraint
+
+  -type PMonadPlus :: (k    -> Type) -> Constraint
+  +type PMonadPlus :: (Type -> Type) -> Constraint
+  ```
+
+  Similarly, the kinds of defunctionalization symbols for these classes (e.g.,
+  `EmptySym0` and `(<|>@#@$)`) now use `Type -> Type` instead of `k -> Type`.
+  The fact that these were kind-polymorphic to begin with was an oversight, as
+  these could not be used when `k` was instantiated to any other kind besides
+  `Type`.
 
 3.4 [2024.05.12]
 ----------------

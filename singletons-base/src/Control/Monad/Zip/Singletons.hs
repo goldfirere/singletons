@@ -30,6 +30,7 @@ module Control.Monad.Zip.Singletons (
 import Control.Monad.Singletons.Internal
 import Data.Functor.Identity
 import Data.Functor.Identity.Singletons
+import Data.Kind
 import Data.List.Singletons
        ( ZipSym0, ZipWithSym0, UnzipSym0
        , sZip,    sZipWith,    sUnzip )
@@ -56,6 +57,10 @@ $(singletonsOnly [d|
   --   > ==>
   --   > munzip (mzip ma mb) = (ma, mb)
   --
+
+  -- See Note [Using standalone kind signatures not present in the base library]
+  -- in Control.Monad.Singletons.Internal.
+  type MonadZip :: (Type -> Type) -> Constraint
   class Monad m => MonadZip m where
       -- {-# MINIMAL mzip | mzipWith #-}
 
