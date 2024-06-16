@@ -819,7 +819,6 @@ The following constructs are fully supported:
 * sections
 * undefined
 * error
-* class constraints (though these sometimes fail with `let`, `lambda`, and `case`)
 * literal expressions (for `Natural`, `Symbol`, and `Char`), including
   overloaded number literals
 * datatypes that store `Natural`
@@ -839,6 +838,7 @@ The following constructs are fully supported:
 
 The following constructs are partially supported:
 
+* class constraints
 * scoped type variables
 * `deriving`
 * finite arithmetic sequences
@@ -851,6 +851,87 @@ The following constructs are partially supported:
 * inferred type variable binders
 
 See the following sections for more details.
+
+### Class constraints
+
+`singletons-th` supports promoting and singling class constraints, but with
+some caveats about the particular sorts of constraints involved. Suppose you
+have a function that looks like this:
+
+```hs
+foo :: Eq a => a -> Bool
+foo x = (x == x)
+```
+
+`singletons-th` will promote `foo` to the following type family:
+
+```hs
+type Foo :: a -> Bool
+type family Foo x where
+  Foo x = (x == x)
+```
+
+Note that the standalone kind signature for `Foo` does not mention `PEq` (the
+promoted version of `Eq`) anywhere. This is because GHC does not permit
+constraints in kinds, so it would be an error to give `Foo` the kind `Eq a => a
+-> Bool`. Thankfully, we don't need to mention `PEq` in `Foo`'s kind anyway, as
+the promoted `(==)` type family can be used independently of a `PEq`
+constraint.
+
+`singletons-th` will single `foo` to the following definition:
+
+```hs
+sFoo :: forall a (x :: a). SEq a => Sing x -> Sing (Foo x)
+sFoo sX = sX %== sX
+```
+
+This time, we can (and must) mention `SEq` (the singled version of `Eq`) in the
+type signature for `sFoo`.
+
+In general, `singletons-th` only supports constraints of the form `C T_1 ...
+T_n`, where `C` is a type class constructor and each `T_i` is a type that does
+not mention any other type classes. `singletons-th` does not support non-class
+constraints, such as equality constraint (`(~)`) or `Coercible` constraints.
+
+`singletons-th` only supports constraints that appear in _vanilla_ types. (See
+the "Rank-n types" section below for what "vanilla" means.) `singletons-th` does
+not support existential constraints that appear in data constructors.
+
+Because `singletons-th` omits constraints when promoting types to kinds, it is
+possible for some promoted types to have more general kinds than what is
+intended. For example, consider this example:
+
+```hs
+bar :: Alternative f => f a
+bar = empty
+```
+
+The kind of `f` in the type of `bar` should be `Type -> Type`, and GHC will
+infer this because of the `Alternative f` constraint. If you promote this to
+a type family, however, you instead get:
+
+```hs
+type Bar :: f a
+type family Bar @f @a where
+  Bar = Empty
+```
+
+Now, GHC will infer that the full kind of `Bar` is `forall {k} (f :: k -> Type)
+(a :: k). f a`, which is more general that the original definition! This is not
+desirable, as this means that `Bar` can be called on kinds that cannot have
+`PAlternative` instances.
+
+In general, the only way to avoid this problem is to ensure that type variables
+like `f` are given explicit kinds. For example, `singletons-th` will promote
+this to a type family with the correct kind:
+
+```hs
+bar :: forall (f :: Type -> Type) a. Alternative f => f a
+bar = empty
+```
+
+Be especially aware of this limitation is you are dealing with classes that are
+parameterized over higher-kinded type variables such as `f`.
 
 ### Scoped type variables
 
