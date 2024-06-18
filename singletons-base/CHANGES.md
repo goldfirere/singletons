@@ -43,6 +43,18 @@ next [????.??.??]
   The fact that these were kind-polymorphic to begin with was an oversight, as
   these could not be used when `k` was instantiated to any other kind besides
   `Type`.
+* The kinds in the `PFunctor` instance for `Compose` are less polymorphic than
+  they were before:
+
+  ```diff
+  -instance PFunctor (Compose (f :: k    -> Type) (g :: Type -> k))
+  +instance PFunctor (Compose (f :: Type -> Type) (g :: Type -> Type))
+  ```
+
+  Similarly for the `PFoldable`, `PTraversable`, `PApplicative`, and
+  `PAlternative` instances for `Compose`. The fact that these instances were so
+  polymorphic to begin with was an oversight, as these instances could not be
+  used when `k` was instantiated to any other kind besides `Type`.
 
 3.4 [2024.05.12]
 ----------------
