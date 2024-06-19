@@ -446,13 +446,13 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       -- Which applies Bar/BarDefault to b, which shouldn't happen.
       let tvs = map tvbToType $
                 filter (\tvb -> extractTvbName tvb `Set.member` bound_kv_set) tvbs
-          prom_meth =  DConT $ defunctionalizedName0 opts meth_name
+          prom_meth = DConT $ promotedValueName opts meth_name Nothing
           default_pred = foldType (DConT equalityName)
                                 -- NB: Need the res_ki here to prevent ambiguous
                                 -- kinds in result-inferred default methods.
                                 -- See #175
-                               [ foldApply prom_meth tvs `DSigT` res_ki
-                               , foldApply prom_dflt tvs ]
+                               [ foldType prom_meth tvs `DSigT` res_ki
+                               , foldType prom_dflt tvs ]
       return $ ravelVanillaDType tvbs (default_pred : cxt) args res
       where
         bound_kv_set = Set.fromList bound_kvs

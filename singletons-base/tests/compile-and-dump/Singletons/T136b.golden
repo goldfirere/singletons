@@ -33,20 +33,8 @@ Singletons/T136b.hs:(0,0)-(0,0): Splicing declarations
     type Meth_0123456789876543210 :: Bool -> Bool
     type family Meth_0123456789876543210 (a :: Bool) :: Bool where
       Meth_0123456789876543210 a_0123456789876543210 = Apply NotSym0 a_0123456789876543210
-    type Meth_0123456789876543210Sym0 :: (~>) Bool Bool
-    data Meth_0123456789876543210Sym0 :: (~>) Bool Bool
-      where
-        Meth_0123456789876543210Sym0KindInference :: SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
-                                                     Meth_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Bool @Bool Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Meth_0123456789876543210Sym0KindInference ())
-    type Meth_0123456789876543210Sym1 :: Bool -> Bool
-    type family Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Bool where
-      Meth_0123456789876543210Sym1 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     instance PC Bool where
-      type Meth a = Apply Meth_0123456789876543210Sym0 a
+      type Meth a = Meth_0123456789876543210 a
     instance SC Bool where
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = applySing (singFun1 @NotSym0 sNot) sA_0123456789876543210

@@ -13,146 +13,40 @@ Singletons/T190.hs:0:0:: Splicing declarations
     type TFHelper_0123456789876543210 :: T -> T -> Bool
     type family TFHelper_0123456789876543210 (a :: T) (a :: T) :: Bool where
       TFHelper_0123456789876543210 T T = TrueSym0
-    type TFHelper_0123456789876543210Sym0 :: (~>) T ((~>) T Bool)
-    data TFHelper_0123456789876543210Sym0 :: (~>) T ((~>) T Bool)
-      where
-        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
-                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @T @((~>) T Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: T -> (~>) T Bool
-    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: T) :: (~>) T Bool
-      where
-        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @T @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: T -> T -> Bool
-    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: T) (a0123456789876543210 :: T) :: Bool where
-      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq T where
-      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+      type (==) a a = TFHelper_0123456789876543210 a a
     type Compare_0123456789876543210 :: T -> T -> Ordering
     type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
       Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-    type Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
-    data Compare_0123456789876543210Sym0 :: (~>) T ((~>) T Ordering)
-      where
-        Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-                                                        Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @T @((~>) T Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Compare_0123456789876543210Sym0KindInference ())
-    type Compare_0123456789876543210Sym1 :: T -> (~>) T Ordering
-    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: T) :: (~>) T Ordering
-      where
-        Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @T @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) Compare_0123456789876543210Sym1KindInference ())
-    type Compare_0123456789876543210Sym2 :: T -> T -> Ordering
-    type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: T) (a0123456789876543210 :: T) :: Ordering where
-      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd T where
-      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Compare_0123456789876543210 a a
     type family Case_0123456789876543210 n0123456789876543210 t where
       Case_0123456789876543210 n 'True = TSym0
       Case_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> T
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: T where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural T
-    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural T
-      where
-        ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @GHC.Num.Natural.Natural @T ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
-    type ToEnum_0123456789876543210Sym1 :: GHC.Num.Natural.Natural -> T
-    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: T where
-      ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: T -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: T) :: GHC.Num.Natural.Natural where
       FromEnum_0123456789876543210 T = FromInteger 0
-    type FromEnum_0123456789876543210Sym0 :: (~>) T GHC.Num.Natural.Natural
-    data FromEnum_0123456789876543210Sym0 :: (~>) T GHC.Num.Natural.Natural
-      where
-        FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @T @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
-    type FromEnum_0123456789876543210Sym1 :: T
-                                             -> GHC.Num.Natural.Natural
-    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: T) :: GHC.Num.Natural.Natural where
-      FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum T where
-      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = ToEnum_0123456789876543210 a
+      type FromEnum a = FromEnum_0123456789876543210 a
     type MinBound_0123456789876543210 :: T
     type family MinBound_0123456789876543210 :: T where
       MinBound_0123456789876543210 = TSym0
-    type MinBound_0123456789876543210Sym0 :: T
-    type family MinBound_0123456789876543210Sym0 :: T where
-      MinBound_0123456789876543210Sym0 = MinBound_0123456789876543210
     type MaxBound_0123456789876543210 :: T
     type family MaxBound_0123456789876543210 :: T where
       MaxBound_0123456789876543210 = TSym0
-    type MaxBound_0123456789876543210Sym0 :: T
-    type family MaxBound_0123456789876543210Sym0 :: T where
-      MaxBound_0123456789876543210Sym0 = MaxBound_0123456789876543210
     instance PBounded T where
-      type MinBound = MinBound_0123456789876543210Sym0
-      type MaxBound = MaxBound_0123456789876543210Sym0
+      type MinBound = MinBound_0123456789876543210
+      type MaxBound = MaxBound_0123456789876543210
     type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
                                           -> T -> GHC.Types.Symbol -> GHC.Types.Symbol
     type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: T) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
       ShowsPrec_0123456789876543210 _ T a_0123456789876543210 = Apply (Apply ShowStringSym0 "T") a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-    data ShowsPrec_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural ((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol))
-      where
-        ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @GHC.Num.Natural.Natural @((~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
-    type ShowsPrec_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
-                                              -> (~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: (~>) T ((~>) GHC.Types.Symbol GHC.Types.Symbol)
-      where
-        ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @T @((~>) GHC.Types.Symbol GHC.Types.Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
-    type ShowsPrec_0123456789876543210Sym2 :: GHC.Num.Natural.Natural
-                                              -> T -> (~>) GHC.Types.Symbol GHC.Types.Symbol
-    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: T) :: (~>) GHC.Types.Symbol GHC.Types.Symbol
-      where
-        ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @GHC.Types.Symbol @GHC.Types.Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
-    type ShowsPrec_0123456789876543210Sym3 :: GHC.Num.Natural.Natural
-                                              -> T -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: GHC.Num.Natural.Natural) (a0123456789876543210 :: T) (a0123456789876543210 :: GHC.Types.Symbol) :: GHC.Types.Symbol where
-      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow T where
-      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     data ST :: T -> Type where ST :: ST (T :: T)
     type instance Sing @T = ST
     instance SingKind T where

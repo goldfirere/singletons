@@ -51,37 +51,13 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     type Meth_0123456789876543210 :: Bool -> Bool
     type family Meth_0123456789876543210 (a :: Bool) :: Bool where
       Meth_0123456789876543210 a_0123456789876543210 = Apply NotSym0 a_0123456789876543210
-    type Meth_0123456789876543210Sym0 :: (~>) Bool Bool
-    data Meth_0123456789876543210Sym0 :: (~>) Bool Bool
-      where
-        Meth_0123456789876543210Sym0KindInference :: SameKind (Apply Meth_0123456789876543210Sym0 arg) (Meth_0123456789876543210Sym1 arg) =>
-                                                     Meth_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Bool @Bool Meth_0123456789876543210Sym0 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings Meth_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Meth_0123456789876543210Sym0KindInference ())
-    type Meth_0123456789876543210Sym1 :: Bool -> Bool
-    type family Meth_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Bool where
-      Meth_0123456789876543210Sym1 a0123456789876543210 = Meth_0123456789876543210 a0123456789876543210
     type L2r_0123456789876543210 :: Bool -> Natural
     type family L2r_0123456789876543210 (a :: Bool) :: Natural where
       L2r_0123456789876543210 'False = FromInteger 0
       L2r_0123456789876543210 'True = FromInteger 1
-    type L2r_0123456789876543210Sym0 :: (~>) Bool Natural
-    data L2r_0123456789876543210Sym0 :: (~>) Bool Natural
-      where
-        L2r_0123456789876543210Sym0KindInference :: SameKind (Apply L2r_0123456789876543210Sym0 arg) (L2r_0123456789876543210Sym1 arg) =>
-                                                    L2r_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Bool @Natural L2r_0123456789876543210Sym0 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings L2r_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) L2r_0123456789876543210Sym0KindInference ())
-    type L2r_0123456789876543210Sym1 :: Bool -> Natural
-    type family L2r_0123456789876543210Sym1 (a0123456789876543210 :: Bool) :: Natural where
-      L2r_0123456789876543210Sym1 a0123456789876543210 = L2r_0123456789876543210 a0123456789876543210
     instance PFD Bool Natural where
-      type Meth a = Apply Meth_0123456789876543210Sym0 a
-      type L2r a = Apply L2r_0123456789876543210Sym0 a
+      type Meth a = Meth_0123456789876543210 a
+      type L2r a = L2r_0123456789876543210 a
     sT1 :: Sing @_ T1Sym0
     sT1 = applySing (singFun1 @MethSym0 sMeth) STrue
     class SFD a b | a -> b where
