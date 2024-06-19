@@ -34,31 +34,8 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       Mycompare_0123456789876543210 ZeroFoo (SuccFoo _) = LTSym0
       Mycompare_0123456789876543210 (SuccFoo _) ZeroFoo = GTSym0
       Mycompare_0123456789876543210 (SuccFoo n) (SuccFoo m) = Apply (Apply MycompareSym0 m) n
-    type Mycompare_0123456789876543210Sym0 :: (~>) NatFoo ((~>) NatFoo Ordering)
-    data Mycompare_0123456789876543210Sym0 :: (~>) NatFoo ((~>) NatFoo Ordering)
-      where
-        Mycompare_0123456789876543210Sym0KindInference :: SameKind (Apply Mycompare_0123456789876543210Sym0 arg) (Mycompare_0123456789876543210Sym1 arg) =>
-                                                          Mycompare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @NatFoo @((~>) NatFoo Ordering) Mycompare_0123456789876543210Sym0 a0123456789876543210 = Mycompare_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings Mycompare_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Mycompare_0123456789876543210Sym0KindInference ())
-    type Mycompare_0123456789876543210Sym1 :: NatFoo
-                                              -> (~>) NatFoo Ordering
-    data Mycompare_0123456789876543210Sym1 (a0123456789876543210 :: NatFoo) :: (~>) NatFoo Ordering
-      where
-        Mycompare_0123456789876543210Sym1KindInference :: SameKind (Apply (Mycompare_0123456789876543210Sym1 a0123456789876543210) arg) (Mycompare_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                          Mycompare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @NatFoo @Ordering (Mycompare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Mycompare_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) Mycompare_0123456789876543210Sym1KindInference ())
-    type Mycompare_0123456789876543210Sym2 :: NatFoo
-                                              -> NatFoo -> Ordering
-    type family Mycompare_0123456789876543210Sym2 (a0123456789876543210 :: NatFoo) (a0123456789876543210 :: NatFoo) :: Ordering where
-      Mycompare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Mycompare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PMyOrd NatFoo where
-      type Mycompare a a = Apply (Apply Mycompare_0123456789876543210Sym0 a) a
+      type Mycompare a a = Mycompare_0123456789876543210 a a
     data SNatFoo :: NatFoo -> Type
       where
         SZeroFoo :: SNatFoo (ZeroFoo :: NatFoo)

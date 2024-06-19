@@ -59,22 +59,10 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
     type Foo_0123456789876543210 :: forall a. a -> [Bool]
     type family Foo_0123456789876543210 @a (a :: a) :: [Bool] where
       Foo_0123456789876543210 @a (x :: a) = Lambda_0123456789876543210Sym0 a x
-    type Foo_0123456789876543210Sym0 :: forall a. (~>) a [Bool]
-    data Foo_0123456789876543210Sym0 :: (~>) a [Bool]
-      where
-        Foo_0123456789876543210Sym0KindInference :: SameKind (Apply Foo_0123456789876543210Sym0 arg) (Foo_0123456789876543210Sym1 arg) =>
-                                                    Foo_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @a @[Bool] Foo_0123456789876543210Sym0 a0123456789876543210 = Foo_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings Foo_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Foo_0123456789876543210Sym0KindInference ())
-    type Foo_0123456789876543210Sym1 :: forall a. a -> [Bool]
-    type family Foo_0123456789876543210Sym1 @a (a0123456789876543210 :: a) :: [Bool] where
-      Foo_0123456789876543210Sym1 a0123456789876543210 = Foo_0123456789876543210 a0123456789876543210
     class PFoo a where
       type family FoosPrec (arg :: Natural) (arg :: a) (arg :: [Bool]) :: [Bool]
       type family Foo (arg :: a) :: [Bool]
-      type Foo a = Apply Foo_0123456789876543210Sym0 a
+      type Foo a = Foo_0123456789876543210 a
     class SFoo a where
       sFoosPrec ::
         (forall (t :: Natural) (t :: a) (t :: [Bool]).
@@ -87,8 +75,7 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
          Sing t -> Sing (Apply FooSym0 t :: [Bool]) :: Type)
       default sFoo ::
                 (forall (t :: a).
-                 ((Apply FooSym0 t :: [Bool])
-                  ~ Apply Foo_0123456789876543210Sym0 t) =>
+                 ((Foo t :: [Bool]) ~ Foo_0123456789876543210 t) =>
                  Sing t -> Sing (Apply FooSym0 t :: [Bool]) :: Type)
       sFoo (sX :: Sing x)
         = singFun1

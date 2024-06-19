@@ -36,40 +36,14 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Foo
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: Foo where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Foo
-    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Foo
-      where
-        ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @GHC.Num.Natural.Natural @Foo ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
-    type ToEnum_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
-                                           -> Foo
-    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: Foo where
-      ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: Foo -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Num.Natural.Natural where
       FromEnum_0123456789876543210 Bar = FromInteger 0
       FromEnum_0123456789876543210 Baz = FromInteger 1
       FromEnum_0123456789876543210 Bum = FromInteger 2
-    type FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Num.Natural.Natural
-    data FromEnum_0123456789876543210Sym0 :: (~>) Foo GHC.Num.Natural.Natural
-      where
-        FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Foo @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
-    type FromEnum_0123456789876543210Sym1 :: Foo
-                                             -> GHC.Num.Natural.Natural
-    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Foo) :: GHC.Num.Natural.Natural where
-      FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Foo where
-      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = ToEnum_0123456789876543210 a
+      type FromEnum a = FromEnum_0123456789876543210 a
     data SFoo :: Foo -> Type
       where
         SBar :: SFoo (Bar :: Foo)
@@ -152,40 +126,14 @@ Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     type ToEnum_0123456789876543210 :: GHC.Num.Natural.Natural -> Quux
     type family ToEnum_0123456789876543210 (a :: GHC.Num.Natural.Natural) :: Quux where
       ToEnum_0123456789876543210 n = Case_0123456789876543210 n (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Quux
-    data ToEnum_0123456789876543210Sym0 :: (~>) GHC.Num.Natural.Natural Quux
-      where
-        ToEnum_0123456789876543210Sym0KindInference :: SameKind (Apply ToEnum_0123456789876543210Sym0 arg) (ToEnum_0123456789876543210Sym1 arg) =>
-                                                       ToEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @GHC.Num.Natural.Natural @Quux ToEnum_0123456789876543210Sym0 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ToEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) ToEnum_0123456789876543210Sym0KindInference ())
-    type ToEnum_0123456789876543210Sym1 :: GHC.Num.Natural.Natural
-                                           -> Quux
-    type family ToEnum_0123456789876543210Sym1 (a0123456789876543210 :: GHC.Num.Natural.Natural) :: Quux where
-      ToEnum_0123456789876543210Sym1 a0123456789876543210 = ToEnum_0123456789876543210 a0123456789876543210
     type FromEnum_0123456789876543210 :: Quux
                                          -> GHC.Num.Natural.Natural
     type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Num.Natural.Natural where
       FromEnum_0123456789876543210 'Q1 = FromInteger 0
       FromEnum_0123456789876543210 'Q2 = FromInteger 1
-    type FromEnum_0123456789876543210Sym0 :: (~>) Quux GHC.Num.Natural.Natural
-    data FromEnum_0123456789876543210Sym0 :: (~>) Quux GHC.Num.Natural.Natural
-      where
-        FromEnum_0123456789876543210Sym0KindInference :: SameKind (Apply FromEnum_0123456789876543210Sym0 arg) (FromEnum_0123456789876543210Sym1 arg) =>
-                                                         FromEnum_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Quux @GHC.Num.Natural.Natural FromEnum_0123456789876543210Sym0 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings FromEnum_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) FromEnum_0123456789876543210Sym0KindInference ())
-    type FromEnum_0123456789876543210Sym1 :: Quux
-                                             -> GHC.Num.Natural.Natural
-    type family FromEnum_0123456789876543210Sym1 (a0123456789876543210 :: Quux) :: GHC.Num.Natural.Natural where
-      FromEnum_0123456789876543210Sym1 a0123456789876543210 = FromEnum_0123456789876543210 a0123456789876543210
     instance PEnum Quux where
-      type ToEnum a = Apply ToEnum_0123456789876543210Sym0 a
-      type FromEnum a = Apply FromEnum_0123456789876543210Sym0 a
+      type ToEnum a = ToEnum_0123456789876543210 a
+      type FromEnum a = FromEnum_0123456789876543210 a
     instance SEnum Quux where
       sToEnum (sN :: Sing n)
         = id

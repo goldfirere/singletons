@@ -42,29 +42,8 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       TFHelper_0123456789876543210 Many Str = FalseSym0
       TFHelper_0123456789876543210 Many Opt = FalseSym0
       TFHelper_0123456789876543210 Many Many = TrueSym0
-    type TFHelper_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Bool)
-    data TFHelper_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Bool)
-      where
-        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
-                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Occ @((~>) Occ Bool) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: Occ -> (~>) Occ Bool
-    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Bool
-      where
-        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Occ @Bool (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: Occ -> Occ -> Bool
-    type family TFHelper_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Bool where
-      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PEq Occ where
-      type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+      type (==) a a = TFHelper_0123456789876543210 a a
     type Compare_0123456789876543210 :: Occ -> Occ -> Ordering
     type family Compare_0123456789876543210 (a :: Occ) (a :: Occ) :: Ordering where
       Compare_0123456789876543210 Str Str = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
@@ -76,70 +55,16 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210 Opt Many = LTSym0
       Compare_0123456789876543210 Many Str = GTSym0
       Compare_0123456789876543210 Many Opt = GTSym0
-    type Compare_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Ordering)
-    data Compare_0123456789876543210Sym0 :: (~>) Occ ((~>) Occ Ordering)
-      where
-        Compare_0123456789876543210Sym0KindInference :: SameKind (Apply Compare_0123456789876543210Sym0 arg) (Compare_0123456789876543210Sym1 arg) =>
-                                                        Compare_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Occ @((~>) Occ Ordering) Compare_0123456789876543210Sym0 a0123456789876543210 = Compare_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings Compare_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) Compare_0123456789876543210Sym0KindInference ())
-    type Compare_0123456789876543210Sym1 :: Occ -> (~>) Occ Ordering
-    data Compare_0123456789876543210Sym1 (a0123456789876543210 :: Occ) :: (~>) Occ Ordering
-      where
-        Compare_0123456789876543210Sym1KindInference :: SameKind (Apply (Compare_0123456789876543210Sym1 a0123456789876543210) arg) (Compare_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                        Compare_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Occ @Ordering (Compare_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Compare_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) Compare_0123456789876543210Sym1KindInference ())
-    type Compare_0123456789876543210Sym2 :: Occ -> Occ -> Ordering
-    type family Compare_0123456789876543210Sym2 (a0123456789876543210 :: Occ) (a0123456789876543210 :: Occ) :: Ordering where
-      Compare_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = Compare_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance POrd Occ where
-      type Compare a a = Apply (Apply Compare_0123456789876543210Sym0 a) a
+      type Compare a a = Compare_0123456789876543210 a a
     type ShowsPrec_0123456789876543210 :: Natural
                                           -> Occ -> Symbol -> Symbol
     type family ShowsPrec_0123456789876543210 (a :: Natural) (a :: Occ) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
-    type ShowsPrec_0123456789876543210Sym0 :: (~>) Natural ((~>) Occ ((~>) Symbol Symbol))
-    data ShowsPrec_0123456789876543210Sym0 :: (~>) Natural ((~>) Occ ((~>) Symbol Symbol))
-      where
-        ShowsPrec_0123456789876543210Sym0KindInference :: SameKind (Apply ShowsPrec_0123456789876543210Sym0 arg) (ShowsPrec_0123456789876543210Sym1 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @Natural @((~>) Occ ((~>) Symbol Symbol)) ShowsPrec_0123456789876543210Sym0 a0123456789876543210 = ShowsPrec_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings ShowsPrec_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym0KindInference ())
-    type ShowsPrec_0123456789876543210Sym1 :: Natural
-                                              -> (~>) Occ ((~>) Symbol Symbol)
-    data ShowsPrec_0123456789876543210Sym1 (a0123456789876543210 :: Natural) :: (~>) Occ ((~>) Symbol Symbol)
-      where
-        ShowsPrec_0123456789876543210Sym1KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Occ @((~>) Symbol Symbol) (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym1KindInference ())
-    type ShowsPrec_0123456789876543210Sym2 :: Natural
-                                              -> Occ -> (~>) Symbol Symbol
-    data ShowsPrec_0123456789876543210Sym2 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) :: (~>) Symbol Symbol
-      where
-        ShowsPrec_0123456789876543210Sym2KindInference :: SameKind (Apply (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) arg) (ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                                          ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @Symbol @Symbol (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ShowsPrec_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) ShowsPrec_0123456789876543210Sym2KindInference ())
-    type ShowsPrec_0123456789876543210Sym3 :: Natural
-                                              -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210Sym3 (a0123456789876543210 :: Natural) (a0123456789876543210 :: Occ) (a0123456789876543210 :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = ShowsPrec_0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PShow Occ where
-      type ShowsPrec a a a = Apply (Apply (Apply ShowsPrec_0123456789876543210Sym0 a) a) a
+      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     sEmpty :: (Sing (EmptySym0 :: [(Symbol, Occ)]) :: Type)
     sEmpty = SNil
     data SOcc :: Occ -> Type

@@ -47,32 +47,8 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
                                                      -> (~>) a b -> (~>) a b
     type family TFHelper_0123456789876543210 @a @b (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
       TFHelper_0123456789876543210 @a @b (f :: (~>) a b) (g :: (~>) a b) = Lambda_0123456789876543210Sym0 a b f g
-    type TFHelper_0123456789876543210Sym0 :: forall a
-                                                    b. (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
-    data TFHelper_0123456789876543210Sym0 :: (~>) ((~>) a b) ((~>) ((~>) a b) ((~>) a b))
-      where
-        TFHelper_0123456789876543210Sym0KindInference :: SameKind (Apply TFHelper_0123456789876543210Sym0 arg) (TFHelper_0123456789876543210Sym1 arg) =>
-                                                         TFHelper_0123456789876543210Sym0 a0123456789876543210
-    type instance Apply @((~>) a b) @((~>) ((~>) a b) ((~>) a b)) TFHelper_0123456789876543210Sym0 a0123456789876543210 = TFHelper_0123456789876543210Sym1 a0123456789876543210
-    instance SuppressUnusedWarnings TFHelper_0123456789876543210Sym0 where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym0KindInference ())
-    type TFHelper_0123456789876543210Sym1 :: forall a b. (~>) a b
-                                                         -> (~>) ((~>) a b) ((~>) a b)
-    data TFHelper_0123456789876543210Sym1 (a0123456789876543210 :: (~>) a b) :: (~>) ((~>) a b) ((~>) a b)
-      where
-        TFHelper_0123456789876543210Sym1KindInference :: SameKind (Apply (TFHelper_0123456789876543210Sym1 a0123456789876543210) arg) (TFHelper_0123456789876543210Sym2 a0123456789876543210 arg) =>
-                                                         TFHelper_0123456789876543210Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @((~>) a b) @((~>) a b) (TFHelper_0123456789876543210Sym1 a0123456789876543210) a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (TFHelper_0123456789876543210Sym1 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) TFHelper_0123456789876543210Sym1KindInference ())
-    type TFHelper_0123456789876543210Sym2 :: forall a b. (~>) a b
-                                                         -> (~>) a b -> (~>) a b
-    type family TFHelper_0123456789876543210Sym2 @a @b (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: (~>) a b) :: (~>) a b where
-      TFHelper_0123456789876543210Sym2 a0123456789876543210 a0123456789876543210 = TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210
     instance PS ((~>) a b) where
-      type (<<>>) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
+      type (<<>>) a a = TFHelper_0123456789876543210 a a
     class SS a where
       (%<<>>) ::
         (forall (t :: a) (t :: a).

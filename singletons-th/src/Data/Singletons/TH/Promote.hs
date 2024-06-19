@@ -647,8 +647,14 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
         = OSet.empty
   meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
   let proName = promotedTopLevelValueName opts meth_name
+      -- The name of the "helper" type family which defines the promoted version
+      -- of a class method default or instance method. If the method's name is
+      -- alphanumeric, we reuse the method's name for the helper type family's
+      -- name. Otherwise, we use the name "TFHelper". (Note that
+      -- promoteLetDecRHS expects a value-level name, so we pass it "tFHelper",
+      -- which later gets promoted to TFHelper.)
       helperNameBase = case nameBase proName of
-                         first:_ | not (isHsLetter first) -> "TFHelper"
+                         first:_ | not (isHsLetter first) -> "tFHelper"
                          alpha                            -> alpha
 
       -- family_args are the type variables in a promoted class's
@@ -665,18 +671,23 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
-  let helperDefunName = defunctionalizedName0 opts helperName
-  (pro_decs, defun_decs, ann_rhs)
+  let helperTy = DConT $ promotedValueName opts helperName Nothing
+
+  -- Promote the right-hand side of the helper. Note that we never partially
+  -- apply the helper type family, and users will never invoke the helper
+  -- directly. As such, there is no need to emit defunctionalization symbols for
+  -- the helper type family.
+  (pro_decs, _defun_decs, ann_rhs)
     <- promoteLetDecRHS (ClassMethodRHS meth_scoped_tvs meth_arg_kis meth_res_ki)
                         OMap.empty OMap.empty
                         Nothing helperName meth_rhs
-  emitDecs (pro_decs ++ defun_decs)
+  emitDecs pro_decs
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
-                        (foldApply (DConT helperDefunName) (map DVarT meth_arg_tvs)))
+                        (foldType helperTy family_args))
          , ann_rhs
-         , DConT helperDefunName )
+         , helperTy )
   where
     -- Promote the type of a class method. For a default method, "the type" is
     -- simply the type of the original method. For an instance method,
