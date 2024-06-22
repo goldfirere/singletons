@@ -58,10 +58,10 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210 @a @b (p_0123456789876543210 :: GHC.Num.Natural.Natural) (Pair arg_0123456789876543210 arg_0123456789876543210 :: Pair a b) (a_0123456789876543210 :: Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Pair ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
     instance PShow (Pair a b) where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    sAList :: Sing @_ AListSym0
-    sTuple :: Sing @_ TupleSym0
-    sComplex :: Sing @_ ComplexSym0
-    sPr :: Sing @_ PrSym0
+    sAList :: Sing @_ AList
+    sTuple :: Sing @_ Tuple
+    sComplex :: Sing @_ Complex
+    sPr :: Sing @_ Pr
     sAList
       = applySing
           (applySing (singFun2 @(:@#@$) SCons) SZero)
@@ -362,34 +362,31 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Sz = Case_0123456789876543210 X_0123456789876543210Sym0
     type family X_0123456789876543210 where
       X_0123456789876543210 = PrSym0
-    sSilly ::
-      (forall (t :: a). Sing t -> Sing (Apply SillySym0 t :: ()) :: Type)
+    sSilly :: (forall (t :: a). Sing t -> Sing (Silly t :: ()) :: Type)
     sFoo2 ::
-      (forall (t :: (a, b)).
-       Sing t -> Sing (Apply Foo2Sym0 t :: a) :: Type)
+      (forall (t :: (a, b)). Sing t -> Sing (Foo2 t :: a) :: Type)
     sFoo1 ::
-      (forall (t :: (a, b)).
-       Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type)
-    sBlimy :: Sing @_ BlimySym0
-    sLsz :: (Sing (LszSym0 :: Nat) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sTt :: Sing @_ TtSym0
-    sTjz :: Sing @_ TjzSym0
-    sTf :: Sing @_ TfSym0
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sFls :: (Sing (FlsSym0 :: Bool) :: Type)
-    sZz :: Sing @_ ZzSym0
-    sJz :: Sing @_ JzSym0
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sLz :: Sing @_ LzSym0
-    sSz :: Sing @_ SzSym0
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
+      (forall (t :: (a, b)). Sing t -> Sing (Foo1 t :: a) :: Type)
+    sBlimy :: Sing @_ Blimy
+    sLsz :: (Sing (Lsz :: Nat) :: Type)
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sTt :: Sing @_ Tt
+    sTjz :: Sing @_ Tjz
+    sTf :: Sing @_ Tf
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sFls :: (Sing (Fls :: Bool) :: Type)
+    sZz :: Sing @_ Zz
+    sJz :: Sing @_ Jz
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sLz :: Sing @_ Lz
+    sSz :: Sing @_ Sz
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
     sSilly (sX :: Sing x)
       = id
           @(Sing (Case_0123456789876543210 x x)) (case sX of _ -> STuple0)
     sFoo2 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = let
-          sT :: Sing @_ (Let0123456789876543210TSym0 x y)
+          sT :: Sing @_ (Let0123456789876543210T x y)
           sT = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY
         in
           id

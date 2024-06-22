@@ -141,13 +141,13 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
       Foo1 d x = Apply (Lambda_0123456789876543210Sym0 d x) x
     sFoo3 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo3 t t :: a) :: Type)
     sFoo2 ::
       (forall (t :: a) (t :: Maybe a).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo2 t t :: a) :: Type)
     sFoo1 ::
       (forall (t :: a) (t :: Maybe a).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo1 t t :: a) :: Type)
     sFoo3 (sA :: Sing a) (sB :: Sing b)
       = applySing
           (singFun1

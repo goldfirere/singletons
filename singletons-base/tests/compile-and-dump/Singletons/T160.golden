@@ -28,11 +28,11 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
       Foo x = Case_0123456789876543210 x (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)
     sFoo ::
       (forall (t :: a).
-       (SNum a, SEq a) => Sing t -> Sing (Apply FooSym0 t :: a) :: Type)
+       (SNum a, SEq a) => Sing t -> Sing (Foo t :: a) :: Type)
     sFoo (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 x)
           sScrutinee_0123456789876543210
             = applySing
                 (applySing (singFun2 @(==@#@$) (%==)) sX)

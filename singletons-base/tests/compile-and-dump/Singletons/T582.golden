@@ -128,11 +128,10 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     infixl 4 `sFoo`
     (%%%%) ::
       (forall (t :: a) (t :: a).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply (%%%@#@$) t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing ((%%%) t t :: a) :: Type)
     sFoo ::
       (forall (t :: a) (t :: a).
-       Sing t -> Sing t -> Sing (Apply (Apply FooSym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo t t :: a) :: Type)
     (%%%%) (sX :: Sing x) _ = sX
     sFoo (sX :: Sing x) _ = sX
     instance SingI ((%%%@#@$) :: (~>) a ((~>) a a)) where

@@ -22,8 +22,7 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     type family Head @a (a :: [a]) :: a where
       Head ('(:) a _) = a
       Head '[] = Apply ErrorSym0 "head: empty list"
-    sHead ::
-      (forall (t :: [a]). Sing t -> Sing (Apply HeadSym0 t :: a) :: Type)
+    sHead :: (forall (t :: [a]). Sing t -> Sing (Head t :: a) :: Type)
     sHead (SCons (sA :: Sing a) _) = sA
     sHead SNil
       = applySing

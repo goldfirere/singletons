@@ -52,8 +52,7 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     type B :: Bar -> ()
     type family B (a :: Bar) :: () where
       B MkBar = Tuple0Sym0
-    sB ::
-      (forall (t :: Bar). Sing t -> Sing (Apply BSym0 t :: ()) :: Type)
+    sB :: (forall (t :: Bar). Sing t -> Sing (B t :: ()) :: Type)
     sB SMkBar = STuple0
     instance SingI (BSym0 :: (~>) Bar ()) where
       sing = singFun1 @BSym0 sB

@@ -265,17 +265,17 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     class SC1 @j @k (a :: j) (b :: k) where
       sMeth1 ::
         (forall (t :: Proxy a).
-         Sing t -> Sing (Apply Meth1Sym0 t :: Proxy b) :: Type)
+         Sing t -> Sing (Meth1 t :: Proxy b) :: Type)
     class SC2 @x @y (a :: x) (b :: y) where
       sMeth2 ::
         (forall (t :: Proxy a).
-         Sing t -> Sing (Apply Meth2Sym0 t :: Proxy b) :: Type)
+         Sing t -> Sing (Meth2 t :: Proxy b) :: Type)
     class SC3 @j (a :: j) @k (b :: k) where
       sMeth3 ::
         (forall (t :: Proxy a).
-         Sing t -> Sing (Apply Meth3Sym0 t :: Proxy b) :: Type)
+         Sing t -> Sing (Meth3 t :: Proxy b) :: Type)
     class SC4 @a where
-      sMeth4 :: (Sing (Meth4Sym0 :: a) :: Type)
+      sMeth4 :: (Sing (Meth4 :: a) :: Type)
     instance (SingI n, SingI n) =>
              SingI (MkD1 (n :: Proxy a) (n :: Proxy b)) where
       sing = SMkD1 sing sing

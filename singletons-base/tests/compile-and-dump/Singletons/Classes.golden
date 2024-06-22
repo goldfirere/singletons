@@ -194,13 +194,10 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       type (==) a a = TFHelper_0123456789876543210 a a
     sFooCompare ::
       (forall (t :: Foo) (t :: Foo).
-       Sing t
-       -> Sing t
-          -> Sing (Apply (Apply FooCompareSym0 t) t :: Ordering) :: Type)
+       Sing t -> Sing t -> Sing (FooCompare t t :: Ordering) :: Type)
     sConst ::
       (forall (t :: a) (t :: b).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply ConstSym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Const t t :: a) :: Type)
     sFooCompare SA SA = SEQ
     sFooCompare SA SB = SLT
     sFooCompare SB SB = SGT
@@ -247,21 +244,15 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     class SMyOrd a where
       sMycompare ::
         (forall (t :: a) (t :: a).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply MycompareSym0 t) t :: Ordering) :: Type)
+         Sing t -> Sing t -> Sing (Mycompare t t :: Ordering) :: Type)
       (%<=>) ::
         (forall (t :: a) (t :: a).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type)
+         Sing t -> Sing t -> Sing ((<=>) t t :: Ordering) :: Type)
       infix 4 %<=>
       default (%<=>) ::
                 (forall (t :: a) (t :: a).
                  (((<=>) t t :: Ordering) ~ TFHelper_0123456789876543210 t t) =>
-                 Sing t
-                 -> Sing t
-                    -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering) :: Type)
+                 Sing t -> Sing t -> Sing ((<=>) t t :: Ordering) :: Type)
       (%<=>)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)

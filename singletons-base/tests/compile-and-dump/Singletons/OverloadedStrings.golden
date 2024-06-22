@@ -29,10 +29,9 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     type SymId :: Symbol -> Symbol
     type family SymId (a :: Symbol) :: Symbol where
       SymId x = x
-    sFoo :: (Sing (FooSym0 :: Symbol) :: Type)
+    sFoo :: (Sing (Foo :: Symbol) :: Type)
     sSymId ::
-      (forall (t :: Symbol).
-       Sing t -> Sing (Apply SymIdSym0 t :: Symbol) :: Type)
+      (forall (t :: Symbol). Sing t -> Sing (SymId t :: Symbol) :: Type)
     sFoo
       = applySing
           (singFun1 @SymIdSym0 sSymId) (sFromString (sing :: Sing "foo"))

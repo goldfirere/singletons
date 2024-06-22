@@ -155,11 +155,28 @@ data instance LetDecRHS Unannotated = UFunction [DClause]
 type ALetDecRHS = LetDecRHS Annotated
 type ULetDecRHS = LetDecRHS Unannotated
 
+-- | A @let@-bound, term-level name that is promoted to the type level. The
+-- first element of the pair (of type 'Name') is the promoted counterpart to the
+-- term-level name, and the second element of the pair (of type @[Name]@) is the
+-- list of local variables that this definition closes over after being
+-- lambda-lifted. (See @Note [Tracking local variables]@ in
+-- "Data.Singletons.TH.Promote.Monad".)
+--
+-- Note that the promoted Name in the first element of the pair is /not/ a
+-- defunctionalization symbol, unlike 'LetBind' in
+-- "Data.Singletons.TH.Promote.Monad". This is because it is sometimes
+-- convenient to fully apply the promoted name to all of its arguments (e.g.,
+-- when singling type signatures), in which case we can avoid needing to involve
+-- defunctionalization symbols at all.
+type LetDecProm = (Name, [Name])
+
 data LetDecEnv ann = LetDecEnv
                    { lde_defns :: OMap Name (LetDecRHS ann)
                    , lde_types :: OMap Name DType  -- type signatures
                    , lde_infix :: OMap Name (Fixity, NamespaceSpecifier) -- infix declarations
-                   , lde_proms :: IfAnn ann (OMap Name DType) () -- possibly, promotions
+                   , lde_proms :: IfAnn ann (OMap Name LetDecProm) ()
+                     -- ^ If annotated, this maps let-bound term 'Name's to
+                     -- their promoted counterparts.
                    }
 type ALetDecEnv = LetDecEnv Annotated
 type ULetDecEnv = LetDecEnv Unannotated

@@ -295,34 +295,28 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       F2 (x :: Maybe a) = x :: Maybe a
     type family F1 a where
       F1 (x :: Maybe Bool) = x :: Maybe Bool
-    sFoo9 ::
-      (forall (t :: a). Sing t -> Sing (Apply Foo9Sym0 t :: a) :: Type)
+    sFoo9 :: (forall (t :: a). Sing t -> Sing (Foo9 t :: a) :: Type)
     sFoo8 ::
-      forall a (t :: Maybe a). Sing t
-                               -> Sing (Apply Foo8Sym0 t :: Maybe a)
+      forall a (t :: Maybe a). Sing t -> Sing (Foo8 t :: Maybe a)
     sFoo7 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo7 t t :: a) :: Type)
     sFoo6 ::
       (forall (t :: Maybe (Maybe a)).
-       Sing t -> Sing (Apply Foo6Sym0 t :: Maybe (Maybe a)) :: Type)
+       Sing t -> Sing (Foo6 t :: Maybe (Maybe a)) :: Type)
     sFoo5 ::
       (forall (t :: Maybe (Maybe a)).
-       Sing t -> Sing (Apply Foo5Sym0 t :: Maybe (Maybe a)) :: Type)
+       Sing t -> Sing (Foo5 t :: Maybe (Maybe a)) :: Type)
     sFoo4 ::
-      (forall (t :: (a, b)).
-       Sing t -> Sing (Apply Foo4Sym0 t :: (b, a)) :: Type)
-    sFoo3 ::
-      forall a (t :: Maybe a). Sing t -> Sing (Apply Foo3Sym0 t :: a)
-    sFoo2 ::
-      forall a (t :: Maybe a). Sing t -> Sing (Apply Foo2Sym0 t :: a)
+      (forall (t :: (a, b)). Sing t -> Sing (Foo4 t :: (b, a)) :: Type)
+    sFoo3 :: forall a (t :: Maybe a). Sing t -> Sing (Foo3 t :: a)
+    sFoo2 :: forall a (t :: Maybe a). Sing t -> Sing (Foo2 t :: a)
     sFoo1 ::
-      (forall (t :: Maybe a).
-       Sing t -> Sing (Apply Foo1Sym0 t :: a) :: Type)
-    sG :: forall arg. Sing arg -> Sing (Apply GSym0 arg)
-    sF3 :: forall arg. Sing arg -> Sing (Apply F3Sym0 arg)
-    sF2 :: forall arg. Sing arg -> Sing (Apply F2Sym0 arg)
-    sF1 :: forall arg. Sing arg -> Sing (Apply F1Sym0 arg)
+      (forall (t :: Maybe a). Sing t -> Sing (Foo1 t :: a) :: Type)
+    sG :: forall arg. Sing arg -> Sing (G arg)
+    sF3 :: forall arg. Sing arg -> Sing (F3 arg)
+    sF2 :: forall arg. Sing arg -> Sing (F2 arg)
+    sF1 :: forall arg. Sing arg -> Sing (F1 arg)
     sFoo9 (sX :: Sing x)
       = case sX :: Sing x of
           (_ :: Sing (x :: a))
@@ -330,8 +324,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
                  sG ::
                    (forall (t :: a) (t :: b).
                     Sing t
-                    -> Sing t
-                       -> Sing (Apply (Apply (Let0123456789876543210GSym0 a x) t) t :: a) :: Type)
+                    -> Sing t -> Sing (Let0123456789876543210G a x t t :: a) :: Type)
                  sG (sY :: Sing y) _ = sY
                in
                  applySing
@@ -348,8 +341,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           (,) (_ :: Sing (wild_0123456789876543210 :: a))
               (_ :: Sing ('Just (wild_0123456789876543210 :: a) :: Maybe a))
             -> let
-                 sX ::
-                   Sing @_ (Let0123456789876543210XSym0 a wild_0123456789876543210)
+                 sX :: Sing @_ (Let0123456789876543210X a wild_0123456789876543210)
                  sX
                    = applySing
                        (singFun1 @JustSym0 SJust)
@@ -361,7 +353,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
       = case SNothing of
           (_ :: Sing ('Nothing :: Maybe a))
             -> let
-                 sX :: Sing @_ (Let0123456789876543210XSym0 a)
+                 sX :: Sing @_ (Let0123456789876543210X a)
                  sX = SNothing :: Sing (NothingSym0 :: Maybe a)
                in sX
     sFoo7
@@ -380,7 +372,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
           (_ :: Sing ('Just x :: Maybe (Maybe a)))
             -> let
                  sScrutinee_0123456789876543210 ::
-                   Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym0 a x)
+                   Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 a x)
                  sScrutinee_0123456789876543210 = sX :: Sing (x :: Maybe a)
                in
                  id
@@ -435,7 +427,7 @@ Singletons/T183.hs:(0,0)-(0,0): Splicing declarations
     sG (sX :: Sing x)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym0 x)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 x)
           sScrutinee_0123456789876543210
             = applySing (singFun1 @JustSym0 SJust) sX
         in

@@ -210,13 +210,20 @@ promoteLetDecs mb_let_uniq decls = do
   opts <- getOptions
   let_dec_env <- buildLetDecEnv decls
   all_locals <- allLocals
-  let binds = [ (name, foldType (DConT sym) (map DVarT all_locals))
-              | (name, _) <- OMap.assocs $ lde_defns let_dec_env
-              , let proName = promotedValueName opts name mb_let_uniq
-                    sym = defunctionalizedName0 opts proName ]
+  let let_dec_proms :: [(Name, LetDecProm)]
+      let_dec_proms =
+        [ (name, (pro_name, all_locals))
+        | (name, _) <- OMap.assocs $ lde_defns let_dec_env
+        , let pro_name = promotedValueName opts name mb_let_uniq ]
+
+      binds :: [LetBind]
+      binds =
+        [ (name, foldType (DConT sym) (map DVarT locals))
+        | (name, (pro_name, locals)) <- let_dec_proms
+        , let sym = defunctionalizedName0 opts pro_name ]
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv mb_let_uniq let_dec_env
   emitDecs decs
-  return (binds, let_dec_env' { lde_proms = OMap.fromList binds })
+  return (binds, let_dec_env' { lde_proms = OMap.fromList let_dec_proms })
 
 promoteDataDecs :: [DataDecl] -> PrM [DLetDec]
 promoteDataDecs = concatMapM promoteDataDec
@@ -626,7 +633,7 @@ promoteMethod :: MethodSort
               -> [Name] -- The names of the type variables bound by the class
                         -- header (e.g., the @a@ in @class C a where ...@).
               -> (Name, ULetDecRHS)
-              -> PrM (DDec, ALetDecRHS, DType)
+              -> PrM (DDec, ALetDecRHS, LetDecProm)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
 promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
   opts <- getOptions
@@ -671,7 +678,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
       -- strictly necessary, as kind inference can figure them out just as well.
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
-  let helperTy = DConT $ promotedValueName opts helperName Nothing
+  let proHelperName = promotedValueName opts helperName Nothing
 
   -- Promote the right-hand side of the helper. Note that we never partially
   -- apply the helper type family, and users will never invoke the helper
@@ -685,9 +692,9 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
   return ( DTySynInstD
              (DTySynEqn Nothing
                         (foldType (DConT proName) family_args)
-                        (foldType helperTy family_args))
+                        (foldType (DConT proHelperName) family_args))
          , ann_rhs
-         , helperTy )
+         , (proHelperName, []) )
   where
     -- Promote the type of a class method. For a default method, "the type" is
     -- simply the type of the original method. For an instance method,

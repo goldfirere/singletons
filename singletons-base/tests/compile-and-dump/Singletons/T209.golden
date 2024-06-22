@@ -55,10 +55,7 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance PC a (Maybe a)
     sM ::
       (forall (t :: a) (t :: b) (t :: Bool).
-       Sing t
-       -> Sing t
-          -> Sing t
-             -> Sing (Apply (Apply (Apply MSym0 t) t) t :: Bool) :: Type)
+       Sing t -> Sing t -> Sing t -> Sing (M t t t :: Bool) :: Type)
     sM _ _ (sX :: Sing x) = sX
     instance SingI (MSym0 :: (~>) a ((~>) b ((~>) Bool Bool))) where
       sing = singFun3 @MSym0 sM

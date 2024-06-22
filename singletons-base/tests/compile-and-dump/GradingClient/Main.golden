@@ -73,13 +73,13 @@ GradingClient/Main.hs:(0,0)-(0,0): Splicing declarations
     type LastName :: [AChar]
     type family LastName :: [AChar] where
       LastName = Apply (Apply (:@#@$) CLSym0) (Apply (Apply (:@#@$) CASym0) (Apply (Apply (:@#@$) CSSym0) (Apply (Apply (:@#@$) CTSym0) NilSym0)))
-    sNames :: (Sing (NamesSym0 :: Schema) :: Type)
-    sGradingSchema :: (Sing (GradingSchemaSym0 :: Schema) :: Type)
-    sMajorName :: (Sing (MajorNameSym0 :: [AChar]) :: Type)
-    sGradeName :: (Sing (GradeNameSym0 :: [AChar]) :: Type)
-    sYearName :: (Sing (YearNameSym0 :: [AChar]) :: Type)
-    sFirstName :: (Sing (FirstNameSym0 :: [AChar]) :: Type)
-    sLastName :: (Sing (LastNameSym0 :: [AChar]) :: Type)
+    sNames :: (Sing (Names :: Schema) :: Type)
+    sGradingSchema :: (Sing (GradingSchema :: Schema) :: Type)
+    sMajorName :: (Sing (MajorName :: [AChar]) :: Type)
+    sGradeName :: (Sing (GradeName :: [AChar]) :: Type)
+    sYearName :: (Sing (YearName :: [AChar]) :: Type)
+    sFirstName :: (Sing (FirstName :: [AChar]) :: Type)
+    sLastName :: (Sing (LastName :: [AChar]) :: Type)
     sNames
       = applySing
           (singFun1 @SchSym0 SSch)

@@ -66,7 +66,7 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
     type Hello :: PMessage
     type family Hello :: PMessage where
       Hello = Data.Singletons.Apply PMkMessageSym0 (FromString "hello")
-    sHello :: (Data.Singletons.Sing (HelloSym0 :: PMessage) :: Type)
+    sHello :: (Data.Singletons.Sing (Hello :: PMessage) :: Type)
     sHello
       = Data.Singletons.applySing
           (Data.Singletons.singFun1 @PMkMessageSym0 SMkMessage)

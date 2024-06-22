@@ -84,11 +84,9 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       Child ((:+:) a _) = a
     (%+) ::
       (forall (t :: Nat) (t :: Nat).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat) :: Type)
+       Sing t -> Sing t -> Sing ((+) t t :: Nat) :: Type)
     sChild ::
-      (forall (t :: Foo).
-       Sing t -> Sing (Apply ChildSym0 t :: Foo) :: Type)
+      (forall (t :: Foo). Sing t -> Sing (Child t :: Foo) :: Type)
     (%+) SZero (sM :: Sing m) = sM
     (%+) (SSucc (sN :: Sing n)) (sM :: Sing m)
       = applySing

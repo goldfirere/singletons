@@ -91,19 +91,17 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     class SFoo a where
       sBar ::
         (forall (t :: a) (t :: b).
-         Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type)
+         Sing t -> Sing t -> Sing (Bar t t :: b) :: Type)
       sBaz ::
-        forall b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
+        forall b (t :: a) (t :: b). Sing t -> Sing t -> Sing (Baz t t :: b)
       default sBar ::
                 (forall (t :: a) (t :: b).
                  ((Bar t t :: b) ~ Bar_0123456789876543210 t t) =>
-                 Sing t -> Sing t -> Sing (Apply (Apply BarSym0 t) t :: b) :: Type)
+                 Sing t -> Sing t -> Sing (Bar t t :: b) :: Type)
       default sBaz ::
                 forall b (t :: a) (t :: b). ((Baz t t :: b)
                                              ~ Baz_0123456789876543210 t t) =>
-                                            Sing t
-                                            -> Sing t -> Sing (Apply (Apply BazSym0 t) t :: b)
+                                            Sing t -> Sing t -> Sing (Baz t t :: b)
       sBar _ (sX :: Sing x) = sX
       sBaz
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
@@ -114,7 +112,7 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
                   sH ::
                     forall c (t :: c) (t :: b). Sing t
                                                 -> Sing t
-                                                   -> Sing (Apply (Apply (Let0123456789876543210HSym0 a b a_0123456789876543210 a_0123456789876543210) t) t :: b)
+                                                   -> Sing (Let0123456789876543210H a b a_0123456789876543210 a_0123456789876543210 t t :: b)
                   sH _ (sX :: Sing x) = sX
                 in
                   singFun2

@@ -168,18 +168,17 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     type Foo1 :: a -> Maybe a -> a
     type family Foo1 @a (a :: a) (a :: Maybe a) :: a where
       Foo1 d x = Case_0123456789876543210 d x x
-    sFoo5 ::
-      (forall (t :: a). Sing t -> Sing (Apply Foo5Sym0 t :: a) :: Type)
-    sFoo4 :: forall a (t :: a). Sing t -> Sing (Apply Foo4Sym0 t :: a)
+    sFoo5 :: (forall (t :: a). Sing t -> Sing (Foo5 t :: a) :: Type)
+    sFoo4 :: forall a (t :: a). Sing t -> Sing (Foo4 t :: a)
     sFoo3 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo3Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo3 t t :: a) :: Type)
     sFoo2 ::
       (forall (t :: a) (t :: Maybe a).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo2 t t :: a) :: Type)
     sFoo1 ::
       (forall (t :: a) (t :: Maybe a).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo1 t t :: a) :: Type)
     sFoo5 (sX :: Sing x)
       = id
           @(Sing (Case_0123456789876543210 x x))
@@ -201,13 +200,13 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
           (case sX of
              (sY :: Sing y)
                -> let
-                    sZ :: (Sing (Let0123456789876543210ZSym0 a y x :: a) :: Type)
+                    sZ :: (Sing (Let0123456789876543210Z a y x :: a) :: Type)
                     sZ = sY
                   in sZ)
     sFoo3 (sA :: Sing a) (sB :: Sing b)
       = let
           sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym0 a b)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 a b)
           sScrutinee_0123456789876543210
             = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sA) sB
         in
@@ -218,7 +217,7 @@ Singletons/CaseExpressions.hs:(0,0)-(0,0): Splicing declarations
     sFoo2 (sD :: Sing d) _
       = let
           sScrutinee_0123456789876543210 ::
-            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210Sym0 d)
+            Sing @_ (Let0123456789876543210Scrutinee_0123456789876543210 d)
           sScrutinee_0123456789876543210
             = applySing (singFun1 @JustSym0 SJust) sD
         in

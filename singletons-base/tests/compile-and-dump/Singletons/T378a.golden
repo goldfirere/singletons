@@ -54,7 +54,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       ConstBA @b @a (x :: a) (_ :: b) = x
     sConstBA ::
       forall b a (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply ConstBASym0 t) t :: a)
+                                    -> Sing t -> Sing (ConstBA t t :: a)
     sConstBA (sX :: Sing x) _ = sX
     instance SingI (ConstBASym0 :: (~>) a ((~>) b a)) where
       sing = singFun2 @ConstBASym0 sConstBA

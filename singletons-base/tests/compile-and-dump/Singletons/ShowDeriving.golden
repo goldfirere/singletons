@@ -184,11 +184,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     infixl 5 :%*:
     infixl 5 `SMkFoo2b`
     (%***) ::
-      (forall (t :: Foo3).
-       Sing t -> Sing (Apply (***@#@$) t :: Bool) :: Type)
+      (forall (t :: Foo3). Sing t -> Sing ((***) t :: Bool) :: Type)
     sGetFoo3a ::
-      (forall (t :: Foo3).
-       Sing t -> Sing (Apply GetFoo3aSym0 t :: Bool) :: Type)
+      (forall (t :: Foo3). Sing t -> Sing (GetFoo3a t :: Bool) :: Type)
     (%***) (SMkFoo3 _ (sField :: Sing field)) = sField
     sGetFoo3a (SMkFoo3 (sField :: Sing field) _) = sField
     instance SingI ((***@#@$) :: (~>) Foo3 Bool) where

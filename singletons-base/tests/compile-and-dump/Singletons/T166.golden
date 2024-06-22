@@ -67,16 +67,12 @@ Singletons/T166.hs:(0,0)-(0,0): Splicing declarations
       sFoosPrec ::
         (forall (t :: Natural) (t :: a) (t :: [Bool]).
          Sing t
-         -> Sing t
-            -> Sing t
-               -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool]) :: Type)
-      sFoo ::
-        (forall (t :: a).
-         Sing t -> Sing (Apply FooSym0 t :: [Bool]) :: Type)
+         -> Sing t -> Sing t -> Sing (FoosPrec t t t :: [Bool]) :: Type)
+      sFoo :: (forall (t :: a). Sing t -> Sing (Foo t :: [Bool]) :: Type)
       default sFoo ::
                 (forall (t :: a).
                  ((Foo t :: [Bool]) ~ Foo_0123456789876543210 t) =>
-                 Sing t -> Sing (Apply FooSym0 t :: [Bool]) :: Type)
+                 Sing t -> Sing (Foo t :: [Bool]) :: Type)
       sFoo (sX :: Sing x)
         = singFun1
             @(Lambda_0123456789876543210Sym0 a x)

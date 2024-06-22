@@ -113,14 +113,10 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
       ($$:) x y = Apply (Apply (:$$:@#@$) x) y
     (%<>:) ::
       (forall (t :: ErrorMessage) (t :: ErrorMessage).
-       Sing t
-       -> Sing t
-          -> Sing (Apply (Apply (<>:@#@$) t) t :: ErrorMessage) :: Type)
+       Sing t -> Sing t -> Sing ((<>:) t t :: ErrorMessage) :: Type)
     (%$$:) ::
       (forall (t :: ErrorMessage) (t :: ErrorMessage).
-       Sing t
-       -> Sing t
-          -> Sing (Apply (Apply ($$:@#@$) t) t :: ErrorMessage) :: Type)
+       Sing t -> Sing t -> Sing (($$:) t t :: ErrorMessage) :: Type)
     (%<>:) (sX :: Sing x) (sY :: Sing y)
       = applySing (applySing (singFun2 @(:<>:@#@$) (:%<>:)) sX) sY
     (%$$:) (sX :: Sing x) (sY :: Sing y)

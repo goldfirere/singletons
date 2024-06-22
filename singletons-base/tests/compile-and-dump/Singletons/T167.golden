@@ -72,20 +72,14 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
       sFoosPrec ::
         (forall (t :: Natural) (t :: a) (t :: [Bool]).
          Sing t
-         -> Sing t
-            -> Sing t
-               -> Sing (Apply (Apply (Apply FoosPrecSym0 t) t) t :: [Bool]) :: Type)
+         -> Sing t -> Sing t -> Sing (FoosPrec t t t :: [Bool]) :: Type)
       sFooList ::
         (forall (t :: a) (t :: [Bool]).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply FooListSym0 t) t :: [Bool]) :: Type)
+         Sing t -> Sing t -> Sing (FooList t t :: [Bool]) :: Type)
       default sFooList ::
                 (forall (t :: a) (t :: [Bool]).
                  ((FooList t t :: [Bool]) ~ FooList_0123456789876543210 t t) =>
-                 Sing t
-                 -> Sing t
-                    -> Sing (Apply (Apply FooListSym0 t) t :: [Bool]) :: Type)
+                 Sing t -> Sing t -> Sing (FooList t t :: [Bool]) :: Type)
       sFooList
         (sA_0123456789876543210 :: Sing a_0123456789876543210)
         (sA_0123456789876543210 :: Sing a_0123456789876543210)

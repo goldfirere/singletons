@@ -390,11 +390,13 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
     mb_cls_sak <- dsReifyType cls_name
     let sing_cls_name   = singledClassName opts cls_name
         mb_sing_cls_sak = fmap (DKiSigD sing_cls_name) mb_cls_sak
+        pro_meth_names_and_locals =
+          map (\meth_name -> (promotedValueName opts meth_name Nothing, []))
+              meth_names
     cls_infix_decls <- singReifiedInfixDecls $ cls_name:meth_names
     (sing_sigs, _, tyvar_names, cxts, res_kis, singIDefunss)
       <- unzip6 <$> zipWithM (singTySig no_meth_defns meth_sigs)
-                             meth_names
-                             (map (DConT . defunctionalizedName0 opts) meth_names)
+                             meth_names pro_meth_names_and_locals
     emitDecs $ maybeToList mb_sing_cls_sak ++ cls_infix_decls ++ concat singIDefunss
     let default_sigs = catMaybes $
                        zipWith4 (mk_default_sig opts) meth_names sing_sigs
@@ -427,7 +429,10 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
       pure $ DSigT sty' ski
     add_constraints opts meth_name sty bound_kvs res_ki = do
       (tvbs, cxt, args, res) <- unravelVanillaDType sty
-      prom_dflt <- OMap.lookup meth_name promoted_defaults
+      -- Class defaults always occur at the top level, and as such, they are
+      -- guaranteed never to close over any local names.
+      (prom_dflt_name, _prom_deflt_locals) <-
+        OMap.lookup meth_name promoted_defaults
 
       -- Filter out explicitly bound kind variables. Otherwise, if you had
       -- the following class (#312):
@@ -452,7 +457,7 @@ singClassD (ClassDecl { cd_cxt  = cls_cxt
                                 -- kinds in result-inferred default methods.
                                 -- See #175
                                [ foldType prom_meth tvs `DSigT` res_ki
-                               , foldType prom_dflt tvs ]
+                               , foldType (DConT prom_dflt_name) tvs ]
       return $ ravelVanillaDType tvbs (default_pred : cxt) args res
       where
         bound_kv_set = Set.fromList bound_kvs
@@ -482,7 +487,7 @@ singInstD (InstDecl { id_cxt = cxt, id_name = inst_name, id_arg_tys = inst_tys
             -- resulted in #167.
             raw_ty <- expand inner_ty
             (s_ty, _num_args, _tyvar_names, _ctxt, _arg_kis, _res_ki)
-              <- singType (DConT $ defunctionalizedName0 opts name) raw_ty
+              <- singType (DConT $ promotedValueName opts name Nothing) raw_ty
             pure s_ty
 
       -- If an instance signature exists, single it. Otherwise, leave it out.
@@ -528,7 +533,7 @@ singLetDecEnv (LetDecEnv { lde_defns = defns
 
 singTySig :: OMap Name ALetDecRHS  -- definitions
           -> OMap Name DType       -- type signatures
-          -> Name -> DType         -- the type is the promoted type, not the type sig!
+          -> Name -> LetDecProm    -- the LetDecProm is the promoted type, not the type sig!
           -> SgM ( DLetDec         -- the new type signature
                  , (Name, DExp)    -- the let-bind entry
                  , [Name]          -- the scoped tyvar names in the tysig
@@ -536,9 +541,11 @@ singTySig :: OMap Name ALetDecRHS  -- definitions
                  , Maybe DKind     -- the result kind in the tysig
                  , [DDec]          -- SingI instances for defun symbols
                  )
-singTySig defns types name prom_ty = do
+singTySig defns types name (prom_name, prom_locals) = do
   opts <- getOptions
   let sName = singledValueName opts name
+      prom_defun_name = defunctionalizedName0 opts prom_name
+      prom_defun_ty   = foldType (DConT prom_defun_name) prom_local_tys
   case OMap.lookup name types of
     Nothing -> do
       num_args <- guess_num_args
@@ -546,7 +553,7 @@ singTySig defns types name prom_ty = do
       singIDefuns <- singDefuns name VarName []
                                 (map (const Nothing) tyvar_names) Nothing
       return ( DSigD sName sty
-             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, wrapSingFun num_args prom_defun_ty (DVarE sName))
              , tyvar_names
              , (name, [])
              , Nothing
@@ -558,12 +565,15 @@ singTySig defns types name prom_ty = do
       singIDefuns <- singDefuns name VarName (bound_cxt ++ ctxt)
                                 (map Just arg_kis) (Just res_ki)
       return ( DSigD sName sty
-             , (name, wrapSingFun num_args prom_ty (DVarE sName))
+             , (name, wrapSingFun num_args prom_defun_ty (DVarE sName))
              , tyvar_names
              , (name, ctxt)
              , Just res_ki
              , singIDefuns )
   where
+    prom_local_tys = map DVarT prom_locals
+    prom_ty        = foldType (DConT prom_name) prom_local_tys
+
     guess_num_args :: SgM Int
     guess_num_args =
       case OMap.lookup name defns of
@@ -584,7 +594,7 @@ singTySig defns types name prom_ty = do
                  []
                  (map (\nm -> singFamily `DAppT` DVarT nm) arg_names)
                  (sing_w_wildcard `DAppT`
-                      (foldApply prom_ty (map DVarT arg_names)))
+                      (foldType prom_ty (map DVarT arg_names)))
              , arg_names )
 
 {-

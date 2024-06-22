@@ -26,8 +26,7 @@ Singletons/T78.hs:(0,0)-(0,0): Splicing declarations
       Foo ('Just 'True) = TrueSym0
       Foo 'Nothing = FalseSym0
     sFoo ::
-      (forall (t :: Maybe Bool).
-       Sing t -> Sing (Apply FooSym0 t :: Bool) :: Type)
+      (forall (t :: Maybe Bool). Sing t -> Sing (Foo t :: Bool) :: Type)
     sFoo (SJust SFalse) = SFalse
     sFoo (SJust STrue) = STrue
     sFoo SNothing = SFalse
