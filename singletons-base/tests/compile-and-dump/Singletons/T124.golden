@@ -22,9 +22,7 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: Bool) :: () where
       Foo 'True = Tuple0Sym0
       Foo 'False = Tuple0Sym0
-    sFoo ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply FooSym0 t :: ()) :: Type)
+    sFoo :: (forall (t :: Bool). Sing t -> Sing (Foo t :: ()) :: Type)
     sFoo STrue = STuple0
     sFoo SFalse = STuple0
     instance SingI (FooSym0 :: (~>) Bool ()) where

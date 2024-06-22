@@ -35,8 +35,8 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
     type Foo :: [Nat]
     type family Foo :: [Nat] where
       Foo = Apply (Apply MapSym0 Lambda_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
-    sBar :: (Sing (BarSym0 :: [Nat]) :: Type)
-    sFoo :: (Sing (FooSym0 :: [Nat]) :: Type)
+    sBar :: (Sing (Bar :: [Nat]) :: Type)
+    sFoo :: (Sing (Foo :: [Nat]) :: Type)
     sBar
       = applySing
           (applySing

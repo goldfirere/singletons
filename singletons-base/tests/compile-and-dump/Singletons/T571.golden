@@ -19,8 +19,7 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
     type F :: a -> a
     type family F @a (a :: a) :: a where
       F x = x
-    sF ::
-      (forall (t :: a). Sing t -> Sing (Apply FSym0 t :: a) :: Type)
+    sF :: (forall (t :: a). Sing t -> Sing (F t :: a) :: Type)
     sF (sX :: Sing x) = sX
     instance SingI (FSym0 :: (~>) a a) where
       sing = singFun1 @FSym0 sF
@@ -55,7 +54,7 @@ Singletons/T571.hs:(0,0)-(0,0): Splicing declarations
       G f x = Apply f x
     sG ::
       (forall (t :: (~>) a a) (t :: a).
-       Sing t -> Sing t -> Sing (Apply (Apply GSym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (G t t :: a) :: Type)
     sG (sF :: Sing f) (sX :: Sing x) = applySing sF sX
     instance SingI (GSym0 :: (~>) ((~>) a a) ((~>) a a)) where
       sing = singFun2 @GSym0 sG

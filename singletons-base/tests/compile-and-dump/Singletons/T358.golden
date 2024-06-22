@@ -70,18 +70,15 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       type Method2a a = Method2a_0123456789876543210 a
       type Method2b a = Method2b_0123456789876543210 a
     class SC1 (f :: k -> Type) where
-      sMethod1 :: (Sing (Method1Sym0 :: f a) :: Type)
+      sMethod1 :: (Sing (Method1 :: f a) :: Type)
     class SC2 a where
-      sMethod2a ::
-        forall b (t :: b). Sing t -> Sing (Apply Method2aSym0 t :: a)
-      sMethod2b ::
-        forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: a)
+      sMethod2a :: forall b (t :: b). Sing t -> Sing (Method2a t :: a)
+      sMethod2b :: forall b (t :: b). Sing t -> Sing (Method2b t :: a)
     instance SC1 [] where
-      sMethod1 :: (Sing (Method1Sym0 :: [a]) :: Type)
+      sMethod1 :: (Sing (Method1 :: [a]) :: Type)
       sMethod1 = SNil
     instance SC2 [a] where
-      sMethod2b ::
-        forall b (t :: b). Sing t -> Sing (Apply Method2bSym0 t :: [a])
+      sMethod2b :: forall b (t :: b). Sing t -> Sing (Method2b t :: [a])
       sMethod2a _ = SNil
       sMethod2b _ = SNil
     instance SC2 a => SingI (Method2aSym0 :: (~>) b a) where

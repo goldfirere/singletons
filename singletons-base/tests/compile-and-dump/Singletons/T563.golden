@@ -53,8 +53,7 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
     type family UnFoo' (a :: Foo) :: Bool where
       UnFoo' a_0123456789876543210 = Apply UnFooSym0 a_0123456789876543210
     sUnFoo' ::
-      (forall (t :: Foo).
-       Sing t -> Sing (Apply UnFoo'Sym0 t :: Bool) :: Type)
+      (forall (t :: Foo). Sing t -> Sing (UnFoo' t :: Bool) :: Type)
     sUnFoo' (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing sUnFoo sA_0123456789876543210
     instance SingI (UnFoo'Sym0 :: (~>) Foo Bool) where

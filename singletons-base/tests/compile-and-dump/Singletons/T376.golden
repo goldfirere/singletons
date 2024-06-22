@@ -29,7 +29,7 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
       F g a_0123456789876543210 = Apply (g :: (~>) () ()) a_0123456789876543210
     sF ::
       (forall (t :: (~>) () ()) (t :: ()).
-       Sing t -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ()) :: Type)
+       Sing t -> Sing t -> Sing (F t t :: ()) :: Type)
     sF
       (sG :: Sing g)
       (sA_0123456789876543210 :: Sing a_0123456789876543210)

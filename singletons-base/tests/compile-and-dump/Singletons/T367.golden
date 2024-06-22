@@ -29,8 +29,7 @@ Singletons/T367.hs:(0,0)-(0,0): Splicing declarations
       Const' x _ = x
     sConst' ::
       (forall (t :: a) (t :: b).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply Const'Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Const' t t :: a) :: Type)
     sConst' (sX :: Sing x) _ = sX
     instance SingI (Const'Sym0 :: (~>) a ((~>) b a)) where
       sing = singFun2 @Const'Sym0 sConst'

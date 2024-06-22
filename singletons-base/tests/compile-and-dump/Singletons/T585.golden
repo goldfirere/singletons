@@ -29,7 +29,7 @@ Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
       Konst @a (x :: a) (_ :: b) = x
     sKonst ::
       forall a {b} (t :: a) (t :: b). Sing t
-                                      -> Sing t -> Sing (Apply (Apply KonstSym0 t) t :: a)
+                                      -> Sing t -> Sing (Konst t t :: a)
     sKonst (sX :: Sing x) _ = sX
     instance SingI (KonstSym0 :: (~>) a ((~>) b a)) where
       sing = singFun2 @KonstSym0 sKonst

@@ -100,8 +100,9 @@ lambdaBind binds = local add_binds
               , pr_local_vars  = new_locals          `OMap.union` locals }
 
 -- ^ A pair consisting of a term-level 'Name' of a variable, bound in a @let@
--- binding or @where@ clause, and its type-level counterpart.
--- See @Note [Tracking local variables]@.
+-- binding or @where@ clause, and its type-level counterpart. The type will
+-- always be a defunctionalization symbol so that it can be partially applied if
+-- necessary. See @Note [Tracking local variables]@.
 type LetBind = (Name, DType)
 
 -- ^ Bring a list of 'LetBind's into scope for the duration the supplied

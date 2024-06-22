@@ -172,31 +172,29 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
       MaybePlus ('Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
       MaybePlus 'Nothing = Let0123456789876543210PSym0
     sFoo ::
-      (forall (t :: [Nat]).
-       Sing t -> Sing (Apply FooSym0 t :: [Nat]) :: Type)
+      (forall (t :: [Nat]). Sing t -> Sing (Foo t :: [Nat]) :: Type)
     sTup ::
       (forall (t :: (Nat, Nat)).
-       Sing t -> Sing (Apply TupSym0 t :: (Nat, Nat)) :: Type)
+       Sing t -> Sing (Tup t :: (Nat, Nat)) :: Type)
     sBaz_ ::
       (forall (t :: Maybe Baz).
-       Sing t -> Sing (Apply Baz_Sym0 t :: Maybe Baz) :: Type)
+       Sing t -> Sing (Baz_ t :: Maybe Baz) :: Type)
     sBar ::
       (forall (t :: Maybe Nat).
-       Sing t -> Sing (Apply BarSym0 t :: Maybe Nat) :: Type)
+       Sing t -> Sing (Bar t :: Maybe Nat) :: Type)
     sMaybePlus ::
       (forall (t :: Maybe Nat).
-       Sing t -> Sing (Apply MaybePlusSym0 t :: Maybe Nat) :: Type)
+       Sing t -> Sing (MaybePlus t :: Maybe Nat) :: Type)
     sFoo SNil
       = let
-          sP :: Sing @_ Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210P
           sP = SNil
         in sP
     sFoo
       (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
              SNil)
       = let
-          sP ::
-            Sing @_ (Let0123456789876543210PSym0 wild_0123456789876543210)
+          sP :: Sing @_ (Let0123456789876543210P wild_0123456789876543210)
           sP
             = applySing
                 (applySing (singFun2 @(:@#@$) SCons) sWild_0123456789876543210)
@@ -208,7 +206,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                     (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = applySing
                 (applySing (singFun2 @(:@#@$) SCons) sWild_0123456789876543210)
@@ -221,7 +219,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210)
           sP
             = applySing
                 (applySing
@@ -230,7 +228,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
         in sP
     sBaz_ SNothing
       = let
-          sP :: Sing @_ Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210P
           sP = SNothing
         in sP
     sBaz_
@@ -239,7 +237,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
                    (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
           sP
             = applySing
                 (singFun1 @JustSym0 SJust)
@@ -252,8 +250,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     sBar
       (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       = let
-          sX ::
-            Sing @_ (Let0123456789876543210XSym0 wild_0123456789876543210)
+          sX :: Sing @_ (Let0123456789876543210X wild_0123456789876543210)
           sX = applySing (singFun1 @JustSym0 SJust) sWild_0123456789876543210
         in sX
     sBar SNothing = SNothing
@@ -267,7 +264,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
              sN)
     sMaybePlus SNothing
       = let
-          sP :: Sing @_ Let0123456789876543210PSym0
+          sP :: Sing @_ Let0123456789876543210P
           sP = SNothing
         in sP
     instance SingI (FooSym0 :: (~>) [Nat] [Nat]) where

@@ -58,13 +58,11 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     instance PFD Bool Natural where
       type Meth a = Meth_0123456789876543210 a
       type L2r a = L2r_0123456789876543210 a
-    sT1 :: Sing @_ T1Sym0
+    sT1 :: Sing @_ T1
     sT1 = applySing (singFun1 @MethSym0 sMeth) STrue
     class SFD a b | a -> b where
-      sMeth ::
-        (forall (t :: a). Sing t -> Sing (Apply MethSym0 t :: a) :: Type)
-      sL2r ::
-        (forall (t :: a). Sing t -> Sing (Apply L2rSym0 t :: b) :: Type)
+      sMeth :: (forall (t :: a). Sing t -> Sing (Meth t :: a) :: Type)
+      sL2r :: (forall (t :: a). Sing t -> Sing (L2r t :: b) :: Type)
     instance SFD Bool Natural where
       sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
         = applySing (singFun1 @NotSym0 sNot) sA_0123456789876543210

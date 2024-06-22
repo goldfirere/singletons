@@ -277,33 +277,23 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     type Otherwise :: Bool
     type family Otherwise :: Bool where
       Otherwise = TrueSym0
-    sM :: (Sing (MSym0 :: Bool) :: Type)
-    sL :: (Sing (LSym0 :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sK :: (Sing (KSym0 :: Bool) :: Type)
-    sJ :: (Sing (JSym0 :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sI ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply ISym0 t :: Bool) :: Type)
-    sH ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply HSym0 t :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sG ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply GSym0 t :: Bool) :: Type)
-    sF ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply FSym0 t :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210Sym0
-    sFalse_ :: Sing @_ False_Sym0
+    sM :: (Sing (M :: Bool) :: Type)
+    sL :: (Sing (L :: Bool) :: Type)
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sK :: (Sing (K :: Bool) :: Type)
+    sJ :: (Sing (J :: Bool) :: Type)
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sI :: (forall (t :: Bool). Sing t -> Sing (I t :: Bool) :: Type)
+    sH :: (forall (t :: Bool). Sing t -> Sing (H t :: Bool) :: Type)
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sG :: (forall (t :: Bool). Sing t -> Sing (G t :: Bool) :: Type)
+    sF :: (forall (t :: Bool). Sing t -> Sing (F t :: Bool) :: Type)
+    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sFalse_ :: Sing @_ False_
     sNot ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply NotSym0 t :: Bool) :: Type)
-    sId ::
-      (forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type)
-    sOtherwise :: (Sing (OtherwiseSym0 :: Bool) :: Type)
+      (forall (t :: Bool). Sing t -> Sing (Not t :: Bool) :: Type)
+    sId :: (forall (t :: a). Sing t -> Sing (Id t :: a) :: Type)
+    sOtherwise :: (Sing (Otherwise :: Bool) :: Type)
     sM
       = GHC.Internal.Base.id
           @(Sing (Case_0123456789876543210 X_0123456789876543210Sym0))

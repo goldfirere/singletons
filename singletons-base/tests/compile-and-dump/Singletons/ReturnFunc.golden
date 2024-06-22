@@ -73,15 +73,11 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
       ReturnFunc _ a_0123456789876543210 = Apply SuccSym0 a_0123456789876543210
     sIdFoo ::
       (forall (t :: c) (t :: a).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply IdFooSym0 t) t :: a) :: Type)
-    sId ::
-      (forall (t :: a). Sing t -> Sing (Apply IdSym0 t :: a) :: Type)
+       Sing t -> Sing t -> Sing (IdFoo t t :: a) :: Type)
+    sId :: (forall (t :: a). Sing t -> Sing (Id t :: a) :: Type)
     sReturnFunc ::
       (forall (t :: Nat) (t :: Nat).
-       Sing t
-       -> Sing t
-          -> Sing (Apply (Apply ReturnFuncSym0 t) t :: Nat) :: Type)
+       Sing t -> Sing t -> Sing (ReturnFunc t t :: Nat) :: Type)
     sIdFoo _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
       = applySing (singFun1 @IdSym0 sId) sA_0123456789876543210
     sId (sX :: Sing x) = sX

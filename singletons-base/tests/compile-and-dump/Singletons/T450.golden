@@ -94,9 +94,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       AppendMessage ('PMkMessage (x :: Symbol)) ('PMkMessage (y :: Symbol)) = Apply PMkMessageSym0 (Apply (Apply (<>@#@$) x) y :: Symbol)
     sAppendMessage ::
       (forall (t :: PMessage) (t :: PMessage).
-       Sing t
-       -> Sing t
-          -> Sing (Apply (Apply AppendMessageSym0 t) t :: PMessage) :: Type)
+       Sing t -> Sing t -> Sing (AppendMessage t t :: PMessage) :: Type)
     sAppendMessage
       (SMkMessage (sX :: Sing x))
       (SMkMessage (sY :: Sing y))
@@ -185,8 +183,7 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     sComposeFunction ::
       (forall (t :: PFunction b c) (t :: PFunction a b).
        Sing t
-       -> Sing t
-          -> Sing (Apply (Apply ComposeFunctionSym0 t) t :: PFunction a c) :: Type)
+       -> Sing t -> Sing (ComposeFunction t t :: PFunction a c) :: Type)
     sComposeFunction
       (SMkFunction (sF :: Sing f))
       (SMkFunction (sG :: Sing g))

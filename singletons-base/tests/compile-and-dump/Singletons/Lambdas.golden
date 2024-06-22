@@ -399,34 +399,29 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     type family Foo0 @a @b (a :: a) (a :: b) :: a where
       Foo0 a_0123456789876543210 a_0123456789876543210 = Apply (Apply (Lambda_0123456789876543210Sym0 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210
     sFoo8 ::
-      (forall (t :: Foo a b).
-       Sing t -> Sing (Apply Foo8Sym0 t :: a) :: Type)
+      (forall (t :: Foo a b). Sing t -> Sing (Foo8 t :: a) :: Type)
     sFoo7 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo7Sym0 t) t :: b) :: Type)
+       Sing t -> Sing t -> Sing (Foo7 t t :: b) :: Type)
     sFoo6 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo6Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo6 t t :: a) :: Type)
     sFoo5 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo5Sym0 t) t :: b) :: Type)
+       Sing t -> Sing t -> Sing (Foo5 t t :: b) :: Type)
     sFoo4 ::
       (forall (t :: a) (t :: b) (t :: c).
-       Sing t
-       -> Sing t
-          -> Sing t
-             -> Sing (Apply (Apply (Apply Foo4Sym0 t) t) t :: a) :: Type)
-    sFoo3 ::
-      (forall (t :: a). Sing t -> Sing (Apply Foo3Sym0 t :: a) :: Type)
+       Sing t -> Sing t -> Sing t -> Sing (Foo4 t t t :: a) :: Type)
+    sFoo3 :: (forall (t :: a). Sing t -> Sing (Foo3 t :: a) :: Type)
     sFoo2 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo2Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo2 t t :: a) :: Type)
     sFoo1 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo1Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo1 t t :: a) :: Type)
     sFoo0 ::
       (forall (t :: a) (t :: b).
-       Sing t -> Sing t -> Sing (Apply (Apply Foo0Sym0 t) t :: a) :: Type)
+       Sing t -> Sing t -> Sing (Foo0 t t :: a) :: Type)
     sFoo8 (sX :: Sing x)
       = applySing
           (singFun1

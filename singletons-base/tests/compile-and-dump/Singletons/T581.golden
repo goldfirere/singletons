@@ -168,52 +168,43 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
     instance PC3 [a] where
       type M3 a a = M3_0123456789876543210 a a
     class SC1 a where
-      sM1 ::
-        forall b (t :: a). Sing t -> Sing (Apply M1Sym0 t :: Maybe (a, b))
+      sM1 :: forall b (t :: a). Sing t -> Sing (M1 t :: Maybe (a, b))
       default sM1 ::
                 forall b (t :: a). ((M1 t :: Maybe (a, b))
                                     ~ M1_0123456789876543210 t) =>
-                                   Sing t -> Sing (Apply M1Sym0 t :: Maybe (a, b))
+                                   Sing t -> Sing (M1 t :: Maybe (a, b))
       sM1 _ = SNothing :: Sing (NothingSym0 :: Maybe (a, b))
     class SC2 a where
-      sM2 ::
-        (forall (t :: b).
-         Sing t -> Sing (Apply M2Sym0 t :: Maybe a) :: Type)
+      sM2 :: (forall (t :: b). Sing t -> Sing (M2 t :: Maybe a) :: Type)
       default sM2 ::
                 (forall (t :: b).
                  ((M2 t :: Maybe a) ~ M2_0123456789876543210 t) =>
-                 Sing t -> Sing (Apply M2Sym0 t :: Maybe a) :: Type)
+                 Sing t -> Sing (M2 t :: Maybe a) :: Type)
       sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe a)
     class SC3 a where
       sM3 ::
         forall b (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply M3Sym0 t) t :: (a, b))
+                                    -> Sing t -> Sing (M3 t t :: (a, b))
       default sM3 ::
                 forall b (t :: a) (t :: b). ((M3 t t :: (a, b))
                                              ~ M3_0123456789876543210 t t) =>
-                                            Sing t
-                                            -> Sing t -> Sing (Apply (Apply M3Sym0 t) t :: (a, b))
+                                            Sing t -> Sing t -> Sing (M3 t t :: (a, b))
       sM3 (sX :: Sing x) (sY :: Sing y)
         = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY ::
             Sing (Apply (Apply Tuple2Sym0 x) y :: (a, b))
     instance SC1 [a] where
-      sM1 ::
-        forall b (t :: [a]). Sing t
-                             -> Sing (Apply M1Sym0 t :: Maybe ([a], b))
+      sM1 :: forall b (t :: [a]). Sing t -> Sing (M1 t :: Maybe ([a], b))
       sM1 _ = SNothing :: Sing (NothingSym0 :: Maybe ([a], b))
     instance SC2 [a] where
       sM2 ::
-        (forall (t :: b).
-         Sing t -> Sing (Apply M2Sym0 t :: Maybe [a]) :: Type)
+        (forall (t :: b). Sing t -> Sing (M2 t :: Maybe [a]) :: Type)
       sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe [a])
     instance SC2 (Maybe a) where
       sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe (Maybe a))
     instance SC3 (Maybe a) where
       sM3 ::
         (forall (t :: Maybe a) (t :: b).
-         Sing t
-         -> Sing t
-            -> Sing (Apply (Apply M3Sym0 t) t :: (Maybe a, b)) :: Type)
+         Sing t -> Sing t -> Sing (M3 t t :: (Maybe a, b)) :: Type)
       sM3 (sX :: Sing x) (sY :: Sing y)
         = applySing
             (applySing

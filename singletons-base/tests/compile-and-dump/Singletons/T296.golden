@@ -45,15 +45,13 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
     type F :: forall a. MyProxy a -> MyProxy a
     type family F @a (a :: MyProxy a) :: MyProxy a where
       F @a (MyProxy :: MyProxy a) = Let0123456789876543210XSym0 a
-    sF ::
-      forall a (t :: MyProxy a). Sing t
-                                 -> Sing (Apply FSym0 t :: MyProxy a)
+    sF :: forall a (t :: MyProxy a). Sing t -> Sing (F t :: MyProxy a)
     sF SMyProxy
       = let
-          sX :: Sing @_ (Let0123456789876543210XSym0 a)
+          sX :: Sing @_ (Let0123456789876543210X a)
           sX
             = let
-                sZ :: (Sing (Let0123456789876543210ZSym0 a :: MyProxy a) :: Type)
+                sZ :: (Sing (Let0123456789876543210Z a :: MyProxy a) :: Type)
                 sZ = SMyProxy
               in sZ
         in sX

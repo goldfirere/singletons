@@ -77,11 +77,10 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     class PC x y
     sNatMinus ::
       (forall (t :: Nat) (t :: Nat).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply NatMinusSym0 t) t :: Nat) :: Type)
+       Sing t -> Sing t -> Sing (NatMinus t t :: Nat) :: Type)
     sF ::
       forall b a (t :: a) (t :: b). Sing t
-                                    -> Sing t -> Sing (Apply (Apply FSym0 t) t :: ())
+                                    -> Sing t -> Sing (F t t :: ())
     sNatMinus SZero _ = SZero
     sNatMinus (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
       = applySing (applySing (singFun2 @NatMinusSym0 sNatMinus) sA) sB
@@ -89,8 +88,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
       (SSucc (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
       SZero
       = let
-          sA ::
-            Sing @_ (Let0123456789876543210ASym0 wild_0123456789876543210)
+          sA :: Sing @_ (Let0123456789876543210A wild_0123456789876543210)
           sA = applySing (singFun1 @SuccSym0 SSucc) sWild_0123456789876543210
         in sA
     sF _ _ = STuple0

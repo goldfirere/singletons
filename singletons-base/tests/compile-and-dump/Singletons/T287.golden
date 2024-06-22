@@ -52,8 +52,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     class SS a where
       (%<<>>) ::
         (forall (t :: a) (t :: a).
-         Sing t
-         -> Sing t -> Sing (Apply (Apply (<<>>@#@$) t) t :: a) :: Type)
+         Sing t -> Sing t -> Sing ((<<>>) t t :: a) :: Type)
     instance SS b => SS ((~>) a b) where
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = singFun1

@@ -21,7 +21,7 @@ Singletons/PolyKinds.hs:(0,0)-(0,0): Splicing declarations
     class SCls (a :: k) where
       sFff ::
         (forall (t :: Proxy (a :: k)).
-         Sing t -> Sing (Apply FffSym0 t :: ()) :: Type)
+         Sing t -> Sing (Fff t :: ()) :: Type)
     instance SCls a =>
              SingI (FffSym0 :: (~>) (Proxy (a :: k)) ()) where
       sing = singFun1 @FffSym0 sFff

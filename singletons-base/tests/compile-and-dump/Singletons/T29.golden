@@ -74,17 +74,13 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     type family Foo (a :: Bool) :: Bool where
       Foo x = Apply (Apply ($@#@$) NotSym0) x
     sBan ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply BanSym0 t :: Bool) :: Type)
+      (forall (t :: Bool). Sing t -> Sing (Ban t :: Bool) :: Type)
     sBaz ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply BazSym0 t :: Bool) :: Type)
+      (forall (t :: Bool). Sing t -> Sing (Baz t :: Bool) :: Type)
     sBar ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply BarSym0 t :: Bool) :: Type)
+      (forall (t :: Bool). Sing t -> Sing (Bar t :: Bool) :: Type)
     sFoo ::
-      (forall (t :: Bool).
-       Sing t -> Sing (Apply FooSym0 t :: Bool) :: Type)
+      (forall (t :: Bool). Sing t -> Sing (Foo t :: Bool) :: Type)
     sBan (sX :: Sing x)
       = applySing
           (applySing

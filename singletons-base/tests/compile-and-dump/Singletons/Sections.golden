@@ -72,13 +72,12 @@ Singletons/Sections.hs:(0,0)-(0,0): Splicing declarations
     type family (+) (a :: Nat) (a :: Nat) :: Nat where
       (+) 'Zero m = m
       (+) ('Succ n) m = Apply SuccSym0 (Apply (Apply (+@#@$) n) m)
-    sFoo3 :: (Sing (Foo3Sym0 :: [Nat]) :: Type)
-    sFoo2 :: (Sing (Foo2Sym0 :: [Nat]) :: Type)
-    sFoo1 :: (Sing (Foo1Sym0 :: [Nat]) :: Type)
+    sFoo3 :: (Sing (Foo3 :: [Nat]) :: Type)
+    sFoo2 :: (Sing (Foo2 :: [Nat]) :: Type)
+    sFoo1 :: (Sing (Foo1 :: [Nat]) :: Type)
     (%+) ::
       (forall (t :: Nat) (t :: Nat).
-       Sing t
-       -> Sing t -> Sing (Apply (Apply (+@#@$) t) t :: Nat) :: Type)
+       Sing t -> Sing t -> Sing ((+) t t :: Nat) :: Type)
     sFoo3
       = applySing
           (applySing

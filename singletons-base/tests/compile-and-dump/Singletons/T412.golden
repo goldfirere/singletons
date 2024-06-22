@@ -150,10 +150,8 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     infixr 5 `sD1A`
     infixr 5 `SMkD1`
     infix 5 `SC1`
-    sD1B ::
-      forall a b (t :: D1 a b). Sing t -> Sing (Apply D1BSym0 t :: b)
-    sD1A ::
-      forall a b (t :: D1 a b). Sing t -> Sing (Apply D1ASym0 t :: a)
+    sD1B :: forall a b (t :: D1 a b). Sing t -> Sing (D1B t :: b)
+    sD1A :: forall a b (t :: D1 a b). Sing t -> Sing (D1A t :: a)
     sD1B (SMkD1 _ (sField :: Sing field)) = sField
     sD1A (SMkD1 (sField :: Sing field) _) = sField
     instance SingI (D1BSym0 :: (~>) (D1 a b) b) where
@@ -174,8 +172,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     class SC1 a b where
       sM1 ::
         (forall (t :: a) (t :: b).
-         Sing t
-         -> Sing t -> Sing (Apply (Apply M1Sym0 t) t :: Bool) :: Type)
+         Sing t -> Sing t -> Sing (M1 t t :: Bool) :: Type)
       infix 6 `sM1`
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = SMkD1 sing sing
@@ -231,8 +228,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     class SC2 (a :: Type) (b :: Type) where
       sM2 ::
         (forall (t :: a) (t :: b).
-         Sing t
-         -> Sing t -> Sing (Apply (Apply M2Sym0 t) t :: Bool) :: Type)
+         Sing t -> Sing t -> Sing (M2 t t :: Bool) :: Type)
     type SC2 :: Type -> Type -> Constraint
     infix 5 `SC2`
     infix 6 `sM2`
@@ -343,10 +339,10 @@ Singletons/T412.hs:0:0:: Splicing declarations
       D2A @a @b ('MkD2 field _ :: D2 a b) = field
     sD2B ::
       forall (a :: Type) (b :: Type) (t :: D2 a b). Sing t
-                                                    -> Sing (Apply D2BSym0 t :: b)
+                                                    -> Sing (D2B t :: b)
     sD2A ::
       forall (a :: Type) (b :: Type) (t :: D2 a b). Sing t
-                                                    -> Sing (Apply D2ASym0 t :: a)
+                                                    -> Sing (D2A t :: a)
     sD2B (SMkD2 _ (sField :: Sing field)) = sField
     sD2A (SMkD2 (sField :: Sing field) _) = sField
     instance SingI (D2BSym0 :: (~>) (D2 a b) b) where
