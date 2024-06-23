@@ -545,7 +545,7 @@ singTySig defns types name (prom_name, prom_locals) = do
   opts <- getOptions
   let sName = singledValueName opts name
       prom_defun_name = defunctionalizedName0 opts prom_name
-      prom_defun_ty   = foldType (DConT prom_defun_name) prom_local_tys
+      prom_defun_ty   = foldTypeLocalVars (DConT prom_defun_name) prom_locals
   case OMap.lookup name types of
     Nothing -> do
       num_args <- guess_num_args
@@ -571,8 +571,8 @@ singTySig defns types name (prom_name, prom_locals) = do
              , Just res_ki
              , singIDefuns )
   where
-    prom_local_tys = map DVarT prom_locals
-    prom_ty        = foldType (DConT prom_name) prom_local_tys
+    prom_ty :: DType
+    prom_ty = foldTypeLocalVars (DConT prom_name) prom_locals
 
     guess_num_args :: SgM Int
     guess_num_args =
@@ -712,7 +712,7 @@ singClause (ADClause var_proms pats exp) = do
   sBody <- bindLambdas lambda_binds $ singExp exp
   return $ DClause sPats $ mkSigPaCaseE sigPaExpsSigs sBody
 
-singPat :: Map Name Name   -- from term-level names to type-level names
+singPat :: Map Name LocalVar -- from term-level names to type-level names
         -> ADPat
         -> QWithAux SingDSigPaInfos SgM DPat
 singPat var_proms = go
@@ -725,7 +725,7 @@ singPat var_proms = go
       tyname <- case Map.lookup name var_proms of
                   Nothing     ->
                     fail "Internal error: unknown variable when singling pattern"
-                  Just tyname -> return tyname
+                  Just (tyname, _) -> return tyname
       pure $ DVarP (singledValueName opts name)
                `DSigP` (singFamily `DAppT` DVarT tyname)
     go (ADConP name tys pats) = do
