@@ -94,6 +94,7 @@ library
                       Data.Singletons.TH.Single.Ord
                       Data.Singletons.TH.Single.Type
                       Data.Singletons.TH.Syntax
+                      Data.Singletons.TH.Syntax.LocalVar
                       Data.Singletons.TH.Util
 
   -- singletons re-exports

@@ -33,7 +33,7 @@ data PrEnv =
         , pr_scoped_vars :: OSet Name
           -- ^ The set of scoped type variables currently in scope.
           -- See @Note [Scoped type variables]@.
-        , pr_lambda_vars :: OMap Name Name
+        , pr_lambda_vars :: OMap Name LocalVar
           -- ^ Map from term-level 'Name's of variables bound in lambdas and
           -- function clauses to their type-level counterparts.
           -- See @Note [Tracking local variables]@.
@@ -65,11 +65,11 @@ instance OptionsMonad PrM where
   getOptions = asks pr_options
 
 -- return *type-level* names
-allLocals :: MonadReader PrEnv m => m [Name]
+allLocals :: MonadReader PrEnv m => m [LocalVar]
 allLocals = do
   scoped <- asks (F.toList . pr_scoped_vars)
   lambdas <- asks (OMap.assocs . pr_lambda_vars)
-  return $ scoped ++ map snd lambdas
+  return $ map localVarNoKind scoped ++ map snd lambdas
 
 emitDecs :: MonadWriter [DDec] m => [DDec] -> m ()
 emitDecs = tell
@@ -95,9 +95,10 @@ lambdaBind binds = local add_binds
                              , pr_local_vars  = locals }) =
           -- Per Note [Tracking local variables], these will be added to both
           -- `pr_lambda_vars` and `pr_local_vars`.
-          let new_locals = OMap.fromList [ (tmN, DVarT tyN) | (tmN, tyN) <- binds ] in
-          env { pr_lambda_vars = OMap.fromList binds `OMap.union` lambdas
-              , pr_local_vars  = new_locals          `OMap.union` locals }
+          let new_lambdas = OMap.fromList binds
+              new_locals  = fmap localVarToType new_lambdas in
+          env { pr_lambda_vars = new_lambdas `OMap.union` lambdas
+              , pr_local_vars  = new_locals  `OMap.union` locals }
 
 -- ^ A pair consisting of a term-level 'Name' of a variable, bound in a @let@
 -- binding or @where@ clause, and its type-level counterpart. The type will

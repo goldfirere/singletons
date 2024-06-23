@@ -31,6 +31,8 @@ import Data.Traversable
 import Data.Generics
 import Data.Maybe
 
+import Data.Singletons.TH.Syntax.LocalVar
+
 -- like reportWarning, but generalized to any Quasi
 qReportWarning :: Quasi q => String -> q ()
 qReportWarning = qReport False
@@ -438,6 +440,7 @@ noExactTyVars = everywhere go
       `extT` fix_tvb @BndrVis
       `extT` fix_ty
       `extT` fix_inj_ann
+      `extT` fix_local_var
 
     fix_tvb :: Typeable flag => DTyVarBndr flag -> DTyVarBndr flag
     fix_tvb (DPlainTV n f)    = DPlainTV (noExactName n) f
@@ -448,6 +451,9 @@ noExactTyVars = everywhere go
 
     fix_inj_ann (InjectivityAnn lhs rhs)
       = InjectivityAnn (noExactName lhs) (map noExactName rhs)
+
+    fix_local_var :: LocalVar -> LocalVar
+    fix_local_var (n, mbKind) = (noExactName n, mbKind)
 
 -- Changes a unique Name with a NameU or NameL namespace to a non-unique Name.
 -- See Note [Pitfalls of NameU/NameL] for why this is useful.

@@ -10,7 +10,10 @@ Converts a list of DLetDecs into a LetDecEnv for easier processing,
 and contains various other AST definitions.
 -}
 
-module Data.Singletons.TH.Syntax where
+module Data.Singletons.TH.Syntax
+  ( module Data.Singletons.TH.Syntax
+  , module Data.Singletons.TH.Syntax.LocalVar
+  ) where
 
 import Prelude hiding ( exp )
 import Data.Kind (Constraint, Type)
@@ -20,7 +23,11 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import Language.Haskell.TH.Desugar.OSet (OSet)
 
-type VarPromotions = [(Name, Name)] -- from term-level name to type-level name
+import Data.Singletons.TH.Syntax.LocalVar
+
+-- | Pairs of term-level variable 'Name's and their corresponding type-level
+-- names (encoded as 'LocalVar's).
+type VarPromotions = [(Name, LocalVar)]
 
 -- Information that is accumulated when promoting patterns.
 data PromDPatInfos = PromDPatInfos
@@ -173,7 +180,7 @@ type ULetDecRHS = LetDecRHS Unannotated
 -- convenient to fully apply the promoted name to all of its arguments (e.g.,
 -- when singling type signatures), in which case we can avoid needing to involve
 -- defunctionalization symbols at all.
-type LetDecProm = (Name, [Name])
+type LetDecProm = (Name, [LocalVar])
 
 data LetDecEnv ann = LetDecEnv
                    { lde_defns :: OMap Name (LetDecRHS ann)

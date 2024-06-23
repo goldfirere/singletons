@@ -294,13 +294,13 @@ defunctionalize name m_fixity defun_ki = do
     -- (see Note [Defunctionalization game plan], Wrinkle 1: Partial kinds)
     -- or a non-vanilla kind
     -- (see Note [Defunctionalization game plan], Wrinkle 2: Non-vanilla kinds).
-    defun_fallback :: [Name] -> [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
+    defun_fallback :: [LocalVar] -> [DTyVarBndrVis] -> Maybe DKind -> PrM [DDec]
     defun_fallback locals tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
       -- Use noExactTyVars below to avoid GHC#11812.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
-      let locals' = map noExactName locals
+      let locals' = noExactTyVars locals
       (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
 
       let tvbs_n = length tvbs
@@ -327,7 +327,7 @@ defunctionalize name m_fixity defun_ki = do
           --   the result kind is not always fully known.
           go :: Int -> [DTyVarBndrVis] -> [DTyVarBndrVis] -> (Maybe DKind, [DDec])
           go n arg_tvbs res_tvbss =
-            let all_tvbs = map (`DPlainTV` BndrReq) locals' ++ arg_tvbs in
+            let all_tvbs = map (localVarToTvb BndrReq) locals' ++ arg_tvbs in
             case res_tvbss of
               [] ->
                 let sat_decs = mk_sat_decs opts n [] all_tvbs m_res
@@ -477,7 +477,7 @@ data DefunKindInfo
     -- signature. See Note [Defunctionalization game plan] (Wrinkle 1: Partial
     -- kinds) for examples.
   | DefunNoSAK
-      [Name]          -- The local variables currently in scope
+      [LocalVar]      -- The local variables currently in scope
       [DTyVarBndrVis] -- The arguments, along with their kinds (if known)
       (Maybe DKind)   -- The result kind (if known)
 

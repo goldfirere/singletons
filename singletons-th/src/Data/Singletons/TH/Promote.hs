@@ -218,7 +218,7 @@ promoteLetDecs mb_let_uniq decls = do
 
       binds :: [LetBind]
       binds =
-        [ (name, foldType (DConT sym) (map DVarT locals))
+        [ (name, foldTypeLocalVars (DConT sym) locals)
         | (name, (pro_name, locals)) <- let_dec_proms
         , let sym = defunctionalizedName0 opts pro_name ]
   (decs, let_dec_env') <- letBind binds $ promoteLetDecEnv mb_let_uniq let_dec_env
@@ -965,7 +965,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     UFunction clauses -> promote_function_rhs all_locals clauses
   where
     -- Promote the RHS of a UFunction (or a UValue with a function type).
-    promote_function_rhs :: [Name]
+    promote_function_rhs :: [LocalVar]
                          -> [DClause] -> PrM ([DDec], [DDec], ALetDecRHS)
     promote_function_rhs all_locals clauses = do
       numArgs <- count_args clauses
@@ -983,7 +983,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
     --
     -- * For UFunctions, `prom_a` is [DTySynEqn] and `a` is [DClause].
     promote_let_dec_rhs
-      :: [Name]                   -- Local variables bound in this scope
+      :: [LocalVar]               -- Local variables bound in this scope
       -> Maybe LetDecRHSKindInfo  -- Information about the promoted kind (if present)
       -> Int                      -- The number of promoted function arguments
       -> PrM (prom_a, a)          -- Promote the RHS
@@ -1052,7 +1052,8 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
              , defun_decs
              , mk_alet_dec_rhs thing )
 
-    promote_let_dec_ty :: [Name] -- The local variables that the let-dec closes
+    promote_let_dec_ty :: [LocalVar]
+                                 -- The local variables that the let-dec closes
                                  -- over. If this is non-empty, we cannot
                                  -- produce a standalone kind signature.
                                  -- See Note [No SAKs for let-decs with local variables]
@@ -1281,13 +1282,24 @@ promoteClause :: Maybe Uniq
                  -- ^ Name of the function being promoted
               -> Maybe LetDecRHSKindInfo
                  -- ^ Information about the promoted kind (if present)
-              -> [Name]
+              -> [LocalVar]
                  -- ^ The local variables currently in scope
               -> DClause -> PrM (DTySynEqn, ADClause)
 promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
-  -- promoting the patterns creates variable bindings. These are passed
-  -- to the function promoted the RHS
-  ((types, pats'), prom_pat_infos) <- evalForPair $ mapAndUnzipM promotePat pats
+  -- First, check to see if we know the kinds of the patterns in the clause...
+  let m_kinds = fmap (\(LDRKI _ _ _ kinds _) -> kinds) m_ldrki
+  -- ...if so, use these kinds when promoting the patterns to the type level.
+  -- Promoting patterns can create LocalVars, and these LocalVars are brought
+  -- into scope when promoting the RHS of the clause. Recording the kinds of
+  -- each LocalVar will make the lambda-lifted code more precise. (See
+  -- Note [Local variables and kind information] in
+  -- D.S.TH.Promote.Syntax.LocalVar.)
+  ((types, pats'), prom_pat_infos) <- evalForPair $
+    case m_kinds of
+      Just kinds ->
+        unzip <$> zipWithM (\kind -> promotePat (Just kind)) kinds pats
+      Nothing ->
+        mapAndUnzipM (promotePat Nothing) pats
   -- If the function has scoped type variables, then we annotate each argument
   -- in the promoted type family equation with its kind.
   -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad for an
@@ -1307,18 +1319,28 @@ promoteClause mb_let_uniq name m_ldrki all_locals (DClause pats exp) = do
   return ( DTySynEqn Nothing (foldType pro_clause_fun types_w_kinds) ty
          , ADClause new_vars pats' ann_exp )
 
--- promotes a term pattern into a type pattern, accumulating bound variable names
-promotePat :: DPat -> QWithAux PromDPatInfos PrM (DType, ADPat)
-promotePat (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
-promotePat (DVarP name) = do
+-- | Promote a term pattern into a type pattern, accumulating bound variable
+-- names in 'PromDPatInfos'.
+promotePat ::
+     Maybe DKind
+     -- ^ The kind of the pattern ('Just' if known, 'Nothing' if unknown). When
+     -- the kind is known, we can record a 'LocalVar' for variable patterns (see
+     -- the 'DVarP' case below) that includes more precise kind information. See
+     -- @Note [Local variables and kind information] (Wrinkle: Binding positions
+     -- versus argument positions)@ in
+     -- "Data.Singletons.TH.Promote.Syntax.LocalVar" for more information.
+  -> DPat
+  -> QWithAux PromDPatInfos PrM (DType, ADPat)
+promotePat _ (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
+promotePat m_ki (DVarP name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
-  tell $ PromDPatInfos [(name, tyName)] OSet.empty
+  tell $ PromDPatInfos [(name, (tyName, m_ki))] OSet.empty
   return (DVarT tyName, ADVarP name)
-promotePat (DConP name tys pats) = do
+promotePat _ (DConP name tys pats) = do
   opts <- getOptions
   kis <- traverse (promoteType_options conOptions) tys
-  (types, pats') <- mapAndUnzipM promotePat pats
+  (types, pats') <- mapAndUnzipM (promotePat Nothing) pats
   let name' = promotedDataTypeOrConName opts name
   return (foldType (foldl DAppKindT (DConT name') kis) types, ADConP name kis pats')
   where
@@ -1327,24 +1349,24 @@ promotePat (DConP name tys pats) = do
     -- will produce code that GHC will accept.
     conOptions :: PromoteTypeOptions
     conOptions = defaultPromoteTypeOptions{ptoAllowWildcards = True}
-promotePat (DTildeP pat) = do
+promotePat m_ki (DTildeP pat) = do
   qReportWarning "Lazy pattern converted into regular pattern in promotion"
-  second ADTildeP <$> promotePat pat
-promotePat (DBangP pat) = do
+  second ADTildeP <$> promotePat m_ki pat
+promotePat m_ki (DBangP pat) = do
   qReportWarning "Strict pattern converted into regular pattern in promotion"
-  second ADBangP <$> promotePat pat
-promotePat (DSigP pat ty) = do
+  second ADBangP <$> promotePat m_ki pat
+promotePat _ (DSigP pat ty) = do
   -- We must maintain the invariant that any promoted pattern signature must
   -- not have any wildcards in the underlying pattern.
   -- See Note [Singling pattern signatures].
   wildless_pat <- removeWilds pat
-  (promoted, pat') <- promotePat wildless_pat
   ki <- promoteType ty
+  (promoted, pat') <- promotePat (Just ki) wildless_pat
   tell $ PromDPatInfos [] (fvDType ki)
   return (DSigT promoted ki, ADSigP promoted pat' ki)
-promotePat DWildP = return (DWildCardT, ADWildP)
-promotePat p@(DTypeP _) = fail ("Embedded type patterns cannot be promoted: " ++ show p)
-promotePat p@(DInvisP _) = fail ("Invisible type patterns cannot be promoted: " ++ show p)
+promotePat _ DWildP = return (DWildCardT, ADWildP)
+promotePat _ p@(DTypeP _) = fail ("Embedded type patterns cannot be promoted: " ++ show p)
+promotePat _ p@(DInvisP _) = fail ("Invisible type patterns cannot be promoted: " ++ show p)
 
 promoteExp :: DExp -> PrM (DType, ADExp)
 promoteExp (DVarE name) = fmap (, ADVarE name) $ lookupVarE name
@@ -1380,8 +1402,9 @@ promoteExp (DLamCasesE clauses) = do
   emitDecs [DClosedTypeFamilyD tfh eqns]
   emitDecsM $ defunctionalize lam_cases_tf_name Nothing $ DefunNoSAK all_locals arg_tvbs Nothing
   let prom_lam_cases =
-        foldType (DConT (defunctionalizedName opts lam_cases_tf_name 0))
-                 (map DVarT all_locals)
+        foldTypeLocalVars
+          (DConT (defunctionalizedName opts lam_cases_tf_name 0))
+          all_locals
   pure (prom_lam_cases, ADLamCasesE num_args prom_lam_cases ann_clauses)
 promoteExp (DLetE decs exp) = do
   unique <- qNewUnique
@@ -1441,7 +1464,7 @@ promoteLetDecName ::
      -- ^ Name of the function being promoted
   -> Maybe LetDecRHSKindInfo
      -- ^ Information about the promoted kind (if present)
-  -> [Name]
+  -> [LocalVar]
      -- ^ The local variables currently in scope
   -> PrM DType
 promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
@@ -1471,7 +1494,7 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
             -> map dTyVarBndrVisToDTypeArg $ tvbSpecsToBndrVis tvbs
           _ -> -- ...otherwise, return the local variables as explicit arguments
                -- using DTANormal.
-               map (DTANormal . DVarT) all_locals
+               map localVarToTypeArg all_locals
   pure $ applyDType (DConT proName) type_args
 
 -- Construct a 'DTypeFamilyHead' that closes over some local variables. We
@@ -1480,30 +1503,31 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
 dTypeFamilyHead_with_locals ::
      Name
   -- ^ Name of type family
-  -> [Name]
+  -> [LocalVar]
   -- ^ Local variables
   -> [DTyVarBndrVis]
   -- ^ Variables for type family arguments
   -> DFamilyResultSig
   -- ^ Type family result
   -> DTypeFamilyHead
-dTypeFamilyHead_with_locals tf_nm local_nms arg_tvbs res_sig =
+dTypeFamilyHead_with_locals tf_nm local_vars arg_tvbs res_sig =
   DTypeFamilyHead
     tf_nm
-    (map (`DPlainTV` BndrReq) local_nms' ++ arg_tvbs')
+    (map (localVarToTvb BndrReq) local_vars' ++ arg_tvbs')
     res_sig'
     Nothing
   where
-    -- We take care to only apply `noExactName` to the local variables and not
+    -- We take care to only apply `noExactTyVars` to the local variables and not
     -- to any of the argument/result types. The latter are much more likely to
-    -- show up in the Haddocks, and `noExactName` produces incredibly long Names
-    -- that are much harder to read in the rendered Haddocks.
-    local_nms' = map noExactName local_nms
+    -- show up in the Haddocks, and `noExactTyVars` produces incredibly long
+    -- Names that are much harder to read in the rendered Haddocks.
+    local_vars' = noExactTyVars local_vars
 
     -- Ensure that all references to local_nms are substituted away.
     subst1 = Map.fromList $
-             zipWith (\local_nm local_nm' -> (local_nm, DVarT local_nm'))
-                     local_nms
-                     local_nms'
+             zipWith
+               (\(local_nm, _) (local_nm', _) -> (local_nm, DVarT local_nm'))
+               local_vars
+               local_vars'
     (subst2, arg_tvbs') = substTvbs subst1 arg_tvbs
     (_subst3, res_sig') = substFamilyResultSig subst2 res_sig
