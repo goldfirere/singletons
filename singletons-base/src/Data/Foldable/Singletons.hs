@@ -581,16 +581,37 @@ $(singletonsOnly [d|
   sequence_ :: (Foldable t, Monad m) => t (m a) -> m ()
   sequence_ = foldr (>>) (return ())
 
+  -- Note that in the type signatures for `asum` and `msum` below, we explicitly
+  -- annotate `f` and `m` with the kind (Type -> Type), which is not something
+  -- that is done in the original base library. This is because when
+  -- singletons-th promotes type signatures, it omits constraints such as
+  -- `Alternative f` and `MonadPlus m`, which are essential for inferring that
+  -- `f` and `m` are of kind `Type -> Type`. Without these constraints, we may
+  -- end up with a promoted definition that looks like this:
+  --
+  --   type Asum :: t (f a) -> f a
+  --
+  -- This will result in Asum having a more polymorphic kind than intended,
+  -- since GHC will generalize Asum's kind to:
+  --
+  --   type Asum :: forall {j} {k} (t :: k -> Type) (f :: j -> k) (a :: j). t (f a) -> f a
+  --
+  -- Annotating `f :: Type -> Type` (and similarly for `m`) is a clunky but
+  -- reliable way of preventing this. See also Note [Using standalone kind
+  -- signatures not present in the base library] in
+  -- Control.Monad.Singletons.Internal for a similar situation where class
+  -- definitions can become overly polymorphic unless given an explicit kind.
+
   -- -| The sum of a collection of actions, generalizing 'concat'.
   --
   -- asum [Just "Hello", Nothing, Just "World"]
   -- Just "Hello"
-  asum :: (Foldable t, Alternative f) => t (f a) -> f a
+  asum :: forall t (f :: Type -> Type) a. (Foldable t, Alternative f) => t (f a) -> f a
   asum = foldr (<|>) empty
 
   -- -| The sum of a collection of actions, generalizing 'concat'.
   -- As of base 4.8.0.0, 'msum' is just 'asum', specialized to 'MonadPlus'.
-  msum :: (Foldable t, MonadPlus m) => t (m a) -> m a
+  msum :: forall t (m :: Type -> Type) a. (Foldable t, MonadPlus m) => t (m a) -> m a
   msum = asum
 
   -- -| The concatenation of all the elements of a container of lists.
