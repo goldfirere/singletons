@@ -55,6 +55,20 @@ next [????.??.??]
   `PAlternative` instances for `Compose`. The fact that these instances were so
   polymorphic to begin with was an oversight, as these instances could not be
   used when `k` was instantiated to any other kind besides `Type`.
+* The kinds of `Asum` and `Msum` are less polymorphic than they were before:
+
+  ```diff
+  -type Asum :: forall {j} {k} (t :: k    -> Type) (f :: j    -> k)    (a :: j).    t (f a) -> f a
+  +type Asum :: forall         (t :: Type -> Type) (f :: Type -> Type) (a :: Type). t (f a) -> f a
+
+  -type Msum :: forall {j} {k} (t :: k    -> Type) (m :: j    -> k)    (a :: j).    t (m a) -> m a
+  +type Msum :: forall         (t :: Type -> Type) (m :: Type -> Type) (a :: Type). t (m a) -> m a
+  ```
+
+  Similarly, the kinds of defunctionalization symbols for these definitions
+  (e.g., `AsumSym0` and `MSym0`) are less polymorphic. The fact that these were
+  kind-polymorphic to begin with was an oversight, as these definitions could
+  not be used when `j` or `k` was instantiated to any other kind besides `Type`.
 
 3.4 [2024.05.12]
 ----------------

@@ -102,20 +102,44 @@ $(singletonsOnly [d|
       Pair f g <*> Pair x y = Pair (f <*> x) (g <*> y)
       liftA2 f (Pair a b) (Pair x y) = Pair (liftA2 f a x) (liftA2 f b y)
 
-  instance (Alternative f, Alternative g) => Alternative (Product f g) where
-      empty = Pair empty empty
-      Pair x1 y1 <|> Pair x2 y2 = Pair (x1 <|> x2) (y1 <|> y2)
-
   instance (Monad f, Monad g) => Monad (Product f g) where
       Pair m n >>= f = Pair (m >>= fstP . f) (n >>= sndP . f)
         where
           fstP (Pair a _) = a
           sndP (Pair _ b) = b
 
-  instance (MonadPlus f, MonadPlus g) => MonadPlus (Product f g) where
-      mzero = Pair mzero mzero
-      Pair x1 y1 `mplus` Pair x2 y2 = Pair (x1 `mplus` x2) (y1 `mplus` y2)
-
   instance (MonadZip f, MonadZip g) => MonadZip (Product f g) where
       mzipWith f (Pair x1 y1) (Pair x2 y2) = Pair (mzipWith f x1 x2) (mzipWith f y1 y2)
+
+  -- Note that in the instances below, we explicitly annotate `f` with its kind
+  -- (Type -> Type), which is not something that is done in the original base
+  -- library. This is because when singletons-th promotes instance declarations,
+  -- it omits the instance contexts when generating the helper type families.
+  -- This can lead to the helper type families having overly polymorphic kinds.
+  -- For example, if the Alternative instance below lacked the explicit
+  -- (f :: Type -> Type) kind signature, the generated code would look like:
+  --
+  --   instance PAlternative (Product f g) where
+  --     type Empty = EmptyHelper
+  --     ...
+  --
+  --   type EmptyHelper :: forall f g a. Product f g a
+  --
+  -- This will result in EmptyHelper having a more polymorphic kind than
+  -- intended, since GHC will generalize EmptyHelper's kind to:
+  --
+  --   type EmptyHelper :: forall {k} (f :: k -> Type) (g :: k -> Type) (a :: k). Product f g a
+  --
+  -- Annotating `f :: Type -> Type` is a clunky but reliable way of preventing
+  -- this. See also Note [Using standalone kind signatures not present in the
+  -- base library] in Control.Monad.Singletons.Internal for a similar situation
+  -- where class definitions can become overly polymorphic unless given an
+  -- explicit kind.
+  instance (Alternative f, Alternative g) => Alternative (Product (f :: Type -> Type) g) where
+      empty = Pair empty empty
+      Pair x1 y1 <|> Pair x2 y2 = Pair (x1 <|> x2) (y1 <|> y2)
+
+  instance (MonadPlus f, MonadPlus g) => MonadPlus (Product (f :: Type -> Type) g) where
+      mzero = Pair mzero mzero
+      Pair x1 y1 `mplus` Pair x2 y2 = Pair (x1 `mplus` x2) (y1 `mplus` y2)
   |])
