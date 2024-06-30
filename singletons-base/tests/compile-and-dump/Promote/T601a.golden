@@ -1,0 +1,73 @@
+Promote/T601a.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| type MyApplicative :: (Type -> Type) -> Constraint
+          
+          class Functor f => MyApplicative f where
+            ap :: f (a -> b) -> f a -> f b
+            rightSparrow :: f a -> f b -> f b
+            rightSparrow x y = ap (id <$ x) y |]
+  ======>
+    type MyApplicative :: (Type -> Type) -> Constraint
+    class Functor f => MyApplicative f where
+      ap :: f (a -> b) -> f a -> f b
+      rightSparrow :: f a -> f b -> f b
+      rightSparrow x y = ap (id <$ x) y
+    type ApSym0 :: forall (f :: Type -> Type)
+                          a
+                          b. (~>) (f ((~>) a b)) ((~>) (f a) (f b))
+    data ApSym0 :: (~>) (f ((~>) a b)) ((~>) (f a) (f b))
+      where
+        ApSym0KindInference :: SameKind (Apply ApSym0 arg) (ApSym1 arg) =>
+                               ApSym0 a0123456789876543210
+    type instance Apply @(f ((~>) a b)) @((~>) (f a) (f b)) ApSym0 a0123456789876543210 = ApSym1 a0123456789876543210
+    instance SuppressUnusedWarnings ApSym0 where
+      suppressUnusedWarnings = snd ((,) ApSym0KindInference ())
+    type ApSym1 :: forall (f :: Type -> Type) a b. f ((~>) a b)
+                                                   -> (~>) (f a) (f b)
+    data ApSym1 (a0123456789876543210 :: f ((~>) a b)) :: (~>) (f a) (f b)
+      where
+        ApSym1KindInference :: SameKind (Apply (ApSym1 a0123456789876543210) arg) (ApSym2 a0123456789876543210 arg) =>
+                               ApSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply @(f a) @(f b) (ApSym1 a0123456789876543210) a0123456789876543210 = Ap a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (ApSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) ApSym1KindInference ())
+    type ApSym2 :: forall (f :: Type -> Type) a b. f ((~>) a b)
+                                                   -> f a -> f b
+    type family ApSym2 @(f :: Type
+                              -> Type) @a @b (a0123456789876543210 :: f ((~>) a b)) (a0123456789876543210 :: f a) :: f b where
+      ApSym2 a0123456789876543210 a0123456789876543210 = Ap a0123456789876543210 a0123456789876543210
+    type RightSparrowSym0 :: forall (f :: Type -> Type)
+                                    a
+                                    b. (~>) (f a) ((~>) (f b) (f b))
+    data RightSparrowSym0 :: (~>) (f a) ((~>) (f b) (f b))
+      where
+        RightSparrowSym0KindInference :: SameKind (Apply RightSparrowSym0 arg) (RightSparrowSym1 arg) =>
+                                         RightSparrowSym0 a0123456789876543210
+    type instance Apply @(f a) @((~>) (f b) (f b)) RightSparrowSym0 a0123456789876543210 = RightSparrowSym1 a0123456789876543210
+    instance SuppressUnusedWarnings RightSparrowSym0 where
+      suppressUnusedWarnings = snd ((,) RightSparrowSym0KindInference ())
+    type RightSparrowSym1 :: forall (f :: Type -> Type) a b. f a
+                                                             -> (~>) (f b) (f b)
+    data RightSparrowSym1 (a0123456789876543210 :: f a) :: (~>) (f b) (f b)
+      where
+        RightSparrowSym1KindInference :: SameKind (Apply (RightSparrowSym1 a0123456789876543210) arg) (RightSparrowSym2 a0123456789876543210 arg) =>
+                                         RightSparrowSym1 a0123456789876543210 a0123456789876543210
+    type instance Apply @(f b) @(f b) (RightSparrowSym1 a0123456789876543210) a0123456789876543210 = RightSparrow a0123456789876543210 a0123456789876543210
+    instance SuppressUnusedWarnings (RightSparrowSym1 a0123456789876543210) where
+      suppressUnusedWarnings = snd ((,) RightSparrowSym1KindInference ())
+    type RightSparrowSym2 :: forall (f :: Type -> Type) a b. f a
+                                                             -> f b -> f b
+    type family RightSparrowSym2 @(f :: Type
+                                        -> Type) @a @b (a0123456789876543210 :: f a) (a0123456789876543210 :: f b) :: f b where
+      RightSparrowSym2 a0123456789876543210 a0123456789876543210 = RightSparrow a0123456789876543210 a0123456789876543210
+    type RightSparrow_0123456789876543210 :: forall (f :: Type -> Type)
+                                                    a
+                                                    b. f a -> f b -> f b
+    type family RightSparrow_0123456789876543210 @(f :: Type
+                                                        -> Type) @a @b (a :: f a) (a :: f b) :: f b where
+      RightSparrow_0123456789876543210 @f @a @b (x :: f a) (y :: f b) = Apply (Apply ApSym0 (Apply (Apply (<$@#@$) IdSym0) x)) y
+    type PMyApplicative :: (Type -> Type) -> Constraint
+    class PMyApplicative f where
+      type family Ap (arg :: f ((~>) a b)) (arg :: f a) :: f b
+      type family RightSparrow (arg :: f a) (arg :: f b) :: f b
+      type RightSparrow a a = RightSparrow_0123456789876543210 a a

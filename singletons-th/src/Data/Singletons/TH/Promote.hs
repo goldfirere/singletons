@@ -278,7 +278,6 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
       meth_names     = map fst meth_sigs_list
       defaults_list  = OMap.assocs defaults
       defaults_names = map fst defaults_list
-      cls_tvb_names  = map extractTvbName orig_cls_tvbs
   mb_cls_sak <- dsReifyType cls_name
 
   -- If the class has a standalone kind signature, we take the original,
@@ -287,10 +286,19 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
   -- Note [Propagating kind information from class standalone kind signatures].
   mb_full_cls_tvbs <-
     traverse (\cls_sak -> matchUpSAKWithDecl cls_sak orig_cls_tvbs) mb_cls_sak
+  let mb_full_cls_tvbs_spec = tvbForAllTyFlagsToSpecs <$> mb_full_cls_tvbs
+      -- The class binders, converted to `DTyVarBndrSpec`s. If the parent class
+      -- has a standalone kind signature, we compute these `DTyVarBndrSpec`s
+      -- from the full class binders, which likely have richer kind information.
+      -- Otherwise, we compute these from the original, user-written class
+      -- binders.
+      cls_tvbs_spec = fromMaybe
+                        (changeDTVFlags SpecifiedSpec orig_cls_tvbs)
+                        mb_full_cls_tvbs_spec
 
-  sig_decs <- mapM (uncurry (promote_sig mb_full_cls_tvbs)) meth_sigs_list
+  sig_decs <- mapM (uncurry (promote_sig mb_full_cls_tvbs_spec)) meth_sigs_list
   (default_decs, ann_rhss, prom_rhss)
-    <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs cls_tvb_names) defaults_list
+    <- mapAndUnzip3M (promoteMethod DefaultMethods meth_sigs cls_tvbs_spec) defaults_list
   defunAssociatedTypeFamilies orig_cls_tvbs atfs
 
   infix_decls' <- mapMaybeM (\(n, (f, ns)) -> promoteInfixDecl Nothing n f ns) $
@@ -309,7 +317,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
   where
     -- Promote a class method's type signature to an associated type family.
     promote_sig ::
-         Maybe [DTyVarBndr ForAllTyFlag]
+         Maybe [DTyVarBndrSpec]
          -- ^ If the parent class has a standalone kind signature, then this
          -- will be @'Just' full_bndrs@, where @full_bndrs@ are the full type
          -- variable binders described in @Note [Propagating kind information
@@ -321,7 +329,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
          -- ^ The class method's type.
       -> PrM DDec
          -- ^ The associated type family for the promoted class method.
-    promote_sig mb_full_cls_tvbs name meth_ty = do
+    promote_sig mb_full_cls_tvbs_spec name meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts name
       (_, meth_arg_kis, meth_res_ki) <- promoteUnraveled meth_ty
@@ -340,7 +348,7 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
           -- The type variable binders to use in the standalone kind signatures
           -- for the promoted class method's defunctionalization symbols.
           meth_sak_tvbs =
-            case tvbForAllTyFlagsToSpecs <$> mb_full_cls_tvbs of
+            case mb_full_cls_tvbs_spec of
               -- If the parent class has a standalone kind signature, then
               -- propagate as much of the kind information as possible by
               -- incorporating the full class binders. See Note [Propagating
@@ -546,9 +554,9 @@ promoteInstanceDec orig_meth_sigs cls_tvbs_map
       cls_tvb_names = map extractTvbName cls_tvbs
       subst         = Map.fromList $ zip cls_tvb_names inst_kis
       meth_impl     = InstanceMethods inst_sigs subst
-      inst_ki_fvs   = map extractTvbName $ toposortTyVarsOf inst_kis
+      inst_ki_kvbs  = changeDTVFlags SpecifiedSpec $ toposortTyVarsOf inst_kis
   (meths', ann_rhss, _)
-    <- mapAndUnzip3M (promoteMethod meth_impl orig_meth_sigs inst_ki_fvs) meths
+    <- mapAndUnzip3M (promoteMethod meth_impl orig_meth_sigs inst_ki_kvbs) meths
   emitDecs [DInstanceD Nothing Nothing [] (foldType (DConT pClsName)
                                             inst_kis) meths']
   return (decl { id_meths = zip (map fst meths) ann_rhss })
@@ -630,14 +638,15 @@ data MethodSort
 
 promoteMethod :: MethodSort
               -> OMap Name DType    -- method types
-              -> [Name] -- The names of the type variables bound by the class
-                        -- header (e.g., the @a@ in @class C a where ...@).
+              -> [DTyVarBndrSpec]   -- The type variables bound by the class
+                                    -- header (e.g., the @a b@ in
+                                    -- @class C a b where ...@).
               -> (Name, ULetDecRHS)
               -> PrM (DDec, ALetDecRHS, LetDecProm)
                  -- returns (type instance, ALetDecRHS, promoted RHS)
-promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
+promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
   opts <- getOptions
-  (meth_tvbs, meth_arg_kis, meth_res_ki) <- promote_meth_ty
+  (meth_scoped_tvs, meth_tvbs, meth_arg_kis, meth_res_ki) <- promote_meth_ty
   -- If ScopedTypeVariables is enabled, bring type variables into scope over the
   -- RHS. These type variables can come from the class/instance header, the
   -- method type signature/instance signature, or both, depending on how the
@@ -647,9 +656,9 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
   -- we bring class/instance header type variables into scope but /not/
   -- type variables from the class method/instance signature.
   scoped_tvs_ext <- qIsExtEnabled LangExt.ScopedTypeVariables
-  let meth_scoped_tvs
+  let all_meth_scoped_tvs
         | scoped_tvs_ext
-        = OSet.fromList (cls_tvb_names ++ map extractTvbName meth_tvbs)
+        = OSet.fromList (map extractTvbName cls_tvbs) `OSet.union` meth_scoped_tvs
         | otherwise
         = OSet.empty
   meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
@@ -679,13 +688,34 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
       family_args = map DVarT meth_arg_tvs
   helperName <- newUniqueName helperNameBase
   let proHelperName = promotedValueName opts helperName Nothing
+      -- If a promoted method's kind lacks an outermost `forall`, then we need
+      -- to compute the list of kind variable binders manually. The order of
+      -- these binders doesn't matter, as the user will never invoke a helper
+      -- type family directly, so we simply quantify the binders in
+      -- left-to-right order.
+      full_meth_tvbs
+        | null meth_tvbs
+        = changeDTVFlags SpecifiedSpec $
+          toposortTyVarsOf (meth_arg_kis ++ [meth_res_ki])
+        | otherwise
+        = meth_tvbs
+      -- Make sure not to re-quantify any kind variable binders that are already
+      -- bound by the class or instance head.
+      full_meth_tvbs_without_cls_tvbs =
+        deleteFirstsBy ((==) `on` extractTvbName) full_meth_tvbs cls_tvbs
+      -- All of the kind variable binders, including both (1) those bound by the
+      -- class or instance head, and (2) those bound by the promoted method's
+      -- kind. This will be used in an outermost `forall` in the helper type
+      -- family's standalone kind signature to specify the kinds of kind
+      -- variables (when possible).
+      all_meth_tvbs = cls_tvbs ++ full_meth_tvbs_without_cls_tvbs
 
   -- Promote the right-hand side of the helper. Note that we never partially
   -- apply the helper type family, and users will never invoke the helper
   -- directly. As such, there is no need to emit defunctionalization symbols for
   -- the helper type family.
   (pro_decs, _defun_decs, ann_rhs)
-    <- promoteLetDecRHS (ClassMethodRHS meth_scoped_tvs meth_arg_kis meth_res_ki)
+    <- promoteLetDecRHS (ClassMethodRHS all_meth_scoped_tvs all_meth_tvbs meth_arg_kis meth_res_ki)
                         OMap.empty OMap.empty
                         Nothing helperName meth_rhs
   emitDecs pro_decs
@@ -703,18 +733,42 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
     -- `instance C T`, then the substitution [a |-> T] must be applied to the
     -- original method's type.)
     --
-    -- This returns three things in a tuple:
+    -- This returns four things in a tuple:
     --
-    -- * The list of scoped type variables from the class method signature or
-    --   instance signature. If an instance method lacks an instance signature,
-    --   this will be an empty list. These type variables will be brought into
-    --   scope over the RHS of the method: see Note [Scoped type variables and
-    --   class methods] in D.S.TH.Promote.Monad.
+    -- 1. The set of scoped type variables from the class method signature or
+    --    instance signature. If an instance method lacks an instance signature,
+    --    this will be an empty set. These type variables will be brought into
+    --    scope over the RHS of the method: see Note [Scoped type variables and
+    --    class methods] in D.S.TH.Promote.Monad.
     --
-    -- * The promoted argument kinds.
+    -- 2. The list of kind variable binders that are explicitly quantified by an
+    --    outermost `forall` in the promoted type. If there is no such outermost
+    --    `forall`, then this will be the empty list.
     --
-    -- * The promoted result kind.
-    promote_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
+    -- 3. The promoted argument kinds.
+    --
+    -- 4. The promoted result kind.
+    --
+    -- Note that:
+    --
+    -- * Ultimately, this information is used to compute a standalone kind
+    --   signature for a "helper" type family which defines the promoted version
+    --   of a class method default or instance method. Because users never
+    --   invoke helper type families directly, it is not important to get the
+    --   order of kind variables exactly right. As such, the list of kind
+    --   variable binders can be in an unspecified order.
+    --
+    -- * The kind variable binders only include kind variables that are
+    --   quantified by the /method/, not by the class or instance head. The
+    --   variables bound by the class or instance head are added separately
+    --   (see `all_meth_tvbs` above).
+    --
+    -- * The set of scoped type variable names will always be a subset of the
+    --   names in the list of kind variable binders. We are using the kind
+    --   variable binders primarily as a way to annotate the kinds of each
+    --   variable, so it is possible for the helper type family to bind a kind
+    --   variable in a `forall` without it scoping over the body.
+    promote_meth_ty :: PrM (OSet Name, [DTyVarBndrSpec], [DKind], DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -728,29 +782,33 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
               -- We have an InstanceSig. These are easy: we can just use the
               -- instance signature's type directly, and no substitution for
               -- class variables is required.
-              promoteUnraveled ty
+              (kvbs, arg_kis, res_ki) <- promoteUnraveled ty
+              pure (OSet.fromList (map extractTvbName kvbs), kvbs, arg_kis, res_ki)
             Nothing -> do
               -- We don't have an InstanceSig, so we must compute the kind to use
               -- ourselves.
-              (_, arg_kis, res_ki) <- lookup_meth_ty
+              (_, kvbs, arg_kis, res_ki) <- lookup_meth_ty
               -- Substitute for the class variables in the method's type.
               -- See Note [Promoted class method kinds]
-              let arg_kis' = map (substKind cls_subst) arg_kis
+              let kvbs'    = mapDTVKind (substKind cls_subst) <$> kvbs
+                  arg_kis' = map (substKind cls_subst) arg_kis
                   res_ki'  = substKind cls_subst res_ki
               -- If there is no instance signature, then there are no additional
-              -- type variables to bring into scope, so return an empty list of
-              -- scoped type variables.
-              pure ([], arg_kis', res_ki')
+              -- type variables to bring into scope, so return an empty set of
+              -- scoped type variables. We will reuse the list of kind variable
+              -- binders in case they have useful kind information.
+              pure (OSet.empty, kvbs', arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM ([DTyVarBndrSpec], [DKind], DKind)
+    lookup_meth_ty :: PrM (OSet Name, [DTyVarBndrSpec], [DKind], DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
       case OMap.lookup meth_name orig_sigs_map of
         Just ty -> do
           -- The type of the method is in scope, so promote that.
-          promoteUnraveled ty
+          (kvbs, arg_kis, res_ki) <- promoteUnraveled ty
+          pure (OSet.fromList (map extractTvbName kvbs), kvbs, arg_kis, res_ki)
         Nothing -> do
           -- If the type of the method is not in scope, the only other option
           -- is to try reifying the promoted method name.
@@ -762,8 +820,12 @@ promoteMethod meth_sort orig_sigs_map cls_tvb_names (meth_name, meth_rhs) = do
                      res_ki  = defaultMaybeToTypeKind (resultSigToMaybeKind mb_res_ki)
                   -- If there is no instance signature, then there are no
                   -- additional type variables to bring into scope, so return an
-                  -- empty list of scoped type variables.
-                  in pure ([], arg_kis, res_ki)
+                  -- empty set of scoped type variables. Moreover, we do not
+                  -- have a list of kind variable binders readily available, so
+                  -- we return an empty list. This is OK, as we will compute
+                  -- the kind variable binders for the helper type family
+                  -- elsewhere (see `full_meth_tvbs` above).
+                  in pure (OSet.empty, [], arg_kis, res_ki)
             _ -> fail $ "Cannot find type annotation for " ++ show proName
 
 {-
@@ -929,6 +991,12 @@ data LetDecRHSSort
                   -- the RHS of the class method. See
                   -- Note [Scoped type variables and class methods]
                   -- in D.S.TH.Promote.Monad.
+      [DTyVarBndrSpec]
+                  -- The RHS's kind variable binders. Note that we do not
+                  -- guarantee a particular order for these binders (see
+                  -- Note [Promoted class methods and kind variable ordering]),
+                  -- as we are mainly using kind variable binders for the sake
+                  -- of annotating variables with their kinds.
       [DKind]     -- The RHS's promoted argument kinds. Needed to fix #136.
       DKind       -- The RHS's promoted result kind. Needed to fix #136.
   deriving Show
@@ -1073,19 +1141,9 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                                  --    will default to the earlier Int argument.
     promote_let_dec_ty all_locals default_num_args =
       case rhs_sort of
-        ClassMethodRHS scoped_tvs arg_kis res_ki
-          -> -- Class method RHS helper functions are only used internally, so
-             -- there's no point in trying to get the order of type variables
-             -- correct. Nevertheless, we /do/ want to bind the type variables
-             -- in an outermost `forall` so that we can bring any scoped type
-             -- variables into scope. As such, we simply quantify the type
-             -- variables from left to right.
-             -- See Note [Scoped type variables and class methods] in
-             -- D.S.TH.Promote.Monad.
-             let sak_tvbs = changeDTVFlags SpecifiedSpec $
-                            toposortTyVarsOf $ arg_kis ++ [res_ki]
-                 sak = ravelVanillaDType sak_tvbs [] arg_kis res_ki in
-             return (Just (LDRKI (Just sak) scoped_tvs sak_tvbs arg_kis res_ki), length arg_kis)
+        ClassMethodRHS scoped_tvs tvbs arg_kis res_ki
+          -> let sak = ravelVanillaDType tvbs [] arg_kis res_ki in
+             return (Just (LDRKI (Just sak) scoped_tvs tvbs arg_kis res_ki), length arg_kis)
         LetBindingRHS
           |  Just ty <- OMap.lookup name type_env
           -> do

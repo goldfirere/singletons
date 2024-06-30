@@ -166,6 +166,7 @@ tests =
     , compileAndDumpStdTest "Prelude"
     , compileAndDumpStdTest "T180"
     , compileAndDumpStdTest "T361"
+    , compileAndDumpStdTest "T601a"
     , compileAndDumpStdTest "T605"
     ],
     testGroup "Database client"
