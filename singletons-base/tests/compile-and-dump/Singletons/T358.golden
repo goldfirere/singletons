@@ -60,12 +60,12 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
       Method1_0123456789876543210 @a = NilSym0
     instance PC1 [] where
       type Method1 = Method1_0123456789876543210
-    type Method2a_0123456789876543210 :: forall b a. b -> [a]
-    type family Method2a_0123456789876543210 @b @a (a :: b) :: [a] where
-      Method2a_0123456789876543210 @b @a (_ :: b) = NilSym0
-    type Method2b_0123456789876543210 :: forall b a. b -> [a]
-    type family Method2b_0123456789876543210 @b @a (a :: b) :: [a] where
-      Method2b_0123456789876543210 @b @a (_ :: b) = NilSym0
+    type Method2a_0123456789876543210 :: forall a b. b -> [a]
+    type family Method2a_0123456789876543210 @a @b (a :: b) :: [a] where
+      Method2a_0123456789876543210 @a @b (_ :: b) = NilSym0
+    type Method2b_0123456789876543210 :: forall a b. b -> [a]
+    type family Method2b_0123456789876543210 @a @b (a :: b) :: [a] where
+      Method2b_0123456789876543210 @a @b (_ :: b) = NilSym0
     instance PC2 [a] where
       type Method2a a = Method2a_0123456789876543210 a
       type Method2b a = Method2b_0123456789876543210 a

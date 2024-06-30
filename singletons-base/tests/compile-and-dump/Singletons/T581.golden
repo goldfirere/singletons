@@ -77,9 +77,9 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
     type M2Sym1 :: forall b a. b -> Maybe a
     type family M2Sym1 @b @a (a0123456789876543210 :: b) :: Maybe a where
       M2Sym1 a0123456789876543210 = M2 a0123456789876543210
-    type M2_0123456789876543210 :: forall b a. b -> Maybe a
-    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe a where
-      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe a
+    type M2_0123456789876543210 :: forall a b. b -> Maybe a
+    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe a where
+      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe a
     class PC2 a where
       type family M2 (arg :: b) :: Maybe a
       type M2 a = M2_0123456789876543210 a
@@ -120,14 +120,14 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
                                                                       b)
     instance PC1 [a] where
       type M1 a = M1_0123456789876543210 a
-    type M2_0123456789876543210 :: forall b a. b -> Maybe [a]
-    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe [a] where
-      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe [a]
+    type M2_0123456789876543210 :: forall a b. b -> Maybe [a]
+    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe [a] where
+      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe [a]
     instance PC2 [a] where
       type M2 a = M2_0123456789876543210 a
-    type M2_0123456789876543210 :: forall b a. b -> Maybe (Maybe a)
-    type family M2_0123456789876543210 @b @a (a :: b) :: Maybe (Maybe a) where
-      M2_0123456789876543210 @b @a (_ :: b) = NothingSym0 :: Maybe (Maybe a)
+    type M2_0123456789876543210 :: forall a b. b -> Maybe (Maybe a)
+    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe (Maybe a) where
+      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe (Maybe a)
     instance PC2 (Maybe a) where
       type M2 a = M2_0123456789876543210 a
     type family LamCases_0123456789876543210 a0123456789876543210 (x0123456789876543210 :: Maybe a0123456789876543210) (y0123456789876543210 :: b0123456789876543210) a_0123456789876543210 where
