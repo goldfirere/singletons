@@ -168,6 +168,7 @@ tests =
     , compileAndDumpStdTest "T361"
     , compileAndDumpStdTest "T601a"
     , compileAndDumpStdTest "T605"
+    , compileAndDumpStdTest "T613"
     ],
     testGroup "Database client"
     [ compileAndDumpTest "GradingClient/Database" ghcOpts

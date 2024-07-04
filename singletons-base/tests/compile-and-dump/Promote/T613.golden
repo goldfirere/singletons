@@ -1,0 +1,31 @@
+Promote/T613.hs:(0,0)-(0,0): Splicing declarations
+    promote
+      [d| f :: forall k (a :: k). Proxy a -> Proxy a
+          f x
+            = y
+            where
+                y = x |]
+  ======>
+    f :: forall k (a :: k). Proxy a -> Proxy a
+    f x
+      = y
+      where
+          y = x
+    type family Let0123456789876543210YSym0 k0123456789876543210 (a0123456789876543210 :: k0123456789876543210) (x0123456789876543210 :: Proxy a0123456789876543210) where
+      Let0123456789876543210YSym0 k0123456789876543210 a0123456789876543210 x0123456789876543210 = Let0123456789876543210Y k0123456789876543210 a0123456789876543210 x0123456789876543210
+    type family Let0123456789876543210Y k0123456789876543210 (a0123456789876543210 :: k0123456789876543210) (x0123456789876543210 :: Proxy a0123456789876543210) where
+      Let0123456789876543210Y k a x = x
+    type FSym0 :: forall k (a :: k). (~>) (Proxy a) (Proxy a)
+    data FSym0 :: (~>) (Proxy a) (Proxy a)
+      where
+        FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
+                              FSym0 a0123456789876543210
+    type instance Apply @(Proxy a) @(Proxy a) FSym0 a0123456789876543210 = F a0123456789876543210
+    instance SuppressUnusedWarnings FSym0 where
+      suppressUnusedWarnings = snd ((,) FSym0KindInference ())
+    type FSym1 :: forall k (a :: k). Proxy a -> Proxy a
+    type family FSym1 @k @(a :: k) (a0123456789876543210 :: Proxy a) :: Proxy a where
+      FSym1 a0123456789876543210 = F a0123456789876543210
+    type F :: forall k (a :: k). Proxy a -> Proxy a
+    type family F @k @(a :: k) (a :: Proxy a) :: Proxy a where
+      F @k @a (x :: Proxy a) = Let0123456789876543210YSym0 k a x
