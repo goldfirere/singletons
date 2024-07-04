@@ -1,13 +1,14 @@
 module Data.Singletons.TH.Syntax.LocalVar
   ( LocalVar(..)
   , foldTypeLocalVars
-  , localVarNoKind
   , localVarToTvb
   , localVarToType
   , localVarToTypeArg
+  , tvbToLocalVar
   ) where
 
 import Data.Data (Data)
+import Data.Function (on)
 import Language.Haskell.TH.Desugar
 import Language.Haskell.TH.Syntax
 
@@ -22,6 +23,9 @@ import Language.Haskell.TH.Syntax
 --   variable is known, we can use it to generate code with more precise kind
 --   information. See @Note [Local variables and kind information]@.
 --
+-- We maintain the invariant that if two 'LocalVar' values share the same
+-- 'lvName', then they should both have the same 'lvKind' value.
+--
 -- A 'LocalVar' is very close in design to a 'DTyVarBndrUnit', as both contain
 -- 'Name's and optional 'DKind's. We use a separate 'LocalVar' type to represent
 -- local variables because 'LocalVar's can occur both in binding and argument
@@ -31,7 +35,17 @@ import Language.Haskell.TH.Syntax
 data LocalVar = LocalVar
   { lvName :: Name
   , lvKind :: Maybe DKind
-  } deriving Data
+  } deriving (Data, Show)
+
+-- Because of the invariant described in the Haddocks for 'LocalVar', it
+-- suffices to only check the 'lvName's when checking 'LocalVar's for equality.
+instance Eq LocalVar where
+  (==) = (==) `on` lvName
+
+-- Because of the invariant described in the Haddocks for 'LocalVar', it
+-- suffices to only compare the 'lvName's when comparing 'LocalVar's.
+instance Ord LocalVar where
+  compare = compare `on` lvName
 
 -- | Apply a 'DType' to a list of 'LocalVar' arguments. Because these
 -- 'LocalVar's occur in argument positions, they will not contain any kind
@@ -39,10 +53,6 @@ data LocalVar = LocalVar
 -- Binding positions versus argument positions)@.
 foldTypeLocalVars :: DType -> [LocalVar] -> DType
 foldTypeLocalVars ty = applyDType ty . map localVarToTypeArg
-
--- | Construct a 'LocalVar' with no kind information.
-localVarNoKind :: Name -> LocalVar
-localVarNoKind nm = LocalVar { lvName = nm, lvKind = Nothing }
 
 -- | Convert a 'LocalVar' used in a binding position to a 'DTyVarBndr' using the
 -- supplied @flag@. Because this is used in a binding position, we include kind
@@ -68,6 +78,13 @@ localVarToType (LocalVar { lvName = local_nm }) = DVarT local_nm
 -- versus argument positions)@.
 localVarToTypeArg :: LocalVar -> DTypeArg
 localVarToTypeArg = DTANormal . localVarToType
+
+-- | Convert a 'DTyVarBndr' to a 'LocalVar'.
+tvbToLocalVar :: DTyVarBndr flag -> LocalVar
+tvbToLocalVar (DPlainTV nm _) =
+  LocalVar { lvName = nm, lvKind = Nothing }
+tvbToLocalVar (DKindedTV nm _ kind) =
+  LocalVar { lvName = nm, lvKind = Just kind }
 
 {-
 Note [Local variables and kind information]

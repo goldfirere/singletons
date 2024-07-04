@@ -33,7 +33,7 @@ type VarPromotions = [(Name, LocalVar)]
 data PromDPatInfos = PromDPatInfos
   { prom_dpat_vars    :: VarPromotions
       -- Maps term-level pattern variables to their promoted, type-level counterparts.
-  , prom_dpat_sig_kvs :: OSet Name
+  , prom_dpat_sig_kvs :: OSet LocalVar
       -- Kind variables bound by DSigPas.
       -- See Note [Scoped type variables] in Data.Singletons.TH.Promote.Monad.
   }

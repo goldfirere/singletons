@@ -658,7 +658,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
   scoped_tvs_ext <- qIsExtEnabled LangExt.ScopedTypeVariables
   let all_meth_scoped_tvs
         | scoped_tvs_ext
-        = OSet.fromList (map extractTvbName cls_tvbs) `OSet.union` meth_scoped_tvs
+        = OSet.fromList (map tvbToLocalVar cls_tvbs) `OSet.union` meth_scoped_tvs
         | otherwise
         = OSet.empty
   meth_arg_tvs <- replicateM (length meth_arg_kis) (qNewName "a")
@@ -768,7 +768,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
     --   variable binders primarily as a way to annotate the kinds of each
     --   variable, so it is possible for the helper type family to bind a kind
     --   variable in a `forall` without it scoping over the body.
-    promote_meth_ty :: PrM (OSet Name, [DTyVarBndrSpec], [DKind], DKind)
+    promote_meth_ty :: PrM (OSet LocalVar, [DTyVarBndrSpec], [DKind], DKind)
     promote_meth_ty =
       case meth_sort of
         DefaultMethods ->
@@ -783,7 +783,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
               -- instance signature's type directly, and no substitution for
               -- class variables is required.
               (kvbs, arg_kis, res_ki) <- promoteUnraveled ty
-              pure (OSet.fromList (map extractTvbName kvbs), kvbs, arg_kis, res_ki)
+              pure (OSet.fromList (map tvbToLocalVar kvbs), kvbs, arg_kis, res_ki)
             Nothing -> do
               -- We don't have an InstanceSig, so we must compute the kind to use
               -- ourselves.
@@ -800,7 +800,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
               pure (OSet.empty, kvbs', arg_kis', res_ki')
 
     -- Attempt to look up a class method's original type.
-    lookup_meth_ty :: PrM (OSet Name, [DTyVarBndrSpec], [DKind], DKind)
+    lookup_meth_ty :: PrM (OSet LocalVar, [DTyVarBndrSpec], [DKind], DKind)
     lookup_meth_ty = do
       opts <- getOptions
       let proName = promotedTopLevelValueName opts meth_name
@@ -808,7 +808,7 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
         Just ty -> do
           -- The type of the method is in scope, so promote that.
           (kvbs, arg_kis, res_ki) <- promoteUnraveled ty
-          pure (OSet.fromList (map extractTvbName kvbs), kvbs, arg_kis, res_ki)
+          pure (OSet.fromList (map tvbToLocalVar kvbs), kvbs, arg_kis, res_ki)
         Nothing -> do
           -- If the type of the method is not in scope, the only other option
           -- is to try reifying the promoted method name.
@@ -987,7 +987,8 @@ data LetDecRHSSort
     -- The right-hand side of a class method (either a default method or a
     -- method in an instance declaration).
   | ClassMethodRHS
-      (OSet Name) -- The scoped type variables to bring into scope over
+      (OSet LocalVar)
+                  -- The scoped type variables to bring into scope over
                   -- the RHS of the class method. See
                   -- Note [Scoped type variables and class methods]
                   -- in D.S.TH.Promote.Monad.
@@ -1159,7 +1160,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
           -- from the outermost forall into scope over the RHS.
           scoped_tvs_ext <- qIsExtEnabled LangExt.ScopedTypeVariables
           let scoped_tvs | scoped_tvs_ext
-                         = OSet.fromList (map extractTvbName tvbs)
+                         = OSet.fromList (map tvbToLocalVar tvbs)
                          | otherwise
                          = OSet.empty
           -- invariant: count_args ty == length argKs
@@ -1194,7 +1195,7 @@ data LetDecRHSKindInfo =
                          -- This will be Nothing if the let-dec RHS has local
                          -- variables that it closes over.
                          -- See Note [No SAKs for let-decs with local variables]
-        (OSet Name)      -- The scoped type variables to bring into scope over
+        (OSet LocalVar)  -- The scoped type variables to bring into scope over
                          -- the RHS of the let-dec. This will be a subset of the
                          -- type variables of the kind (see the field below),
                          -- but not necessarily the same. See
@@ -1421,7 +1422,10 @@ promotePat _ (DSigP pat ty) = do
   wildless_pat <- removeWilds pat
   ki <- promoteType ty
   (promoted, pat') <- promotePat (Just ki) wildless_pat
-  tell $ PromDPatInfos [] (fvDType ki)
+  tell $ PromDPatInfos []
+       $ OSet.fromList
+       $ map tvbToLocalVar
+       $ toposortTyVarsOf [ki]
   return (DSigT promoted ki, ADSigP promoted pat' ki)
 promotePat _ DWildP = return (DWildCardT, ADWildP)
 promotePat _ p@(DTypeP _) = fail ("Embedded type patterns cannot be promoted: " ++ show p)

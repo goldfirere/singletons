@@ -30,7 +30,7 @@ import Data.Singletons.TH.Syntax
 -- environment during promotion
 data PrEnv =
   PrEnv { pr_options     :: Options
-        , pr_scoped_vars :: OSet Name
+        , pr_scoped_vars :: OSet LocalVar
           -- ^ The set of scoped type variables currently in scope.
           -- See @Note [Scoped type variables]@.
         , pr_lambda_vars :: OMap Name LocalVar
@@ -69,7 +69,7 @@ allLocals :: MonadReader PrEnv m => m [LocalVar]
 allLocals = do
   scoped <- asks (F.toList . pr_scoped_vars)
   lambdas <- asks (OMap.assocs . pr_lambda_vars)
-  return $ map localVarNoKind scoped ++ map snd lambdas
+  return $ scoped ++ map snd lambdas
 
 emitDecs :: MonadWriter [DDec] m => [DDec] -> m ()
 emitDecs = tell
@@ -79,10 +79,10 @@ emitDecsM action = do
   decs <- action
   emitDecs decs
 
--- ^ Bring a list of type variables into scope for the duration the supplied
+-- ^ Bring a set of type variables into scope for the duration the supplied
 -- computation. See @Note [Tracking local variables]@ and
 -- @Note [Scoped type variables]@.
-scopedBind :: OSet Name -> PrM a -> PrM a
+scopedBind :: OSet LocalVar -> PrM a -> PrM a
 scopedBind binds =
   local (\env@(PrEnv { pr_scoped_vars = scoped }) ->
     env { pr_scoped_vars = binds `OSet.union` scoped })
@@ -586,7 +586,7 @@ anymore, but it would require more work to special-case class methods in
 `promoteClause` to avoid this, and it doesn't hurt anything to leave `@b` in
 place).
 
-The `OSet Name` fields of `ClassMethodRHS` dictates which type variables to
+The `OSet LocalVar` field of `ClassMethodRHS` dictates which type variables to
 bring into scope via `scopedBind`. There are multiple places in the code which
 determine which type variables get put into the `OSet`:
 
