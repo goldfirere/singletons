@@ -453,7 +453,8 @@ noExactTyVars = everywhere go
       = InjectivityAnn (noExactName lhs) (map noExactName rhs)
 
     fix_local_var :: LocalVar -> LocalVar
-    fix_local_var (n, mbKind) = (noExactName n, mbKind)
+    fix_local_var (LocalVar { lvName = n, lvKind =  mbKind })
+      = LocalVar { lvName = noExactName n, lvKind = mbKind }
 
 -- Changes a unique Name with a NameU or NameL namespace to a non-unique Name.
 -- See Note [Pitfalls of NameU/NameL] for why this is useful.

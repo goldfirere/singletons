@@ -1393,7 +1393,8 @@ promotePat _ (DLitP lit) = (, ADLitP lit) <$> promoteLitPat lit
 promotePat m_ki (DVarP name) = do
       -- term vars can be symbols... type vars can't!
   tyName <- mkTyName name
-  tell $ PromDPatInfos [(name, (tyName, m_ki))] OSet.empty
+  let lv = LocalVar { lvName = tyName, lvKind = m_ki }
+  tell $ PromDPatInfos [(name, lv)] OSet.empty
   return (DVarT tyName, ADVarP name)
 promotePat _ (DConP name tys pats) = do
   opts <- getOptions
@@ -1584,7 +1585,8 @@ dTypeFamilyHead_with_locals tf_nm local_vars arg_tvbs res_sig =
     -- Ensure that all references to local_nms are substituted away.
     subst1 = Map.fromList $
              zipWith
-               (\(local_nm, _) (local_nm', _) -> (local_nm, DVarT local_nm'))
+               (\(LocalVar { lvName = local_nm }) (LocalVar { lvName = local_nm' }) ->
+                 (local_nm, DVarT local_nm'))
                local_vars
                local_vars'
     (subst2, arg_tvbs') = substTvbs subst1 arg_tvbs
