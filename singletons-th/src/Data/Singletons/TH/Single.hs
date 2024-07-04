@@ -725,7 +725,7 @@ singPat var_proms = go
       tyname <- case Map.lookup name var_proms of
                   Nothing     ->
                     fail "Internal error: unknown variable when singling pattern"
-                  Just (tyname, _) -> return tyname
+                  Just (LocalVar { lvName = tyname }) -> return tyname
       pure $ DVarP (singledValueName opts name)
                `DSigP` (singFamily `DAppT` DVarT tyname)
     go (ADConP name tys pats) = do
