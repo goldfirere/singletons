@@ -425,7 +425,7 @@ defunctionalize name m_fixity defun_ki = do
       let sat_name = defunctionalizedName opts name n
           sat_dec  = DClosedTypeFamilyD
                        (DTypeFamilyHead sat_name
-                                        (tvbSpecsToBndrVis sat_tvbs ++ sat_args)
+                                        (dtvbSpecsToBndrVis sat_tvbs ++ sat_args)
                                         (maybeKindToResultSig m_sat_res) Nothing)
                        [DTySynEqn Nothing
                                   (foldTypeTvbs (DConT sat_name) sat_args)

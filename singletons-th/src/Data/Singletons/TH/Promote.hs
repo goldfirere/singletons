@@ -16,6 +16,7 @@ import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
 import qualified Language.Haskell.TH.Desugar.OSet as OSet
 import Language.Haskell.TH.Desugar.OSet (OSet)
+import qualified Language.Haskell.TH.Desugar.Subst.Capturing as SC
 import Data.Singletons.TH.Deriving.Bounded
 import Data.Singletons.TH.Deriving.Enum
 import Data.Singletons.TH.Deriving.Eq
@@ -282,11 +283,11 @@ promoteClassDec decl@(ClassDecl { cd_name = cls_name
 
   -- If the class has a standalone kind signature, we take the original,
   -- user-written class binders (`orig_cls_tvbs`) and fill them out using
-  -- `matchUpSAKWithDecl` to produce the "full" binders, as described in
+  -- `dMatchUpSAKWithDecl` to produce the "full" binders, as described in
   -- Note [Propagating kind information from class standalone kind signatures].
   mb_full_cls_tvbs <-
-    traverse (\cls_sak -> matchUpSAKWithDecl cls_sak orig_cls_tvbs) mb_cls_sak
-  let mb_full_cls_tvbs_spec = tvbForAllTyFlagsToSpecs <$> mb_full_cls_tvbs
+    traverse (\cls_sak -> dMatchUpSAKWithDecl cls_sak orig_cls_tvbs) mb_cls_sak
+  let mb_full_cls_tvbs_spec = dtvbForAllTyFlagsToSpecs <$> mb_full_cls_tvbs
       -- The class binders, converted to `DTyVarBndrSpec`s. If the parent class
       -- has a standalone kind signature, we compute these `DTyVarBndrSpec`s
       -- from the full class binders, which likely have richer kind information.
@@ -511,7 +512,7 @@ This is very doable because the user gave `Alternative` a standalone kind
 signature, so it should be possible to match up the `Type -> Type` part of the
 standalone kind signature with `f`. And that is exactly what we do:
 
-* In `promoteClassDec`, we use the `matchUpSAKWithDecl` function to take the
+* In `promoteClassDec`, we use the `dMatchUpSAKWithDecl` function to take the
   original class type variable binders and the class standalone kind signature
   as input and produce a new set of class binders as output, where the new
   binders have been annotated with kinds taken from the standalone kind
@@ -790,9 +791,9 @@ promoteMethod meth_sort orig_sigs_map cls_tvbs (meth_name, meth_rhs) = do
               (_, kvbs, arg_kis, res_ki) <- lookup_meth_ty
               -- Substitute for the class variables in the method's type.
               -- See Note [Promoted class method kinds]
-              let kvbs'    = mapDTVKind (substKind cls_subst) <$> kvbs
-                  arg_kis' = map (substKind cls_subst) arg_kis
-                  res_ki'  = substKind cls_subst res_ki
+              let kvbs'    = mapDTVKind (SC.substTy cls_subst) <$> kvbs
+                  arg_kis' = map (SC.substTy cls_subst) arg_kis
+                  res_ki'  = SC.substTy cls_subst res_ki
               -- If there is no instance signature, then there are no additional
               -- type variables to bring into scope, so return an empty set of
               -- scoped type variables. We will reuse the list of kind variable
@@ -1102,7 +1103,7 @@ promoteLetDecRHS rhs_sort type_env fix_env mb_let_uniq name let_dec_rhs = do
                                 toposortTyVarsOf (argKs ++ [resK])
                               | otherwise
                               = tvbs
-                        arg_tvbs' = tvbSpecsToBndrVis tvbs' ++ arg_tvbs in
+                        arg_tvbs' = dtvbSpecsToBndrVis tvbs' ++ arg_tvbs in
                     ( lde_kvs_to_bind'
                     , Just $ DKiSigD proName sak
                     , DefunSAK sak
@@ -1331,7 +1332,7 @@ And promote it to this type family:
   type family Konst @a x y where
     Konst @a (x :: a) (_ :: b) = x
 
-Note that we do not bind @b here. The `tvbSpecsToBndrVis` function is
+Note that we do not bind @b here. The `dtvbSpecsToBndrVis` function is
 responsible for filtering out inferred type variable binders.
 -}
 
@@ -1540,7 +1541,7 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
                -- Per the comments on LetDecRHSKindInfo, `isJust m_sak` is only True
                -- if there are no local variables. Convert the scoped type variables
                -- `tvbs` to invisible arguments, making sure to use
-               -- `tvbSpecsToBndrVis` to filter out any inferred type variable
+               -- `dtvbSpecsToBndrVis` to filter out any inferred type variable
                -- binders. For instance, we want to promote this example (from #585):
                --
                --   konst :: forall a {b}. a -> b -> a
@@ -1554,7 +1555,7 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
                --
                -- Note that we apply `a` in `Konst @a` but _not_ `b`, as `b` is
                -- bound using an inferred type variable binder.
-            -> map dTyVarBndrVisToDTypeArg $ tvbSpecsToBndrVis tvbs
+            -> map dTyVarBndrVisToDTypeArg $ dtvbSpecsToBndrVis tvbs
           _ -> -- ...otherwise, return the local variables as explicit arguments
                -- using DTANormal.
                map localVarToTypeArg all_locals
@@ -1593,5 +1594,5 @@ dTypeFamilyHead_with_locals tf_nm local_vars arg_tvbs res_sig =
                  (local_nm, DVarT local_nm'))
                local_vars
                local_vars'
-    (subst2, arg_tvbs') = substTvbs subst1 arg_tvbs
+    (subst2, arg_tvbs') = SC.substTyVarBndrs subst1 arg_tvbs
     (_subst3, res_sig') = substFamilyResultSig subst2 res_sig

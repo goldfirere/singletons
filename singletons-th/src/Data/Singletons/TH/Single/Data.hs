@@ -271,8 +271,8 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
 -- @D \@Bool \@Ordering@ and @SD \@Bool \@Ordering@ will work the way you would
 -- expect it to.
 --
--- See also the comments on the 'matchUpSAKWithDecl' function (in
--- "Data.Singletons.TH.Util"), which also apply here.
+-- See also the Haddocks for 'dMatchUpSAKWithDecl' function, which also apply
+-- here.
 singDataSAK ::
      MonadFail q
   => DKind
@@ -284,8 +284,8 @@ singDataSAK ::
   -> q DKind
      -- ^ The standalone kind signature for the singled data type
 singDataSAK data_sak data_bndrs data_k = do
-  sing_sak_tvbs <- matchUpSAKWithDecl data_sak data_bndrs
-  let sing_sak_tvbs' = tvbForAllTyFlagsToSpecs sing_sak_tvbs
+  sing_sak_tvbs <- dMatchUpSAKWithDecl data_sak data_bndrs
+  let sing_sak_tvbs' = dtvbForAllTyFlagsToSpecs sing_sak_tvbs
   pure $ DForallT (DForallInvis sing_sak_tvbs')
        $ DArrowT `DAppT` data_k `DAppT` DConT typeKindName
 
