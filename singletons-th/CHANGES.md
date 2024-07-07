@@ -16,6 +16,34 @@ next [????.??.??]
   singled version of `x`.
 * Add support for promoting and singling type variables that scope over the
   bodies of class method defaults and instance methods.
+* `singletons-th` can now generate more precise types for singled data
+  constructors whose parent data types have standalone kind signatures. For
+  instance, consider this data type:
+
+  ```hs
+  $(singletons [d|
+    type D :: forall k. k -> Type
+    data D a = MkD
+    |])
+  ```
+
+  Previously, `singletons-th` would generate the following type for `SMkD` (the
+  singled counterpart to `MkD`):
+
+  ```hs
+  data SD :: forall k. k -> Type where
+    SMkD :: forall a. SD (MkD :: D a)
+  ```
+
+  This was not as precise as it could have been, as the type of `SMkD` did not
+  make the kind variable `k` eligible for visible type application (as is the
+  case in `MkD :: forall k (a :: k). D a`). `singletons-th` now accomplishes
+  this by generating the following code instead:
+
+  ```hs
+  data SD :: forall k. k -> Type where
+    SMkD :: forall k (a :: k). SD (MkD :: D a)
+  ```
 
 3.4 [2024.05.12]
 ----------------

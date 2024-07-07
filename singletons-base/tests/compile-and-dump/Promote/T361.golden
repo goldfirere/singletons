@@ -1,8 +1,8 @@
 Promote/T361.hs:0:0:: Splicing declarations
     genDefunSymbols [''Proxy]
   ======>
-    type ProxySym0 :: forall k (t :: k). Proxy t
-    type family ProxySym0 @k @(t :: k) :: Proxy t where
+    type ProxySym0 :: forall {k :: Type} (t :: k). Proxy t
+    type family ProxySym0 @(t :: k) :: Proxy t where
       ProxySym0 = 'Proxy
 Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     promote

@@ -162,10 +162,11 @@ promoteInstance :: OptionsMonad q => DerivDesc q -> String -> Name -> q [Dec]
 promoteInstance mk_inst class_name name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ class_name
                                 ++ " for it.") name
-  tvbs' <- mapM dsTvbVis tvbs
-  let data_ty   = foldTypeTvbs (DConT name) tvbs'
-  cons' <- concatMapM (dsCon tvbs' data_ty) cons
-  let data_decl = DataDecl df name tvbs' cons'
+  dtvbs <- mapM dsTvbVis tvbs
+  let data_ty   = foldTypeTvbs (DConT name) dtvbs
+      dtvbSpecs = changeDTVFlags SpecifiedSpec dtvbs
+  cons' <- concatMapM (dsCon dtvbSpecs data_ty) cons
+  let data_decl = DataDecl df name dtvbs cons'
   raw_inst <- mk_inst Nothing data_ty data_decl
   decs <- promoteM_ [] $ void $
           promoteInstanceDec OMap.empty Map.empty raw_inst
