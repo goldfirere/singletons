@@ -148,8 +148,9 @@ singDecideInstance :: OptionsMonad q => Name -> q [Dec]
 singDecideInstance name = do
   (_df, tvbs, cons) <- getDataD ("I cannot make an instance of SDecide for it.") name
   dtvbs <- mapM dsTvbVis tvbs
-  let data_ty = foldTypeTvbs (DConT name) dtvbs
-  dcons <- concatMapM (dsCon dtvbs data_ty) cons
+  let data_ty   = foldTypeTvbs (DConT name) dtvbs
+      dtvbSpecs = changeDTVFlags SpecifiedSpec dtvbs
+  dcons <- concatMapM (dsCon dtvbSpecs data_ty) cons
   (scons, _) <- singM [] $ mapM (singCtor name) dcons
   sDecideInstance <- mkDecideInstance Nothing data_ty dcons scons
   eqInstance <- mkEqInstanceForSingleton data_ty name
@@ -200,8 +201,9 @@ showSingInstance :: OptionsMonad q => Name -> q [Dec]
 showSingInstance name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of Show for it.") name
   dtvbs <- mapM dsTvbVis tvbs
-  let data_ty = foldTypeTvbs (DConT name) dtvbs
-  dcons <- concatMapM (dsCon dtvbs data_ty) cons
+  let data_ty   = foldTypeTvbs (DConT name) dtvbs
+      dtvbSpecs = changeDTVFlags SpecifiedSpec dtvbs
+  dcons <- concatMapM (dsCon dtvbSpecs data_ty) cons
   let tyvars    = map (DVarT . extractTvbName) dtvbs
       kind      = foldType (DConT name) tyvars
       data_decl = DataDecl df name dtvbs dcons
@@ -272,8 +274,9 @@ singInstance mk_inst inst_name name = do
   (df, tvbs, cons) <- getDataD ("I cannot make an instance of " ++ inst_name
                                 ++ " for it.") name
   dtvbs <- mapM dsTvbVis tvbs
-  let data_ty = foldTypeTvbs (DConT name) dtvbs
-  dcons <- concatMapM (dsCon dtvbs data_ty) cons
+  let data_ty   = foldTypeTvbs (DConT name) dtvbs
+      dtvbSpecs = changeDTVFlags SpecifiedSpec dtvbs
+  dcons <- concatMapM (dsCon dtvbSpecs data_ty) cons
   let data_decl = DataDecl df name dtvbs dcons
   raw_inst <- mk_inst Nothing data_ty data_decl
   (a_inst, decs) <- promoteM [] $

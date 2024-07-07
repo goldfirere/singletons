@@ -157,7 +157,7 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
                                                    -> Proxy b -> D3 @j a @k b
     type family MkD3Sym2 @j @(a :: j) @k @(b :: k) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D3 @j a @k b where
       MkD3Sym2 a0123456789876543210 a0123456789876543210 = MkD3 a0123456789876543210 a0123456789876543210
-    type MkD4Sym0 :: forall a. (~>) a (D4 @a)
+    type MkD4Sym0 :: forall (a :: Type). (~>) a (D4 @a)
     data MkD4Sym0 :: (~>) a (D4 @a)
       where
         MkD4Sym0KindInference :: SameKind (Apply MkD4Sym0 arg) (MkD4Sym1 arg) =>
@@ -165,8 +165,8 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @(D4 @a) MkD4Sym0 a0123456789876543210 = MkD4 a0123456789876543210
     instance SuppressUnusedWarnings MkD4Sym0 where
       suppressUnusedWarnings = snd ((,) MkD4Sym0KindInference ())
-    type MkD4Sym1 :: forall a. a -> D4 @a
-    type family MkD4Sym1 @a (a0123456789876543210 :: a) :: D4 @a where
+    type MkD4Sym1 :: forall (a :: Type). a -> D4 @a
+    type family MkD4Sym1 @(a :: Type) (a0123456789876543210 :: a) :: D4 @a where
       MkD4Sym1 a0123456789876543210 = MkD4 a0123456789876543210
     type Meth1Sym0 :: forall j
                              k
@@ -260,7 +260,9 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(D3 @j a @k b) = SD3
     type SD4 :: forall (a :: Type). D4 @a -> Type
     data SD4 :: forall (a :: Type). D4 @a -> Type
-      where SMkD4 :: forall a (n :: a). (Sing n) -> SD4 (MkD4 n :: D4 @a)
+      where
+        SMkD4 :: forall (a :: Type) (n :: a).
+                 (Sing n) -> SD4 (MkD4 n :: D4 @a)
     type instance Sing @(D4 @a) = SD4
     class SC1 @j @k (a :: j) (b :: k) where
       sMeth1 ::
