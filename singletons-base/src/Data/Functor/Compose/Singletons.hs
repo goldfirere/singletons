@@ -36,45 +36,15 @@ import Data.Functor.Singletons
 import Data.Ord.Singletons
 import Data.Kind
 import Data.Semigroup.Singletons
-import Data.Singletons
 import Data.Singletons.Base.Instances (SList(..), (:@#@$), NilSym0)
 import Data.Singletons.TH
+import Data.Singletons.TH.Options
 import Data.Traversable.Singletons
 
-{-
-In order to keep the type arguments to Compose poly-kinded and with inferred
-specificities, we define the singleton version of Compose, as well as its
-defunctionalization symbols, by hand. This is very much in the spirit of the
-code in Data.Functor.Const.Singletons. (See the comments above SConst in that
-module for more details on this choice.)
--}
-infixr 9 `SCompose`
-type SCompose :: Compose f g a -> Type
-data SCompose :: Compose f g a -> Type where
-  SCompose :: forall f g a (x :: f (g a)).
-              Sing x -> SCompose ('Compose @f @g @a x)
-type instance Sing @(Compose f g a) = SCompose
-instance SingI x => SingI ('Compose x) where
-  sing = SCompose sing
-instance SingI1 'Compose where
-  liftSing = SCompose
-
-infixr 9 `ComposeSym0`
-type ComposeSym0 :: f (g a) ~> Compose f g a
-data ComposeSym0 z
-type instance Apply ComposeSym0 x = 'Compose x
-instance SingI ComposeSym0 where
-  sing = singFun1 SCompose
-
-infixr 9 `ComposeSym1`
-type ComposeSym1 :: f (g a) -> Compose f g a
-type family ComposeSym1 x where
-  ComposeSym1 x = 'Compose x
+$(withOptions defaultOptions{genSingKindInsts = False}
+    (genSingletons [''Compose]))
 
 $(singletonsOnly [d|
-  getCompose :: Compose f g a -> f (g a)
-  getCompose (Compose x) = x
-
   deriving instance Eq (f (g a)) => Eq (Compose f g a)
   deriving instance Ord (f (g a)) => Ord (Compose f g a)
 

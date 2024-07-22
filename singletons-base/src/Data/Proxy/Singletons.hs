@@ -32,17 +32,16 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Singletons.Internal
 import Data.Eq.Singletons
-import Data.Kind
 import Data.Monoid.Singletons
 import Data.Ord.Singletons
 import Data.Proxy
 import Data.Semigroup (Semigroup(..))
 import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons.Decide
-import Data.Singletons
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
+import Data.Singletons.TH.Options
 import Data.Type.Coercion
 import Data.Type.Equality hiding (type (==))
 import GHC.Base.Singletons
@@ -50,27 +49,13 @@ import GHC.Num.Singletons
 import GHC.TypeLits.Singletons.Internal
 import Text.Show.Singletons
 
-{-
-In order to keep the type argument to Proxy poly-kinded and with an inferred
-specificity, we define the singleton version of Proxy, as well as its
-defunctionalization symbols, by hand. This is very much in the spirit of the
-code in Data.Functor.Const.Singletons. (See the comments above SConst in that
-module for more details on this choice.)
--}
-type SProxy :: Proxy t -> Type
-data SProxy :: Proxy t -> Type where
-  SProxy :: forall t. SProxy ('Proxy @t)
-type instance Sing @(Proxy t) = SProxy
+$(withOptions defaultOptions{genSingKindInsts = False}
+    (genSingletons [''Proxy]))
+
 instance SingKind (Proxy t) where
   type Demote (Proxy t) = Proxy t
   fromSing SProxy = Proxy
   toSing Proxy = SomeSing SProxy
-instance SingI 'Proxy where
-  sing = SProxy
-
-type ProxySym0 :: Proxy t
-type family ProxySym0 where
-  ProxySym0 = 'Proxy
 
 instance Eq (SProxy z) where
   _ == _ = True
