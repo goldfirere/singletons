@@ -1585,6 +1585,7 @@ The following constructs are either unsupported or almost never work:
 * `{-# UNPACK #-}` pragmas
 * partial application of the `(->)` type
 * invisible type patterns
+* `AllowAmbiguousTypes`
 
 See the following sections for more details.
 
@@ -1783,3 +1784,16 @@ f @t x = x :: t
 
 See [this `singletons`
 issue](https://github.com/goldfirere/singletons/issues/583).
+
+### `AllowAmbiguousTypes`
+
+`singletons-th` does not currently support promoting or singling types with
+ambiguous type variables, which require the `AllowAmbiguousTypes` language
+extension to define. For instance, `singletons-th` does not support definitions
+such as this one:
+
+```hs
+{-# LANGUAGE AllowAmbiguousTypes #-}
+class HasName a where
+  name :: String -- This type is ambiguous
+```

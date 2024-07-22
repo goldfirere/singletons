@@ -1,0 +1,16 @@
+Singletons/T565.hs:(0,0)-(0,0): Splicing declarations
+    singletons [d| data C a where D :: forall {a}. C a |]
+  ======>
+    data C a where D :: forall {a}. C a
+    type DSym0 :: forall {a}. C a
+    type family DSym0 :: C a where
+      DSym0 = D
+    data SC :: forall a. C a -> Type
+      where SD :: forall {a}. SC (D :: C a)
+    type instance Sing @(C a) = SC
+    instance SingKind a => SingKind (C a) where
+      type Demote (C a) = C (Demote a)
+      fromSing SD = D
+      toSing D = SomeSing SD
+    instance SingI D where
+      sing = SD

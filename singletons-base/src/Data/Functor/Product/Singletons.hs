@@ -42,46 +42,12 @@ import Data.Monoid.Singletons hiding (SProduct(..))
 import Data.Semigroup.Singletons hiding (SProduct(..))
 import Data.Singletons.Base.Instances (SList(..), (:@#@$), NilSym0)
 import Data.Ord.Singletons
-import Data.Singletons
 import Data.Singletons.TH
+import Data.Singletons.TH.Options
 import Data.Traversable.Singletons
 
-{-
-In order to keep the type arguments to Product poly-kinded and with inferred
-specificities, we define the singleton version of Product, as well as its
-defunctionalization symbols, by hand. This is very much in the spirit of the
-code in Data.Functor.Const.Singletons. (See the comments above SConst in that
-module for more details on this choice.)
--}
-type SProduct :: Product f g a -> Type
-data SProduct :: Product f g a -> Type where
-  SPair :: forall f g a (x :: f a) (y :: g a).
-           Sing x -> Sing y -> SProduct ('Pair @f @g @a x y)
-type instance Sing @(Product f g a) = SProduct
-instance (SingI x, SingI y) => SingI ('Pair x y) where
-  sing = SPair sing sing
-instance SingI x => SingI1 ('Pair x) where
-  liftSing = SPair sing
-instance SingI2 'Pair where
-  liftSing2 = SPair
-
-type PairSym0 :: forall f g a. f a ~> g a ~> Product f g a
-data PairSym0 z
-type instance Apply PairSym0 x = PairSym1 x
-instance SingI PairSym0 where
-  sing = singFun2 SPair
-
-type PairSym1 :: forall f g a. f a -> g a ~> Product f g a
-data PairSym1 fa z
-type instance Apply (PairSym1 x) y = 'Pair x y
-instance SingI x => SingI (PairSym1 x) where
-  sing = singFun1 $ SPair (sing @x)
-instance SingI1 PairSym1 where
-  liftSing s = singFun1 $ SPair s
-
-type PairSym2 :: forall f g a. f a -> g a -> Product f g a
-type family PairSym2 x y where
-  PairSym2 x y = 'Pair x y
+$(withOptions defaultOptions{genSingKindInsts = False}
+    (genSingletons [''Product]))
 
 $(singletonsOnly [d|
   deriving instance (Eq (f a), Eq (g a)) => Eq (Product f g a)

@@ -150,6 +150,7 @@ tests =
     , compileAndDumpStdTest "T555"
     , compileAndDumpStdTest "T559"
     , compileAndDumpStdTest "T563"
+    , compileAndDumpStdTest "T565"
     , compileAndDumpStdTest "T567"
     , compileAndDumpStdTest "T571"
     , compileAndDumpStdTest "T581"

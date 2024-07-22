@@ -36,7 +36,7 @@ singType prom ty = do
       res'  = singFamily `DAppT` (foldType prom (map DVarT arg_names) `DSigT` prom_res)
                 -- Make sure to include an explicit `prom_res` kind annotation.
                 -- See Note [Preserve the order of type variables during singling],
-                -- wrinkle 3.
+                -- wrinkle 2.
       arg_tvbs = zipWith (`DKindedTV` SpecifiedSpec) arg_names prom_args
       -- If the original type signature lacks an explicit `forall`, then do not
       -- give the singled type signature an outermost `forall`. Instead, give it
@@ -204,56 +204,7 @@ Some further complications:
       SMkT :: forall a (x :: a). Sing x -> ST (MkT x)
 
 -----
--- Wrinkle 2: The TH reification swamp
------
-
-There is another issue with type signatures that lack explicit `forall`s, one
-which the current design of Template Haskell does not make simple to fix.
-If we single code that is wrapped in TH quotes, such as in the following example:
-
-  {-# LANGUAGE PolyKinds, ... #-}
-  $(singletons [d|
-    data Proxy a = MkProxy
-    |])
-
-Then our job is made much easier when singling MkProxy, since we know that the
-only type variable that must be quantified is `a`, as that is the only one
-specified by the user. This results in the following type signature for
-MkProxy:
-
-  MkProxy :: forall a. Proxy a
-
-However, this is not the only possible way to single MkProxy. One can
-alternatively use $(genSingletons [''Proxy]), which uses TH reification to
-infer the type of MkProxy. There is perilous, however, because this is how
-TH reifies Proxy:
-
-  DataD
-    [] ''Proxy [KindedTV a () (VarT k)] Nothing
-    [NormalC 'MkProxy []]
-    []
-
-We must then construct a type signature for MkProxy using nothing but the type
-variables from the data type header. But notice that `KindedTV a () (VarT k)`
-gives no indication of whether `k` is specified or inferred! As a result, we
-conservatively assume that `k` is specified, resulting the following type
-signature for MkProxy:
-
-  MkProxy :: forall k (a :: k). Proxy a
-
-Contrast this with `MkProxy :: Proxy a`, where `k` is inferred. In other words,
-if you single MkProxy using genSingletons, then `Proxy @True` will typecheck
-but `SMkProxy @True` will /not/ typecheck—you'd have to use
-`SMkProxy @_ @True` instead. Urk!
-
-At present, Template Haskell does not have a way to distinguish among the
-specificities bound by a data type header. Without this knowledge, it is
-unclear how one could work around this issue. Thankfully, this issue is
-only likely to surface in very limited circumstances, so the damage is somewhat
-minimal.
-
------
--- Wrinkle 3: Where to put explicit kind annotations
+-- Wrinkle 2: Where to put explicit kind annotations
 -----
 
 Type variable binders are only part of the story—we must also determine what
@@ -304,28 +255,49 @@ instead:
   SNothing :: forall a. SMaybe (Nothing @a)
 
 This does work for many cases, but there are also some corner cases where this
-approach fails. Recall the `MkProxy` example from Wrinkle 2 above:
+approach fails. Suppose that `Nothing` was declared like so:
 
-  {-# LANGUAGE PolyKinds, ... #-}
-  data Proxy a = MkProxy
-  $(genSingletons [''Proxy])
+  Nothing :: forall {a}. Maybe a
 
-Due to the design of Template Haskell (discussed in Wrinkle 2), `MkProxy` will
-be reified with the type of `forall k (a :: k). Proxy a`. This means that
-if we used visible kind applications in the result type, we would end up with
-this:
+Then we couldn't write `Nothing @a`, as `a` wouldn't be eligible for visible
+kind application. (GHC Core would let you write `Nothing @{a}`, but this isn't
+possible in source Haskell.) As such, the only way to fix the type of `a` in
+`Maybe a` would be to write `Nothing :: Maybe a`.
 
-  SMkProxy :: forall k (a :: k). SProxy (MkProxy @k @a)
+An even more obscure corner case is when a type quantifies a type variable
+without mentioning it at all in the rest of the type, e.g.,
 
-This will not kind-check because MkProxy only accepts /one/ visible kind argument,
-whereas this supplies it with two. To avoid this issue, we instead use the type
-`forall k (a :: k). SProxy (MkProxy :: Proxy a)`. Granted, this type is /still/
-technically wrong due to the fact that it explicitly quantifies `k`, but at the
-very least it typechecks. If Template Haskell gained the ability to distinguish
-among the specificities of type variables bound by a data type header
-(perhaps by way of a language feature akin to
-https://github.com/ghc-proposals/ghc-proposals/pull/326), then we could revisit
-this design choice.
+  C :: forall a. D
+
+At present, singletons-th does not handle this type of corner case at all. It
+wouldn't suffice to single `C` to the following:
+
+  SC :: forall a. SD (C :: D)
+
+This is because the `a` argument to `C` is left ambiguous in the type `C :: D`,
+as the return kind `D` doesn't indicate what `a` should be. In theory, we
+/could/ write `C @a :: D` instead, which would solve that particular problem.
+But there would still be trouble on the horizon, as there are other types of
+code that singletons-th generates which exhibit similar sorts of ambiguity. For
+example, here is the defunctionalization symbol that singletons-th would
+generate for `C`:
+
+  type CSym0 :: forall a. D
+  type family CSym0 @a :: D where
+    CSym0 = C
+
+GHC will reject this type family equation, also for ambiguity-related reasons:
+
+  error: [GHC-16220]
+      • Uninferrable type variables k0, (a0 :: k0) in
+        the type family equation right-hand side: C @{k0} @a0
+      • In the type family declaration for ‘CSym0’
+
+This is fixable, but we would need to audit all potential sources of type
+variable-related ambiguity in singletons-th–generated code and make sure that
+we have covered our bases. Given that types such as `forall a. D` are rare in
+practice, I'm inclined not to worry about this unless someone specifically asks
+for this featurette.
 
 Finally, note that we need only write `Sing x_1 -> ... -> Sing x_p`, and not
 `Sing (x_1 :: PT_1) -> ... Sing (x_p :: PT_p)`. This is simply because we

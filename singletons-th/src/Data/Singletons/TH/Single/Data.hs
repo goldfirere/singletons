@@ -231,7 +231,7 @@ singCtor dataName (DCon con_tvbs cxt name fields rty)
                   (foldType pCon indices `DSigT` rty'))
                   -- Make sure to include an explicit `rty'` kind annotation.
                   -- See Note [Preserve the order of type variables during singling],
-                  -- wrinkle 3, in D.S.TH.Single.Type.
+                  -- wrinkle 2, in D.S.TH.Single.Type.
   where
     mk_source_unpackedness :: SourceUnpackedness -> SgM SourceUnpackedness
     mk_source_unpackedness su = case su of
