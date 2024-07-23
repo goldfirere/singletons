@@ -1,5 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
-
 {- Data/Singletons/TH/Util.hs
 
 (c) Richard Eisenberg 2013
