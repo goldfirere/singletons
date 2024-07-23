@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SingletonsBaseTestSuiteUtils (
@@ -47,14 +46,11 @@ ghcOpts = ghcFlags ++ [
   , "-fprint-explicit-kinds"
   , "-O0"
   , "-i" ++ goldenPath
-  , "-XGHC2021"
+  , "-XGHC2024"
   , "-XTemplateHaskell"
-  , "-XDataKinds"
   , "-XTypeFamilies"
-  , "-XGADTs"
   , "-XUndecidableInstances"
   , "-XIncoherentInstances"
-  , "-XLambdaCase"
   , "-XUnboxedTuples"
   , "-XDefaultSignatures"
   , "-XCPP"
