@@ -1,5 +1,3 @@
-{-# LANGUAGE ExplicitNamespaces #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Singletons.Base.TH
