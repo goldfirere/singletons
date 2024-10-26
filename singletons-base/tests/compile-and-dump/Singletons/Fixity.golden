@@ -23,7 +23,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a a) (====@#@$) a0123456789876543210 = (====@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (====@#@$) where
       suppressUnusedWarnings = snd ((,) (:====@#@$###) ())
-    infix 4 ====@#@$
+    infix 4 type ====@#@$
     type (====@#@$$) :: a -> (~>) a a
     data (====@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
@@ -32,11 +32,11 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @a ((====@#@$$) a0123456789876543210) a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((====@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:====@#@$$###) ())
-    infix 4 ====@#@$$
+    infix 4 type ====@#@$$
     type (====@#@$$$) :: a -> a -> a
     type family (====@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (====@#@$$$) a0123456789876543210 a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
-    infix 4 ====@#@$$$
+    infix 4 type ====@#@$$$
     type (====) :: a -> a -> a
     type family (====) @a (a :: a) (a :: a) :: a where
       (====) a _ = a
@@ -48,7 +48,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a Ordering) (<=>@#@$) a0123456789876543210 = (<=>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<=>@#@$###) ())
-    infix 4 <=>@#@$
+    infix 4 type <=>@#@$
     type (<=>@#@$$) :: forall a. a -> (~>) a Ordering
     data (<=>@#@$$) (a0123456789876543210 :: a) :: (~>) a Ordering
       where
@@ -57,14 +57,14 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @Ordering ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<=>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:<=>@#@$$###) ())
-    infix 4 <=>@#@$$
+    infix 4 type <=>@#@$$
     type (<=>@#@$$$) :: forall a. a -> a -> Ordering
     type family (<=>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
       (<=>@#@$$$) a0123456789876543210 a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
-    infix 4 <=>@#@$$$
+    infix 4 type <=>@#@$$$
     class PMyOrd a where
       type family (<=>) (arg :: a) (arg :: a) :: Ordering
-    infix 4 %====
+    infix 4 data %====
     (%====) ::
       (forall (t :: a) (t :: a).
        Sing t -> Sing t -> Sing ((====) t t :: a) :: Type)
@@ -80,7 +80,7 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
       (%<=>) ::
         (forall (t :: a) (t :: a).
          Sing t -> Sing t -> Sing ((<=>) t t :: Ordering) :: Type)
-      infix 4 %<=>
+      infix 4 data %<=>
     instance SMyOrd a =>
              SingI ((<=>@#@$) :: (~>) a ((~>) a Ordering)) where
       sing = singFun2 @(<=>@#@$) (%<=>)

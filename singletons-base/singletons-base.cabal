@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.10.1
+tested-with:    GHC == 9.12.1
 extra-doc-files:    CHANGES.md
 extra-source-files: README.md
                     tests/README.md
@@ -40,7 +40,7 @@ description:
     .
     @singletons-base@ uses code that relies on bleeding-edge GHC language
     extensions. As such, @singletons-base@ only supports the latest major version
-    of GHC (currently GHC 9.10). For more information,
+    of GHC (currently GHC 9.12). For more information,
     consult the @singletons@
     @<https://github.com/goldfirere/singletons/blob/master/README.md README>@.
     .
@@ -67,11 +67,11 @@ source-repository head
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.20 && < 4.21,
+  build-depends:      base             >= 4.21 && < 4.22,
                       pretty,
                       singletons       == 3.0.*,
                       singletons-th    >= 3.5 && < 3.6,
-                      template-haskell >= 2.22.1 && < 2.23,
+                      template-haskell >= 2.23 && < 2.24,
                       text >= 1.2,
                       th-desugar       >= 1.18 && < 1.19
   default-language:   GHC2021
@@ -150,7 +150,7 @@ test-suite singletons-base-test-suite
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
-  build-depends:      base >= 4.20 && < 4.21,
+  build-depends:      base >= 4.21 && < 4.22,
                       bytestring >= 0.10.9,
                       deepseq >= 1.4.4,
                       filepath >= 1.3,

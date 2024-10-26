@@ -54,7 +54,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a (Foo2 a)) MkFoo2bSym0 a0123456789876543210 = MkFoo2bSym1 a0123456789876543210
     instance SuppressUnusedWarnings MkFoo2bSym0 where
       suppressUnusedWarnings = snd ((,) MkFoo2bSym0KindInference ())
-    infixl 5 `MkFoo2bSym0`
+    infixl 5 type `MkFoo2bSym0`
     type MkFoo2bSym1 :: forall a. a -> (~>) a (Foo2 a)
     data MkFoo2bSym1 (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
       where
@@ -63,11 +63,11 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @(Foo2 a) (MkFoo2bSym1 a0123456789876543210) a0123456789876543210 = MkFoo2b a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkFoo2bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkFoo2bSym1KindInference ())
-    infixl 5 `MkFoo2bSym1`
+    infixl 5 type `MkFoo2bSym1`
     type MkFoo2bSym2 :: forall a. a -> a -> Foo2 a
     type family MkFoo2bSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
       MkFoo2bSym2 a0123456789876543210 a0123456789876543210 = MkFoo2b a0123456789876543210 a0123456789876543210
-    infixl 5 `MkFoo2bSym2`
+    infixl 5 type `MkFoo2bSym2`
     type (:*:@#@$) :: forall a. (~>) a ((~>) a (Foo2 a))
     data (:*:@#@$) :: (~>) a ((~>) a (Foo2 a))
       where
@@ -76,7 +76,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a (Foo2 a)) (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$###) ())
-    infixl 5 :*:@#@$
+    infixl 5 type :*:@#@$
     type (:*:@#@$$) :: forall a. a -> (~>) a (Foo2 a)
     data (:*:@#@$$) (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
       where
@@ -85,11 +85,11 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @(Foo2 a) ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
-    infixl 5 :*:@#@$$
+    infixl 5 type :*:@#@$$
     type (:*:@#@$$$) :: forall a. a -> a -> Foo2 a
     type family (:*:@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
       (:*:@#@$$$) a0123456789876543210 a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
-    infixl 5 :*:@#@$$$
+    infixl 5 type :*:@#@$$$
     type (:&:@#@$) :: forall a. (~>) a ((~>) a (Foo2 a))
     data (:&:@#@$) :: (~>) a ((~>) a (Foo2 a))
       where
@@ -98,7 +98,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a (Foo2 a)) (:&:@#@$) a0123456789876543210 = (:&:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:&:@#@$) where
       suppressUnusedWarnings = snd ((,) (::&:@#@$###) ())
-    infixl 5 :&:@#@$
+    infixl 5 type :&:@#@$
     type (:&:@#@$$) :: forall a. a -> (~>) a (Foo2 a)
     data (:&:@#@$$) (a0123456789876543210 :: a) :: (~>) a (Foo2 a)
       where
@@ -107,11 +107,11 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @(Foo2 a) ((:&:@#@$$) a0123456789876543210) a0123456789876543210 = (:&:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:&:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::&:@#@$$###) ())
-    infixl 5 :&:@#@$$
+    infixl 5 type :&:@#@$$
     type (:&:@#@$$$) :: forall a. a -> a -> Foo2 a
     type family (:&:@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Foo2 a where
       (:&:@#@$$$) a0123456789876543210 a0123456789876543210 = (:&:) a0123456789876543210 a0123456789876543210
-    infixl 5 :&:@#@$$$
+    infixl 5 type :&:@#@$$$
     type MkFoo3Sym0 :: (~>) Bool ((~>) Bool Foo3)
     data MkFoo3Sym0 :: (~>) Bool ((~>) Bool Foo3)
       where
@@ -180,9 +180,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       ShowsPrec_0123456789876543210 p_0123456789876543210 (MkFoo3 arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "MkFoo3 ")) (Apply (Apply (.@#@$) (Apply ShowCharSym0 '{')) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "getFoo3a = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowCommaSpaceSym0) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "(***) = ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 0)) arg_0123456789876543210)) (Apply ShowCharSym0 '}'))))))))) a_0123456789876543210
     instance PShow Foo3 where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    infixl 5 :%&:
-    infixl 5 :%*:
-    infixl 5 `SMkFoo2b`
+    infixl 5 data :%&:
+    infixl 5 data :%*:
+    infixl 5 data `SMkFoo2b`
     (%***) ::
       (forall (t :: Foo3). Sing t -> Sing ((***) t :: Bool) :: Type)
     sGetFoo3a ::

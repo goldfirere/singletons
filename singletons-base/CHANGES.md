@@ -3,6 +3,7 @@ Changelog for the `singletons-base` project
 
 3.5 [????.??.??]
 -----------------
+* Require building with GHC 9.12.
 * Remove the use of a custom `Setup.hs` script. This script has now been
   replaced with a [`cabal` code
   generator](https://cabal.readthedocs.io/en/stable/cabal-package-description-file.html#pkg-field-test-suite-code-generators)
