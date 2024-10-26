@@ -133,7 +133,6 @@ data ADPat = ADLitP Lit
                     ADPat DType
            | ADWildP
 
-data ADMatch = ADMatch VarPromotions ADPat ADExp
 data ADClause = ADClause VarPromotions
                          [ADPat] ADExp
 
