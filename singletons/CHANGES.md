@@ -1,8 +1,8 @@
 Changelog for the `singletons` project
 ======================================
 
-next [????.??.??]
------------------
+3.0.4 [????.??.??]
+------------------
 * Define `Sing` instances such that they explicitly match on their types on the
   left-hand sides (e.g., define `type instance Sing @(k1 ~> k2) = SLambda`
   instead of `type instance Sing = SLambda`. Doing so will make `singletons`

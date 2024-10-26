@@ -1,5 +1,5 @@
 name:           singletons-th
-version:        3.4
+version:        3.5
 cabal-version:  1.24
 synopsis:       A framework for generating singleton types
 homepage:       http://www.github.com/goldfirere/singletons
