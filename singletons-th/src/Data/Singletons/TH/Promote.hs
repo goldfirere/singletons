@@ -1480,10 +1480,10 @@ promoteExp (DSigE exp ty) = do
   (exp', ann_exp) <- promoteExp exp
   ty' <- promoteType ty
   return (DSigT exp' ty', ADSigE exp' ann_exp ty')
-promoteExp e@(DStaticE _) = fail ("Static expressions cannot be promoted: " ++ show e)
-promoteExp e@(DTypedBracketE _) = fail ("Typed bracket expressions cannot be promoted: " ++ show e)
-promoteExp e@(DTypedSpliceE _) = fail ("Typed splice expressions cannot be promoted: " ++ show e)
-promoteExp e@(DTypeE _) = fail ("Embedded type expressions cannot be promoted: " ++ show e)
+promoteExp e@(DStaticE {}) = fail ("Static expressions cannot be promoted: " ++ show e)
+promoteExp e@(DTypedBracketE {}) = fail ("Typed bracket expressions cannot be promoted: " ++ show e)
+promoteExp e@(DTypedSpliceE {}) = fail ("Typed splice expressions cannot be promoted: " ++ show e)
+promoteExp e@(DTypeE {}) = fail ("Embedded type expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: OptionsMonad q => Lit -> q DType
 promoteLitExp (IntegerL n) = do
