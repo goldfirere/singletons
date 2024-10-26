@@ -3,6 +3,7 @@ Changelog for the `singletons-base` project
 
 3.5 [????.??.??]
 ----------------
+* Require building with GHC 9.12.
 * The types of `sError`, `sErrorWithoutStackTrace`, and `sUndefined` are now
   less polymorphic than they were before:
 
