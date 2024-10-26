@@ -1,9 +1,9 @@
 Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     singletons
-      [d| infixl 4 !!!
-          infixl 4 %%%
-          infixl 4 `Bar`
-          infixl 4 `foo`
+      [d| infixl 4 type !!!
+          infixl 4 data %%%
+          infixl 4 type `Bar`
+          infixl 4 data `foo`
           
           foo :: a -> a -> a
           x `foo` _ = x
@@ -16,16 +16,16 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
           type x `Bar` y = x
           type x !!! y = x |]
   ======>
-    infixl 4 `foo`
+    infixl 4 data `foo`
     foo :: a -> a -> a
     foo x _ = x
-    infixl 4 `Bar`
+    infixl 4 type `Bar`
     type Bar :: a -> a -> a
     type Bar x y = x
-    infixl 4 %%%
+    infixl 4 data %%%
     (%%%) :: a -> a -> a
     (%%%) x _ = x
-    infixl 4 !!!
+    infixl 4 type !!!
     type (!!!) :: a -> a -> a
     type (!!!) x y = x
     type BarSym0 :: (~>) a ((~>) a a)
@@ -36,7 +36,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a a) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
-    infixl 4 `BarSym0`
+    infixl 4 type `BarSym0`
     type BarSym1 :: a -> (~>) a a
     data BarSym1 (a0123456789876543210 :: a) :: (~>) a a
       where
@@ -45,11 +45,11 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @a (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) BarSym1KindInference ())
-    infixl 4 `BarSym1`
+    infixl 4 type `BarSym1`
     type BarSym2 :: a -> a -> a
     type family BarSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
-    infixl 4 `BarSym2`
+    infixl 4 type `BarSym2`
     type (!!!@#@$) :: (~>) a ((~>) a a)
     data (!!!@#@$) :: (~>) a ((~>) a a)
       where
@@ -58,7 +58,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a a) (!!!@#@$) a0123456789876543210 = (!!!@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (!!!@#@$) where
       suppressUnusedWarnings = snd ((,) (:!!!@#@$###) ())
-    infixl 4 !!!@#@$
+    infixl 4 type !!!@#@$
     type (!!!@#@$$) :: a -> (~>) a a
     data (!!!@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
@@ -67,11 +67,11 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @a ((!!!@#@$$) a0123456789876543210) a0123456789876543210 = (!!!) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((!!!@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:!!!@#@$$###) ())
-    infixl 4 !!!@#@$$
+    infixl 4 type !!!@#@$$
     type (!!!@#@$$$) :: a -> a -> a
     type family (!!!@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (!!!@#@$$$) a0123456789876543210 a0123456789876543210 = (!!!) a0123456789876543210 a0123456789876543210
-    infixl 4 !!!@#@$$$
+    infixl 4 type !!!@#@$$$
     type (%%%@#@$) :: (~>) a ((~>) a a)
     data (%%%@#@$) :: (~>) a ((~>) a a)
       where
@@ -80,7 +80,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a a) (%%%@#@$) a0123456789876543210 = (%%%@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (%%%@#@$) where
       suppressUnusedWarnings = snd ((,) (:%%%@#@$###) ())
-    infixl 4 %%%@#@$
+    infixl 4 type %%%@#@$
     type (%%%@#@$$) :: a -> (~>) a a
     data (%%%@#@$$) (a0123456789876543210 :: a) :: (~>) a a
       where
@@ -89,11 +89,11 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @a ((%%%@#@$$) a0123456789876543210) a0123456789876543210 = (%%%) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((%%%@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (:%%%@#@$$###) ())
-    infixl 4 %%%@#@$$
+    infixl 4 type %%%@#@$$
     type (%%%@#@$$$) :: a -> a -> a
     type family (%%%@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       (%%%@#@$$$) a0123456789876543210 a0123456789876543210 = (%%%) a0123456789876543210 a0123456789876543210
-    infixl 4 %%%@#@$$$
+    infixl 4 type %%%@#@$$$
     type FooSym0 :: (~>) a ((~>) a a)
     data FooSym0 :: (~>) a ((~>) a a)
       where
@@ -102,7 +102,7 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) a a) FooSym0 a0123456789876543210 = FooSym1 a0123456789876543210
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
-    infixl 4 `FooSym0`
+    infixl 4 type `FooSym0`
     type FooSym1 :: a -> (~>) a a
     data FooSym1 (a0123456789876543210 :: a) :: (~>) a a
       where
@@ -111,21 +111,21 @@ Singletons/T582.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @a (FooSym1 a0123456789876543210) a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (FooSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) FooSym1KindInference ())
-    infixl 4 `FooSym1`
+    infixl 4 type `FooSym1`
     type FooSym2 :: a -> a -> a
     type family FooSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
       FooSym2 a0123456789876543210 a0123456789876543210 = Foo a0123456789876543210 a0123456789876543210
-    infixl 4 `FooSym2`
+    infixl 4 type `FooSym2`
     type (%%%) :: a -> a -> a
     type family (%%%) @a (a :: a) (a :: a) :: a where
       (%%%) x _ = x
     type Foo :: a -> a -> a
     type family Foo @a (a :: a) (a :: a) :: a where
       Foo x _ = x
-    infixl 4 %%%
-    infixl 4 `Foo`
-    infixl 4 %%%%
-    infixl 4 `sFoo`
+    infixl 4 type %%%
+    infixl 4 type `Foo`
+    infixl 4 data %%%%
+    infixl 4 data `sFoo`
     (%%%%) ::
       (forall (t :: a) (t :: a).
        Sing t -> Sing t -> Sing ((%%%) t t :: a) :: Type)

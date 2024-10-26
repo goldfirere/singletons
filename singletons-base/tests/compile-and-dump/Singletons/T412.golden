@@ -33,7 +33,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @_ @_ T1aSym0 a0123456789876543210 = T1aSym1 a0123456789876543210
     instance SuppressUnusedWarnings T1aSym0 where
       suppressUnusedWarnings = snd ((,) T1aSym0KindInference ())
-    infixl 5 `T1aSym0`
+    infixl 5 type `T1aSym0`
     data T1aSym1 a0123456789876543210 b0123456789876543210
       where
         T1aSym1KindInference :: SameKind (Apply (T1aSym1 a0123456789876543210) arg) (T1aSym2 a0123456789876543210 arg) =>
@@ -41,10 +41,10 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @_ @_ (T1aSym1 a0123456789876543210) b0123456789876543210 = T1a a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (T1aSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) T1aSym1KindInference ())
-    infixl 5 `T1aSym1`
+    infixl 5 type `T1aSym1`
     type family T1aSym2 a0123456789876543210 b0123456789876543210 where
       T1aSym2 a0123456789876543210 b0123456789876543210 = T1a a0123456789876543210 b0123456789876543210
-    infixl 5 `T1aSym2`
+    infixl 5 type `T1aSym2`
     data T1bSym0 a0123456789876543210
       where
         T1bSym0KindInference :: SameKind (Apply T1bSym0 arg) (T1bSym1 arg) =>
@@ -52,7 +52,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @_ @_ T1bSym0 a0123456789876543210 = T1bSym1 a0123456789876543210
     instance SuppressUnusedWarnings T1bSym0 where
       suppressUnusedWarnings = snd ((,) T1bSym0KindInference ())
-    infixl 5 `T1bSym0`
+    infixl 5 type `T1bSym0`
     data T1bSym1 a0123456789876543210 b0123456789876543210
       where
         T1bSym1KindInference :: SameKind (Apply (T1bSym1 a0123456789876543210) arg) (T1bSym2 a0123456789876543210 arg) =>
@@ -60,10 +60,10 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @_ @_ (T1bSym1 a0123456789876543210) b0123456789876543210 = T1b a0123456789876543210 b0123456789876543210
     instance SuppressUnusedWarnings (T1bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) T1bSym1KindInference ())
-    infixl 5 `T1bSym1`
+    infixl 5 type `T1bSym1`
     type family T1bSym2 a0123456789876543210 b0123456789876543210 where
       T1bSym2 a0123456789876543210 b0123456789876543210 = T1b a0123456789876543210 b0123456789876543210
-    infixl 5 `T1bSym2`
+    infixl 5 type `T1bSym2`
     type MkD1Sym0 :: forall a b. (~>) a ((~>) b (D1 a b))
     data MkD1Sym0 :: (~>) a ((~>) b (D1 a b))
       where
@@ -72,7 +72,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) b (D1 a b)) MkD1Sym0 a0123456789876543210 = MkD1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings MkD1Sym0 where
       suppressUnusedWarnings = snd ((,) MkD1Sym0KindInference ())
-    infixr 5 `MkD1Sym0`
+    infixr 5 type `MkD1Sym0`
     type MkD1Sym1 :: forall a b. a -> (~>) b (D1 a b)
     data MkD1Sym1 (a0123456789876543210 :: a) :: (~>) b (D1 a b)
       where
@@ -81,11 +81,11 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @b @(D1 a b) (MkD1Sym1 a0123456789876543210) a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkD1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkD1Sym1KindInference ())
-    infixr 5 `MkD1Sym1`
+    infixr 5 type `MkD1Sym1`
     type MkD1Sym2 :: forall a b. a -> b -> D1 a b
     type family MkD1Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: D1 a b where
       MkD1Sym2 a0123456789876543210 a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
-    infixr 5 `MkD1Sym2`
+    infixr 5 type `MkD1Sym2`
     type D1BSym0 :: forall a b. (~>) (D1 a b) b
     data D1BSym0 :: (~>) (D1 a b) b
       where
@@ -94,11 +94,11 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @(D1 a b) @b D1BSym0 a0123456789876543210 = D1B a0123456789876543210
     instance SuppressUnusedWarnings D1BSym0 where
       suppressUnusedWarnings = snd ((,) D1BSym0KindInference ())
-    infixr 5 `D1BSym0`
+    infixr 5 type `D1BSym0`
     type D1BSym1 :: forall a b. D1 a b -> b
     type family D1BSym1 @a @b (a0123456789876543210 :: D1 a b) :: b where
       D1BSym1 a0123456789876543210 = D1B a0123456789876543210
-    infixr 5 `D1BSym1`
+    infixr 5 type `D1BSym1`
     type D1ASym0 :: forall a b. (~>) (D1 a b) a
     data D1ASym0 :: (~>) (D1 a b) a
       where
@@ -107,20 +107,20 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @(D1 a b) @a D1ASym0 a0123456789876543210 = D1A a0123456789876543210
     instance SuppressUnusedWarnings D1ASym0 where
       suppressUnusedWarnings = snd ((,) D1ASym0KindInference ())
-    infixr 5 `D1ASym0`
+    infixr 5 type `D1ASym0`
     type D1ASym1 :: forall a b. D1 a b -> a
     type family D1ASym1 @a @b (a0123456789876543210 :: D1 a b) :: a where
       D1ASym1 a0123456789876543210 = D1A a0123456789876543210
-    infixr 5 `D1ASym1`
+    infixr 5 type `D1ASym1`
     type D1B :: forall a b. D1 a b -> b
     type family D1B @a @b (a :: D1 a b) :: b where
       D1B @a @b (MkD1 _ field :: D1 a b) = field
     type D1A :: forall a b. D1 a b -> a
     type family D1A @a @b (a :: D1 a b) :: a where
       D1A @a @b (MkD1 field _ :: D1 a b) = field
-    infixr 5 `D1B`
-    infixr 5 `D1A`
-    infix 5 `PC1`
+    infixr 5 type `D1B`
+    infixr 5 type `D1A`
+    infix 5 type `PC1`
     type M1Sym0 :: forall a b. (~>) a ((~>) b Bool)
     data M1Sym0 :: (~>) a ((~>) b Bool)
       where
@@ -129,7 +129,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) b Bool) M1Sym0 a0123456789876543210 = M1Sym1 a0123456789876543210
     instance SuppressUnusedWarnings M1Sym0 where
       suppressUnusedWarnings = snd ((,) M1Sym0KindInference ())
-    infix 6 `M1Sym0`
+    infix 6 type `M1Sym0`
     type M1Sym1 :: forall a b. a -> (~>) b Bool
     data M1Sym1 (a0123456789876543210 :: a) :: (~>) b Bool
       where
@@ -138,18 +138,18 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @b @Bool (M1Sym1 a0123456789876543210) a0123456789876543210 = M1 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (M1Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) M1Sym1KindInference ())
-    infix 6 `M1Sym1`
+    infix 6 type `M1Sym1`
     type M1Sym2 :: forall a b. a -> b -> Bool
     type family M1Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
       M1Sym2 a0123456789876543210 a0123456789876543210 = M1 a0123456789876543210 a0123456789876543210
-    infix 6 `M1Sym2`
+    infix 6 type `M1Sym2`
     class PC1 a b where
       type family M1 (arg :: a) (arg :: b) :: Bool
-      infix 6 `M1`
-    infixr 5 `sD1B`
-    infixr 5 `sD1A`
-    infixr 5 `SMkD1`
-    infix 5 `SC1`
+      infix 6 type `M1`
+    infixr 5 data `sD1B`
+    infixr 5 data `sD1A`
+    infixr 5 data `SMkD1`
+    infix 5 type `SC1`
     sD1B :: forall a b (t :: D1 a b). Sing t -> Sing (D1B t :: b)
     sD1A :: forall a b (t :: D1 a b). Sing t -> Sing (D1A t :: a)
     sD1B (SMkD1 _ (sField :: Sing field)) = sField
@@ -173,7 +173,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       sM1 ::
         (forall (t :: a) (t :: b).
          Sing t -> Sing t -> Sing (M1 t t :: Bool) :: Type)
-      infix 6 `sM1`
+      infix 6 data `sM1`
     instance (SingI n, SingI n) => SingI (MkD1 (n :: a) (n :: b)) where
       sing = SMkD1 sing sing
     instance SingI n => SingI1 (MkD1 (n :: a)) where
@@ -206,7 +206,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @a @((~>) b Bool) M2Sym0 a0123456789876543210 = M2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings M2Sym0 where
       suppressUnusedWarnings = snd ((,) M2Sym0KindInference ())
-    infix 6 `M2Sym0`
+    infix 6 type `M2Sym0`
     type M2Sym1 :: forall (a :: Type) (b :: Type). a -> (~>) b Bool
     data M2Sym1 (a0123456789876543210 :: a) :: (~>) b Bool
       where
@@ -215,23 +215,23 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @b @Bool (M2Sym1 a0123456789876543210) a0123456789876543210 = M2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (M2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) M2Sym1KindInference ())
-    infix 6 `M2Sym1`
+    infix 6 type `M2Sym1`
     type M2Sym2 :: forall (a :: Type) (b :: Type). a -> b -> Bool
     type family M2Sym2 @(a :: Type) @(b :: Type) (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Bool where
       M2Sym2 a0123456789876543210 a0123456789876543210 = M2 a0123456789876543210 a0123456789876543210
-    infix 6 `M2Sym2`
+    infix 6 type `M2Sym2`
     type PC2 :: Type -> Type -> Constraint
     class PC2 (a :: Type) (b :: Type) where
       type family M2 (arg :: a) (arg :: b) :: Bool
-    infix 5 `PC2`
-    infix 6 `M2`
+    infix 5 type `PC2`
+    infix 6 type `M2`
     class SC2 (a :: Type) (b :: Type) where
       sM2 ::
         (forall (t :: a) (t :: b).
          Sing t -> Sing t -> Sing (M2 t t :: Bool) :: Type)
     type SC2 :: Type -> Type -> Constraint
-    infix 5 `SC2`
-    infix 6 `sM2`
+    infix 5 type `SC2`
+    infix 6 data `sM2`
     instance SC2 a b => SingI (M2Sym0 :: (~>) a ((~>) b Bool)) where
       sing = singFun2 @M2Sym0 sM2
     instance (SC2 a b, SingI d) =>
@@ -247,7 +247,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @Type @((~>) Type Type) T2aSym0 a0123456789876543210 = T2aSym1 a0123456789876543210
     instance SuppressUnusedWarnings T2aSym0 where
       suppressUnusedWarnings = snd ((,) T2aSym0KindInference ())
-    infixl 5 `T2aSym0`
+    infixl 5 type `T2aSym0`
     type T2aSym1 :: Type -> (~>) Type Type
     data T2aSym1 (a0123456789876543210 :: Type) :: (~>) Type Type
       where
@@ -256,11 +256,11 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @Type @Type (T2aSym1 a0123456789876543210) a0123456789876543210 = T2a a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (T2aSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) T2aSym1KindInference ())
-    infixl 5 `T2aSym1`
+    infixl 5 type `T2aSym1`
     type T2aSym2 :: Type -> Type -> Type
     type family T2aSym2 (a0123456789876543210 :: Type) (a0123456789876543210 :: Type) :: Type where
       T2aSym2 a0123456789876543210 a0123456789876543210 = T2a a0123456789876543210 a0123456789876543210
-    infixl 5 `T2aSym2`
+    infixl 5 type `T2aSym2`
     type T2bSym0 :: (~>) Type ((~>) Type Type)
     data T2bSym0 :: (~>) Type ((~>) Type Type)
       where
@@ -269,7 +269,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @Type @((~>) Type Type) T2bSym0 a0123456789876543210 = T2bSym1 a0123456789876543210
     instance SuppressUnusedWarnings T2bSym0 where
       suppressUnusedWarnings = snd ((,) T2bSym0KindInference ())
-    infixl 5 `T2bSym0`
+    infixl 5 type `T2bSym0`
     type T2bSym1 :: Type -> (~>) Type Type
     data T2bSym1 (a0123456789876543210 :: Type) :: (~>) Type Type
       where
@@ -278,11 +278,11 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @Type @Type (T2bSym1 a0123456789876543210) a0123456789876543210 = T2b a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (T2bSym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) T2bSym1KindInference ())
-    infixl 5 `T2bSym1`
+    infixl 5 type `T2bSym1`
     type T2bSym2 :: Type -> Type -> Type
     type family T2bSym2 (a0123456789876543210 :: Type) (a0123456789876543210 :: Type) :: Type where
       T2bSym2 a0123456789876543210 a0123456789876543210 = T2b a0123456789876543210 a0123456789876543210
-    infixl 5 `T2bSym2`
+    infixl 5 type `T2bSym2`
     type MkD2Sym0 :: forall (a :: Type)
                             (b :: Type). (~>) a ((~>) b (D2 a b))
     data MkD2Sym0 :: (~>) a ((~>) b (D2 a b))
@@ -292,7 +292,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @a @((~>) b (D2 a b)) MkD2Sym0 a0123456789876543210 = MkD2Sym1 a0123456789876543210
     instance SuppressUnusedWarnings MkD2Sym0 where
       suppressUnusedWarnings = snd ((,) MkD2Sym0KindInference ())
-    infixr 5 `MkD2Sym0`
+    infixr 5 type `MkD2Sym0`
     type MkD2Sym1 :: forall (a :: Type) (b :: Type). a
                                                      -> (~>) b (D2 a b)
     data MkD2Sym1 (a0123456789876543210 :: a) :: (~>) b (D2 a b)
@@ -302,13 +302,13 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Apply @b @(D2 a b) (MkD2Sym1 a0123456789876543210) a0123456789876543210 = 'MkD2 a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings (MkD2Sym1 a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) MkD2Sym1KindInference ())
-    infixr 5 `MkD2Sym1`
+    infixr 5 type `MkD2Sym1`
     type MkD2Sym2 :: forall (a :: Type) (b :: Type). a -> b -> D2 a b
     type family MkD2Sym2 @(a :: Type) @(b :: Type) (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: D2 a b where
       MkD2Sym2 a0123456789876543210 a0123456789876543210 = 'MkD2 a0123456789876543210 a0123456789876543210
-    infixr 5 `MkD2Sym2`
-    infixr 5 `D2A`
-    infixr 5 `D2B`
+    infixr 5 type `MkD2Sym2`
+    infixr 5 type `D2A`
+    infixr 5 type `D2B`
     type D2BSym0 :: forall (a :: Type) (b :: Type). (~>) (D2 a b) b
     data D2BSym0 :: (~>) (D2 a b) b
       where
@@ -361,9 +361,9 @@ Singletons/T412.hs:0:0:: Splicing declarations
       toSing (MkD2 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
-    infixr 5 `SMkD2`
-    infixr 5 `sD2A`
-    infixr 5 `sD2B`
+    infixr 5 data `SMkD2`
+    infixr 5 data `sD2A`
+    infixr 5 data `sD2B`
     instance (SingI n, SingI n) =>
              SingI ('MkD2 (n :: a) (n :: b)) where
       sing = SMkD2 sing sing
