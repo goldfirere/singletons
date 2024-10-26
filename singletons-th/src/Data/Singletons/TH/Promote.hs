@@ -1484,6 +1484,8 @@ promoteExp e@(DStaticE {}) = fail ("Static expressions cannot be promoted: " ++ 
 promoteExp e@(DTypedBracketE {}) = fail ("Typed bracket expressions cannot be promoted: " ++ show e)
 promoteExp e@(DTypedSpliceE {}) = fail ("Typed splice expressions cannot be promoted: " ++ show e)
 promoteExp e@(DTypeE {}) = fail ("Embedded type expressions cannot be promoted: " ++ show e)
+promoteExp e@(DForallE {}) = fail ("Embedded `forall` expressions cannot be promoted: " ++ show e)
+promoteExp e@(DConstrainedE {}) = fail ("Embedded constraint expressions cannot be promoted: " ++ show e)
 
 promoteLitExp :: OptionsMonad q => Lit -> q DType
 promoteLitExp (IntegerL n) = do
