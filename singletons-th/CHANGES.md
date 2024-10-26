@@ -3,6 +3,7 @@ Changelog for the `singletons-th` project
 
 3.5 [????.??.??]
 ----------------
+* Require building with GHC 9.12.
 * Require building with `th-desugar-1.18` or later. Notably, `th-desugar-1.18`
   now desugars all lambda, `case`, and `\case` expressions to `\cases`
   expressions, and the same principle applies to the code that `singletons-th`
