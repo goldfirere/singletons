@@ -1,6 +1,14 @@
 Changelog for the `singletons` project
 ======================================
 
+next [????.??.??]
+-----------------
+* Define `Sing` instances such that they explicitly match on their types on the
+  left-hand sides (e.g., define `type instance Sing @(k1 ~> k2) = SLambda`
+  instead of `type instance Sing = SLambda`. Doing so will make `singletons`
+  future-proof once
+  [GHC#23515](https://gitlab.haskell.org/ghc/ghc/-/issues/23515) is fixed.
+
 3.0.3 [2024.05.12]
 ------------------
 * Allow building with GHC 9.10.
