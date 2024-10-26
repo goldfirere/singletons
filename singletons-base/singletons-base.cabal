@@ -1,6 +1,6 @@
 cabal-version:  3.8
 name:           singletons-base
-version:        3.4
+version:        3.5
 synopsis:       A promoted and singled version of the base library
 homepage:       http://www.github.com/goldfirere/singletons
 category:       Dependent Types
@@ -70,8 +70,8 @@ library
   build-depends:      base             >= 4.20 && < 4.21,
                       pretty,
                       singletons       == 3.0.*,
-                      singletons-th    >= 3.4  && < 3.5,
-                      template-haskell >= 2.22 && < 2.23,
+                      singletons-th    >= 3.5 && < 3.6,
+                      template-haskell >= 2.22.1 && < 2.23,
                       text >= 1.2,
                       th-desugar       >= 1.18 && < 1.19
   default-language:   GHC2021

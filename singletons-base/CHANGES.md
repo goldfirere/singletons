@@ -1,7 +1,7 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-next [????.??.??]
+3.5 [????.??.??]
 -----------------
 * Remove the use of a custom `Setup.hs` script. This script has now been
   replaced with a [`cabal` code
