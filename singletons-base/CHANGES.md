@@ -1,8 +1,8 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-next [????.??.??]
------------------
+3.5 [????.??.??]
+----------------
 * The types of `sError`, `sErrorWithoutStackTrace`, and `sUndefined` are now
   less polymorphic than they were before:
 
