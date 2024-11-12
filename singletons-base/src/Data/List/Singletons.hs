@@ -1,5 +1,3 @@
-{-# LANGUAGE ExplicitNamespaces #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.List.Singletons

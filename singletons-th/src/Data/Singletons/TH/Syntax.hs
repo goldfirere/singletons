@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 
 {- Data/Singletons/TH/Syntax.hs

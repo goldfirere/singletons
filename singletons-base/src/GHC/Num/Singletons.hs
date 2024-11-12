@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE NoStarIsType #-}
 {-# LANGUAGE TemplateHaskell #-}

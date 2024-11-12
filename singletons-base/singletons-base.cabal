@@ -79,7 +79,7 @@ library
                       template-haskell >= 2.22 && < 2.23,
                       text >= 1.2,
                       th-desugar       >= 1.18 && < 1.19
-  default-language:   GHC2021
+  default-language:   GHC2024
   other-extensions:   TemplateHaskell
   exposed-modules:    Data.Singletons.Base.CustomStar
                       Data.Singletons.Base.Enum
@@ -151,7 +151,7 @@ test-suite singletons-base-test-suite
   type:               exitcode-stdio-1.0
   hs-source-dirs:     tests
   ghc-options:        -Wall -Wcompat -threaded -with-rtsopts=-maxN16
-  default-language:   GHC2021
+  default-language:   GHC2024
   main-is:            SingletonsBaseTestSuite.hs
   other-modules:      SingletonsBaseTestSuiteUtils
 
