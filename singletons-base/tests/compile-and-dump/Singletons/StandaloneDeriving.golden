@@ -33,7 +33,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @a @((~>) b (T a b)) (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$###) ())
-    infixl 6 :*:@#@$
+    infixl 6 type :*:@#@$
     type (:*:@#@$$) :: forall a b. a -> (~>) b (T a b)
     data (:*:@#@$$) (a0123456789876543210 :: a) :: (~>) b (T a b)
       where
@@ -42,11 +42,11 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply @b @(T a b) ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
-    infixl 6 :*:@#@$$
+    infixl 6 type :*:@#@$$
     type (:*:@#@$$$) :: forall a b. a -> b -> T a b
     type family (:*:@#@$$$) @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: T a b where
       (:*:@#@$$$) a0123456789876543210 a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
-    infixl 6 :*:@#@$$$
+    infixl 6 type :*:@#@$$$
     type S1Sym0 :: S
     type family S1Sym0 :: S where
       S1Sym0 = S1
@@ -139,7 +139,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance PEnum S where
       type ToEnum a = ToEnum_0123456789876543210 a
       type FromEnum a = FromEnum_0123456789876543210 a
-    infixl 6 :%*:
+    infixl 6 data :%*:
     data ST :: forall a b. T a b -> Type
       where
         (:%*:) :: forall a b (n :: a) (n :: b).

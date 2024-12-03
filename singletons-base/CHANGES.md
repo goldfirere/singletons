@@ -1,8 +1,9 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-next [????.??.??]
------------------
+3.5 [????.??.??]
+----------------
+* Require building with GHC 9.12.
 * The types of `sError`, `sErrorWithoutStackTrace`, and `sUndefined` are now
   less polymorphic than they were before:
 
@@ -69,6 +70,11 @@ next [????.??.??]
   (e.g., `AsumSym0` and `MSym0`) are less polymorphic. The fact that these were
   kind-polymorphic to begin with was an oversight, as these definitions could
   not be used when `j` or `k` was instantiated to any other kind besides `Type`.
+* Define hand-written `Sing` instances such that they explicitly match on their
+  types on the left-hand sides (e.g., define `type instance Sing @Symbol =
+  SSymbol` instead of `type instance Sing = SSymbol`. Doing so will make
+  `singletons-base` future-proof once
+  [GHC#23515](https://gitlab.haskell.org/ghc/ghc/-/issues/23515) is fixed.
 
 3.4 [2024.05.12]
 ----------------
