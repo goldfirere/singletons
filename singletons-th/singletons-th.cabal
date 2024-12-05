@@ -52,13 +52,13 @@ source-repository head
 
 library
   hs-source-dirs:     src
-  build-depends:      base             >= 4.20 && < 4.21,
+  build-depends:      base             >= 4.20 && < 4.22,
                       containers       >= 0.5,
                       mtl              >= 2.2.1 && < 2.4,
                       ghc-boot-th,
                       singletons       == 3.0.*,
                       syb              >= 0.4,
-                      template-haskell >= 2.22 && < 2.23,
+                      template-haskell >= 2.22 && < 2.24,
                       th-desugar       >= 1.18 && < 1.19,
                       th-orphans       >= 0.13.11 && < 0.14,
                       transformers     >= 0.5.2

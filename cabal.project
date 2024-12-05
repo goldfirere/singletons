@@ -6,3 +6,14 @@ source-repository-package
   type: git
   location: https://github.com/goldfirere/th-desugar
   tag: 730a0ed799c91324d42b70d3780d6b3215cafc3c
+
+if impl (ghc >= 9.12)
+  allow-newer:
+    , hashable:base
+    , text:template-haskell
+    , th-abstraction:template-haskell
+    , th-compat:template-haskell
+    , th-desugar:template-haskell
+    , th-expand-syns:template-haskell
+    , th-lift:template-haskell
+    , th-orphans:template-haskell
