@@ -20,6 +20,7 @@ tested-with:    GHC == 8.0.2
               , GHC == 9.6.5
               , GHC == 9.8.2
               , GHC == 9.10.1
+              , GHC == 9.12.1
 extra-source-files: README.md, CHANGES.md
 license:        BSD3
 license-file:   LICENSE

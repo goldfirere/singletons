@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@cs.brynmawr.edu>, Jan Stolarek <jan.stola
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.10.1
+tested-with:    GHC == 9.10.1, GHC == 9.12.1
 extra-source-files: README.md, CHANGES.md, tests/README.md,
                     tests/compile-and-dump/GradingClient/*.hs,
                     tests/compile-and-dump/InsertionSort/*.hs,
