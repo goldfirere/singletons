@@ -6,3 +6,6 @@ jobs-selection:         any
 haddock-components:     libs
 -- Needed to avoid https://github.com/haskell/cabal/issues/9917
 installed:              +all -Cabal -Cabal-syntax
+-- Needed to work around https://github.com/haskell/cabal/issues/6522 and
+-- https://github.com/haskell/cabal/issues/10500
+github-patches:         github.yml.patch
