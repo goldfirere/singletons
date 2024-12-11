@@ -1,7 +1,7 @@
 Changelog for the `singletons-th` project
 =========================================
 
-3.5 [????.??.??]
+3.5 [2024.12.11]
 ----------------
 * Require building with GHC 9.12.
 * Require building with `th-desugar-1.18` or later. Notably, `th-desugar-1.18`

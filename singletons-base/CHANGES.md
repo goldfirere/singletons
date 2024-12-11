@@ -1,8 +1,8 @@
 Changelog for the `singletons-base` project
 ===========================================
 
-3.5 [????.??.??]
------------------
+3.5 [2024.12.11]
+----------------
 * Require building with GHC 9.12.
 * Remove the use of a custom `Setup.hs` script. This script has now been
   replaced with a [`cabal` code
