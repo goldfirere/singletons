@@ -7,3 +7,9 @@ source-repository-package
   type: git
   location: https://github.com/goldfirere/th-desugar
   tag: 44158f7bb7faa2022795446505217b5e52862da5
+
+-- TODO: Remove this after a fix for
+-- https://github.com/haskellari/indexed-traversable/issues/44 makes it to
+-- Hackage
+allow-newer:
+  indexed-traversable:base
