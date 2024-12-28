@@ -192,7 +192,6 @@ jobs:
           echo "packages: $GITHUB_WORKSPACE/source/./singletons" >> cabal.project
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/./singletons-th" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/./singletons-base" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/./singletons-base-code-generator" >> cabal.project ; fi
           cat cabal.project
       - name: sdist
         run: |
@@ -210,22 +209,17 @@ jobs:
           echo "PKGDIR_singletons_th=${PKGDIR_singletons_th}" >> "$GITHUB_ENV"
           PKGDIR_singletons_base="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/singletons-base-[0-9.]*')"
           echo "PKGDIR_singletons_base=${PKGDIR_singletons_base}" >> "$GITHUB_ENV"
-          PKGDIR_singletons_base_code_generator="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/singletons-base-code-generator-[0-9.]*')"
-          echo "PKGDIR_singletons_base_code_generator=${PKGDIR_singletons_base_code_generator}" >> "$GITHUB_ENV"
           rm -f cabal.project cabal.project.local
           touch cabal.project
           touch cabal.project.local
           echo "packages: ${PKGDIR_singletons}" >> cabal.project
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: ${PKGDIR_singletons_th}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: ${PKGDIR_singletons_base}" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: ${PKGDIR_singletons_base_code_generator}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           allow-newer: indexed-traversable:base
@@ -235,7 +229,7 @@ jobs:
             location: https://github.com/goldfirere/th-desugar
             tag:      44158f7bb7faa2022795446505217b5e52862da5
           EOF
-          $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: any.$_ installed\n" unless /^(Cabal|Cabal-syntax|singletons|singletons-base|singletons-base-code-generator|singletons-th)$/; }' >> cabal.project.local
+          $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: any.$_ installed\n" unless /^(Cabal|Cabal-syntax|singletons|singletons-base|singletons-th)$/; }' >> cabal.project.local
           cat cabal.project
           cat cabal.project.local
       - name: dump install plan
@@ -265,8 +259,6 @@ jobs:
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then cd ${PKGDIR_singletons_th} || false ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then cd ${PKGDIR_singletons_base} || false ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then cd ${PKGDIR_singletons_base_code_generator} || false ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
       - name: haddock
         run: |

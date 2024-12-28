@@ -10,12 +10,13 @@ module SingletonsBaseTestSuiteUtils (
  , cleanFiles
  ) where
 
+import Build_singletons_base ( ghcPath, ghcFlags, rootDir          )
 import Control.Exception     ( Exception                           )
 import Data.Foldable         ( asum                                )
 import Data.Text             ( Text                                )
 import Data.String           ( IsString(fromString)                )
-import GHC.Paths             ( ghc                                 )
-import System.FilePath       ( (</>), takeBaseName, pathSeparator  )
+import System.FilePath       ( takeBaseName, pathSeparator         )
+import System.FilePath       ( (</>)                               )
 import System.IO             ( IOMode(..), openFile                )
 import System.Process        ( CreateProcess(..), StdStream(..)
                              , createProcess, proc, waitForProcess
@@ -24,8 +25,6 @@ import Test.Tasty            ( TestTree, testGroup                 )
 import Test.Tasty.Golden     ( goldenVsFileDiff                    )
 import qualified Data.Text as Text
 import qualified Turtle
-
-import SingletonsBaseGHCFlags ( ghcFlags, rootDir                  )
 
 -- Some infractructure for handling external process errors
 newtype ProcessException = ProcessException String
@@ -86,7 +85,7 @@ compileAndDumpTest testName opts =
     compileWithGHC :: IO ()
     compileWithGHC = do
       hActualFile <- openFile actualFilePath WriteMode
-      (_, _, _, pid) <- createProcess (proc ghc (testPath : opts))
+      (_, _, _, pid) <- createProcess (proc ghcPath (testPath : opts))
                                               { std_out = UseHandle hActualFile
                                               , std_err = UseHandle hActualFile
                                               , cwd     = Just goldenPath }
