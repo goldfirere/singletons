@@ -6,3 +6,5 @@ jobs-selection:         any
 haddock-components:     libs
 -- Needed to avoid https://github.com/haskell/cabal/issues/9917
 installed:              +all -Cabal -Cabal-syntax
+-- Work around https://github.com/haskell-CI/haskell-ci/issues/766
+cabal-install-version:  3.14.1.1
