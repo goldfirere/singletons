@@ -75,10 +75,14 @@ instance Show (SomeTypeRepTYPE rep) where
 
 instance Typeable a => SingI (a :: TYPE rep) where
   sing = typeRep
+
+{-
+-- TODO RGS: What should we do about this?
+
 instance SingKind (TYPE rep) where
-  type Demote (TYPE rep) = SomeTypeRepTYPE rep
   fromSing = SomeTypeRepTYPE
   toSing (SomeTypeRepTYPE tr) = SomeSing tr
+-}
 
 instance PEq (TYPE rep) where
   type x == y = DefaultEq x y

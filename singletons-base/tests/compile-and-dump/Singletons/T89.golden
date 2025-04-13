@@ -36,10 +36,14 @@ Singletons/T89.hs:0:0:: Splicing declarations
       type FromEnum a = FromEnum_0123456789876543210 a
     data SFoo :: Foo -> Type where SFoo :: SFoo (Foo :: Foo)
     type instance Sing @Foo = SFoo
+    type instance Demote Foo = Foo
+    type instance Promote Foo = Foo
     instance SingKind Foo where
-      type Demote Foo = Foo
       fromSing SFoo = Foo
       toSing Foo = SomeSing SFoo
+    type instance DemoteX @Foo Foo = Foo
+    type instance PromoteX @Foo Foo = Foo
+    type instance SingKindC @Foo Foo = ()
     instance SEnum Foo where
       sToEnum (sN :: Sing n)
         = applySing

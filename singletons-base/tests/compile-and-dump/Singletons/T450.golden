@@ -53,12 +53,16 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
         SMkMessage :: forall (n :: Symbol).
                       (Sing n) -> SMessage ('PMkMessage n :: PMessage)
     type instance Sing @PMessage = SMessage
+    type instance Demote PMessage = Message
+    type instance Promote Message = PMessage
     instance SingKind PMessage where
-      type Demote PMessage = Message
       fromSing (SMkMessage b) = MkMessage (fromSing b)
       toSing (MkMessage (b :: Demote Symbol))
         = (\cases (SomeSing c) -> SomeSing (SMkMessage c))
             (toSing b :: SomeSing Symbol)
+    type instance DemoteX @PMessage ('PMkMessage x) = 'MkMessage (DemoteX x)
+    type instance PromoteX @Message ('MkMessage x) = 'PMkMessage (PromoteX x)
+    type instance SingKindC @PMessage ('PMkMessage x) = SingKindC x
     instance SingI n => SingI ('PMkMessage (n :: Symbol)) where
       sing = SMkMessage sing
     instance SingI1 'PMkMessage where
@@ -137,12 +141,16 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
         SMkFunction :: forall (a :: Type) (b :: Type) (n :: (~>) a b).
                        (Sing n) -> SFunction ('PMkFunction n :: PFunction a b)
     type instance Sing @(PFunction a b) = SFunction
+    type instance Demote (PFunction a b) = Function (DemoteX a) (DemoteX b)
+    type instance Promote (Function a b) = PFunction (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (PFunction a b) where
-      type Demote (PFunction a b) = Function (Demote a) (Demote b)
       fromSing (SMkFunction b) = MkFunction (fromSing b)
       toSing (MkFunction (b :: Demote ((~>) a b)))
         = (\cases (SomeSing c) -> SomeSing (SMkFunction c))
             (toSing b :: SomeSing ((~>) a b))
+    type instance DemoteX @(PFunction a b) ('PMkFunction x) = 'MkFunction (DemoteX x)
+    type instance PromoteX @(Function a b) ('MkFunction x) = 'PMkFunction (PromoteX x)
+    type instance SingKindC @(PFunction a b) ('PMkFunction x) = SingKindC x
     instance SingI n => SingI ('PMkFunction (n :: (~>) a b)) where
       sing = SMkFunction sing
     instance SingI1 'PMkFunction where

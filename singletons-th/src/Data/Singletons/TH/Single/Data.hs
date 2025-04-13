@@ -33,7 +33,8 @@ singDataD (DataDecl df name tvbs ctors) = do
                       filter (\tvb -> extractTvbFlag tvb == BndrReq) tvbs
       ctor_names    = map extractName ctors
       rec_sel_names = concatMap extractRecSelNames ctors
-  k <- promoteType (foldTypeTvbs (DConT name) tvbs)
+      pName         = promotedDataTypeOrConName opts name
+      k             = foldTypeTvbs (DConT pName) tvbs
   mb_data_sak <- dsReifyType name
   ctors' <- mapM (singCtor name) ctors
   fixityDecs <- singReifiedInfixDecls $ ctor_names ++ rec_sel_names
@@ -42,18 +43,29 @@ singDataD (DataDecl df name tvbs ctors) = do
   emptyFromSingClause <- mkEmptyFromSingClause
   toSingClauses       <- mapM mkToSingClause ctors
   emptyToSingClause   <- mkEmptyToSingClause
+  let demoteInst = mkPromoteDemoteInstance demoteName demoteXName pName name reqTvbNames
+  let promoteInst = mkPromoteDemoteInstance promoteName promoteXName name pName reqTvbNames
+  demoteXInstances   <- mkConInstances demoteXName k mkPromotedConName mkConName foldType
+  promoteXInstances  <- mkConInstances promoteXName (foldTypeTvbs (DConT name) tvbs) mkConName mkPromotedConName foldType
+  singKindCInstances <- mkConInstances singKindCName k mkPromotedConName mkConName (const mkTupleDType)
   let singKindInst =
         DInstanceD Nothing Nothing
                    (map (singKindConstraint . DVarT) reqTvbNames)
                    (DAppT (DConT singKindClassName) k)
-                   [ DTySynInstD $ DTySynEqn Nothing
-                      (DConT demoteName `DAppT` k)
-                      (foldType (DConT name)
-                        (map (DAppT demote . DVarT) reqTvbNames))
-                   , DLetDec $ DFunD fromSingName
+                   [ DLetDec $ DFunD fromSingName
                                (fromSingClauses `orIfEmpty` [emptyFromSingClause])
                    , DLetDec $ DFunD toSingName
                                (toSingClauses   `orIfEmpty` [emptyToSingClause]) ]
+  let singKindInsts
+        | genSingKindInsts opts
+        , -- `type data` data constructors only exist at the type level. As
+          -- such, we cannot define SingKind instances for them, as they require
+          -- term-level data constructors to implement.
+          df /= Desugar.TypeData
+        = [demoteInst, promoteInst, singKindInst] ++
+          demoteXInstances ++ promoteXInstances ++ singKindCInstances
+        | otherwise
+        = []
 
   let singDataName = singledDataTypeName opts name
       -- e.g. type instance Sing @Nat = SNat
@@ -90,13 +102,7 @@ singDataD (DataDecl df name tvbs ctors) = do
 
   return $ data_decs ++
            singSynInst :
-           [ singKindInst | genSingKindInsts opts
-                          , -- `type data` data constructors only exist at the
-                            -- type level. As such, we cannot define SingKind
-                            -- instances for them, as they require term-level
-                            -- data constructors to implement.
-                            df /= Desugar.TypeData
-                          ] ++
+           singKindInsts ++
            fixityDecs
   where -- in the Rep case, the names of the constructors are in the wrong scope
         -- (they're types, not datacons), so we have to reinterpret them.
@@ -104,6 +110,75 @@ singDataD (DataDecl df name tvbs ctors) = do
         mkConName
           | nameBase name == nameBase repName = mkDataName . nameBase
           | otherwise                         = return
+
+        mkPromotedConName :: Name -> SgM Name
+        mkPromotedConName conName = do
+          opts <- getOptions
+          promotedDataTypeOrConName opts <$> mkConName conName
+
+        -- Make a Demote or Promote instance.
+        mkPromoteDemoteInstance ::
+          -- | The name 'Demote' or 'Promote'.
+          Name ->
+          -- | The name 'DemoteX' or 'PromoteX'.
+          Name ->
+          -- | The data type name to use on the left-hand side of the instance.
+          Name ->
+          -- | The data type name to use on the right-hand side of the instance.
+          Name ->
+          -- | The type variable names bound by the data type.
+          [Name] ->
+          DDec
+        mkPromoteDemoteInstance cls clsX lhsDataName rhsDataName dataTvbNames =
+          DTySynInstD $ DTySynEqn
+                          Nothing
+                          (DConT cls `DAppT` foldType (DConT lhsDataName) (map DVarT dataTvbNames))
+                      $ foldType (DConT rhsDataName)
+                      $ map (DAppT (DConT clsX) . DVarT) dataTvbNames
+
+        -- Make PromoteX, DemoteX, or SingKindC instances for all of the data
+        -- constructors.
+        mkConInstances ::
+          -- | The name 'PromoteX', 'DemoteX', or 'SingKindC'.
+          Name ->
+          -- | The data type to use in a visible kind application on the
+          -- left-hand side of the instance.
+          DKind ->
+          -- | How to interpret the data constructor name on the left-hand side
+          -- of the instance.
+          (Name -> SgM Name) ->
+          -- | How to interpret the data constructor name on the right-hand side
+          -- of the instance.
+          (Name -> SgM Name) ->
+          -- | How to combine the field types of a data constructor to form the
+          -- right-hand side of the type family instance.
+          (DType -> [DType] -> DType) ->
+          SgM [DDec]
+        mkConInstances cls dataKind lhsConName rhsConName foldArgs =
+            traverse mkInst ctors
+          where
+            mkInst :: DCon -> SgM DDec
+            mkInst c = do
+              let (cname, numArgs) = extractNameArgs c
+              lhsCname <- lhsConName cname
+              rhsCname <- rhsConName cname
+              varNames <- replicateM numArgs (qNewName "x")
+              let varTys = map DVarT varNames
+              pure $ DTySynInstD
+                   $ DTySynEqn
+                       Nothing
+                       (DConT cls
+                         `DAppKindT` dataKind
+                         `DAppT` foldType (DConT lhsCname) varTys)
+                   $ foldArgs (DConT rhsCname)
+                   $ map (DConT cls `DAppT`) varTys
+
+        -- | Make a tuple 'DType' from a list of 'DType's. Avoids using a 1-tuple.
+        --
+        -- TODO RGS: Upstream this to th-desugar (https://github.com/goldfirere/th-desugar/issues/237)
+        mkTupleDType :: [DType] -> DType
+        mkTupleDType [ty] = ty
+        mkTupleDType tys  = foldl DAppT (DConT $ tupleTypeName (length tys)) tys
 
         mkFromSingClause :: DCon -> SgM DClause
         mkFromSingClause c = do

@@ -40,7 +40,6 @@ import Data.Singletons.Decide
 import Data.Singletons.Base.Enum
 import Data.Singletons.Base.Instances
 import Data.Singletons.TH
-import Data.Singletons.TH.Options
 import Data.Type.Coercion
 import Data.Type.Equality hiding (type (==))
 import GHC.Base.Singletons
@@ -48,13 +47,7 @@ import GHC.Num.Singletons
 import GHC.TypeLits.Singletons.Internal
 import Text.Show.Singletons
 
-$(withOptions defaultOptions{genSingKindInsts = False}
-    (genSingletons [''Proxy]))
-
-instance SingKind (Proxy t) where
-  type Demote (Proxy t) = Proxy t
-  fromSing SProxy = Proxy
-  toSing Proxy = SomeSing SProxy
+$(genSingletons [''Proxy])
 
 instance Eq (SProxy z) where
   _ == _ = True

@@ -43,12 +43,19 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
         SLocation :: SMyPropKind (Location :: MyPropKind)
         SQuaternion :: SMyPropKind (Quaternion :: MyPropKind)
     type instance Sing @MyPropKind = SMyPropKind
+    type instance Demote MyPropKind = MyPropKind
+    type instance Promote MyPropKind = MyPropKind
     instance SingKind MyPropKind where
-      type Demote MyPropKind = MyPropKind
       fromSing SLocation = Location
       fromSing SQuaternion = Quaternion
       toSing Location = SomeSing SLocation
       toSing Quaternion = SomeSing SQuaternion
+    type instance DemoteX @MyPropKind Location = Location
+    type instance DemoteX @MyPropKind Quaternion = Quaternion
+    type instance PromoteX @MyPropKind Location = Location
+    type instance PromoteX @MyPropKind Quaternion = Quaternion
+    type instance SingKindC @MyPropKind Location = ()
+    type instance SingKindC @MyPropKind Quaternion = ()
     instance SEq MyPropKind where
       (%==) SLocation SLocation = STrue
       (%==) SLocation SQuaternion = SFalse

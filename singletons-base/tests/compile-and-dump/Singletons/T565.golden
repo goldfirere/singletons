@@ -8,9 +8,13 @@ Singletons/T565.hs:(0,0)-(0,0): Splicing declarations
     data SC :: forall a. C a -> Type
       where SD :: forall {a}. SC (D :: C a)
     type instance Sing @(C a) = SC
+    type instance Demote (C a) = C (DemoteX a)
+    type instance Promote (C a) = C (PromoteX a)
     instance SingKind a => SingKind (C a) where
-      type Demote (C a) = C (Demote a)
       fromSing SD = D
       toSing D = SomeSing SD
+    type instance DemoteX @(C a) D = D
+    type instance PromoteX @(C a) D = D
+    type instance SingKindC @(C a) D = ()
     instance SingI D where
       sing = SD

@@ -73,14 +73,24 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
         SOpt :: SOcc (Opt :: Occ)
         SMany :: SOcc (Many :: Occ)
     type instance Sing @Occ = SOcc
+    type instance Demote Occ = Occ
+    type instance Promote Occ = Occ
     instance SingKind Occ where
-      type Demote Occ = Occ
       fromSing SStr = Str
       fromSing SOpt = Opt
       fromSing SMany = Many
       toSing Str = SomeSing SStr
       toSing Opt = SomeSing SOpt
       toSing Many = SomeSing SMany
+    type instance DemoteX @Occ Str = Str
+    type instance DemoteX @Occ Opt = Opt
+    type instance DemoteX @Occ Many = Many
+    type instance PromoteX @Occ Str = Str
+    type instance PromoteX @Occ Opt = Opt
+    type instance PromoteX @Occ Many = Many
+    type instance SingKindC @Occ Str = ()
+    type instance SingKindC @Occ Opt = ()
+    type instance SingKindC @Occ Many = ()
     instance SEq Occ where
       (%==) SStr SStr = STrue
       (%==) SStr SOpt = SFalse

@@ -10,4 +10,8 @@ data Vec :: Type -> Nat -> Type where
   VNil :: Vec a Zero
   VCons :: a -> Vec a n -> Vec a (Succ n)
 
+{-
+-- TODO RGS: What should we do about this?
+
 $(singletonStar [''Nat, ''Int, ''String, ''Maybe, ''Vec])
+-}

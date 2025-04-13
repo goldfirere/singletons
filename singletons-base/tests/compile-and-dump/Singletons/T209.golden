@@ -76,10 +76,14 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
         = singFun1 @(MSym2 (d :: a) (d :: b)) (sM s s)
     data SHm :: Hm -> Type where SHm :: SHm (Hm :: Hm)
     type instance Sing @Hm = SHm
+    type instance Demote Hm = Hm
+    type instance Promote Hm = Hm
     instance SingKind Hm where
-      type Demote Hm = Hm
       fromSing SHm = Hm
       toSing Hm = SomeSing SHm
+    type instance DemoteX @Hm Hm = Hm
+    type instance PromoteX @Hm Hm = Hm
+    type instance SingKindC @Hm Hm = ()
     class SC a b
     instance SC Bool Hm
     instance SC a a => SC a (Maybe a)

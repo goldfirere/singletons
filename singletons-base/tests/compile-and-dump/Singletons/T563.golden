@@ -21,12 +21,16 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
       where
         SMkFoo :: forall (n :: Bool). (Sing n) -> SFoo (MkFoo n :: Foo)
     type instance Sing @Foo = SFoo
+    type instance Demote Foo = Foo
+    type instance Promote Foo = Foo
     instance SingKind Foo where
-      type Demote Foo = Foo
       fromSing (SMkFoo b) = MkFoo (fromSing b)
       toSing (MkFoo (b :: Demote Bool))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo c))
             (toSing b :: SomeSing Bool)
+    type instance DemoteX @Foo (MkFoo x) = MkFoo (DemoteX x)
+    type instance PromoteX @Foo (MkFoo x) = MkFoo (PromoteX x)
+    type instance SingKindC @Foo (MkFoo x) = SingKindC x
     instance SingI n => SingI (MkFoo (n :: Bool)) where
       sing = SMkFoo sing
     instance SingI1 MkFoo where

@@ -143,8 +143,20 @@ instance SingI n => SingI (Succ n) where
   sing = SSucc sing
 instance SingI1 Succ where
   liftSing = SSucc
+
+type instance Demote Nat = Nat
+type instance Promote Nat = Nat
+
+type instance DemoteX Zero = Zero
+type instance DemoteX (Succ n) = Succ (DemoteX n)
+
+type instance PromoteX Zero = Zero
+type instance PromoteX (Succ n) = Succ (PromoteX n)
+
+type instance SingKindC Zero = ()
+type instance SingKindC (Succ n) = SingKindC n
+
 instance SingKind Nat where
-  type Demote Nat = Nat
   fromSing SZero = Zero
   fromSing (SSucc n) = Succ (fromSing n)
   toSing Zero = SomeSing SZero
@@ -188,8 +200,20 @@ instance SingI False where
   sing = SFalse
 instance SingI True where
   sing = STrue
+
+type instance Demote Bool = Bool
+type instance Promote Bool = Bool
+
+type instance DemoteX False = False
+type instance DemoteX True = True
+
+type instance PromoteX False = False
+type instance PromoteX True = True
+
+type instance SingKindC False = ()
+type instance SingKindC True = ()
+
 instance SingKind Bool where
-  type Demote Bool = Bool
   fromSing SFalse = False
   fromSing STrue = True
   toSing False = SomeSing SFalse
@@ -241,8 +265,20 @@ instance SingI a => SingI (Just (a :: k)) where
   sing = SJust sing
 instance SingI1 Just where
   liftSing = SJust
+
+type instance Demote (Maybe k) = Maybe (DemoteX k)
+type instance Promote (Maybe k) = Maybe (PromoteX k)
+
+type instance DemoteX Nothing = Nothing
+type instance DemoteX (Just x) = Just (DemoteX x)
+
+type instance PromoteX Nothing = Nothing
+type instance PromoteX (Just x) = Just (PromoteX x)
+
+type instance SingKindC Nothing = ()
+type instance SingKindC (Just x) = SingKindC x
+
 instance SingKind k => SingKind (Maybe k) where
-  type Demote (Maybe k) = Maybe (Demote k)
   fromSing SNothing = Nothing
   fromSing (SJust a) = Just (fromSing a)
   toSing Nothing = SomeSing SNothing
@@ -318,8 +354,20 @@ instance SingI h => SingI1 (Cons (h :: k)) where
   liftSing = SCons sing
 instance SingI2 Cons where
   liftSing2 = SCons
+
+type instance Demote (List k) = List (DemoteX k)
+type instance Promote (List k) = List (PromoteX k)
+
+type instance DemoteX Nil = Nil
+type instance DemoteX (Cons x xs) = Cons (DemoteX x) (DemoteX xs)
+
+type instance PromoteX Nil = Nil
+type instance PromoteX (Cons x xs) = Cons (PromoteX x) (PromoteX xs)
+
+type instance SingKindC Nil = ()
+type instance SingKindC (Cons x xs) = (SingKindC x, SingKindC xs)
+
 instance SingKind k => SingKind (List k) where
-  type Demote (List k) = List (Demote k)
   fromSing SNil = Nil
   fromSing (SCons h t) = Cons (fromSing h) (fromSing t)
   toSing Nil = SomeSing SNil
@@ -351,8 +399,20 @@ instance (SingI b) => SingI (Right (b :: k)) where
   sing = SRight sing
 instance SingI1 Right where
   liftSing = SRight
+
+type instance Demote (Either k1 k2) = Either (DemoteX k1) (DemoteX k2)
+type instance Promote (Either k1 k2) = Either (PromoteX k1) (PromoteX k2)
+
+type instance DemoteX (Left x) = Left (DemoteX x)
+type instance DemoteX (Right y) = Right (DemoteX y)
+
+type instance PromoteX (Left x) = Left (PromoteX x)
+type instance PromoteX (Right y) = Right (PromoteX y)
+
+type instance SingKindC (Left x) = SingKindC x
+type instance SingKindC (Right y) = SingKindC y
+
 instance (SingKind k1, SingKind k2) => SingKind (Either k1 k2) where
-  type Demote (Either k1 k2) = Either (Demote k1) (Demote k2)
   fromSing (SLeft x) = Left (fromSing x)
   fromSing (SRight x) = Right (fromSing x)
   toSing (Left x) =
@@ -398,9 +458,15 @@ instance SingI a => SingI (MkComp (a :: Either (Maybe k1) k2)) where
   sing = SMkComp sing
 instance SingI1 MkComp where
   liftSing = SMkComp
+
+type instance Demote (Composite k1 k2) = Composite (DemoteX k1) (DemoteX k2)
+type instance Promote (Composite k1 k2) = Composite (PromoteX k1) (PromoteX k2)
+
+type instance DemoteX (MkComp x) = MkComp (DemoteX x)
+type instance PromoteX (MkComp x) = MkComp (PromoteX x)
+type instance SingKindC (MkComp x) = SingKindC x
+
 instance (SingKind k1, SingKind k2) => SingKind (Composite k1 k2) where
-  type Demote (Composite k1 k2) =
-    Composite (Demote k1) (Demote k2)
   fromSing (SMkComp x) = MkComp (fromSing x)
   toSing (MkComp x) =
     case toSing x :: SomeSing (Either (Maybe k1) k2) of
@@ -430,8 +496,11 @@ type instance Sing @Empty =
 type instance Sing =
 #endif
   SEmpty
+
+type instance Demote Empty = Empty
+type instance Promote Empty = Empty
+
 instance SingKind Empty where
-  type Demote Empty = Empty
   fromSing = \case
   toSing x = SomeSing (case x of)
 
@@ -476,9 +545,10 @@ instance SingI a => SingI1 (Vec a) where
 instance SingI2 Vec where
   liftSing2 = SVec
 
-instance SingKind Type where
-  type Demote Type = Rep
+{-
+-- TODO RGS: What should we do about this?
 
+instance SingKind Type where
   fromSing SNat = Nat
   fromSing (SMaybe a) = Maybe (fromSing a)
   fromSing (SVec a n) = Vec (fromSing a) (fromSing n)
@@ -491,6 +561,7 @@ instance SingKind Type where
     case ( toSing a :: SomeSing Type
          , toSing n :: SomeSing Nat) of
       (SomeSing a', SomeSing n') -> SomeSing $ SVec a' n'
+-}
 
 instance SDecide Type where
   SNat %~ SNat = Proved Refl

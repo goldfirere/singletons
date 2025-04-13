@@ -60,7 +60,10 @@ module Data.Singletons (
   SingI(..),
   SingI1(..), sing1,
   SingI2(..), sing2,
-  SingKind(..),
+  Promote, PromoteX,
+  Demote, DemoteX,
+  PromoteDemoteInverse,
+  SingKindC, SingKindX, SingKind(..),
 
   -- * Working with singletons
   KindOf, SameKind,
@@ -112,7 +115,11 @@ module Data.Singletons (
   Proxy(..),
 
   -- * Defunctionalization symbols
+  PromoteSym0, PromoteSym1,
   DemoteSym0, DemoteSym1,
+  PromoteDemoteInverseSym0, PromoteDemoteInverseSym1,
+  SingKindCSym0, SingKindCSym1,
+  SingKindXSym0, SingKindXSym1,
   SameKindSym0, SameKindSym1, SameKindSym2,
   KindOfSym0, KindOfSym1,
   type (~>@#@$), type (~>@#@$$), type (~>@#@$$$),
@@ -122,6 +129,7 @@ module Data.Singletons (
 
 import Data.Kind (Constraint, Type)
 import Data.Proxy (Proxy(..))
+import Data.Type.Equality (type (~~))
 import GHC.Exts (Proxy#)
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -296,6 +304,87 @@ pattern Sing :: forall k (a :: k). () => SingI a => Sing a
 pattern Sing <- (singInstance -> SingInstance)
   where Sing = sing
 
+-- | Get a promoted kind from the base type. For example:
+--
+-- * @'Promote' 'Bool' = 'Bool'@
+-- * @'Promote' ('Maybe' a) = 'Maybe' ('Promote' a)@
+-- * @'Promote' ('Either' a b) = 'Either' ('Promote' a) ('Promote' b)@
+--
+-- Rarely, the type and kind do not match. For example:
+--
+-- * @'Promote' (a -> b) = 'Promote' a '~>' 'Promote' b@
+-- * @'Promote' Text = Symbol@
+#if __GLASGOW_HASKELL__ >= 810
+type Promote :: Type -> Type
+#endif
+type family Promote (k :: Type) :: Type
+
+-- | A generalized form of 'Promote' which can work over types of any kind.
+-- @'PromoteX' (a :: k)@ is @'Promote' a@ when @k@ is @Type@.
+-- For some non-@Type@ examples:
+--
+-- * @'PromoteX' 'True' = 'True'@
+-- * @'PromoteX' ('Just' x) = 'Just' ('PromoteX' x)@
+-- * @'PromoteX' ((:) a) = 'TyCon1' ((:) ('PromoteX' a))@
+#if __GLASGOW_HASKELL__ >= 810
+type PromoteX :: k -> Promote k
+#endif
+type family PromoteX (a :: k) :: Promote k
+
+-- | Get a base type from the promoted kind. For example:
+--
+-- * @'Demote' 'Bool' = 'Bool'@
+-- * @'Demote' ('Maybe' a) = 'Maybe' ('Demote' a)@
+-- * @'Demote' ('Either' a b) = 'Either' ('Demote' a) ('Demote' b)@
+--
+-- Rarely, the type and kind do not match. For example:
+--
+-- * @'Demote' (a '~>' b) = 'Demote' a -> 'Demote' b@
+-- * @'Demote' Symbol = Text@
+#if __GLASGOW_HASKELL__ >= 810
+type Demote :: Type -> Type
+#endif
+type family Demote (k :: Type) :: Type
+
+-- | A generalized form of 'Demote' which can work over types of any kind.
+-- @'DemoteX' (a :: k)@ is @'Demote' a@ when @k@ is @Type@.
+-- For some non-@Type@ examples:
+--
+-- * @'DemoteX' 'True' = 'True'@
+-- * @'DemoteX' ('Just' x) = 'Just' ('DemoteX' x)@
+-- * @'DemoteX' ('TyCon1' ((:) a)) = (:) ('DemoteX' a)@
+#if __GLASGOW_HASKELL__ >= 810
+type DemoteX :: k -> Demote k
+#endif
+type family DemoteX (a :: k) :: Demote k
+
+-- | A proposition which states that 'PromoteX' and 'DemoteX' are inverses.
+-- This is a particularly valuable hint for type inference in typical
+-- 'SingKind' instances for GADTs.
+#if __GLASGOW_HASKELL__ >= 810
+type PromoteDemoteInverse :: k -> Constraint
+#endif
+type PromoteDemoteInverse (a :: k) = (PromoteX (DemoteX a) ~~ a)
+
+-- | @'SingKindC' a@ is @'SingKind' a@ when @a@ is a 'Type'. If @a@ is not
+-- a 'Type', then @'SingKindC' a@ recurs into @a@, gathering up 'SingKind'
+-- constraints when necessary. (For instance,
+-- @'SingKindC' (x:xs) = ('SingKindC' x, 'SingKindC' xs)@.)
+#if __GLASGOW_HASKELL__ >= 810
+type SingKindC :: k -> Constraint
+#endif
+type family SingKindC (a :: k) :: Constraint
+
+-- | A combination of 'SingKindC' and 'PromoteDemoteInverse'. Typically, a
+-- 'SingKind' instance will have a 'SingKindX' constraint on each of the
+-- type parameters to the data type receiving and instance.
+-- (For example,
+-- @instance ('SingKindX' a_1, ..., 'SingKindX' a_n) => 'SingKind' (D a_1 ... a_n)@.)
+#if __GLASGOW_HASKELL__ >= 810
+type SingKindX :: k -> Constraint
+#endif
+type SingKindX (a :: k) = (SingKindC a, PromoteDemoteInverse a)
+
 -- | The 'SingKind' class is a /kind/ class. It classifies all kinds
 -- for which singletons are defined. The class supports converting between a singleton
 -- type and the base (unrefined) type which it is built from.
@@ -316,12 +405,7 @@ pattern Sing <- (singInstance -> SingInstance)
 #if __GLASGOW_HASKELL__ >= 810
 type SingKind :: Type -> Constraint
 #endif
-class SingKind k where
-  -- | Get a base type from the promoted kind. For example,
-  -- @Demote Bool@ will be the type @Bool@. Rarely, the type and kind do not
-  -- match. For example, @Demote Nat@ is @Natural@.
-  type Demote k = (r :: Type) | r -> k
-
+class PromoteDemoteInverse k => SingKind (k :: Type) where
   -- | Convert a singleton to its unrefined version.
   fromSing :: Sing (a :: k) -> Demote k
 
@@ -418,8 +502,17 @@ type UnwrapSing :: forall k (a :: k). WrappedSing a -> Sing a
 type family UnwrapSing (ws :: WrappedSing (a :: k)) :: Sing a where
   UnwrapSing ('WrapSing s) = s
 
+type instance Demote (WrappedSing a) = WrappedSing a
+type instance Promote (WrappedSing a) = WrappedSing a
+-- TODO RGS: Currently, these instances won't typecheck on pre-9.14 versions of
+-- GHC. We should consider splitting things up into internal modules such that
+-- we can define these instances separately from the Demote/Promote instances
+-- above, thereby avoiding typechecker limitations in old GHCs.
+type instance DemoteX   (WrapSing x) = WrapSing x
+type instance PromoteX  (WrapSing x) = WrapSing x
+type instance SingKindC (x :: WrappedSing a) = ()
+
 instance SingKind (WrappedSing a) where
-  type Demote (WrappedSing a) = WrappedSing a
   fromSing (SWrapSing s) = WrapSing s
   toSing (WrapSing s) = SomeSing $ SWrapSing s
 
@@ -751,11 +844,20 @@ type instance Sing =
 (@@) :: forall k1 k2 (f :: k1 ~> k2) (t :: k1). Sing f -> Sing t -> Sing (f @@ t)
 (@@) f = applySing f
 
+-- TODO RGS: Do we always want to define these?
+type instance Demote  Type = Type
+type instance Promote Type = Type
+type instance DemoteX   (a :: Type) = Demote a
+type instance PromoteX  (a :: Type) = Promote a
+type instance SingKindC (a :: Type) = SingKind a
+
+type instance Demote  (a ~> b) = DemoteX  a -> DemoteX  b
+type instance Promote (a -> b) = PromoteX a ~> PromoteX b
+
 -- | Note that this instance's 'toSing' implementation crucially relies on the fact
 -- that the 'SingKind' instances for 'k1' and 'k2' both satisfy the 'SingKind' laws.
 -- If they don't, 'toSing' might produce strange results!
 instance (SingKind k1, SingKind k2) => SingKind (k1 ~> k2) where
-  type Demote (k1 ~> k2) = Demote k1 -> Demote k2
   fromSing sFun x = withSomeSing x (fromSing . applySing sFun)
   toSing f = SomeSing slam
     where
@@ -1165,9 +1267,22 @@ instance forall k1 k2 k3 k4 k5 k6 k7 k8 kr
 ---- Defunctionalization symbols -------------------------------------
 ----------------------------------------------------------------------
 
--- $(genDefunSymbols [''Demote, ''SameKind, ''KindOf, ''(~>), ''Apply, ''(@@)])
+-- $(genDefunSymbols [''Demote, ''Demote, ''PromoteDemoteInverse, ''SingKindC, ''SingKindX, ''SameKind, ''KindOf, ''(~>), ''Apply, ''(@@)])
+--
 -- WrapSing, UnwrapSing, and SingFunction1 et al. are not defunctionalizable
 -- at the moment due to GHC#9269
+
+#if __GLASGOW_HASKELL__ >= 810
+type PromoteSym0 :: Type ~> Type
+type PromoteSym1 :: Type -> Type
+#endif
+
+data PromoteSym0 :: Type ~> Type
+type PromoteSym1 x = Promote x
+
+type instance Apply PromoteSym0 x = Promote x
+
+-----
 
 #if __GLASGOW_HASKELL__ >= 810
 type DemoteSym0 :: Type ~> Type
@@ -1178,6 +1293,42 @@ data DemoteSym0 :: Type ~> Type
 type DemoteSym1 x = Demote x
 
 type instance Apply DemoteSym0 x = Demote x
+
+-----
+
+#if __GLASGOW_HASKELL__ >= 810
+type PromoteDemoteInverseSym0 :: k ~> Constraint
+type PromoteDemoteInverseSym1 :: k -> Constraint
+#endif
+
+data PromoteDemoteInverseSym0 :: k ~> Constraint
+type PromoteDemoteInverseSym1 x = PromoteDemoteInverse x
+
+type instance Apply PromoteDemoteInverseSym0 x = PromoteDemoteInverse x
+
+-----
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingKindCSym0 :: k ~> Constraint
+type SingKindCSym1 :: k -> Constraint
+#endif
+
+data SingKindCSym0 :: k ~> Constraint
+type SingKindCSym1 x = SingKindC x
+
+type instance Apply SingKindCSym0 x = SingKindC x
+
+-----
+
+#if __GLASGOW_HASKELL__ >= 810
+type SingKindXSym0 :: k ~> Constraint
+type SingKindXSym1 :: k -> Constraint
+#endif
+
+data SingKindXSym0 :: k ~> Constraint
+type SingKindXSym1 x = SingKindC x
+
+type instance Apply SingKindXSym0 x = SingKindX x
 
 -----
 

@@ -70,8 +70,11 @@ type instance Sing @Natural = TN.SNat
 instance TN.KnownNat n => SingI n where
   sing = TN.natSing
 
+type instance Demote Natural = Natural
+type instance Promote Natural = Natural
+type instance SingKindC (n :: Natural) = ()
+
 instance SingKind Natural where
-  type Demote Natural = Natural
   fromSing = TN.fromSNat
   toSing n = TN.withSomeSNat n SomeSing
 
@@ -86,8 +89,11 @@ pattern SSym = TL.SSymbol
 instance TL.KnownSymbol n => SingI n where
   sing = TL.symbolSing
 
+type instance Demote TL.Symbol = Text
+type instance Promote Text = TL.Symbol
+type instance SingKindC (s :: TL.Symbol) = ()
+
 instance SingKind TL.Symbol where
-  type Demote TL.Symbol = Text
   fromSing = T.pack . TL.fromSSymbol
   toSing s = TL.withSomeSSymbol (T.unpack s) SomeSing
 
@@ -97,8 +103,11 @@ type instance Sing @Char = TL.SChar
 instance TL.KnownChar c => SingI c where
   sing = TL.charSing
 
+type instance Demote Char = Char
+type instance Promote Char = Char
+type instance SingKindC (c :: Char) = ()
+
 instance SingKind Char where
-  type Demote Char = Char
   fromSing = TL.fromSChar
   toSing c = TL.withSomeSChar c SomeSing
 

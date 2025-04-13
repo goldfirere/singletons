@@ -132,10 +132,14 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       type MaxBound = MaxBound_0123456789876543210
     data SFoo1 :: Foo1 -> Type where SFoo1 :: SFoo1 (Foo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
+    type instance Demote Foo1 = Foo1
+    type instance Promote Foo1 = Foo1
     instance SingKind Foo1 where
-      type Demote Foo1 = Foo1
       fromSing SFoo1 = Foo1
       toSing Foo1 = SomeSing SFoo1
+    type instance DemoteX @Foo1 Foo1 = Foo1
+    type instance PromoteX @Foo1 Foo1 = Foo1
+    type instance SingKindC @Foo1 Foo1 = ()
     data SFoo2 :: Foo2 -> Type
       where
         SA :: SFoo2 (A :: Foo2)
@@ -144,8 +148,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
         SD :: SFoo2 (D :: Foo2)
         SE :: SFoo2 (E :: Foo2)
     type instance Sing @Foo2 = SFoo2
+    type instance Demote Foo2 = Foo2
+    type instance Promote Foo2 = Foo2
     instance SingKind Foo2 where
-      type Demote Foo2 = Foo2
       fromSing SA = A
       fromSing SB = B
       fromSing SC = C
@@ -156,38 +161,69 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing C = SomeSing SC
       toSing D = SomeSing SD
       toSing E = SomeSing SE
+    type instance DemoteX @Foo2 A = A
+    type instance DemoteX @Foo2 B = B
+    type instance DemoteX @Foo2 C = C
+    type instance DemoteX @Foo2 D = D
+    type instance DemoteX @Foo2 E = E
+    type instance PromoteX @Foo2 A = A
+    type instance PromoteX @Foo2 B = B
+    type instance PromoteX @Foo2 C = C
+    type instance PromoteX @Foo2 D = D
+    type instance PromoteX @Foo2 E = E
+    type instance SingKindC @Foo2 A = ()
+    type instance SingKindC @Foo2 B = ()
+    type instance SingKindC @Foo2 C = ()
+    type instance SingKindC @Foo2 D = ()
+    type instance SingKindC @Foo2 E = ()
     data SFoo3 :: forall a. Foo3 a -> Type
       where
         SFoo3 :: forall a (n :: a). (Sing n) -> SFoo3 (Foo3 n :: Foo3 a)
     type instance Sing @(Foo3 a) = SFoo3
+    type instance Demote (Foo3 a) = Foo3 (DemoteX a)
+    type instance Promote (Foo3 a) = Foo3 (PromoteX a)
     instance SingKind a => SingKind (Foo3 a) where
-      type Demote (Foo3 a) = Foo3 (Demote a)
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SFoo3 c))
             (toSing b :: SomeSing a)
+    type instance DemoteX @(Foo3 a) (Foo3 x) = Foo3 (DemoteX x)
+    type instance PromoteX @(Foo3 a) (Foo3 x) = Foo3 (PromoteX x)
+    type instance SingKindC @(Foo3 a) (Foo3 x) = SingKindC x
     data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
         SFoo41 :: forall (a :: Type) (b :: Type). SFoo4 (Foo41 :: Foo4 a b)
         SFoo42 :: forall (a :: Type) (b :: Type). SFoo4 (Foo42 :: Foo4 a b)
     type instance Sing @(Foo4 a b) = SFoo4
+    type instance Demote (Foo4 a b) = Foo4 (DemoteX a) (DemoteX b)
+    type instance Promote (Foo4 a b) = Foo4 (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (Foo4 a b) where
-      type Demote (Foo4 a b) = Foo4 (Demote a) (Demote b)
       fromSing SFoo41 = Foo41
       fromSing SFoo42 = Foo42
       toSing Foo41 = SomeSing SFoo41
       toSing Foo42 = SomeSing SFoo42
+    type instance DemoteX @(Foo4 a b) Foo41 = Foo41
+    type instance DemoteX @(Foo4 a b) Foo42 = Foo42
+    type instance PromoteX @(Foo4 a b) Foo41 = Foo41
+    type instance PromoteX @(Foo4 a b) Foo42 = Foo42
+    type instance SingKindC @(Foo4 a b) Foo41 = ()
+    type instance SingKindC @(Foo4 a b) Foo42 = ()
     data SPair :: Pair -> Type
       where
         SPair :: forall (n :: Bool) (n :: Bool).
                  (Sing n) -> (Sing n) -> SPair (Pair n n :: Pair)
     type instance Sing @Pair = SPair
+    type instance Demote Pair = Pair
+    type instance Promote Pair = Pair
     instance SingKind Pair where
-      type Demote Pair = Pair
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SPair c c))
             (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
+    type instance DemoteX @Pair (Pair x x) = Pair (DemoteX x) (DemoteX x)
+    type instance PromoteX @Pair (Pair x x) = Pair (PromoteX x) (PromoteX x)
+    type instance SingKindC @Pair (Pair x x) = (SingKindC x,
+                                                SingKindC x)
     instance SBounded Foo1 where
       sMinBound = SFoo1
       sMaxBound = SFoo1

@@ -62,7 +62,8 @@ boolName, andName, compareName, minBoundName,
   symbolName, stringName,
   eqName, ordName, boundedName, orderingName,
   singFamilyName, singIName, singI1Name, singI2Name,
-  singMethName, liftSingName, liftSing2Name, demoteName, withSingIName,
+  singMethName, liftSingName, liftSing2Name, withSingIName,
+  demoteName, promoteName, demoteXName, promoteXName, singKindCName,
   singKindClassName, someSingTypeName, someSingDataName,
   sDecideClassName, sDecideMethName,
   testEqualityClassName, testEqualityMethName, decideEqualityName,
@@ -107,8 +108,12 @@ liftSingName = 'liftSing
 liftSing2Name = 'liftSing2
 toSingName = 'toSing
 fromSingName = 'fromSing
-demoteName = ''Demote
 withSingIName = 'withSingI
+demoteName = ''Demote
+promoteName = ''Promote
+demoteXName = ''DemoteX
+promoteXName = ''PromoteX
+singKindCName = ''SingKindC
 singKindClassName = ''SingKind
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
@@ -201,9 +206,6 @@ singFamily = DConT singFamilyName
 
 singKindConstraint :: DKind -> DPred
 singKindConstraint = DAppT (DConT singKindClassName)
-
-demote :: DType
-demote = DConT demoteName
 
 apply :: DType -> DType -> DType
 apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2

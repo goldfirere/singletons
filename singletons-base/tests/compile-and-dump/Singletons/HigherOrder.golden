@@ -471,8 +471,9 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
         SRight :: forall a b (n :: b).
                   (Sing n) -> SEither (Right n :: Either a b)
     type instance Sing @(Either a b) = SEither
+    type instance Demote (Either a b) = Either (DemoteX a) (DemoteX b)
+    type instance Promote (Either a b) = Either (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (Either a b) where
-      type Demote (Either a b) = Either (Demote a) (Demote b)
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left (b :: Demote a))
@@ -481,6 +482,12 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       toSing (Right (b :: Demote b))
         = (\cases (SomeSing c) -> SomeSing (SRight c))
             (toSing b :: SomeSing b)
+    type instance DemoteX @(Either a b) (Left x) = Left (DemoteX x)
+    type instance DemoteX @(Either a b) (Right x) = Right (DemoteX x)
+    type instance PromoteX @(Either a b) (Left x) = Left (PromoteX x)
+    type instance PromoteX @(Either a b) (Right x) = Right (PromoteX x)
+    type instance SingKindC @(Either a b) (Left x) = SingKindC x
+    type instance SingKindC @(Either a b) (Right x) = SingKindC x
     instance SingI n => SingI (Left (n :: a)) where
       sing = SLeft sing
     instance SingI1 Left where

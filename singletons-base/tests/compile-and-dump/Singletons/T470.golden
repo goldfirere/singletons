@@ -53,8 +53,9 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
         SMkT1 :: forall a (n :: a). (Sing n) -> ST (MkT1 n :: T a)
         SMkT2 :: forall a (n :: Void). !(Sing n) -> ST (MkT2 n :: T a)
     type instance Sing @(T a) = ST
+    type instance Demote (T a) = T (DemoteX a)
+    type instance Promote (T a) = T (PromoteX a)
     instance SingKind a => SingKind (T a) where
-      type Demote (T a) = T (Demote a)
       fromSing (SMkT1 b) = MkT1 (fromSing b)
       fromSing (SMkT2 b) = MkT2 (fromSing b)
       toSing (MkT1 (b :: Demote a))
@@ -63,15 +64,25 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkT2 (b :: Demote Void))
         = (\cases (SomeSing c) -> SomeSing (SMkT2 c))
             (toSing b :: SomeSing Void)
+    type instance DemoteX @(T a) (MkT1 x) = MkT1 (DemoteX x)
+    type instance DemoteX @(T a) (MkT2 x) = MkT2 (DemoteX x)
+    type instance PromoteX @(T a) (MkT1 x) = MkT1 (PromoteX x)
+    type instance PromoteX @(T a) (MkT2 x) = MkT2 (PromoteX x)
+    type instance SingKindC @(T a) (MkT1 x) = SingKindC x
+    type instance SingKindC @(T a) (MkT2 x) = SingKindC x
     data SS :: S -> Type
       where SMkS :: forall (n :: Bool). !(Sing n) -> SS (MkS n :: S)
     type instance Sing @S = SS
+    type instance Demote S = S
+    type instance Promote S = S
     instance SingKind S where
-      type Demote S = S
       fromSing (SMkS b) = MkS (fromSing b)
       toSing (MkS (b :: Demote Bool))
         = (\cases (SomeSing c) -> SomeSing (SMkS c))
             (toSing b :: SomeSing Bool)
+    type instance DemoteX @S (MkS x) = MkS (DemoteX x)
+    type instance PromoteX @S (MkS x) = MkS (PromoteX x)
+    type instance SingKindC @S (MkS x) = SingKindC x
     instance SingI n => SingI (MkT1 (n :: a)) where
       sing = SMkT1 sing
     instance SingI1 MkT1 where

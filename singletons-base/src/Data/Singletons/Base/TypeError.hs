@@ -83,8 +83,25 @@ infixl 5 :%$$:
 
 type instance Sing @PErrorMessage = SErrorMessage
 
+type instance Demote PErrorMessage = ErrorMessage
+type instance Promote ErrorMessage = PErrorMessage
+
+type instance DemoteX @PErrorMessage (Text x) = Text (DemoteX x)
+type instance DemoteX @PErrorMessage (ShowType x) = ShowType (DemoteX x)
+type instance DemoteX @PErrorMessage (x :<>: y) = DemoteX x :<>: DemoteX y
+type instance DemoteX @PErrorMessage (x :$$: y) = DemoteX x :$$: DemoteX y
+
+type instance PromoteX @ErrorMessage (Text x) = Text (PromoteX x)
+type instance PromoteX @ErrorMessage (ShowType x) = ShowType (PromoteX x)
+type instance PromoteX @ErrorMessage (x :<>: y) = PromoteX x :<>: PromoteX y
+type instance PromoteX @ErrorMessage (x :$$: y) = PromoteX x :$$: PromoteX y
+
+type instance SingKindC @PErrorMessage (Text x) = SingKindC x
+type instance SingKindC @PErrorMessage (ShowType x) = SingKindC x
+type instance SingKindC @PErrorMessage (x :<>: y) = (SingKindC x, SingKindC y)
+type instance SingKindC @PErrorMessage (x :$$: y) = (SingKindC x, SingKindC y)
+
 instance SingKind PErrorMessage where
-  type Demote PErrorMessage = ErrorMessage
   fromSing (SText t)      = Text (fromSing t)
   fromSing (SShowType{})  = ShowType (error "Can't single ShowType")
   fromSing (e1 :%<>: e2)  = fromSing e1 :<>: fromSing e2

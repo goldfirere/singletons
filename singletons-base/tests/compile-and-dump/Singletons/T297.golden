@@ -58,9 +58,13 @@ Singletons/T297.hs:(0,0)-(0,0): Splicing declarations
       where
         SMyProxy :: forall (a :: Type). SMyProxy (MyProxy :: MyProxy a)
     type instance Sing @(MyProxy a) = SMyProxy
+    type instance Demote (MyProxy a) = MyProxy (DemoteX a)
+    type instance Promote (MyProxy a) = MyProxy (PromoteX a)
     instance SingKind a => SingKind (MyProxy a) where
-      type Demote (MyProxy a) = MyProxy (Demote a)
       fromSing SMyProxy = MyProxy
       toSing MyProxy = SomeSing SMyProxy
+    type instance DemoteX @(MyProxy a) MyProxy = MyProxy
+    type instance PromoteX @(MyProxy a) MyProxy = MyProxy
+    type instance SingKindC @(MyProxy a) MyProxy = ()
     instance SingI MyProxy where
       sing = SMyProxy

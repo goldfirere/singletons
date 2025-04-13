@@ -58,23 +58,33 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
         (:^%) :: forall a (n :: a) (n :: a).
                  (Sing n) -> (Sing n) -> SRatio1 ((:%) n n :: Ratio1 a)
     type instance Sing @(Ratio1 a) = SRatio1
+    type instance Demote (Ratio1 a) = Ratio1 (DemoteX a)
+    type instance Promote (Ratio1 a) = Ratio1 (PromoteX a)
     instance SingKind a => SingKind (Ratio1 a) where
-      type Demote (Ratio1 a) = Ratio1 (Demote a)
       fromSing ((:^%) b b) = (:%) (fromSing b) (fromSing b)
       toSing ((:%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
+    type instance DemoteX @(Ratio1 a) ((:%) x x) = (:%) (DemoteX x) (DemoteX x)
+    type instance PromoteX @(Ratio1 a) ((:%) x x) = (:%) (PromoteX x) (PromoteX x)
+    type instance SingKindC @(Ratio1 a) ((:%) x x) = (SingKindC x,
+                                                      SingKindC x)
     data SRatio2 :: forall a. Ratio2 a -> GHC.Internal.Types.Type
       where
         (:^%%) :: forall a (n :: a) (n :: a).
                   (Sing n) -> (Sing n) -> SRatio2 ((:%%) n n :: Ratio2 a)
     type instance Sing @(Ratio2 a) = SRatio2
+    type instance Demote (Ratio2 a) = Ratio2 (DemoteX a)
+    type instance Promote (Ratio2 a) = Ratio2 (PromoteX a)
     instance SingKind a => SingKind (Ratio2 a) where
-      type Demote (Ratio2 a) = Ratio2 (Demote a)
       fromSing ((:^%%) b b) = (:%%) (fromSing b) (fromSing b)
       toSing ((:%%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
+    type instance DemoteX @(Ratio2 a) ((:%%) x x) = (:%%) (DemoteX x) (DemoteX x)
+    type instance PromoteX @(Ratio2 a) ((:%%) x x) = (:%%) (PromoteX x) (PromoteX x)
+    type instance SingKindC @(Ratio2 a) ((:%%) x x) = (SingKindC x,
+                                                       SingKindC x)
     instance (SingI n, SingI n) => SingI ((:%) (n :: a) (n :: a)) where
       sing = (:^%) sing sing
     instance SingI n => SingI1 ((:%) (n :: a)) where

@@ -4,7 +4,8 @@ Singletons/Empty.hs:(0,0)-(0,0): Splicing declarations
     data Empty
     data SEmpty :: Empty -> Type
     type instance Sing @Empty = SEmpty
+    type instance Demote Empty = Empty
+    type instance Promote Empty = Empty
     instance SingKind Empty where
-      type Demote Empty = Empty
       fromSing x = (\case) x
       toSing x = SomeSing ((\case) x)

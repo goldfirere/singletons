@@ -63,10 +63,14 @@ Singletons/T190.hs:0:0:: Splicing declarations
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     data ST :: T -> Type where ST :: ST (T :: T)
     type instance Sing @T = ST
+    type instance Demote T = T
+    type instance Promote T = T
     instance SingKind T where
-      type Demote T = T
       fromSing ST = T
       toSing T = SomeSing ST
+    type instance DemoteX @T T = T
+    type instance PromoteX @T T = T
+    type instance SingKindC @T T = ()
     instance SEq T where
       (%==) ST ST = STrue
     instance SOrd T where

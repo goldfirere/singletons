@@ -64,27 +64,41 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
         SX1 :: forall (a :: Type). SX (X1 :: X a)
         SX2 :: forall (a :: Type) (n :: Y a). (Sing n) -> SX (X2 n :: X a)
     type instance Sing @(X a) = SX
+    type instance Demote (X a) = X (DemoteX a)
+    type instance Promote (X a) = X (PromoteX a)
     instance SingKind a => SingKind (X a) where
-      type Demote (X a) = X (Demote a)
       fromSing SX1 = X1
       fromSing (SX2 b) = X2 (fromSing b)
       toSing X1 = SomeSing SX1
       toSing (X2 (b :: Demote (Y a)))
         = (\cases (SomeSing c) -> SomeSing (SX2 c))
             (toSing b :: SomeSing (Y a))
+    type instance DemoteX @(X a) X1 = X1
+    type instance DemoteX @(X a) (X2 x) = X2 (DemoteX x)
+    type instance PromoteX @(X a) X1 = X1
+    type instance PromoteX @(X a) (X2 x) = X2 (PromoteX x)
+    type instance SingKindC @(X a) X1 = ()
+    type instance SingKindC @(X a) (X2 x) = SingKindC x
     data SY :: forall (a :: Type). Y a -> Type
       where
         SY1 :: forall (a :: Type). SY (Y1 :: Y a)
         SY2 :: forall (a :: Type) (n :: X a). (Sing n) -> SY (Y2 n :: Y a)
     type instance Sing @(Y a) = SY
+    type instance Demote (Y a) = Y (DemoteX a)
+    type instance Promote (Y a) = Y (PromoteX a)
     instance SingKind a => SingKind (Y a) where
-      type Demote (Y a) = Y (Demote a)
       fromSing SY1 = Y1
       fromSing (SY2 b) = Y2 (fromSing b)
       toSing Y1 = SomeSing SY1
       toSing (Y2 (b :: Demote (X a)))
         = (\cases (SomeSing c) -> SomeSing (SY2 c))
             (toSing b :: SomeSing (X a))
+    type instance DemoteX @(Y a) Y1 = Y1
+    type instance DemoteX @(Y a) (Y2 x) = Y2 (DemoteX x)
+    type instance PromoteX @(Y a) Y1 = Y1
+    type instance PromoteX @(Y a) (Y2 x) = Y2 (PromoteX x)
+    type instance SingKindC @(Y a) Y1 = ()
+    type instance SingKindC @(Y a) (Y2 x) = SingKindC x
     instance SShow (Y a) => SShow (X a) where
       sShowsPrec
         _

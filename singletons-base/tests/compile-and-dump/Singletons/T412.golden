@@ -163,12 +163,17 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
         SMkD1 :: forall a b (n :: a) (n :: b).
                  (Sing n) -> (Sing n) -> SD1 (MkD1 n n :: D1 a b)
     type instance Sing @(D1 a b) = SD1
+    type instance Demote (D1 a b) = D1 (DemoteX a) (DemoteX b)
+    type instance Promote (D1 a b) = D1 (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (D1 a b) where
-      type Demote (D1 a b) = D1 (Demote a) (Demote b)
       fromSing (SMkD1 b b) = MkD1 (fromSing b) (fromSing b)
       toSing (MkD1 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD1 c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
+    type instance DemoteX @(D1 a b) (MkD1 x x) = MkD1 (DemoteX x) (DemoteX x)
+    type instance PromoteX @(D1 a b) (MkD1 x x) = MkD1 (PromoteX x) (PromoteX x)
+    type instance SingKindC @(D1 a b) (MkD1 x x) = (SingKindC x,
+                                                    SingKindC x)
     class SC1 a b where
       sM1 ::
         (forall (t :: a) (t :: b).
@@ -355,12 +360,17 @@ Singletons/T412.hs:0:0:: Splicing declarations
         SMkD2 :: forall (a :: Type) (b :: Type) (n :: a) (n :: b).
                  (Sing n) -> (Sing n) -> SD2 ('MkD2 n n :: D2 a b)
     type instance Sing @(D2 a b) = SD2
+    type instance Demote (D2 a b) = D2 (DemoteX a) (DemoteX b)
+    type instance Promote (D2 a b) = D2 (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (D2 a b) where
-      type Demote (D2 a b) = D2 (Demote a) (Demote b)
       fromSing (SMkD2 b b) = MkD2 (fromSing b) (fromSing b)
       toSing (MkD2 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
+    type instance DemoteX @(D2 a b) ('MkD2 x x) = 'MkD2 (DemoteX x) (DemoteX x)
+    type instance PromoteX @(D2 a b) ('MkD2 x x) = 'MkD2 (PromoteX x) (PromoteX x)
+    type instance SingKindC @(D2 a b) ('MkD2 x x) = (SingKindC x,
+                                                     SingKindC x)
     infixr 5 data `SMkD2`
     infixr 5 data `sD2A`
     infixr 5 data `sD2B`

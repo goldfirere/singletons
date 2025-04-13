@@ -128,14 +128,21 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
         SZero :: SNat (Zero :: Nat)
         SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
     type instance Sing @Nat = SNat
+    type instance Demote Nat = Nat
+    type instance Promote Nat = Nat
     instance SingKind Nat where
-      type Demote Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ (b :: Demote Nat))
         = (\cases (SomeSing c) -> SomeSing (SSucc c))
             (toSing b :: SomeSing Nat)
+    type instance DemoteX @Nat Zero = Zero
+    type instance DemoteX @Nat (Succ x) = Succ (DemoteX x)
+    type instance PromoteX @Nat Zero = Zero
+    type instance PromoteX @Nat (Succ x) = Succ (PromoteX x)
+    type instance SingKindC @Nat Zero = ()
+    type instance SingKindC @Nat (Succ x) = SingKindC x
     instance SEq Nat => SEq Nat where
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse

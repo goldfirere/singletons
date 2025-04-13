@@ -195,10 +195,14 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       sing = singFun1 @GetFoo3aSym0 sGetFoo3a
     data SFoo1 :: Foo1 -> Type where SMkFoo1 :: SFoo1 (MkFoo1 :: Foo1)
     type instance Sing @Foo1 = SFoo1
+    type instance Demote Foo1 = Foo1
+    type instance Promote Foo1 = Foo1
     instance SingKind Foo1 where
-      type Demote Foo1 = Foo1
       fromSing SMkFoo1 = MkFoo1
       toSing MkFoo1 = SomeSing SMkFoo1
+    type instance DemoteX @Foo1 MkFoo1 = MkFoo1
+    type instance PromoteX @Foo1 MkFoo1 = MkFoo1
+    type instance SingKindC @Foo1 MkFoo1 = ()
     data SFoo2 :: forall a. Foo2 a -> Type
       where
         SMkFoo2a :: forall a (n :: a) (n :: a).
@@ -210,8 +214,9 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
         (:%&:) :: forall a (n :: a) (n :: a).
                   (Sing n) -> (Sing n) -> SFoo2 ((:&:) n n :: Foo2 a)
     type instance Sing @(Foo2 a) = SFoo2
+    type instance Demote (Foo2 a) = Foo2 (DemoteX a)
+    type instance Promote (Foo2 a) = Foo2 (PromoteX a)
     instance SingKind a => SingKind (Foo2 a) where
-      type Demote (Foo2 a) = Foo2 (Demote a)
       fromSing (SMkFoo2a b b) = MkFoo2a (fromSing b) (fromSing b)
       fromSing (SMkFoo2b b b) = MkFoo2b (fromSing b) (fromSing b)
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
@@ -228,17 +233,38 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:&:) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%&:) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
+    type instance DemoteX @(Foo2 a) (MkFoo2a x x) = MkFoo2a (DemoteX x) (DemoteX x)
+    type instance DemoteX @(Foo2 a) (MkFoo2b x x) = MkFoo2b (DemoteX x) (DemoteX x)
+    type instance DemoteX @(Foo2 a) ((:*:) x x) = (:*:) (DemoteX x) (DemoteX x)
+    type instance DemoteX @(Foo2 a) ((:&:) x x) = (:&:) (DemoteX x) (DemoteX x)
+    type instance PromoteX @(Foo2 a) (MkFoo2a x x) = MkFoo2a (PromoteX x) (PromoteX x)
+    type instance PromoteX @(Foo2 a) (MkFoo2b x x) = MkFoo2b (PromoteX x) (PromoteX x)
+    type instance PromoteX @(Foo2 a) ((:*:) x x) = (:*:) (PromoteX x) (PromoteX x)
+    type instance PromoteX @(Foo2 a) ((:&:) x x) = (:&:) (PromoteX x) (PromoteX x)
+    type instance SingKindC @(Foo2 a) (MkFoo2a x x) = (SingKindC x,
+                                                       SingKindC x)
+    type instance SingKindC @(Foo2 a) (MkFoo2b x x) = (SingKindC x,
+                                                       SingKindC x)
+    type instance SingKindC @(Foo2 a) ((:*:) x x) = (SingKindC x,
+                                                     SingKindC x)
+    type instance SingKindC @(Foo2 a) ((:&:) x x) = (SingKindC x,
+                                                     SingKindC x)
     data SFoo3 :: Foo3 -> Type
       where
         SMkFoo3 :: forall (n :: Bool) (n :: Bool).
                    (Sing n) -> (Sing n) -> SFoo3 (MkFoo3 n n :: Foo3)
     type instance Sing @Foo3 = SFoo3
+    type instance Demote Foo3 = Foo3
+    type instance Promote Foo3 = Foo3
     instance SingKind Foo3 where
-      type Demote Foo3 = Foo3
       fromSing (SMkFoo3 b b) = MkFoo3 (fromSing b) (fromSing b)
       toSing (MkFoo3 (b :: Demote Bool) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkFoo3 c c))
             (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
+    type instance DemoteX @Foo3 (MkFoo3 x x) = MkFoo3 (DemoteX x) (DemoteX x)
+    type instance PromoteX @Foo3 (MkFoo3 x x) = MkFoo3 (PromoteX x) (PromoteX x)
+    type instance SingKindC @Foo3 (MkFoo3 x x) = (SingKindC x,
+                                                  SingKindC x)
     instance SShow Foo1 where
       sShowsPrec
         _

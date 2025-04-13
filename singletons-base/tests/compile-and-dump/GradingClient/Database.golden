@@ -42,14 +42,21 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SZero :: SNat (Zero :: Nat)
         SSucc :: forall (n :: Nat). (Sing n) -> SNat (Succ n :: Nat)
     type instance Sing @Nat = SNat
+    type instance Demote Nat = Nat
+    type instance Promote Nat = Nat
     instance SingKind Nat where
-      type Demote Nat = Nat
       fromSing SZero = Zero
       fromSing (SSucc b) = Succ (fromSing b)
       toSing Zero = SomeSing SZero
       toSing (Succ (b :: Demote Nat))
         = (\cases (SomeSing c) -> SomeSing (SSucc c))
             (toSing b :: SomeSing Nat)
+    type instance DemoteX @Nat Zero = Zero
+    type instance DemoteX @Nat (Succ x) = Succ (DemoteX x)
+    type instance PromoteX @Nat Zero = Zero
+    type instance PromoteX @Nat (Succ x) = Succ (PromoteX x)
+    type instance SingKindC @Nat Zero = ()
+    type instance SingKindC @Nat (Succ x) = SingKindC x
     instance SEq Nat => SEq Nat where
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse
@@ -1343,8 +1350,9 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SVEC :: forall (n :: U) (n :: Nat).
                 (Sing n) -> (Sing n) -> SU (VEC n n :: U)
     type instance Sing @U = SU
+    type instance Demote U = U
+    type instance Promote U = U
     instance SingKind U where
-      type Demote U = U
       fromSing SBOOL = BOOL
       fromSing SSTRING = STRING
       fromSing SNAT = NAT
@@ -1355,6 +1363,18 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing (VEC (b :: Demote U) (b :: Demote Nat))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SVEC c c))
             (toSing b :: SomeSing U) (toSing b :: SomeSing Nat)
+    type instance DemoteX @U BOOL = BOOL
+    type instance DemoteX @U STRING = STRING
+    type instance DemoteX @U NAT = NAT
+    type instance DemoteX @U (VEC x x) = VEC (DemoteX x) (DemoteX x)
+    type instance PromoteX @U BOOL = BOOL
+    type instance PromoteX @U STRING = STRING
+    type instance PromoteX @U NAT = NAT
+    type instance PromoteX @U (VEC x x) = VEC (PromoteX x) (PromoteX x)
+    type instance SingKindC @U BOOL = ()
+    type instance SingKindC @U STRING = ()
+    type instance SingKindC @U NAT = ()
+    type instance SingKindC @U (VEC x x) = (SingKindC x, SingKindC x)
     data SAChar :: AChar -> Type
       where
         SCA :: SAChar (CA :: AChar)
@@ -1384,8 +1404,9 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
         SCY :: SAChar (CY :: AChar)
         SCZ :: SAChar (CZ :: AChar)
     type instance Sing @AChar = SAChar
+    type instance Demote AChar = AChar
+    type instance Promote AChar = AChar
     instance SingKind AChar where
-      type Demote AChar = AChar
       fromSing SCA = CA
       fromSing SCB = CB
       fromSing SCC = CC
@@ -1438,28 +1459,115 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       toSing CX = SomeSing SCX
       toSing CY = SomeSing SCY
       toSing CZ = SomeSing SCZ
+    type instance DemoteX @AChar CA = CA
+    type instance DemoteX @AChar CB = CB
+    type instance DemoteX @AChar CC = CC
+    type instance DemoteX @AChar CD = CD
+    type instance DemoteX @AChar CE = CE
+    type instance DemoteX @AChar CF = CF
+    type instance DemoteX @AChar CG = CG
+    type instance DemoteX @AChar CH = CH
+    type instance DemoteX @AChar CI = CI
+    type instance DemoteX @AChar CJ = CJ
+    type instance DemoteX @AChar CK = CK
+    type instance DemoteX @AChar CL = CL
+    type instance DemoteX @AChar CM = CM
+    type instance DemoteX @AChar CN = CN
+    type instance DemoteX @AChar CO = CO
+    type instance DemoteX @AChar CP = CP
+    type instance DemoteX @AChar CQ = CQ
+    type instance DemoteX @AChar CR = CR
+    type instance DemoteX @AChar CS = CS
+    type instance DemoteX @AChar CT = CT
+    type instance DemoteX @AChar CU = CU
+    type instance DemoteX @AChar CV = CV
+    type instance DemoteX @AChar CW = CW
+    type instance DemoteX @AChar CX = CX
+    type instance DemoteX @AChar CY = CY
+    type instance DemoteX @AChar CZ = CZ
+    type instance PromoteX @AChar CA = CA
+    type instance PromoteX @AChar CB = CB
+    type instance PromoteX @AChar CC = CC
+    type instance PromoteX @AChar CD = CD
+    type instance PromoteX @AChar CE = CE
+    type instance PromoteX @AChar CF = CF
+    type instance PromoteX @AChar CG = CG
+    type instance PromoteX @AChar CH = CH
+    type instance PromoteX @AChar CI = CI
+    type instance PromoteX @AChar CJ = CJ
+    type instance PromoteX @AChar CK = CK
+    type instance PromoteX @AChar CL = CL
+    type instance PromoteX @AChar CM = CM
+    type instance PromoteX @AChar CN = CN
+    type instance PromoteX @AChar CO = CO
+    type instance PromoteX @AChar CP = CP
+    type instance PromoteX @AChar CQ = CQ
+    type instance PromoteX @AChar CR = CR
+    type instance PromoteX @AChar CS = CS
+    type instance PromoteX @AChar CT = CT
+    type instance PromoteX @AChar CU = CU
+    type instance PromoteX @AChar CV = CV
+    type instance PromoteX @AChar CW = CW
+    type instance PromoteX @AChar CX = CX
+    type instance PromoteX @AChar CY = CY
+    type instance PromoteX @AChar CZ = CZ
+    type instance SingKindC @AChar CA = ()
+    type instance SingKindC @AChar CB = ()
+    type instance SingKindC @AChar CC = ()
+    type instance SingKindC @AChar CD = ()
+    type instance SingKindC @AChar CE = ()
+    type instance SingKindC @AChar CF = ()
+    type instance SingKindC @AChar CG = ()
+    type instance SingKindC @AChar CH = ()
+    type instance SingKindC @AChar CI = ()
+    type instance SingKindC @AChar CJ = ()
+    type instance SingKindC @AChar CK = ()
+    type instance SingKindC @AChar CL = ()
+    type instance SingKindC @AChar CM = ()
+    type instance SingKindC @AChar CN = ()
+    type instance SingKindC @AChar CO = ()
+    type instance SingKindC @AChar CP = ()
+    type instance SingKindC @AChar CQ = ()
+    type instance SingKindC @AChar CR = ()
+    type instance SingKindC @AChar CS = ()
+    type instance SingKindC @AChar CT = ()
+    type instance SingKindC @AChar CU = ()
+    type instance SingKindC @AChar CV = ()
+    type instance SingKindC @AChar CW = ()
+    type instance SingKindC @AChar CX = ()
+    type instance SingKindC @AChar CY = ()
+    type instance SingKindC @AChar CZ = ()
     data SAttribute :: Attribute -> Type
       where
         SAttr :: forall (n :: [AChar]) (n :: U).
                  (Sing n) -> (Sing n) -> SAttribute (Attr n n :: Attribute)
     type instance Sing @Attribute = SAttribute
+    type instance Demote Attribute = Attribute
+    type instance Promote Attribute = Attribute
     instance SingKind Attribute where
-      type Demote Attribute = Attribute
       fromSing (SAttr b b) = Attr (fromSing b) (fromSing b)
       toSing (Attr (b :: Demote [AChar]) (b :: Demote U))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SAttr c c))
             (toSing b :: SomeSing [AChar]) (toSing b :: SomeSing U)
+    type instance DemoteX @Attribute (Attr x x) = Attr (DemoteX x) (DemoteX x)
+    type instance PromoteX @Attribute (Attr x x) = Attr (PromoteX x) (PromoteX x)
+    type instance SingKindC @Attribute (Attr x x) = (SingKindC x,
+                                                     SingKindC x)
     data SSchema :: Schema -> Type
       where
         SSch :: forall (n :: [Attribute]).
                 (Sing n) -> SSchema (Sch n :: Schema)
     type instance Sing @Schema = SSchema
+    type instance Demote Schema = Schema
+    type instance Promote Schema = Schema
     instance SingKind Schema where
-      type Demote Schema = Schema
       fromSing (SSch b) = Sch (fromSing b)
       toSing (Sch (b :: Demote [Attribute]))
         = (\cases (SomeSing c) -> SomeSing (SSch c))
             (toSing b :: SomeSing [Attribute])
+    type instance DemoteX @Schema (Sch x) = Sch (DemoteX x)
+    type instance PromoteX @Schema (Sch x) = Sch (PromoteX x)
+    type instance SingKindC @Schema (Sch x) = SingKindC x
     instance (SEq U, SEq Nat) => SEq U where
       (%==) SBOOL SBOOL = STrue
       (%==) SBOOL SSTRING = SFalse

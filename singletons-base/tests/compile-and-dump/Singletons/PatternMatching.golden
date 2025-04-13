@@ -103,12 +103,17 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
         SPair :: forall a b (n :: a) (n :: b).
                  (Sing n) -> (Sing n) -> SPair (Pair n n :: Pair a b)
     type instance Sing @(Pair a b) = SPair
+    type instance Demote (Pair a b) = Pair (DemoteX a) (DemoteX b)
+    type instance Promote (Pair a b) = Pair (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind (Pair a b) where
-      type Demote (Pair a b) = Pair (Demote a) (Demote b)
       fromSing (SPair b b) = Pair (fromSing b) (fromSing b)
       toSing (Pair (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SPair c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
+    type instance DemoteX @(Pair a b) (Pair x x) = Pair (DemoteX x) (DemoteX x)
+    type instance PromoteX @(Pair a b) (Pair x x) = Pair (PromoteX x) (PromoteX x)
+    type instance SingKindC @(Pair a b) (Pair x x) = (SingKindC x,
+                                                      SingKindC x)
     instance (SShow a, SShow b) => SShow (Pair a b) where
       sShowsPrec
         (sP_0123456789876543210 :: Sing p_0123456789876543210)

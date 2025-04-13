@@ -207,10 +207,12 @@ the type parameter `a` does not appear in the `SomeSing` type. Thus, this type
 can be used when you have a singleton, but you don't know at compile time what
 it will be. `SomeSing Thing` is isomorphic to `Thing`.
 
+TODO RGS: Document `Demote`, `Promote`, `DemoteX`, `PromoteX`, `SingKindX`, and
+`SingKindC`
+
 ```haskell
 type SingKind :: Type -> Constraint
 class SingKind k where
-  type Demote k :: *
   fromSing :: Sing (a :: k) -> Demote k
   toSing   :: Demote k -> SomeSing k
 ```

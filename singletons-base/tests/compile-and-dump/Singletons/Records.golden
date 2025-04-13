@@ -64,12 +64,17 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
         SMkRecord :: forall a (n :: a) (n :: Bool).
                      (Sing n) -> (Sing n) -> SRecord (MkRecord n n :: Record a)
     type instance Sing @(Record a) = SRecord
+    type instance Demote (Record a) = Record (DemoteX a)
+    type instance Promote (Record a) = Record (PromoteX a)
     instance SingKind a => SingKind (Record a) where
-      type Demote (Record a) = Record (Demote a)
       fromSing (SMkRecord b b) = MkRecord (fromSing b) (fromSing b)
       toSing (MkRecord (b :: Demote a) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkRecord c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing Bool)
+    type instance DemoteX @(Record a) (MkRecord x x) = MkRecord (DemoteX x) (DemoteX x)
+    type instance PromoteX @(Record a) (MkRecord x x) = MkRecord (PromoteX x) (PromoteX x)
+    type instance SingKindC @(Record a) (MkRecord x x) = (SingKindC x,
+                                                          SingKindC x)
     instance (SingI n, SingI n) =>
              SingI (MkRecord (n :: a) (n :: Bool)) where
       sing = SMkRecord sing sing

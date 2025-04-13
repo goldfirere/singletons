@@ -29,8 +29,9 @@ Singletons/T159.hs:0:0:: Splicing declarations
         SE :: ST0 ('E :: T0)
         SF :: ST0 ('F :: T0)
     type instance Sing @T0 = ST0
+    type instance Demote T0 = T0
+    type instance Promote T0 = T0
     instance SingKind T0 where
-      type Demote T0 = T0
       fromSing SA = A
       fromSing SB = B
       fromSing SC = C
@@ -43,6 +44,24 @@ Singletons/T159.hs:0:0:: Splicing declarations
       toSing D = SomeSing SD
       toSing E = SomeSing SE
       toSing F = SomeSing SF
+    type instance DemoteX @T0 'A = 'A
+    type instance DemoteX @T0 'B = 'B
+    type instance DemoteX @T0 'C = 'C
+    type instance DemoteX @T0 'D = 'D
+    type instance DemoteX @T0 'E = 'E
+    type instance DemoteX @T0 'F = 'F
+    type instance PromoteX @T0 'A = 'A
+    type instance PromoteX @T0 'B = 'B
+    type instance PromoteX @T0 'C = 'C
+    type instance PromoteX @T0 'D = 'D
+    type instance PromoteX @T0 'E = 'E
+    type instance PromoteX @T0 'F = 'F
+    type instance SingKindC @T0 'A = ()
+    type instance SingKindC @T0 'B = ()
+    type instance SingKindC @T0 'C = ()
+    type instance SingKindC @T0 'D = ()
+    type instance SingKindC @T0 'E = ()
+    type instance SingKindC @T0 'F = ()
     instance SingI 'A where
       sing = SA
     instance SingI 'B where
@@ -111,8 +130,9 @@ Singletons/T159.hs:0:0:: Splicing declarations
         (:%&&) :: forall (n :: T0) (n :: T1).
                   (Sing n) -> (Sing n) -> ST1 ('(:&&) n n :: T1)
     type instance Sing @T1 = ST1
+    type instance Demote T1 = T1
+    type instance Promote T1 = T1
     instance SingKind T1 where
-      type Demote T1 = T1
       fromSing SN1 = N1
       fromSing (SC1 b b) = C1 (fromSing b) (fromSing b)
       fromSing ((:%&&) b b) = (:&&) (fromSing b) (fromSing b)
@@ -123,6 +143,16 @@ Singletons/T159.hs:0:0:: Splicing declarations
       toSing ((:&&) (b :: Demote T0) (b :: Demote T1))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%&&) c c))
             (toSing b :: SomeSing T0) (toSing b :: SomeSing T1)
+    type instance DemoteX @T1 'N1 = 'N1
+    type instance DemoteX @T1 ('C1 x x) = 'C1 (DemoteX x) (DemoteX x)
+    type instance DemoteX @T1 ('(:&&) x x) = '(:&&) (DemoteX x) (DemoteX x)
+    type instance PromoteX @T1 'N1 = 'N1
+    type instance PromoteX @T1 ('C1 x x) = 'C1 (PromoteX x) (PromoteX x)
+    type instance PromoteX @T1 ('(:&&) x x) = '(:&&) (PromoteX x) (PromoteX x)
+    type instance SingKindC @T1 'N1 = ()
+    type instance SingKindC @T1 ('C1 x x) = (SingKindC x, SingKindC x)
+    type instance SingKindC @T1 ('(:&&) x x) = (SingKindC x,
+                                                SingKindC x)
     infixr 5 data `SC1`
     infixr 5 data :%&&
     instance SingI 'N1 where
@@ -223,8 +253,9 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
         (:%||) :: forall (n :: T0) (n :: T2).
                   (Sing n) -> (Sing n) -> ST2 ((:||) n n :: T2)
     type instance Sing @T2 = ST2
+    type instance Demote T2 = T2
+    type instance Promote T2 = T2
     instance SingKind T2 where
-      type Demote T2 = T2
       fromSing SN2 = N2
       fromSing (SC2 b b) = C2 (fromSing b) (fromSing b)
       fromSing ((:%||) b b) = (:||) (fromSing b) (fromSing b)
@@ -235,6 +266,16 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:||) (b :: Demote T0) (b :: Demote T2))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%||) c c))
             (toSing b :: SomeSing T0) (toSing b :: SomeSing T2)
+    type instance DemoteX @T2 N2 = N2
+    type instance DemoteX @T2 (C2 x x) = C2 (DemoteX x) (DemoteX x)
+    type instance DemoteX @T2 ((:||) x x) = (:||) (DemoteX x) (DemoteX x)
+    type instance PromoteX @T2 N2 = N2
+    type instance PromoteX @T2 (C2 x x) = C2 (PromoteX x) (PromoteX x)
+    type instance PromoteX @T2 ((:||) x x) = (:||) (PromoteX x) (PromoteX x)
+    type instance SingKindC @T2 N2 = ()
+    type instance SingKindC @T2 (C2 x x) = (SingKindC x, SingKindC x)
+    type instance SingKindC @T2 ((:||) x x) = (SingKindC x,
+                                               SingKindC x)
     instance SingI N2 where
       sing = SN2
     instance (SingI n, SingI n) => SingI (C2 (n :: T0) (n :: T2)) where

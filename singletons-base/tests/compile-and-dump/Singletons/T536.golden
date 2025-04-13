@@ -40,8 +40,9 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
         SMkMessage :: forall (n :: Symbol).
                       (Data.Singletons.Sing n) -> SMessage ('PMkMessage n :: PMessage)
     type instance Data.Singletons.Sing @PMessage = SMessage
+    type instance Data.Singletons.Demote PMessage = Message
+    type instance Data.Singletons.Promote Message = PMessage
     instance Data.Singletons.SingKind PMessage where
-      type Data.Singletons.Demote PMessage = Message
       Data.Singletons.fromSing (SMkMessage b)
         = MkMessage (Data.Singletons.fromSing b)
       Data.Singletons.toSing
@@ -50,6 +51,9 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
              (Data.Singletons.SomeSing c)
                -> Data.Singletons.SomeSing (SMkMessage c))
             (Data.Singletons.toSing b :: Data.Singletons.SomeSing Symbol)
+    type instance Data.Singletons.DemoteX @PMessage ('PMkMessage x) = 'MkMessage (Data.Singletons.DemoteX x)
+    type instance Data.Singletons.PromoteX @Message ('MkMessage x) = 'PMkMessage (Data.Singletons.PromoteX x)
+    type instance Data.Singletons.SingKindC @PMessage ('PMkMessage x) = Data.Singletons.SingKindC x
     instance Data.Singletons.SingI n =>
              Data.Singletons.SingI ('PMkMessage (n :: Symbol)) where
       Data.Singletons.sing = SMkMessage Data.Singletons.sing

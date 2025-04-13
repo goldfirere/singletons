@@ -20,8 +20,9 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
       type Compare a a = Compare_0123456789876543210 a a
     data SEmpty :: Empty -> Type
     type instance Sing @Empty = SEmpty
+    type instance Demote Empty = Empty
+    type instance Promote Empty = Empty
     instance SingKind Empty where
-      type Demote Empty = Empty
       fromSing x = (\case) x
       toSing x = SomeSing ((\case) x)
     instance SEq Empty where

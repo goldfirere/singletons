@@ -70,8 +70,9 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
         SProxy3 :: forall a. SProxy (Proxy3 :: Proxy a)
         SProxy4 :: forall k (a :: k). SProxy (Proxy4 :: Proxy a)
     type instance Sing @(Proxy a) = SProxy
+    type instance Demote (Proxy a) = Proxy (DemoteX a)
+    type instance Promote (Proxy a) = Proxy (PromoteX a)
     instance SingKind a => SingKind (Proxy a) where
-      type Demote (Proxy a) = Proxy (Demote a)
       fromSing SProxy1 = Proxy1
       fromSing SProxy2 = Proxy2
       fromSing SProxy3 = Proxy3
@@ -80,6 +81,18 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       toSing Proxy2 = SomeSing SProxy2
       toSing Proxy3 = SomeSing SProxy3
       toSing Proxy4 = SomeSing SProxy4
+    type instance DemoteX @(Proxy a) Proxy1 = Proxy1
+    type instance DemoteX @(Proxy a) Proxy2 = Proxy2
+    type instance DemoteX @(Proxy a) Proxy3 = Proxy3
+    type instance DemoteX @(Proxy a) Proxy4 = Proxy4
+    type instance PromoteX @(Proxy a) Proxy1 = Proxy1
+    type instance PromoteX @(Proxy a) Proxy2 = Proxy2
+    type instance PromoteX @(Proxy a) Proxy3 = Proxy3
+    type instance PromoteX @(Proxy a) Proxy4 = Proxy4
+    type instance SingKindC @(Proxy a) Proxy1 = ()
+    type instance SingKindC @(Proxy a) Proxy2 = ()
+    type instance SingKindC @(Proxy a) Proxy3 = ()
+    type instance SingKindC @(Proxy a) Proxy4 = ()
     instance SingI Proxy1 where
       sing = SProxy1
     instance SingI Proxy2 where

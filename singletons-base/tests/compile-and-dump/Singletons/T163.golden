@@ -29,14 +29,21 @@ Singletons/T163.hs:0:0:: Splicing declarations
         SL :: forall a b (n :: a). (Sing n) -> (%+) (L n :: (+) a b)
         SR :: forall a b (n :: b). (Sing n) -> (%+) (R n :: (+) a b)
     type instance Sing @((+) a b) = (%+)
+    type instance Demote ((+) a b) = (+) (DemoteX a) (DemoteX b)
+    type instance Promote ((+) a b) = (+) (PromoteX a) (PromoteX b)
     instance (SingKind a, SingKind b) => SingKind ((+) a b) where
-      type Demote ((+) a b) = (+) (Demote a) (Demote b)
       fromSing (SL b) = L (fromSing b)
       fromSing (SR b) = R (fromSing b)
       toSing (L (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SL c)) (toSing b :: SomeSing a)
       toSing (R (b :: Demote b))
         = (\cases (SomeSing c) -> SomeSing (SR c)) (toSing b :: SomeSing b)
+    type instance DemoteX @((+) a b) (L x) = L (DemoteX x)
+    type instance DemoteX @((+) a b) (R x) = R (DemoteX x)
+    type instance PromoteX @((+) a b) (L x) = L (PromoteX x)
+    type instance PromoteX @((+) a b) (R x) = R (PromoteX x)
+    type instance SingKindC @((+) a b) (L x) = SingKindC x
+    type instance SingKindC @((+) a b) (R x) = SingKindC x
     instance SingI n => SingI (L (n :: a)) where
       sing = SL sing
     instance SingI1 L where

@@ -37,20 +37,13 @@ import Data.Semigroup.Singletons.Internal.Classes
 import Data.Singletons.Base.Instances hiding (FoldlSym0, sFoldl)
 import Data.Singletons.Base.Enum
 import Data.Singletons.TH
-import Data.Singletons.TH.Options
 import GHC.Base.Singletons
   hiding ( Const, ConstSym0, ConstSym1
          , Foldr, FoldrSym0, sFoldr )
 import GHC.Num.Singletons
 import Text.Show.Singletons
 
-$(withOptions defaultOptions{genSingKindInsts = False}
-    (genSingletons [''Const]))
-
-instance SingKind a => SingKind (Const a b) where
-  type Demote (Const a b) = Const (Demote a) b
-  fromSing (SConst sa) = Const (fromSing sa)
-  toSing (Const a) = withSomeSing a $ SomeSing . SConst
+$(genSingletons [''Const])
 
 $(singletonsOnly [d|
   deriving instance Bounded a => Bounded (Const a b)

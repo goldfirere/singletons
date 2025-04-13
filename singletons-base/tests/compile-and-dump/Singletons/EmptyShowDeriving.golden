@@ -27,8 +27,9 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     data SFoo :: Foo -> Type
     type instance Sing @Foo = SFoo
+    type instance Demote Foo = Foo
+    type instance Promote Foo = Foo
     instance SingKind Foo where
-      type Demote Foo = Foo
       fromSing x = (\case) x
       toSing x = SomeSing ((\case) x)
     instance SShow Foo where
