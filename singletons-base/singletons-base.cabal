@@ -73,7 +73,7 @@ library
                       singletons-th    >= 3.5 && < 3.6,
                       template-haskell >= 2.23 && < 2.24,
                       text >= 1.2,
-                      th-desugar       >= 1.18 && < 1.19
+                      th-desugar       >= 1.19 && < 1.20
   default-language:   GHC2021
   other-extensions:   TemplateHaskell
   exposed-modules:    Data.Singletons.Base.CustomStar
