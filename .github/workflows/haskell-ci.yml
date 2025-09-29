@@ -8,14 +8,15 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.19.20250216
+# version: 0.19.20250917
 #
-# REGENDATA ("0.19.20250216",["github","cabal.project"])
+# REGENDATA ("0.19.20250917",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
   - push
   - pull_request
+  - merge_group
 jobs:
   linux:
     name: Haskell-CI - Linux - ${{ matrix.compiler }}
@@ -28,24 +29,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: ghc-9.12.1
+          - compiler: ghc-9.12.2
             compilerKind: ghc
-            compilerVersion: 9.12.1
+            compilerVersion: 9.12.2
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.10.1
+          - compiler: ghc-9.10.3
             compilerKind: ghc
-            compilerVersion: 9.10.1
+            compilerVersion: 9.10.3
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.8.2
+          - compiler: ghc-9.8.4
             compilerKind: ghc
-            compilerVersion: 9.8.2
+            compilerVersion: 9.8.4
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.6.6
+          - compiler: ghc-9.6.7
             compilerKind: ghc
-            compilerVersion: 9.6.6
+            compilerVersion: 9.6.7
             setup-method: ghcup
             allow-failure: false
           - compiler: ghc-9.4.8
@@ -102,12 +103,12 @@ jobs:
       - name: Install GHCup
         run: |
           mkdir -p "$HOME/.ghcup/bin"
-          curl -sL https://downloads.haskell.org/ghcup/0.1.30.0/x86_64-linux-ghcup-0.1.30.0 > "$HOME/.ghcup/bin/ghcup"
+          curl -sL https://downloads.haskell.org/ghcup/0.1.50.1/x86_64-linux-ghcup-0.1.50.1 > "$HOME/.ghcup/bin/ghcup"
           chmod a+x "$HOME/.ghcup/bin/ghcup"
       - name: Install cabal-install
         run: |
-          "$HOME/.ghcup/bin/ghcup" install cabal 3.14.1.1 || (cat "$HOME"/.ghcup/logs/*.* && false)
-          echo "CABAL=$HOME/.ghcup/bin/cabal-3.14.1.1 -vnormal+nowrap" >> "$GITHUB_ENV"
+          "$HOME/.ghcup/bin/ghcup" install cabal 3.14.1.1-p1 || (cat "$HOME"/.ghcup/logs/*.* && false)
+          echo "CABAL=$HOME/.ghcup/bin/cabal-3.14.1.1-p1 -vnormal+nowrap" >> "$GITHUB_ENV"
       - name: Install GHC (GHCup)
         if: matrix.setup-method == 'ghcup'
         run: |
@@ -183,7 +184,7 @@ jobs:
           chmod a+x $HOME/.cabal/bin/cabal-plan
           cabal-plan --version
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: source
       - name: initial cabal.project for sdist
@@ -220,13 +221,29 @@ jobs:
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: ${PKGDIR_singletons_base}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "packages: ${PKGDIR_singletons_base_code_generator}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           source-repository-package
             type:     git

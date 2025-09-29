@@ -8,7 +8,7 @@ author:         Ryan Scott <ryan.gl.scott@gmail.com>
 maintainer:     Ryan Scott <ryan.gl.scott@gmail.com>
 bug-reports:    https://github.com/goldfirere/singletons/issues
 stability:      experimental
-tested-with:    GHC == 9.12.1
+tested-with:    GHC == 9.12.2
 extra-doc-files:    CHANGES.md
 extra-source-files: README.md
 license:        BSD-3-Clause
