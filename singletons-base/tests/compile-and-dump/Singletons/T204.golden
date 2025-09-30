@@ -53,7 +53,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     type (:%%@#@$$$) :: forall a. a -> a -> Ratio2 a
     type family (:%%@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ratio2 a where
       (:%%@#@$$$) a0123456789876543210 a0123456789876543210 = (:%%) a0123456789876543210 a0123456789876543210
-    data SRatio1 :: forall a. Ratio1 a -> GHC.Types.Type
+    data SRatio1 :: forall a. Ratio1 a -> GHC.Internal.Types.Type
       where
         (:^%) :: forall a (n :: a) (n :: a).
                  (Sing n) -> (Sing n) -> SRatio1 ((:%) n n :: Ratio1 a)
@@ -64,7 +64,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
-    data SRatio2 :: forall a. Ratio2 a -> GHC.Types.Type
+    data SRatio2 :: forall a. Ratio2 a -> GHC.Internal.Types.Type
       where
         (:^%%) :: forall a (n :: a) (n :: a).
                   (Sing n) -> (Sing n) -> SRatio2 ((:%%) n n :: Ratio2 a)

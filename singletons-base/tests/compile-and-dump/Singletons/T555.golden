@@ -31,9 +31,9 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
       Compare_0123456789876543210 Quaternion Location = GTSym0
     instance POrd MyPropKind where
       type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
+    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
                                           -> MyPropKind -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: MyPropKind) (a :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: MyPropKind) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Location a_0123456789876543210 = Apply (Apply ShowStringSym0 "Location") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Quaternion a_0123456789876543210 = Apply (Apply ShowStringSym0 "Quaternion") a_0123456789876543210
     instance PShow MyPropKind where

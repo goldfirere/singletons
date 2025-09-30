@@ -16,20 +16,20 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
           data Foo = A | B
           data Foo2 = F | G
           
+          instance Eq Foo2 where
+            F == F = True
+            G == G = True
+            F == G = False
+            G == F = False
+          instance MyOrd Foo where
+            mycompare = fooCompare
           instance MyOrd () where
             mycompare _ = const EQ
           instance MyOrd Nat where
             Zero `mycompare` Zero = EQ
             Zero `mycompare` (Succ _) = LT
             (Succ _) `mycompare` Zero = GT
-            (Succ n) `mycompare` (Succ m) = m `mycompare` n
-          instance MyOrd Foo where
-            mycompare = fooCompare
-          instance Eq Foo2 where
-            F == F = True
-            G == G = True
-            F == G = False
-            G == F = False |]
+            (Succ n) `mycompare` (Succ m) = m `mycompare` n |]
   ======>
     const :: a -> b -> a
     const x _ = x

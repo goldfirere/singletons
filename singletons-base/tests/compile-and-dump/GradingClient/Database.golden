@@ -501,18 +501,18 @@ GradingClient/Database.hs:(0,0)-(0,0): Splicing declarations
       TFHelper_0123456789876543210 (VEC a_0123456789876543210 a_0123456789876543210) (VEC b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)
     instance PEq U where
       type (==) a a = TFHelper_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
+    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
                                           -> U -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: U) (a :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: U) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ BOOL a_0123456789876543210 = Apply (Apply ShowStringSym0 "BOOL") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ STRING a_0123456789876543210 = Apply (Apply ShowStringSym0 "STRING") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ NAT a_0123456789876543210 = Apply (Apply ShowStringSym0 "NAT") a_0123456789876543210
       ShowsPrec_0123456789876543210 p_0123456789876543210 (VEC arg_0123456789876543210 arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "VEC ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
     instance PShow U where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
+    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
                                           -> AChar -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: AChar) (a :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: AChar) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ CA a_0123456789876543210 = Apply (Apply ShowStringSym0 "CA") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ CB a_0123456789876543210 = Apply (Apply ShowStringSym0 "CB") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ CC a_0123456789876543210 = Apply (Apply ShowStringSym0 "CC") a_0123456789876543210

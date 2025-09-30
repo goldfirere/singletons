@@ -24,9 +24,9 @@ module GHC.TypeLits.Singletons.Internal (
   Sing,
 
   Natural, TL.Symbol, Char,
-  TN.SNat, pattern TN.SNat,
-  TL.SSymbol, pattern TL.SSymbol, pattern SSym,
-  TL.SChar, pattern TL.SChar,
+  TN.SNat, data TN.SNat,
+  TL.SSymbol, data TL.SSymbol, data SSym,
+  TL.SChar, data TL.SChar,
   TN.withKnownNat, TL.withKnownSymbol, TL.withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,

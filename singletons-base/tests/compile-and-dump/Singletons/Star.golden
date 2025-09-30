@@ -106,9 +106,9 @@ Singletons/Star.hs:0:0:: Splicing declarations
       Compare_0123456789876543210 (Vec _ _) (Maybe _) = GTSym0
     instance POrd Type where
       type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
+    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
                                           -> Type -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: Type) (a :: Symbol) :: Symbol where
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Type) (a :: Symbol) :: Symbol where
       ShowsPrec_0123456789876543210 _ Nat a_0123456789876543210 = Apply (Apply ShowStringSym0 "Nat") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ Int a_0123456789876543210 = Apply (Apply ShowStringSym0 "Int") a_0123456789876543210
       ShowsPrec_0123456789876543210 _ String a_0123456789876543210 = Apply (Apply ShowStringSym0 "String") a_0123456789876543210

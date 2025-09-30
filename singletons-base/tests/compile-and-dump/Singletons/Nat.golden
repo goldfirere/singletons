@@ -84,9 +84,11 @@ Singletons/Nat.hs:(0,0)-(0,0): Splicing declarations
       TFHelper_0123456789876543210 (Succ a_0123456789876543210) (Succ b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
     instance PEq Nat where
       type (==) a a = TFHelper_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Num.Natural.Natural
-                                          -> Nat -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Num.Natural.Natural) (a :: Nat) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
+    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
+                                          -> Nat
+                                             -> GHC.Internal.Types.Symbol
+                                                -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Nat) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
       ShowsPrec_0123456789876543210 _ Zero a_0123456789876543210 = Apply (Apply ShowStringSym0 "Zero") a_0123456789876543210
       ShowsPrec_0123456789876543210 p_0123456789876543210 (Succ arg_0123456789876543210) a_0123456789876543210 = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Succ ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     instance PShow Nat where
