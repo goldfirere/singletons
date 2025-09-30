@@ -8,9 +8,9 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
             type PFoo4 a
             type PFoo4 a = Maybe a
           
-          type instance PFoo2 a = Maybe a
           instance PC a where
-            type PFoo4 a = Maybe a |]
+            type PFoo4 a = Maybe a
+          type instance PFoo2 a = Maybe a |]
   ======>
     type PFoo1 a = Maybe a
     type family PFoo2 a
@@ -70,9 +70,9 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
             type SFoo4 a
             type SFoo4 a = Maybe a
           
-          type instance SFoo2 a = Maybe a
           instance SC a where
-            type SFoo4 a = Maybe a |]
+            type SFoo4 a = Maybe a
+          type instance SFoo2 a = Maybe a |]
   ======>
     type SFoo1 a = Maybe a
     type family SFoo2 a

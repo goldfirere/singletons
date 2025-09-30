@@ -21,9 +21,9 @@
 module GHC.TypeLits.Singletons (
   Natural, Symbol, Char,
   Sing,
-  SNat, pattern SNat,
-  SSymbol, pattern SSymbol, pattern SSym,
-  SChar, pattern SChar,
+  SNat, data SNat,
+  SSymbol, data SSymbol, data SSym,
+  SChar, data SChar,
   withKnownNat, withKnownSymbol, withKnownChar,
   Error, sError,
   ErrorWithoutStackTrace, sErrorWithoutStackTrace,

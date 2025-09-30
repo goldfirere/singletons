@@ -41,18 +41,22 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     type Y2Sym1 :: forall (a :: Type). X a -> Y a
     type family Y2Sym1 @(a :: Type) (a0123456789876543210 :: X a) :: Y a where
       Y2Sym1 a0123456789876543210 = Y2 a0123456789876543210
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Num.Natural.Natural
-                                                    -> X a -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Num.Natural.Natural) (a :: X a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
-      ShowsPrec_0123456789876543210 @a (_ :: GHC.Num.Natural.Natural) (X1 :: X a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply ShowStringSym0 "X1") a_0123456789876543210
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Num.Natural.Natural) (X2 arg_0123456789876543210 :: X a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "X2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
+                                                    -> X a
+                                                       -> GHC.Internal.Types.Symbol
+                                                          -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: X a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_0123456789876543210 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (X1 :: X a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "X1") a_0123456789876543210
+      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (X2 arg_0123456789876543210 :: X a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "X2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     instance PShow (X a) where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Num.Natural.Natural
-                                                    -> Y a -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Num.Natural.Natural) (a :: Y a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
-      ShowsPrec_0123456789876543210 @a (_ :: GHC.Num.Natural.Natural) (Y1 :: Y a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply ShowStringSym0 "Y1") a_0123456789876543210
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Num.Natural.Natural) (Y2 arg_0123456789876543210 :: Y a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Y2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
+                                                    -> Y a
+                                                       -> GHC.Internal.Types.Symbol
+                                                          -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Y a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_0123456789876543210 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (Y1 :: Y a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "Y1") a_0123456789876543210
+      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (Y2 arg_0123456789876543210 :: Y a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Y2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     instance PShow (Y a) where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     data SX :: forall (a :: Type). X a -> Type

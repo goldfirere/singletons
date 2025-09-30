@@ -30,12 +30,13 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       TFHelper_0123456789876543210 @a (Just a_0123456789876543210 :: Maybe a) (Just b_0123456789876543210 :: Maybe a) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
     instance PEq (Maybe a) where
       type (==) a a = TFHelper_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Num.Natural.Natural
+    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
                                                     -> Maybe a
-                                                       -> GHC.Types.Symbol -> GHC.Types.Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Num.Natural.Natural) (a :: Maybe a) (a :: GHC.Types.Symbol) :: GHC.Types.Symbol where
-      ShowsPrec_0123456789876543210 @a (_ :: GHC.Num.Natural.Natural) (Nothing :: Maybe a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Num.Natural.Natural) (Just arg_0123456789876543210 :: Maybe a) (a_0123456789876543210 :: GHC.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+                                                       -> GHC.Internal.Types.Symbol
+                                                          -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Maybe a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_0123456789876543210 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (Nothing :: Maybe a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "Nothing") a_0123456789876543210
+      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (Just arg_0123456789876543210 :: Maybe a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Just ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
     instance PShow (Maybe a) where
       type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
     data SMaybe :: forall a. Maybe a -> Type

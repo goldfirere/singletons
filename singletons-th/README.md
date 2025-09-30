@@ -14,7 +14,7 @@ which describes how promotion works in greater detail.
 
 `singletons-th` generates code that relies on bleeding-edge GHC language
 extensions. As such, `singletons-th` only supports the latest major version
-of GHC (currently GHC 9.12). For more information,
+of GHC (currently GHC 9.14). For more information,
 consult the `singletons`
 [`README`](https://github.com/goldfirere/singletons/blob/master/README.md).
 

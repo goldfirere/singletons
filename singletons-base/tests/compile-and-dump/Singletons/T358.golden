@@ -5,13 +5,13 @@ Singletons/T358.hs:(0,0)-(0,0): Splicing declarations
           class C2 a where
             method2a, method2b :: forall b. b -> a
           
-          instance C1 [] where
-            method1 :: [a]
-            method1 = []
           instance C2 [a] where
             method2a _ = []
             method2b :: forall b. b -> [a]
-            method2b _ = [] |]
+            method2b _ = []
+          instance C1 [] where
+            method1 :: [a]
+            method1 = [] |]
   ======>
     class C1 (f :: k -> Type) where
       method1 :: f a
