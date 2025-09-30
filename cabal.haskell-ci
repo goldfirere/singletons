@@ -8,3 +8,6 @@ haddock-components:     libs
 installed:              +all -Cabal -Cabal-syntax
 -- Work around https://github.com/haskell-CI/haskell-ci/issues/766
 cabal-install-version:  3.14.1.1
+-- -Wunused-packages mistakenly flags some of singletons-base-test-suite's
+-- dependencies as unused.
+error-unused-packages:  False

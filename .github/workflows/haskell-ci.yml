@@ -228,14 +228,6 @@ jobs:
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-base-code-generator" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
           if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "package singletons" >> cabal.project ; fi
           if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
           if [ $((HCNUMVER >= 91200)) -ne 0 ] ; then echo "package singletons-th" >> cabal.project ; fi
