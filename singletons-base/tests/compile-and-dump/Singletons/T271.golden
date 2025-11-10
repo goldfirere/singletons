@@ -69,7 +69,8 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Constant a b) = SConstant
     type instance Demote (Constant a b) = Constant (DemoteX a) (DemoteX b)
     type instance Promote (Constant a b) = Constant (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (Constant a b) where
+    instance (SingKindX a, SingKindX b) =>
+             SingKind (Constant a b) where
       fromSing (SConstant b) = Constant (fromSing b)
       toSing (Constant (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SConstant c))
@@ -84,7 +85,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Identity a) = SIdentity
     type instance Demote (Identity a) = Identity (DemoteX a)
     type instance Promote (Identity a) = Identity (PromoteX a)
-    instance SingKind a => SingKind (Identity a) where
+    instance SingKindX a => SingKind (Identity a) where
       fromSing (SIdentity b) = Identity (fromSing b)
       toSing (Identity (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SIdentity c))

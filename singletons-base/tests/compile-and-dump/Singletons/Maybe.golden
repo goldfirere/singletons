@@ -46,7 +46,7 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Maybe a) = SMaybe
     type instance Demote (Maybe a) = Maybe (DemoteX a)
     type instance Promote (Maybe a) = Maybe (PromoteX a)
-    instance SingKind a => SingKind (Maybe a) where
+    instance SingKindX a => SingKind (Maybe a) where
       fromSing SNothing = Nothing
       fromSing (SJust b) = Just (fromSing b)
       toSing Nothing = SomeSing SNothing

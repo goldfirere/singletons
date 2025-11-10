@@ -44,7 +44,7 @@ Singletons/BoxUnBox.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Box a) = SBox
     type instance Demote (Box a) = Box (DemoteX a)
     type instance Promote (Box a) = Box (PromoteX a)
-    instance SingKind a => SingKind (Box a) where
+    instance SingKindX a => SingKind (Box a) where
       fromSing (SFBox b) = FBox (fromSing b)
       toSing (FBox (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SFBox c))

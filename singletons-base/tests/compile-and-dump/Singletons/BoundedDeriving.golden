@@ -182,7 +182,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo3 a) = SFoo3
     type instance Demote (Foo3 a) = Foo3 (DemoteX a)
     type instance Promote (Foo3 a) = Foo3 (PromoteX a)
-    instance SingKind a => SingKind (Foo3 a) where
+    instance SingKindX a => SingKind (Foo3 a) where
       fromSing (SFoo3 b) = Foo3 (fromSing b)
       toSing (Foo3 (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SFoo3 c))
@@ -197,7 +197,7 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo4 a b) = SFoo4
     type instance Demote (Foo4 a b) = Foo4 (DemoteX a) (DemoteX b)
     type instance Promote (Foo4 a b) = Foo4 (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (Foo4 a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (Foo4 a b) where
       fromSing SFoo41 = Foo41
       fromSing SFoo42 = Foo42
       toSing Foo41 = SomeSing SFoo41

@@ -473,7 +473,7 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Either a b) = SEither
     type instance Demote (Either a b) = Either (DemoteX a) (DemoteX b)
     type instance Promote (Either a b) = Either (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (Either a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (Either a b) where
       fromSing (SLeft b) = Left (fromSing b)
       fromSing (SRight b) = Right (fromSing b)
       toSing (Left (b :: Demote a))

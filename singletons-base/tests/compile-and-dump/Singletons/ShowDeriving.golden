@@ -216,7 +216,7 @@ Singletons/ShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo2 a) = SFoo2
     type instance Demote (Foo2 a) = Foo2 (DemoteX a)
     type instance Promote (Foo2 a) = Foo2 (PromoteX a)
-    instance SingKind a => SingKind (Foo2 a) where
+    instance SingKindX a => SingKind (Foo2 a) where
       fromSing (SMkFoo2a b b) = MkFoo2a (fromSing b) (fromSing b)
       fromSing (SMkFoo2b b b) = MkFoo2b (fromSing b) (fromSing b)
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)

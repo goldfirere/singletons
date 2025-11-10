@@ -165,7 +165,7 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(D1 a b) = SD1
     type instance Demote (D1 a b) = D1 (DemoteX a) (DemoteX b)
     type instance Promote (D1 a b) = D1 (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (D1 a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (D1 a b) where
       fromSing (SMkD1 b b) = MkD1 (fromSing b) (fromSing b)
       toSing (MkD1 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD1 c c))
@@ -361,7 +361,7 @@ Singletons/T412.hs:0:0:: Splicing declarations
     type instance Sing @(D2 a b) = SD2
     type instance Demote (D2 a b) = D2 (DemoteX a) (DemoteX b)
     type instance Promote (D2 a b) = D2 (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (D2 a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (D2 a b) where
       fromSing (SMkD2 b b) = MkD2 (fromSing b) (fromSing b)
       toSing (MkD2 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c))

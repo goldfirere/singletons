@@ -64,7 +64,7 @@ boolName, andName, compareName, minBoundName,
   singFamilyName, singIName, singI1Name, singI2Name,
   singMethName, liftSingName, liftSing2Name, withSingIName,
   demoteName, promoteName, demoteXName, promoteXName, singKindCName,
-  singKindClassName, someSingTypeName, someSingDataName,
+  singKindClassName, singKindXClassName, someSingTypeName, someSingDataName,
   sDecideClassName, sDecideMethName,
   testEqualityClassName, testEqualityMethName, decideEqualityName,
   testCoercionClassName, testCoercionMethName, decideCoercionName,
@@ -115,6 +115,7 @@ demoteXName = ''DemoteX
 promoteXName = ''PromoteX
 singKindCName = ''SingKindC
 singKindClassName = ''SingKind
+singKindXClassName = ''SingKindX
 someSingTypeName = ''SomeSing
 someSingDataName = 'SomeSing
 sDecideClassName = ''SDecide
@@ -206,6 +207,9 @@ singFamily = DConT singFamilyName
 
 singKindConstraint :: DKind -> DPred
 singKindConstraint = DAppT (DConT singKindClassName)
+
+singKindXConstraint :: DKind -> DPred
+singKindXConstraint = DAppT (DConT singKindXClassName)
 
 apply :: DType -> DType -> DType
 apply t1 t2 = DAppT (DAppT (DConT applyName) t1) t2

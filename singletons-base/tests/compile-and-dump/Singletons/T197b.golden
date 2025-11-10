@@ -58,7 +58,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @((:*:) a b) = (%:*:)
     type instance Demote ((:*:) a b) = (:*:) (DemoteX a) (DemoteX b)
     type instance Promote ((:*:) a b) = (:*:) (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind ((:*:) a b) where
+    instance (SingKindX a, SingKindX b) => SingKind ((:*:) a b) where
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c))
@@ -73,7 +73,7 @@ Singletons/T197b.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Pair a b) = SPair
     type instance Demote (Pair a b) = Pair (DemoteX a) (DemoteX b)
     type instance Promote (Pair a b) = Pair (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (Pair a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (Pair a b) where
       fromSing (SMkPair b b) = MkPair (fromSing b) (fromSing b)
       toSing (MkPair (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkPair c c))

@@ -149,7 +149,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(T a b) = ST
     type instance Demote (T a b) = T (DemoteX a) (DemoteX b)
     type instance Promote (T a b) = T (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (T a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (T a b) where
       fromSing ((:%*:) b b) = (:*:) (fromSing b) (fromSing b)
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c))

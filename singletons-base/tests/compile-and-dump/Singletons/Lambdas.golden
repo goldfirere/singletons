@@ -546,7 +546,7 @@ Singletons/Lambdas.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo a b) = SFoo
     type instance Demote (Foo a b) = Foo (DemoteX a) (DemoteX b)
     type instance Promote (Foo a b) = Foo (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (Foo a b) where
+    instance (SingKindX a, SingKindX b) => SingKind (Foo a b) where
       fromSing (SFoo b b) = Foo (fromSing b) (fromSing b)
       toSing (Foo (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SFoo c c))

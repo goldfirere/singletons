@@ -351,7 +351,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(T x a) = ST
     type instance Demote (T x a) = T (DemoteX x) (DemoteX a)
     type instance Promote (T x a) = T (PromoteX x) (PromoteX a)
-    instance (SingKind x, SingKind a) => SingKind (T x a) where
+    instance (SingKindX x, SingKindX a) => SingKind (T x a) where
       fromSing (SMkT1 b b b b)
         = MkT1 (fromSing b) (fromSing b) (fromSing b) (fromSing b)
       fromSing (SMkT2 b) = MkT2 (fromSing b)
@@ -378,7 +378,7 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Empty a) = SEmpty
     type instance Demote (Empty a) = Empty (DemoteX a)
     type instance Promote (Empty a) = Empty (PromoteX a)
-    instance SingKind a => SingKind (Empty a) where
+    instance SingKindX a => SingKind (Empty a) where
       fromSing x = (\case) x
       toSing x = SomeSing ((\case) x)
     instance SFunctor (T x) where

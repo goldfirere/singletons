@@ -60,7 +60,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Ratio1 a) = SRatio1
     type instance Demote (Ratio1 a) = Ratio1 (DemoteX a)
     type instance Promote (Ratio1 a) = Ratio1 (PromoteX a)
-    instance SingKind a => SingKind (Ratio1 a) where
+    instance SingKindX a => SingKind (Ratio1 a) where
       fromSing ((:^%) b b) = (:%) (fromSing b) (fromSing b)
       toSing ((:%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c))
@@ -75,7 +75,7 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Ratio2 a) = SRatio2
     type instance Demote (Ratio2 a) = Ratio2 (DemoteX a)
     type instance Promote (Ratio2 a) = Ratio2 (PromoteX a)
-    instance SingKind a => SingKind (Ratio2 a) where
+    instance SingKindX a => SingKind (Ratio2 a) where
       fromSing ((:^%%) b b) = (:%%) (fromSing b) (fromSing b)
       toSing ((:%%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c))

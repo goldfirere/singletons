@@ -111,7 +111,7 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(D x y) = SD
     type instance Demote (D x y) = D (DemoteX x) (DemoteX y)
     type instance Promote (D x y) = D (PromoteX x) (PromoteX y)
-    instance (SingKind x, SingKind y) => SingKind (D x y) where
+    instance (SingKindX x, SingKindX y) => SingKind (D x y) where
       fromSing x = (\case) x
       toSing x = SomeSing ((\case) x)
     class SC x y

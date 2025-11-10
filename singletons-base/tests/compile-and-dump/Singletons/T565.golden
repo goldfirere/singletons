@@ -10,7 +10,7 @@ Singletons/T565.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(C a) = SC
     type instance Demote (C a) = C (DemoteX a)
     type instance Promote (C a) = C (PromoteX a)
-    instance SingKind a => SingKind (C a) where
+    instance SingKindX a => SingKind (C a) where
       fromSing SD = D
       toSing D = SomeSing SD
     type instance DemoteX D = D

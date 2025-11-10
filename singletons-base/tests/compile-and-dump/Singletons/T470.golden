@@ -55,7 +55,7 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(T a) = ST
     type instance Demote (T a) = T (DemoteX a)
     type instance Promote (T a) = T (PromoteX a)
-    instance SingKind a => SingKind (T a) where
+    instance SingKindX a => SingKind (T a) where
       fromSing (SMkT1 b) = MkT1 (fromSing b)
       fromSing (SMkT2 b) = MkT2 (fromSing b)
       toSing (MkT1 (b :: Demote a))

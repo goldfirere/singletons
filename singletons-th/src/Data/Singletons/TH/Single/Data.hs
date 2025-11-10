@@ -50,7 +50,7 @@ singDataD (DataDecl df name tvbs ctors) = do
   singKindCInstances <- mkConInstances singKindCName mkPromotedConName mkConName (const mkTupleDType)
   let singKindInst =
         DInstanceD Nothing Nothing
-                   (map (singKindConstraint . DVarT) reqTvbNames)
+                   (map (singKindXConstraint . DVarT) reqTvbNames)
                    (DAppT (DConT singKindClassName) k)
                    [ DLetDec $ DFunD fromSingName
                                (fromSingClauses `orIfEmpty` [emptyFromSingClause])

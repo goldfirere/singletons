@@ -143,7 +143,8 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(PFunction a b) = SFunction
     type instance Demote (PFunction a b) = Function (DemoteX a) (DemoteX b)
     type instance Promote (Function a b) = PFunction (PromoteX a) (PromoteX b)
-    instance (SingKind a, SingKind b) => SingKind (PFunction a b) where
+    instance (SingKindX a, SingKindX b) =>
+             SingKind (PFunction a b) where
       fromSing (SMkFunction b) = MkFunction (fromSing b)
       toSing (MkFunction (b :: Demote ((~>) a b)))
         = (\cases (SomeSing c) -> SomeSing (SMkFunction c))

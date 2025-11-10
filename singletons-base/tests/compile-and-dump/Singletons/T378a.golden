@@ -72,7 +72,7 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Proxy a) = SProxy
     type instance Demote (Proxy a) = Proxy (DemoteX a)
     type instance Promote (Proxy a) = Proxy (PromoteX a)
-    instance SingKind a => SingKind (Proxy a) where
+    instance SingKindX a => SingKind (Proxy a) where
       fromSing SProxy1 = Proxy1
       fromSing SProxy2 = Proxy2
       fromSing SProxy3 = Proxy3

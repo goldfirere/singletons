@@ -436,7 +436,7 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo a b c d) = SFoo
     type instance Demote (Foo a b c d) = Foo (DemoteX a) (DemoteX b) (DemoteX c) (DemoteX d)
     type instance Promote (Foo a b c d) = Foo (PromoteX a) (PromoteX b) (PromoteX c) (PromoteX d)
-    instance (SingKind a, SingKind b, SingKind c, SingKind d) =>
+    instance (SingKindX a, SingKindX b, SingKindX c, SingKindX d) =>
              SingKind (Foo a b c d) where
       fromSing (SA b b b b)
         = A (fromSing b) (fromSing b) (fromSing b) (fromSing b)

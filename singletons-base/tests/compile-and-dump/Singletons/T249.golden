@@ -47,7 +47,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo1 a) = SFoo1
     type instance Demote (Foo1 a) = Foo1 (DemoteX a)
     type instance Promote (Foo1 a) = Foo1 (PromoteX a)
-    instance SingKind a => SingKind (Foo1 a) where
+    instance SingKindX a => SingKind (Foo1 a) where
       fromSing (SMkFoo1 b) = MkFoo1 (fromSing b)
       toSing (MkFoo1 (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo1 c))
@@ -62,7 +62,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo2 a) = SFoo2
     type instance Demote (Foo2 a) = Foo2 (DemoteX a)
     type instance Promote (Foo2 a) = Foo2 (PromoteX a)
-    instance SingKind a => SingKind (Foo2 a) where
+    instance SingKindX a => SingKind (Foo2 a) where
       fromSing (SMkFoo2 b) = MkFoo2 (fromSing b)
       toSing (MkFoo2 (b :: Demote x))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo2 c))
@@ -77,7 +77,7 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
     type instance Sing @(Foo3 a) = SFoo3
     type instance Demote (Foo3 a) = Foo3 (DemoteX a)
     type instance Promote (Foo3 a) = Foo3 (PromoteX a)
-    instance SingKind a => SingKind (Foo3 a) where
+    instance SingKindX a => SingKind (Foo3 a) where
       fromSing (SMkFoo3 b) = MkFoo3 (fromSing b)
       toSing (MkFoo3 (b :: Demote x))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo3 c))
