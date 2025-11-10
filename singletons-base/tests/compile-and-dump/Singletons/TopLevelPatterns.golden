@@ -44,12 +44,12 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       fromSing STrue = True
       toSing False = SomeSing SFalse
       toSing True = SomeSing STrue
-    type instance DemoteX @Bool False = False
-    type instance DemoteX @Bool True = True
-    type instance PromoteX @Bool False = False
-    type instance PromoteX @Bool True = True
-    type instance SingKindC @Bool False = ()
-    type instance SingKindC @Bool True = ()
+    type instance DemoteX False = False
+    type instance DemoteX True = True
+    type instance PromoteX False = False
+    type instance PromoteX True = True
+    type instance SingKindC False = ()
+    type instance SingKindC True = ()
     data SFoo :: Foo -> Type
       where
         SBar :: forall (n :: Bool) (n :: Bool).
@@ -62,9 +62,9 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       toSing (Bar (b :: Demote Bool) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SBar c c))
             (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
-    type instance DemoteX @Foo (Bar x x) = Bar (DemoteX x) (DemoteX x)
-    type instance PromoteX @Foo (Bar x x) = Bar (PromoteX x) (PromoteX x)
-    type instance SingKindC @Foo (Bar x x) = (SingKindC x, SingKindC x)
+    type instance DemoteX (Bar x x) = Bar (DemoteX x) (DemoteX x)
+    type instance PromoteX (Bar x x) = Bar (PromoteX x) (PromoteX x)
+    type instance SingKindC (Bar x x) = (SingKindC x, SingKindC x)
     instance SingI False where
       sing = SFalse
     instance SingI True where

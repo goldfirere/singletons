@@ -154,10 +154,9 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:*:) (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%*:) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
-    type instance DemoteX @(T a b) ((:*:) x x) = (:*:) (DemoteX x) (DemoteX x)
-    type instance PromoteX @(T a b) ((:*:) x x) = (:*:) (PromoteX x) (PromoteX x)
-    type instance SingKindC @(T a b) ((:*:) x x) = (SingKindC x,
-                                                    SingKindC x)
+    type instance DemoteX ((:*:) x x) = (:*:) (DemoteX x) (DemoteX x)
+    type instance PromoteX ((:*:) x x) = (:*:) (PromoteX x) (PromoteX x)
+    type instance SingKindC ((:*:) x x) = (SingKindC x, SingKindC x)
     data SS :: S -> Type
       where
         SS1 :: SS (S1 :: S)
@@ -170,12 +169,12 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SS2 = S2
       toSing S1 = SomeSing SS1
       toSing S2 = SomeSing SS2
-    type instance DemoteX @S S1 = S1
-    type instance DemoteX @S S2 = S2
-    type instance PromoteX @S S1 = S1
-    type instance PromoteX @S S2 = S2
-    type instance SingKindC @S S1 = ()
-    type instance SingKindC @S S2 = ()
+    type instance DemoteX S1 = S1
+    type instance DemoteX S2 = S2
+    type instance PromoteX S1 = S1
+    type instance PromoteX S2 = S2
+    type instance SingKindC S1 = ()
+    type instance SingKindC S2 = ()
     instance SEq a => SEq (T a ()) where
       (%==)
         ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)

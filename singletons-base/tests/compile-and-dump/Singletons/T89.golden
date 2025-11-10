@@ -41,9 +41,9 @@ Singletons/T89.hs:0:0:: Splicing declarations
     instance SingKind Foo where
       fromSing SFoo = Foo
       toSing Foo = SomeSing SFoo
-    type instance DemoteX @Foo Foo = Foo
-    type instance PromoteX @Foo Foo = Foo
-    type instance SingKindC @Foo Foo = ()
+    type instance DemoteX Foo = Foo
+    type instance PromoteX Foo = Foo
+    type instance SingKindC Foo = ()
     instance SEnum Foo where
       sToEnum (sN :: Sing n)
         = applySing

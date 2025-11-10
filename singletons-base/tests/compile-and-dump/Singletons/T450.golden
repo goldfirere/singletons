@@ -60,9 +60,9 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkMessage (b :: Demote Symbol))
         = (\cases (SomeSing c) -> SomeSing (SMkMessage c))
             (toSing b :: SomeSing Symbol)
-    type instance DemoteX @PMessage ('PMkMessage x) = 'MkMessage (DemoteX x)
-    type instance PromoteX @Message ('MkMessage x) = 'PMkMessage (PromoteX x)
-    type instance SingKindC @PMessage ('PMkMessage x) = SingKindC x
+    type instance DemoteX ('PMkMessage x) = 'MkMessage (DemoteX x)
+    type instance PromoteX ('MkMessage x) = 'PMkMessage (PromoteX x)
+    type instance SingKindC ('PMkMessage x) = SingKindC x
     instance SingI n => SingI ('PMkMessage (n :: Symbol)) where
       sing = SMkMessage sing
     instance SingI1 'PMkMessage where
@@ -148,9 +148,9 @@ Singletons/T450.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFunction (b :: Demote ((~>) a b)))
         = (\cases (SomeSing c) -> SomeSing (SMkFunction c))
             (toSing b :: SomeSing ((~>) a b))
-    type instance DemoteX @(PFunction a b) ('PMkFunction x) = 'MkFunction (DemoteX x)
-    type instance PromoteX @(Function a b) ('MkFunction x) = 'PMkFunction (PromoteX x)
-    type instance SingKindC @(PFunction a b) ('PMkFunction x) = SingKindC x
+    type instance DemoteX ('PMkFunction x) = 'MkFunction (DemoteX x)
+    type instance PromoteX ('MkFunction x) = 'PMkFunction (PromoteX x)
+    type instance SingKindC ('PMkFunction x) = SingKindC x
     instance SingI n => SingI ('PMkFunction (n :: (~>) a b)) where
       sing = SMkFunction sing
     instance SingI1 'PMkFunction where

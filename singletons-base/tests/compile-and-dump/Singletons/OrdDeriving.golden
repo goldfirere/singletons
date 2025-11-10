@@ -389,12 +389,12 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ (b :: Demote Nat))
         = (\cases (SomeSing c) -> SomeSing (SSucc c))
             (toSing b :: SomeSing Nat)
-    type instance DemoteX @Nat Zero = Zero
-    type instance DemoteX @Nat (Succ x) = Succ (DemoteX x)
-    type instance PromoteX @Nat Zero = Zero
-    type instance PromoteX @Nat (Succ x) = Succ (PromoteX x)
-    type instance SingKindC @Nat Zero = ()
-    type instance SingKindC @Nat (Succ x) = SingKindC x
+    type instance DemoteX Zero = Zero
+    type instance DemoteX (Succ x) = Succ (DemoteX x)
+    type instance PromoteX Zero = Zero
+    type instance PromoteX (Succ x) = Succ (PromoteX x)
+    type instance SingKindC Zero = ()
+    type instance SingKindC (Succ x) = SingKindC x
     data SFoo :: forall a b c d. Foo a b c d -> Type
       where
         SA :: forall a b c d (n :: a) (n :: b) (n :: c) (n :: d).
@@ -492,30 +492,30 @@ Singletons/OrdDeriving.hs:(0,0)-(0,0): Splicing declarations
                -> SomeSing (SF c c c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
             (toSing b :: SomeSing c) (toSing b :: SomeSing d)
-    type instance DemoteX @(Foo a b c d) (A x x x x) = A (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance DemoteX @(Foo a b c d) (B x x x x) = B (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance DemoteX @(Foo a b c d) (C x x x x) = C (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance DemoteX @(Foo a b c d) (D x x x x) = D (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance DemoteX @(Foo a b c d) (E x x x x) = E (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance DemoteX @(Foo a b c d) (F x x x x) = F (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance PromoteX @(Foo a b c d) (A x x x x) = A (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance PromoteX @(Foo a b c d) (B x x x x) = B (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance PromoteX @(Foo a b c d) (C x x x x) = C (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance PromoteX @(Foo a b c d) (D x x x x) = D (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance PromoteX @(Foo a b c d) (E x x x x) = E (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance PromoteX @(Foo a b c d) (F x x x x) = F (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance SingKindC @(Foo a b c d) (A x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
-    type instance SingKindC @(Foo a b c d) (B x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
-    type instance SingKindC @(Foo a b c d) (C x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
-    type instance SingKindC @(Foo a b c d) (D x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
-    type instance SingKindC @(Foo a b c d) (E x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
-    type instance SingKindC @(Foo a b c d) (F x x x x) = (SingKindC x,
-                                                          SingKindC x, SingKindC x, SingKindC x)
+    type instance DemoteX (A x x x x) = A (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance DemoteX (B x x x x) = B (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance DemoteX (C x x x x) = C (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance DemoteX (D x x x x) = D (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance DemoteX (E x x x x) = E (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance DemoteX (F x x x x) = F (DemoteX x) (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance PromoteX (A x x x x) = A (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance PromoteX (B x x x x) = B (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance PromoteX (C x x x x) = C (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance PromoteX (D x x x x) = D (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance PromoteX (E x x x x) = E (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance PromoteX (F x x x x) = F (PromoteX x) (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance SingKindC (A x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
+    type instance SingKindC (B x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
+    type instance SingKindC (C x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
+    type instance SingKindC (D x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
+    type instance SingKindC (E x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
+    type instance SingKindC (F x x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x, SingKindC x)
     instance SEq Nat => SEq Nat where
       (%==) SZero SZero = STrue
       (%==) SZero (SSucc _) = SFalse

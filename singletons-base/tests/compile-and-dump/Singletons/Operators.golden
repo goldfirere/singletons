@@ -119,13 +119,12 @@ Singletons/Operators.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:+:) (b :: Demote Foo) (b :: Demote Foo))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:%+:) c c))
             (toSing b :: SomeSing Foo) (toSing b :: SomeSing Foo)
-    type instance DemoteX @Foo FLeaf = FLeaf
-    type instance DemoteX @Foo ((:+:) x x) = (:+:) (DemoteX x) (DemoteX x)
-    type instance PromoteX @Foo FLeaf = FLeaf
-    type instance PromoteX @Foo ((:+:) x x) = (:+:) (PromoteX x) (PromoteX x)
-    type instance SingKindC @Foo FLeaf = ()
-    type instance SingKindC @Foo ((:+:) x x) = (SingKindC x,
-                                                SingKindC x)
+    type instance DemoteX FLeaf = FLeaf
+    type instance DemoteX ((:+:) x x) = (:+:) (DemoteX x) (DemoteX x)
+    type instance PromoteX FLeaf = FLeaf
+    type instance PromoteX ((:+:) x x) = (:+:) (PromoteX x) (PromoteX x)
+    type instance SingKindC FLeaf = ()
+    type instance SingKindC ((:+:) x x) = (SingKindC x, SingKindC x)
     instance SingI FLeaf where
       sing = SFLeaf
     instance (SingI n, SingI n) =>

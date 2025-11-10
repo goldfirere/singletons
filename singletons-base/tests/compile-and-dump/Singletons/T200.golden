@@ -169,17 +169,15 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
       toSing (EM (b :: Demote [Bool]))
         = (\cases (SomeSing c) -> SomeSing (SEM c))
             (toSing b :: SomeSing [Bool])
-    type instance DemoteX @ErrorMessage ((:$$:) x x) = (:$$:) (DemoteX x) (DemoteX x)
-    type instance DemoteX @ErrorMessage ((:<>:) x x) = (:<>:) (DemoteX x) (DemoteX x)
-    type instance DemoteX @ErrorMessage (EM x) = EM (DemoteX x)
-    type instance PromoteX @ErrorMessage ((:$$:) x x) = (:$$:) (PromoteX x) (PromoteX x)
-    type instance PromoteX @ErrorMessage ((:<>:) x x) = (:<>:) (PromoteX x) (PromoteX x)
-    type instance PromoteX @ErrorMessage (EM x) = EM (PromoteX x)
-    type instance SingKindC @ErrorMessage ((:$$:) x x) = (SingKindC x,
-                                                          SingKindC x)
-    type instance SingKindC @ErrorMessage ((:<>:) x x) = (SingKindC x,
-                                                          SingKindC x)
-    type instance SingKindC @ErrorMessage (EM x) = SingKindC x
+    type instance DemoteX ((:$$:) x x) = (:$$:) (DemoteX x) (DemoteX x)
+    type instance DemoteX ((:<>:) x x) = (:<>:) (DemoteX x) (DemoteX x)
+    type instance DemoteX (EM x) = EM (DemoteX x)
+    type instance PromoteX ((:$$:) x x) = (:$$:) (PromoteX x) (PromoteX x)
+    type instance PromoteX ((:<>:) x x) = (:<>:) (PromoteX x) (PromoteX x)
+    type instance PromoteX (EM x) = EM (PromoteX x)
+    type instance SingKindC ((:$$:) x x) = (SingKindC x, SingKindC x)
+    type instance SingKindC ((:<>:) x x) = (SingKindC x, SingKindC x)
+    type instance SingKindC (EM x) = SingKindC x
     instance (SingI n, SingI n) =>
              SingI ((:$$:) (n :: ErrorMessage) (n :: ErrorMessage)) where
       sing = (:%$$:) sing sing

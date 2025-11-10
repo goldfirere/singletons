@@ -71,10 +71,9 @@ Singletons/Records.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkRecord (b :: Demote a) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkRecord c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing Bool)
-    type instance DemoteX @(Record a) (MkRecord x x) = MkRecord (DemoteX x) (DemoteX x)
-    type instance PromoteX @(Record a) (MkRecord x x) = MkRecord (PromoteX x) (PromoteX x)
-    type instance SingKindC @(Record a) (MkRecord x x) = (SingKindC x,
-                                                          SingKindC x)
+    type instance DemoteX (MkRecord x x) = MkRecord (DemoteX x) (DemoteX x)
+    type instance PromoteX (MkRecord x x) = MkRecord (PromoteX x) (PromoteX x)
+    type instance SingKindC (MkRecord x x) = (SingKindC x, SingKindC x)
     instance (SingI n, SingI n) =>
              SingI (MkRecord (n :: a) (n :: Bool)) where
       sing = SMkRecord sing sing

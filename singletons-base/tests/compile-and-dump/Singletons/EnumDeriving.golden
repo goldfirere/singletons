@@ -91,15 +91,15 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing Bar = SomeSing SBar
       toSing Baz = SomeSing SBaz
       toSing Bum = SomeSing SBum
-    type instance DemoteX @Foo Bar = Bar
-    type instance DemoteX @Foo Baz = Baz
-    type instance DemoteX @Foo Bum = Bum
-    type instance PromoteX @Foo Bar = Bar
-    type instance PromoteX @Foo Baz = Baz
-    type instance PromoteX @Foo Bum = Bum
-    type instance SingKindC @Foo Bar = ()
-    type instance SingKindC @Foo Baz = ()
-    type instance SingKindC @Foo Bum = ()
+    type instance DemoteX Bar = Bar
+    type instance DemoteX Baz = Baz
+    type instance DemoteX Bum = Bum
+    type instance PromoteX Bar = Bar
+    type instance PromoteX Baz = Baz
+    type instance PromoteX Bum = Bum
+    type instance SingKindC Bar = ()
+    type instance SingKindC Baz = ()
+    type instance SingKindC Bum = ()
     data SQuux :: Quux -> Type
       where
         SQ1 :: SQuux (Q1 :: Quux)
@@ -112,12 +112,12 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SQ2 = Q2
       toSing Q1 = SomeSing SQ1
       toSing Q2 = SomeSing SQ2
-    type instance DemoteX @Quux Q1 = Q1
-    type instance DemoteX @Quux Q2 = Q2
-    type instance PromoteX @Quux Q1 = Q1
-    type instance PromoteX @Quux Q2 = Q2
-    type instance SingKindC @Quux Q1 = ()
-    type instance SingKindC @Quux Q2 = ()
+    type instance DemoteX Q1 = Q1
+    type instance DemoteX Q2 = Q2
+    type instance PromoteX Q1 = Q1
+    type instance PromoteX Q2 = Q2
+    type instance SingKindC Q1 = ()
+    type instance SingKindC Q2 = ()
     instance SEnum Foo where
       sToEnum (sN :: Sing n)
         = applySing

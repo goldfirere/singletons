@@ -51,12 +51,12 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
       toSing (SuccFoo (b :: Demote NatFoo))
         = (\cases (SomeSing c) -> SomeSing (SSuccFoo c))
             (toSing b :: SomeSing NatFoo)
-    type instance DemoteX @NatFoo ZeroFoo = ZeroFoo
-    type instance DemoteX @NatFoo (SuccFoo x) = SuccFoo (DemoteX x)
-    type instance PromoteX @NatFoo ZeroFoo = ZeroFoo
-    type instance PromoteX @NatFoo (SuccFoo x) = SuccFoo (PromoteX x)
-    type instance SingKindC @NatFoo ZeroFoo = ()
-    type instance SingKindC @NatFoo (SuccFoo x) = SingKindC x
+    type instance DemoteX ZeroFoo = ZeroFoo
+    type instance DemoteX (SuccFoo x) = SuccFoo (DemoteX x)
+    type instance PromoteX ZeroFoo = ZeroFoo
+    type instance PromoteX (SuccFoo x) = SuccFoo (PromoteX x)
+    type instance SingKindC ZeroFoo = ()
+    type instance SingKindC (SuccFoo x) = SingKindC x
     instance SMyOrd NatFoo where
       sMycompare SZeroFoo SZeroFoo = SEQ
       sMycompare SZeroFoo (SSuccFoo _) = SLT

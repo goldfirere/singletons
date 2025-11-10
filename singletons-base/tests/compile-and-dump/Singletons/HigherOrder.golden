@@ -482,12 +482,12 @@ Singletons/HigherOrder.hs:(0,0)-(0,0): Splicing declarations
       toSing (Right (b :: Demote b))
         = (\cases (SomeSing c) -> SomeSing (SRight c))
             (toSing b :: SomeSing b)
-    type instance DemoteX @(Either a b) (Left x) = Left (DemoteX x)
-    type instance DemoteX @(Either a b) (Right x) = Right (DemoteX x)
-    type instance PromoteX @(Either a b) (Left x) = Left (PromoteX x)
-    type instance PromoteX @(Either a b) (Right x) = Right (PromoteX x)
-    type instance SingKindC @(Either a b) (Left x) = SingKindC x
-    type instance SingKindC @(Either a b) (Right x) = SingKindC x
+    type instance DemoteX (Left x) = Left (DemoteX x)
+    type instance DemoteX (Right x) = Right (DemoteX x)
+    type instance PromoteX (Left x) = Left (PromoteX x)
+    type instance PromoteX (Right x) = Right (PromoteX x)
+    type instance SingKindC (Left x) = SingKindC x
+    type instance SingKindC (Right x) = SingKindC x
     instance SingI n => SingI (Left (n :: a)) where
       sing = SLeft sing
     instance SingI1 Left where

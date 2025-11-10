@@ -73,9 +73,9 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkAge (b :: Demote Natural))
         = (\cases (SomeSing c) -> SomeSing (SMkAge c))
             (toSing b :: SomeSing Natural)
-    type instance DemoteX @Age (MkAge x) = MkAge (DemoteX x)
-    type instance PromoteX @Age (MkAge x) = MkAge (PromoteX x)
-    type instance SingKindC @Age (MkAge x) = SingKindC x
+    type instance DemoteX (MkAge x) = MkAge (DemoteX x)
+    type instance PromoteX (MkAge x) = MkAge (PromoteX x)
+    type instance SingKindC (MkAge x) = SingKindC x
     instance SingI n => SingI (MkAge (n :: Natural)) where
       sing = SMkAge sing
     instance SingI1 MkAge where

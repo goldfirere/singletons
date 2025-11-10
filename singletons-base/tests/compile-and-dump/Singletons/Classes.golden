@@ -231,12 +231,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing SB = B
       toSing A = SomeSing SA
       toSing B = SomeSing SB
-    type instance DemoteX @Foo A = A
-    type instance DemoteX @Foo B = B
-    type instance PromoteX @Foo A = A
-    type instance PromoteX @Foo B = B
-    type instance SingKindC @Foo A = ()
-    type instance SingKindC @Foo B = ()
+    type instance DemoteX A = A
+    type instance DemoteX B = B
+    type instance PromoteX A = A
+    type instance PromoteX B = B
+    type instance SingKindC A = ()
+    type instance SingKindC B = ()
     data SFoo2 :: Foo2 -> Type
       where
         SF :: SFoo2 (F :: Foo2)
@@ -249,12 +249,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       fromSing SG = G
       toSing F = SomeSing SF
       toSing G = SomeSing SG
-    type instance DemoteX @Foo2 F = F
-    type instance DemoteX @Foo2 G = G
-    type instance PromoteX @Foo2 F = F
-    type instance PromoteX @Foo2 G = G
-    type instance SingKindC @Foo2 F = ()
-    type instance SingKindC @Foo2 G = ()
+    type instance DemoteX F = F
+    type instance DemoteX G = G
+    type instance PromoteX F = F
+    type instance PromoteX G = G
+    type instance SingKindC F = ()
+    type instance SingKindC G = ()
     class SMyOrd a where
       sMycompare ::
         (forall (t :: a) (t :: a).
@@ -410,12 +410,12 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       toSing (Succ' (b :: Demote Nat'))
         = (\cases (SomeSing c) -> SomeSing (SSucc' c))
             (toSing b :: SomeSing Nat')
-    type instance DemoteX @Nat' Zero' = Zero'
-    type instance DemoteX @Nat' (Succ' x) = Succ' (DemoteX x)
-    type instance PromoteX @Nat' Zero' = Zero'
-    type instance PromoteX @Nat' (Succ' x) = Succ' (PromoteX x)
-    type instance SingKindC @Nat' Zero' = ()
-    type instance SingKindC @Nat' (Succ' x) = SingKindC x
+    type instance DemoteX Zero' = Zero'
+    type instance DemoteX (Succ' x) = Succ' (DemoteX x)
+    type instance PromoteX Zero' = Zero'
+    type instance PromoteX (Succ' x) = Succ' (PromoteX x)
+    type instance SingKindC Zero' = ()
+    type instance SingKindC (Succ' x) = SingKindC x
     instance SMyOrd Nat' where
       sMycompare SZero' SZero' = SEQ
       sMycompare SZero' (SSucc' _) = SLT

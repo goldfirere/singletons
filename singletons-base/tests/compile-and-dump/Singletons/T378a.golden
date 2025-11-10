@@ -81,18 +81,18 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
       toSing Proxy2 = SomeSing SProxy2
       toSing Proxy3 = SomeSing SProxy3
       toSing Proxy4 = SomeSing SProxy4
-    type instance DemoteX @(Proxy a) Proxy1 = Proxy1
-    type instance DemoteX @(Proxy a) Proxy2 = Proxy2
-    type instance DemoteX @(Proxy a) Proxy3 = Proxy3
-    type instance DemoteX @(Proxy a) Proxy4 = Proxy4
-    type instance PromoteX @(Proxy a) Proxy1 = Proxy1
-    type instance PromoteX @(Proxy a) Proxy2 = Proxy2
-    type instance PromoteX @(Proxy a) Proxy3 = Proxy3
-    type instance PromoteX @(Proxy a) Proxy4 = Proxy4
-    type instance SingKindC @(Proxy a) Proxy1 = ()
-    type instance SingKindC @(Proxy a) Proxy2 = ()
-    type instance SingKindC @(Proxy a) Proxy3 = ()
-    type instance SingKindC @(Proxy a) Proxy4 = ()
+    type instance DemoteX Proxy1 = Proxy1
+    type instance DemoteX Proxy2 = Proxy2
+    type instance DemoteX Proxy3 = Proxy3
+    type instance DemoteX Proxy4 = Proxy4
+    type instance PromoteX Proxy1 = Proxy1
+    type instance PromoteX Proxy2 = Proxy2
+    type instance PromoteX Proxy3 = Proxy3
+    type instance PromoteX Proxy4 = Proxy4
+    type instance SingKindC Proxy1 = ()
+    type instance SingKindC Proxy2 = ()
+    type instance SingKindC Proxy3 = ()
+    type instance SingKindC Proxy4 = ()
     instance SingI Proxy1 where
       sing = SProxy1
     instance SingI Proxy2 where

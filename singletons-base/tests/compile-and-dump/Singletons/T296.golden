@@ -66,8 +66,8 @@ Singletons/T296.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind a => SingKind (MyProxy a) where
       fromSing SMyProxy = MyProxy
       toSing MyProxy = SomeSing SMyProxy
-    type instance DemoteX @(MyProxy a) MyProxy = MyProxy
-    type instance PromoteX @(MyProxy a) MyProxy = MyProxy
-    type instance SingKindC @(MyProxy a) MyProxy = ()
+    type instance DemoteX MyProxy = MyProxy
+    type instance PromoteX MyProxy = MyProxy
+    type instance SingKindC MyProxy = ()
     instance SingI MyProxy where
       sing = SMyProxy

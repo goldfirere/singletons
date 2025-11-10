@@ -137,9 +137,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Foo1 where
       fromSing SFoo1 = Foo1
       toSing Foo1 = SomeSing SFoo1
-    type instance DemoteX @Foo1 Foo1 = Foo1
-    type instance PromoteX @Foo1 Foo1 = Foo1
-    type instance SingKindC @Foo1 Foo1 = ()
+    type instance DemoteX Foo1 = Foo1
+    type instance PromoteX Foo1 = Foo1
+    type instance SingKindC Foo1 = ()
     data SFoo2 :: Foo2 -> Type
       where
         SA :: SFoo2 (A :: Foo2)
@@ -161,21 +161,21 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing C = SomeSing SC
       toSing D = SomeSing SD
       toSing E = SomeSing SE
-    type instance DemoteX @Foo2 A = A
-    type instance DemoteX @Foo2 B = B
-    type instance DemoteX @Foo2 C = C
-    type instance DemoteX @Foo2 D = D
-    type instance DemoteX @Foo2 E = E
-    type instance PromoteX @Foo2 A = A
-    type instance PromoteX @Foo2 B = B
-    type instance PromoteX @Foo2 C = C
-    type instance PromoteX @Foo2 D = D
-    type instance PromoteX @Foo2 E = E
-    type instance SingKindC @Foo2 A = ()
-    type instance SingKindC @Foo2 B = ()
-    type instance SingKindC @Foo2 C = ()
-    type instance SingKindC @Foo2 D = ()
-    type instance SingKindC @Foo2 E = ()
+    type instance DemoteX A = A
+    type instance DemoteX B = B
+    type instance DemoteX C = C
+    type instance DemoteX D = D
+    type instance DemoteX E = E
+    type instance PromoteX A = A
+    type instance PromoteX B = B
+    type instance PromoteX C = C
+    type instance PromoteX D = D
+    type instance PromoteX E = E
+    type instance SingKindC A = ()
+    type instance SingKindC B = ()
+    type instance SingKindC C = ()
+    type instance SingKindC D = ()
+    type instance SingKindC E = ()
     data SFoo3 :: forall a. Foo3 a -> Type
       where
         SFoo3 :: forall a (n :: a). (Sing n) -> SFoo3 (Foo3 n :: Foo3 a)
@@ -187,9 +187,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Foo3 (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SFoo3 c))
             (toSing b :: SomeSing a)
-    type instance DemoteX @(Foo3 a) (Foo3 x) = Foo3 (DemoteX x)
-    type instance PromoteX @(Foo3 a) (Foo3 x) = Foo3 (PromoteX x)
-    type instance SingKindC @(Foo3 a) (Foo3 x) = SingKindC x
+    type instance DemoteX (Foo3 x) = Foo3 (DemoteX x)
+    type instance PromoteX (Foo3 x) = Foo3 (PromoteX x)
+    type instance SingKindC (Foo3 x) = SingKindC x
     data SFoo4 :: forall (a :: Type) (b :: Type). Foo4 a b -> Type
       where
         SFoo41 :: forall (a :: Type) (b :: Type). SFoo4 (Foo41 :: Foo4 a b)
@@ -202,12 +202,12 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       fromSing SFoo42 = Foo42
       toSing Foo41 = SomeSing SFoo41
       toSing Foo42 = SomeSing SFoo42
-    type instance DemoteX @(Foo4 a b) Foo41 = Foo41
-    type instance DemoteX @(Foo4 a b) Foo42 = Foo42
-    type instance PromoteX @(Foo4 a b) Foo41 = Foo41
-    type instance PromoteX @(Foo4 a b) Foo42 = Foo42
-    type instance SingKindC @(Foo4 a b) Foo41 = ()
-    type instance SingKindC @(Foo4 a b) Foo42 = ()
+    type instance DemoteX Foo41 = Foo41
+    type instance DemoteX Foo42 = Foo42
+    type instance PromoteX Foo41 = Foo41
+    type instance PromoteX Foo42 = Foo42
+    type instance SingKindC Foo41 = ()
+    type instance SingKindC Foo42 = ()
     data SPair :: Pair -> Type
       where
         SPair :: forall (n :: Bool) (n :: Bool).
@@ -220,10 +220,9 @@ Singletons/BoundedDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing (Pair (b :: Demote Bool) (b :: Demote Bool))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SPair c c))
             (toSing b :: SomeSing Bool) (toSing b :: SomeSing Bool)
-    type instance DemoteX @Pair (Pair x x) = Pair (DemoteX x) (DemoteX x)
-    type instance PromoteX @Pair (Pair x x) = Pair (PromoteX x) (PromoteX x)
-    type instance SingKindC @Pair (Pair x x) = (SingKindC x,
-                                                SingKindC x)
+    type instance DemoteX (Pair x x) = Pair (DemoteX x) (DemoteX x)
+    type instance PromoteX (Pair x x) = Pair (PromoteX x) (PromoteX x)
+    type instance SingKindC (Pair x x) = (SingKindC x, SingKindC x)
     instance SBounded Foo1 where
       sMinBound = SFoo1
       sMaxBound = SFoo1

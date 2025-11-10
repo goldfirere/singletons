@@ -52,9 +52,9 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFoo1 (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo1 c))
             (toSing b :: SomeSing a)
-    type instance DemoteX @(Foo1 a) (MkFoo1 x) = MkFoo1 (DemoteX x)
-    type instance PromoteX @(Foo1 a) (MkFoo1 x) = MkFoo1 (PromoteX x)
-    type instance SingKindC @(Foo1 a) (MkFoo1 x) = SingKindC x
+    type instance DemoteX (MkFoo1 x) = MkFoo1 (DemoteX x)
+    type instance PromoteX (MkFoo1 x) = MkFoo1 (PromoteX x)
+    type instance SingKindC (MkFoo1 x) = SingKindC x
     data SFoo2 :: forall a. Foo2 a -> Type
       where
         SMkFoo2 :: forall x (n :: x).
@@ -67,9 +67,9 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFoo2 (b :: Demote x))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo2 c))
             (toSing b :: SomeSing x)
-    type instance DemoteX @(Foo2 a) (MkFoo2 x) = MkFoo2 (DemoteX x)
-    type instance PromoteX @(Foo2 a) (MkFoo2 x) = MkFoo2 (PromoteX x)
-    type instance SingKindC @(Foo2 a) (MkFoo2 x) = SingKindC x
+    type instance DemoteX (MkFoo2 x) = MkFoo2 (DemoteX x)
+    type instance PromoteX (MkFoo2 x) = MkFoo2 (PromoteX x)
+    type instance SingKindC (MkFoo2 x) = SingKindC x
     data SFoo3 :: forall a. Foo3 a -> Type
       where
         SMkFoo3 :: forall x (n :: x).
@@ -82,9 +82,9 @@ Singletons/T249.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkFoo3 (b :: Demote x))
         = (\cases (SomeSing c) -> SomeSing (SMkFoo3 c))
             (toSing b :: SomeSing x)
-    type instance DemoteX @(Foo3 a) (MkFoo3 x) = MkFoo3 (DemoteX x)
-    type instance PromoteX @(Foo3 a) (MkFoo3 x) = MkFoo3 (PromoteX x)
-    type instance SingKindC @(Foo3 a) (MkFoo3 x) = SingKindC x
+    type instance DemoteX (MkFoo3 x) = MkFoo3 (DemoteX x)
+    type instance PromoteX (MkFoo3 x) = MkFoo3 (PromoteX x)
+    type instance SingKindC (MkFoo3 x) = SingKindC x
     instance SingI n => SingI (MkFoo1 (n :: a)) where
       sing = SMkFoo1 sing
     instance SingI1 MkFoo1 where

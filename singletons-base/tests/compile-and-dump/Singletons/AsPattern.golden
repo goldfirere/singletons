@@ -291,10 +291,10 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
              (SomeSing c) (SomeSing c) (SomeSing c) -> SomeSing (SBaz c c c))
             (toSing b :: SomeSing Nat) (toSing b :: SomeSing Nat)
             (toSing b :: SomeSing Nat)
-    type instance DemoteX @Baz (Baz x x x) = Baz (DemoteX x) (DemoteX x) (DemoteX x)
-    type instance PromoteX @Baz (Baz x x x) = Baz (PromoteX x) (PromoteX x) (PromoteX x)
-    type instance SingKindC @Baz (Baz x x x) = (SingKindC x,
-                                                SingKindC x, SingKindC x)
+    type instance DemoteX (Baz x x x) = Baz (DemoteX x) (DemoteX x) (DemoteX x)
+    type instance PromoteX (Baz x x x) = Baz (PromoteX x) (PromoteX x) (PromoteX x)
+    type instance SingKindC (Baz x x x) = (SingKindC x, SingKindC x,
+                                           SingKindC x)
     instance (SingI n, SingI n, SingI n) =>
              SingI (Baz (n :: Nat) (n :: Nat) (n :: Nat)) where
       sing = SBaz sing sing sing

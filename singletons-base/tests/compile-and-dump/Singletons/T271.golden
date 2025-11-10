@@ -74,9 +74,9 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       toSing (Constant (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SConstant c))
             (toSing b :: SomeSing a)
-    type instance DemoteX @(Constant a b) (Constant x) = Constant (DemoteX x)
-    type instance PromoteX @(Constant a b) (Constant x) = Constant (PromoteX x)
-    type instance SingKindC @(Constant a b) (Constant x) = SingKindC x
+    type instance DemoteX (Constant x) = Constant (DemoteX x)
+    type instance PromoteX (Constant x) = Constant (PromoteX x)
+    type instance SingKindC (Constant x) = SingKindC x
     data SIdentity :: forall (a :: Type). Identity a -> Type
       where
         SIdentity :: forall a (n :: a).
@@ -89,9 +89,9 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
       toSing (Identity (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SIdentity c))
             (toSing b :: SomeSing a)
-    type instance DemoteX @(Identity a) (Identity x) = Identity (DemoteX x)
-    type instance PromoteX @(Identity a) (Identity x) = Identity (PromoteX x)
-    type instance SingKindC @(Identity a) (Identity x) = SingKindC x
+    type instance DemoteX (Identity x) = Identity (DemoteX x)
+    type instance PromoteX (Identity x) = Identity (PromoteX x)
+    type instance SingKindC (Identity x) = SingKindC x
     instance SEq a => SEq (Constant a b) where
       (%==)
         (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))

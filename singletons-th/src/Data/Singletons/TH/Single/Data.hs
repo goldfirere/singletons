@@ -45,9 +45,9 @@ singDataD (DataDecl df name tvbs ctors) = do
   emptyToSingClause   <- mkEmptyToSingClause
   let demoteInst = mkPromoteDemoteInstance demoteName demoteXName pName name reqTvbNames
   let promoteInst = mkPromoteDemoteInstance promoteName promoteXName name pName reqTvbNames
-  demoteXInstances   <- mkConInstances demoteXName k mkPromotedConName mkConName foldType
-  promoteXInstances  <- mkConInstances promoteXName (foldTypeTvbs (DConT name) tvbs) mkConName mkPromotedConName foldType
-  singKindCInstances <- mkConInstances singKindCName k mkPromotedConName mkConName (const mkTupleDType)
+  demoteXInstances   <- mkConInstances demoteXName mkPromotedConName mkConName foldType
+  promoteXInstances  <- mkConInstances promoteXName mkConName mkPromotedConName foldType
+  singKindCInstances <- mkConInstances singKindCName mkPromotedConName mkConName (const mkTupleDType)
   let singKindInst =
         DInstanceD Nothing Nothing
                    (map (singKindConstraint . DVarT) reqTvbNames)
@@ -141,9 +141,6 @@ singDataD (DataDecl df name tvbs ctors) = do
         mkConInstances ::
           -- | The name 'PromoteX', 'DemoteX', or 'SingKindC'.
           Name ->
-          -- | The data type to use in a visible kind application on the
-          -- left-hand side of the instance.
-          DKind ->
           -- | How to interpret the data constructor name on the left-hand side
           -- of the instance.
           (Name -> SgM Name) ->
@@ -154,7 +151,7 @@ singDataD (DataDecl df name tvbs ctors) = do
           -- right-hand side of the type family instance.
           (DType -> [DType] -> DType) ->
           SgM [DDec]
-        mkConInstances cls dataKind lhsConName rhsConName foldArgs =
+        mkConInstances cls lhsConName rhsConName foldArgs =
             traverse mkInst ctors
           where
             mkInst :: DCon -> SgM DDec
@@ -167,9 +164,7 @@ singDataD (DataDecl df name tvbs ctors) = do
               pure $ DTySynInstD
                    $ DTySynEqn
                        Nothing
-                       (DConT cls
-                         `DAppKindT` dataKind
-                         `DAppT` foldType (DConT lhsCname) varTys)
+                       (DConT cls `DAppT` foldType (DConT lhsCname) varTys)
                    $ foldArgs (DConT rhsCname)
                    $ map (DConT cls `DAppT`) varTys
 

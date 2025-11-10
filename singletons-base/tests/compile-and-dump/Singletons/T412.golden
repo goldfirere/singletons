@@ -170,10 +170,9 @@ Singletons/T412.hs:(0,0)-(0,0): Splicing declarations
       toSing (MkD1 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD1 c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
-    type instance DemoteX @(D1 a b) (MkD1 x x) = MkD1 (DemoteX x) (DemoteX x)
-    type instance PromoteX @(D1 a b) (MkD1 x x) = MkD1 (PromoteX x) (PromoteX x)
-    type instance SingKindC @(D1 a b) (MkD1 x x) = (SingKindC x,
-                                                    SingKindC x)
+    type instance DemoteX (MkD1 x x) = MkD1 (DemoteX x) (DemoteX x)
+    type instance PromoteX (MkD1 x x) = MkD1 (PromoteX x) (PromoteX x)
+    type instance SingKindC (MkD1 x x) = (SingKindC x, SingKindC x)
     class SC1 a b where
       sM1 ::
         (forall (t :: a) (t :: b).
@@ -367,10 +366,9 @@ Singletons/T412.hs:0:0:: Splicing declarations
       toSing (MkD2 (b :: Demote a) (b :: Demote b))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing (SMkD2 c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
-    type instance DemoteX @(D2 a b) ('MkD2 x x) = 'MkD2 (DemoteX x) (DemoteX x)
-    type instance PromoteX @(D2 a b) ('MkD2 x x) = 'MkD2 (PromoteX x) (PromoteX x)
-    type instance SingKindC @(D2 a b) ('MkD2 x x) = (SingKindC x,
-                                                     SingKindC x)
+    type instance DemoteX ('MkD2 x x) = 'MkD2 (DemoteX x) (DemoteX x)
+    type instance PromoteX ('MkD2 x x) = 'MkD2 (PromoteX x) (PromoteX x)
+    type instance SingKindC ('MkD2 x x) = (SingKindC x, SingKindC x)
     infixr 5 data `SMkD2`
     infixr 5 data `sD2A`
     infixr 5 data `sD2B`

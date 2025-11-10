@@ -81,9 +81,9 @@ Singletons/T209.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Hm where
       fromSing SHm = Hm
       toSing Hm = SomeSing SHm
-    type instance DemoteX @Hm Hm = Hm
-    type instance PromoteX @Hm Hm = Hm
-    type instance SingKindC @Hm Hm = ()
+    type instance DemoteX Hm = Hm
+    type instance PromoteX Hm = Hm
+    type instance SingKindC Hm = ()
     class SC a b
     instance SC Bool Hm
     instance SC a a => SC a (Maybe a)

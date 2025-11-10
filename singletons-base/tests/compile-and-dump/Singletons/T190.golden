@@ -68,9 +68,9 @@ Singletons/T190.hs:0:0:: Splicing declarations
     instance SingKind T where
       fromSing ST = T
       toSing T = SomeSing ST
-    type instance DemoteX @T T = T
-    type instance PromoteX @T T = T
-    type instance SingKindC @T T = ()
+    type instance DemoteX T = T
+    type instance PromoteX T = T
+    type instance SingKindC T = ()
     instance SEq T where
       (%==) ST ST = STrue
     instance SOrd T where

@@ -63,8 +63,8 @@ Singletons/T332.hs:(0,0)-(0,0): Splicing declarations
     instance SingKind Bar where
       fromSing SMkBar = MkBar
       toSing MkBar = SomeSing SMkBar
-    type instance DemoteX @Bar MkBar = MkBar
-    type instance PromoteX @Bar MkBar = MkBar
-    type instance SingKindC @Bar MkBar = ()
+    type instance DemoteX MkBar = MkBar
+    type instance PromoteX MkBar = MkBar
+    type instance SingKindC MkBar = ()
     instance SingI MkBar where
       sing = SMkBar

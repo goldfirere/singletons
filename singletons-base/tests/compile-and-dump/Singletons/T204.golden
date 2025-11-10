@@ -65,10 +65,9 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
-    type instance DemoteX @(Ratio1 a) ((:%) x x) = (:%) (DemoteX x) (DemoteX x)
-    type instance PromoteX @(Ratio1 a) ((:%) x x) = (:%) (PromoteX x) (PromoteX x)
-    type instance SingKindC @(Ratio1 a) ((:%) x x) = (SingKindC x,
-                                                      SingKindC x)
+    type instance DemoteX ((:%) x x) = (:%) (DemoteX x) (DemoteX x)
+    type instance PromoteX ((:%) x x) = (:%) (PromoteX x) (PromoteX x)
+    type instance SingKindC ((:%) x x) = (SingKindC x, SingKindC x)
     data SRatio2 :: forall a. Ratio2 a -> GHC.Internal.Types.Type
       where
         (:^%%) :: forall a (n :: a) (n :: a).
@@ -81,10 +80,9 @@ Singletons/T204.hs:(0,0)-(0,0): Splicing declarations
       toSing ((:%%) (b :: Demote a) (b :: Demote a))
         = (\cases (SomeSing c) (SomeSing c) -> SomeSing ((:^%%) c c))
             (toSing b :: SomeSing a) (toSing b :: SomeSing a)
-    type instance DemoteX @(Ratio2 a) ((:%%) x x) = (:%%) (DemoteX x) (DemoteX x)
-    type instance PromoteX @(Ratio2 a) ((:%%) x x) = (:%%) (PromoteX x) (PromoteX x)
-    type instance SingKindC @(Ratio2 a) ((:%%) x x) = (SingKindC x,
-                                                       SingKindC x)
+    type instance DemoteX ((:%%) x x) = (:%%) (DemoteX x) (DemoteX x)
+    type instance PromoteX ((:%%) x x) = (:%%) (PromoteX x) (PromoteX x)
+    type instance SingKindC ((:%%) x x) = (SingKindC x, SingKindC x)
     instance (SingI n, SingI n) => SingI ((:%) (n :: a) (n :: a)) where
       sing = (:^%) sing sing
     instance SingI n => SingI1 ((:%) (n :: a)) where

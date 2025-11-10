@@ -53,12 +53,12 @@ Singletons/Maybe.hs:(0,0)-(0,0): Splicing declarations
       toSing (Just (b :: Demote a))
         = (\cases (SomeSing c) -> SomeSing (SJust c))
             (toSing b :: SomeSing a)
-    type instance DemoteX @(Maybe a) Nothing = Nothing
-    type instance DemoteX @(Maybe a) (Just x) = Just (DemoteX x)
-    type instance PromoteX @(Maybe a) Nothing = Nothing
-    type instance PromoteX @(Maybe a) (Just x) = Just (PromoteX x)
-    type instance SingKindC @(Maybe a) Nothing = ()
-    type instance SingKindC @(Maybe a) (Just x) = SingKindC x
+    type instance DemoteX Nothing = Nothing
+    type instance DemoteX (Just x) = Just (DemoteX x)
+    type instance PromoteX Nothing = Nothing
+    type instance PromoteX (Just x) = Just (PromoteX x)
+    type instance SingKindC Nothing = ()
+    type instance SingKindC (Just x) = SingKindC x
     instance SEq a => SEq (Maybe a) where
       (%==) SNothing SNothing = STrue
       (%==) SNothing (SJust _) = SFalse
