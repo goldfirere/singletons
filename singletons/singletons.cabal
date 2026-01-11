@@ -79,5 +79,5 @@ test-suite singletons-test-suite
   other-modules:      ByHand
                       ByHand2
 
-  build-depends:      base >= 4.9 && < 4.22,
+  build-depends:      base >= 4.9 && < 4.23,
                       singletons
