@@ -25,190 +25,189 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
     cartProd xs ys = [(x, y) | x <- xs, y <- ys]
     trues :: [Bool] -> [Bool]
     trues xs = [x | x <- xs, x]
-    type family LamCases_0123456789876543210 (xs0123456789876543210 :: [Bool]) a_0123456789876543210 where
-      LamCases_0123456789876543210 xs x = Apply (Apply (>>@#@$) (Apply GuardSym0 x)) (Apply ReturnSym0 x)
-    data LamCases_0123456789876543210Sym0 (xs0123456789876543210 :: [Bool]) a_01234567898765432100123456789876543210
+    type family LamCases_T184_1 (xs0 :: [Bool]) a_T184_2 where
+      LamCases_T184_1 xs x = Apply (Apply (>>@#@$) (Apply GuardSym0 x)) (Apply ReturnSym0 x)
+    data LamCases_T184_1Sym0 (xs0 :: [Bool]) a_T184_2
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 xs0123456789876543210) arg) (LamCases_0123456789876543210Sym1 xs0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 xs0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 xs0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 xs0123456789876543210) where
+        LamCases_T184_1Sym0KindInference :: SameKind (Apply (LamCases_T184_1Sym0 xs0) arg) (LamCases_T184_1Sym1 xs0 arg) =>
+                                            LamCases_T184_1Sym0 xs0 a_T184_2
+    type instance Apply @_ @_ (LamCases_T184_1Sym0 xs0) a_T184_2 = LamCases_T184_1 xs0 a_T184_2
+    instance SuppressUnusedWarnings (LamCases_T184_1Sym0 xs0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (xs0123456789876543210 :: [Bool]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 xs0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_0123456789876543210 where
-      LamCases_0123456789876543210 x xs ys y = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_1Sym0KindInference ())
+    type family LamCases_T184_1Sym1 (xs0 :: [Bool]) a_T184_2 where
+      LamCases_T184_1Sym1 xs0 a_T184_2 = LamCases_T184_1 xs0 a_T184_2
+    type family LamCases_T184_6 x0 (xs2 :: [a1]) (ys4 :: [b3]) a_T184_7 where
+      LamCases_T184_6 x xs ys y = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
+    data LamCases_T184_6Sym0 x0 (xs2 :: [a1]) (ys4 :: [b3]) a_T184_7
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 xs0123456789876543210 ys0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 xs0123456789876543210 ys0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 xs0123456789876543210 ys0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 xs0123456789876543210 ys0123456789876543210) where
+        LamCases_T184_6Sym0KindInference :: SameKind (Apply (LamCases_T184_6Sym0 x0 xs2 ys4) arg) (LamCases_T184_6Sym1 x0 xs2 ys4 arg) =>
+                                            LamCases_T184_6Sym0 x0 xs2 ys4 a_T184_7
+    type instance Apply @_ @_ (LamCases_T184_6Sym0 x0 xs2 ys4) a_T184_7 = LamCases_T184_6 x0 xs2 ys4 a_T184_7
+    instance SuppressUnusedWarnings (LamCases_T184_6Sym0 x0 xs2 ys4) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_0123456789876543210 where
-      LamCases_0123456789876543210 xs ys x = Apply (Apply (>>=@#@$) ys) (LamCases_0123456789876543210Sym0 x xs ys)
-    data LamCases_0123456789876543210Sym0 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_6Sym0KindInference ())
+    type family LamCases_T184_6Sym1 x0 (xs2 :: [a1]) (ys4 :: [b3]) a_T184_7 where
+      LamCases_T184_6Sym1 x0 xs2 ys4 a_T184_7 = LamCases_T184_6 x0 xs2 ys4 a_T184_7
+    type family LamCases_T184_5 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_8 where
+      LamCases_T184_5 xs ys x = Apply (Apply (>>=@#@$) ys) (LamCases_T184_6Sym0 x xs ys)
+    data LamCases_T184_5Sym0 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_8
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) arg) (LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) where
+        LamCases_T184_5Sym0KindInference :: SameKind (Apply (LamCases_T184_5Sym0 xs1 ys3) arg) (LamCases_T184_5Sym1 xs1 ys3 arg) =>
+                                            LamCases_T184_5Sym0 xs1 ys3 a_T184_8
+    type instance Apply @_ @_ (LamCases_T184_5Sym0 xs1 ys3) a_T184_8 = LamCases_T184_5 xs1 ys3 a_T184_8
+    instance SuppressUnusedWarnings (LamCases_T184_5Sym0 xs1 ys3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_0123456789876543210 where
-      LamCases_0123456789876543210 xs ys x = Apply ReturnSym0 x
-    data LamCases_0123456789876543210Sym0 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_5Sym0KindInference ())
+    type family LamCases_T184_5Sym1 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_8 where
+      LamCases_T184_5Sym1 xs1 ys3 a_T184_8 = LamCases_T184_5 xs1 ys3 a_T184_8
+    type family LamCases_T184_11 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_12 where
+      LamCases_T184_11 xs ys x = Apply ReturnSym0 x
+    data LamCases_T184_11Sym0 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_12
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) arg) (LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) where
+        LamCases_T184_11Sym0KindInference :: SameKind (Apply (LamCases_T184_11Sym0 xs1 ys3) arg) (LamCases_T184_11Sym1 xs1 ys3 arg) =>
+                                             LamCases_T184_11Sym0 xs1 ys3 a_T184_12
+    type instance Apply @_ @_ (LamCases_T184_11Sym0 xs1 ys3) a_T184_12 = LamCases_T184_11 xs1 ys3 a_T184_12
+    instance SuppressUnusedWarnings (LamCases_T184_11Sym0 xs1 ys3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_0123456789876543210 where
-      LamCases_0123456789876543210 xs ys y = Apply ReturnSym0 y
-    data LamCases_0123456789876543210Sym0 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_11Sym0KindInference ())
+    type family LamCases_T184_11Sym1 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_12 where
+      LamCases_T184_11Sym1 xs1 ys3 a_T184_12 = LamCases_T184_11 xs1 ys3 a_T184_12
+    type family LamCases_T184_13 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_14 where
+      LamCases_T184_13 xs ys y = Apply ReturnSym0 y
+    data LamCases_T184_13Sym0 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_14
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) arg) (LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) where
+        LamCases_T184_13Sym0KindInference :: SameKind (Apply (LamCases_T184_13Sym0 xs1 ys3) arg) (LamCases_T184_13Sym1 xs1 ys3 arg) =>
+                                             LamCases_T184_13Sym0 xs1 ys3 a_T184_14
+    type instance Apply @_ @_ (LamCases_T184_13Sym0 xs1 ys3) a_T184_14 = LamCases_T184_13 xs1 ys3 a_T184_14
+    instance SuppressUnusedWarnings (LamCases_T184_13Sym0 xs1 ys3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_0123456789876543210 where
-      LamCases_0123456789876543210 xs ys '(x,
-                                           y) = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
-    data LamCases_0123456789876543210Sym0 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_13Sym0KindInference ())
+    type family LamCases_T184_13Sym1 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_14 where
+      LamCases_T184_13Sym1 xs1 ys3 a_T184_14 = LamCases_T184_13 xs1 ys3 a_T184_14
+    type family LamCases_T184_15 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_16 where
+      LamCases_T184_15 xs ys '(x,
+                               y) = Apply ReturnSym0 (Apply (Apply Tuple2Sym0 x) y)
+    data LamCases_T184_15Sym0 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_16
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) arg) (LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 xs0123456789876543210 ys0123456789876543210) where
+        LamCases_T184_15Sym0KindInference :: SameKind (Apply (LamCases_T184_15Sym0 xs1 ys3) arg) (LamCases_T184_15Sym1 xs1 ys3 arg) =>
+                                             LamCases_T184_15Sym0 xs1 ys3 a_T184_16
+    type instance Apply @_ @_ (LamCases_T184_15Sym0 xs1 ys3) a_T184_16 = LamCases_T184_15 xs1 ys3 a_T184_16
+    instance SuppressUnusedWarnings (LamCases_T184_15Sym0 xs1 ys3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (xs0123456789876543210 :: [a0123456789876543210]) (ys0123456789876543210 :: [b0123456789876543210]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 xs0123456789876543210 ys0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a0123456789876543210 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 a ma mb b = Apply (Apply (>>@#@$) (Apply GuardSym0 b)) (Apply ReturnSym0 a)
-    data LamCases_0123456789876543210Sym0 a0123456789876543210 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_15Sym0KindInference ())
+    type family LamCases_T184_15Sym1 (xs1 :: [a0]) (ys3 :: [b2]) a_T184_16 where
+      LamCases_T184_15Sym1 xs1 ys3 a_T184_16 = LamCases_T184_15 xs1 ys3 a_T184_16
+    type family LamCases_T184_20 a0 (ma2 :: Maybe a1) (mb3 :: Maybe Bool) a_T184_21 where
+      LamCases_T184_20 a ma mb b = Apply (Apply (>>@#@$) (Apply GuardSym0 b)) (Apply ReturnSym0 a)
+    data LamCases_T184_20Sym0 a0 (ma2 :: Maybe a1) (mb3 :: Maybe Bool) a_T184_21
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 ma0123456789876543210 mb0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 ma0123456789876543210 mb0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 ma0123456789876543210 mb0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 ma0123456789876543210 mb0123456789876543210) where
+        LamCases_T184_20Sym0KindInference :: SameKind (Apply (LamCases_T184_20Sym0 a0 ma2 mb3) arg) (LamCases_T184_20Sym1 a0 ma2 mb3 arg) =>
+                                             LamCases_T184_20Sym0 a0 ma2 mb3 a_T184_21
+    type instance Apply @_ @_ (LamCases_T184_20Sym0 a0 ma2 mb3) a_T184_21 = LamCases_T184_20 a0 ma2 mb3 a_T184_21
+    instance SuppressUnusedWarnings (LamCases_T184_20Sym0 a0 ma2 mb3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a0123456789876543210 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 ma mb a = Apply (Apply (>>=@#@$) mb) (LamCases_0123456789876543210Sym0 a ma mb)
-    data LamCases_0123456789876543210Sym0 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_20Sym0KindInference ())
+    type family LamCases_T184_20Sym1 a0 (ma2 :: Maybe a1) (mb3 :: Maybe Bool) a_T184_21 where
+      LamCases_T184_20Sym1 a0 ma2 mb3 a_T184_21 = LamCases_T184_20 a0 ma2 mb3 a_T184_21
+    type family LamCases_T184_19 (ma1 :: Maybe a0) (mb2 :: Maybe Bool) a_T184_22 where
+      LamCases_T184_19 ma mb a = Apply (Apply (>>=@#@$) mb) (LamCases_T184_20Sym0 a ma mb)
+    data LamCases_T184_19Sym0 (ma1 :: Maybe a0) (mb2 :: Maybe Bool) a_T184_22
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 ma0123456789876543210 mb0123456789876543210) arg) (LamCases_0123456789876543210Sym1 ma0123456789876543210 mb0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 ma0123456789876543210 mb0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 ma0123456789876543210 mb0123456789876543210) where
+        LamCases_T184_19Sym0KindInference :: SameKind (Apply (LamCases_T184_19Sym0 ma1 mb2) arg) (LamCases_T184_19Sym1 ma1 mb2 arg) =>
+                                             LamCases_T184_19Sym0 ma1 mb2 a_T184_22
+    type instance Apply @_ @_ (LamCases_T184_19Sym0 ma1 mb2) a_T184_22 = LamCases_T184_19 ma1 mb2 a_T184_22
+    instance SuppressUnusedWarnings (LamCases_T184_19Sym0 ma1 mb2) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (ma0123456789876543210 :: Maybe a0123456789876543210) (mb0123456789876543210 :: Maybe Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 ma0123456789876543210 mb0123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T184_19Sym0KindInference ())
+    type family LamCases_T184_19Sym1 (ma1 :: Maybe a0) (mb2 :: Maybe Bool) a_T184_22 where
+      LamCases_T184_19Sym1 ma1 mb2 a_T184_22 = LamCases_T184_19 ma1 mb2 a_T184_22
     type TruesSym0 :: (~>) [Bool] [Bool]
     data TruesSym0 :: (~>) [Bool] [Bool]
       where
         TruesSym0KindInference :: SameKind (Apply TruesSym0 arg) (TruesSym1 arg) =>
-                                  TruesSym0 a0123456789876543210
-    type instance Apply @[Bool] @[Bool] TruesSym0 a0123456789876543210 = Trues a0123456789876543210
+                                  TruesSym0 a_T184_0
+    type instance Apply @[Bool] @[Bool] TruesSym0 a_T184_0 = Trues a_T184_0
     instance SuppressUnusedWarnings TruesSym0 where
       suppressUnusedWarnings = snd ((,) TruesSym0KindInference ())
     type TruesSym1 :: [Bool] -> [Bool]
-    type family TruesSym1 (a0123456789876543210 :: [Bool]) :: [Bool] where
-      TruesSym1 a0123456789876543210 = Trues a0123456789876543210
+    type family TruesSym1 (a_T184_0 :: [Bool]) :: [Bool] where
+      TruesSym1 a_T184_0 = Trues a_T184_0
     type CartProdSym0 :: (~>) [a] ((~>) [b] [(a, b)])
     data CartProdSym0 :: (~>) [a] ((~>) [b] [(a, b)])
       where
         CartProdSym0KindInference :: SameKind (Apply CartProdSym0 arg) (CartProdSym1 arg) =>
-                                     CartProdSym0 a0123456789876543210
+                                     CartProdSym0 a_T184_3
     type instance Apply @[a] @((~>) [b] [(a,
-                                          b)]) CartProdSym0 a0123456789876543210 = CartProdSym1 a0123456789876543210
+                                          b)]) CartProdSym0 a_T184_3 = CartProdSym1 a_T184_3
     instance SuppressUnusedWarnings CartProdSym0 where
       suppressUnusedWarnings = snd ((,) CartProdSym0KindInference ())
     type CartProdSym1 :: [a] -> (~>) [b] [(a, b)]
-    data CartProdSym1 (a0123456789876543210 :: [a]) :: (~>) [b] [(a,
-                                                                  b)]
+    data CartProdSym1 (a_T184_3 :: [a]) :: (~>) [b] [(a, b)]
       where
-        CartProdSym1KindInference :: SameKind (Apply (CartProdSym1 a0123456789876543210) arg) (CartProdSym2 a0123456789876543210 arg) =>
-                                     CartProdSym1 a0123456789876543210 a0123456789876543210
+        CartProdSym1KindInference :: SameKind (Apply (CartProdSym1 a_T184_3) arg) (CartProdSym2 a_T184_3 arg) =>
+                                     CartProdSym1 a_T184_3 a_T184_4
     type instance Apply @[b] @[(a,
-                                b)] (CartProdSym1 a0123456789876543210) a0123456789876543210 = CartProd a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (CartProdSym1 a0123456789876543210) where
+                                b)] (CartProdSym1 a_T184_3) a_T184_4 = CartProd a_T184_3 a_T184_4
+    instance SuppressUnusedWarnings (CartProdSym1 a_T184_3) where
       suppressUnusedWarnings = snd ((,) CartProdSym1KindInference ())
     type CartProdSym2 :: [a] -> [b] -> [(a, b)]
-    type family CartProdSym2 @a @b (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
-                                                                                                    b)] where
-      CartProdSym2 a0123456789876543210 a0123456789876543210 = CartProd a0123456789876543210 a0123456789876543210
+    type family CartProdSym2 @a @b (a_T184_3 :: [a]) (a_T184_4 :: [b]) :: [(a,
+                                                                            b)] where
+      CartProdSym2 a_T184_3 a_T184_4 = CartProd a_T184_3 a_T184_4
     type Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])
     data Zip'Sym0 :: (~>) [a] ((~>) [b] [(a, b)])
       where
         Zip'Sym0KindInference :: SameKind (Apply Zip'Sym0 arg) (Zip'Sym1 arg) =>
-                                 Zip'Sym0 a0123456789876543210
+                                 Zip'Sym0 a_T184_9
     type instance Apply @[a] @((~>) [b] [(a,
-                                          b)]) Zip'Sym0 a0123456789876543210 = Zip'Sym1 a0123456789876543210
+                                          b)]) Zip'Sym0 a_T184_9 = Zip'Sym1 a_T184_9
     instance SuppressUnusedWarnings Zip'Sym0 where
       suppressUnusedWarnings = snd ((,) Zip'Sym0KindInference ())
     type Zip'Sym1 :: [a] -> (~>) [b] [(a, b)]
-    data Zip'Sym1 (a0123456789876543210 :: [a]) :: (~>) [b] [(a, b)]
+    data Zip'Sym1 (a_T184_9 :: [a]) :: (~>) [b] [(a, b)]
       where
-        Zip'Sym1KindInference :: SameKind (Apply (Zip'Sym1 a0123456789876543210) arg) (Zip'Sym2 a0123456789876543210 arg) =>
-                                 Zip'Sym1 a0123456789876543210 a0123456789876543210
+        Zip'Sym1KindInference :: SameKind (Apply (Zip'Sym1 a_T184_9) arg) (Zip'Sym2 a_T184_9 arg) =>
+                                 Zip'Sym1 a_T184_9 a_T184_10
     type instance Apply @[b] @[(a,
-                                b)] (Zip'Sym1 a0123456789876543210) a0123456789876543210 = Zip' a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Zip'Sym1 a0123456789876543210) where
+                                b)] (Zip'Sym1 a_T184_9) a_T184_10 = Zip' a_T184_9 a_T184_10
+    instance SuppressUnusedWarnings (Zip'Sym1 a_T184_9) where
       suppressUnusedWarnings = snd ((,) Zip'Sym1KindInference ())
     type Zip'Sym2 :: [a] -> [b] -> [(a, b)]
-    type family Zip'Sym2 @a @b (a0123456789876543210 :: [a]) (a0123456789876543210 :: [b]) :: [(a,
-                                                                                                b)] where
-      Zip'Sym2 a0123456789876543210 a0123456789876543210 = Zip' a0123456789876543210 a0123456789876543210
+    type family Zip'Sym2 @a @b (a_T184_9 :: [a]) (a_T184_10 :: [b]) :: [(a,
+                                                                         b)] where
+      Zip'Sym2 a_T184_9 a_T184_10 = Zip' a_T184_9 a_T184_10
     type BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))
     data BoogieSym0 :: (~>) (Maybe a) ((~>) (Maybe Bool) (Maybe a))
       where
         BoogieSym0KindInference :: SameKind (Apply BoogieSym0 arg) (BoogieSym1 arg) =>
-                                   BoogieSym0 a0123456789876543210
-    type instance Apply @(Maybe a) @((~>) (Maybe Bool) (Maybe a)) BoogieSym0 a0123456789876543210 = BoogieSym1 a0123456789876543210
+                                   BoogieSym0 a_T184_17
+    type instance Apply @(Maybe a) @((~>) (Maybe Bool) (Maybe a)) BoogieSym0 a_T184_17 = BoogieSym1 a_T184_17
     instance SuppressUnusedWarnings BoogieSym0 where
       suppressUnusedWarnings = snd ((,) BoogieSym0KindInference ())
     type BoogieSym1 :: Maybe a -> (~>) (Maybe Bool) (Maybe a)
-    data BoogieSym1 (a0123456789876543210 :: Maybe a) :: (~>) (Maybe Bool) (Maybe a)
+    data BoogieSym1 (a_T184_17 :: Maybe a) :: (~>) (Maybe Bool) (Maybe a)
       where
-        BoogieSym1KindInference :: SameKind (Apply (BoogieSym1 a0123456789876543210) arg) (BoogieSym2 a0123456789876543210 arg) =>
-                                   BoogieSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe Bool) @(Maybe a) (BoogieSym1 a0123456789876543210) a0123456789876543210 = Boogie a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BoogieSym1 a0123456789876543210) where
+        BoogieSym1KindInference :: SameKind (Apply (BoogieSym1 a_T184_17) arg) (BoogieSym2 a_T184_17 arg) =>
+                                   BoogieSym1 a_T184_17 a_T184_18
+    type instance Apply @(Maybe Bool) @(Maybe a) (BoogieSym1 a_T184_17) a_T184_18 = Boogie a_T184_17 a_T184_18
+    instance SuppressUnusedWarnings (BoogieSym1 a_T184_17) where
       suppressUnusedWarnings = snd ((,) BoogieSym1KindInference ())
     type BoogieSym2 :: Maybe a -> Maybe Bool -> Maybe a
-    type family BoogieSym2 @a (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe Bool) :: Maybe a where
-      BoogieSym2 a0123456789876543210 a0123456789876543210 = Boogie a0123456789876543210 a0123456789876543210
+    type family BoogieSym2 @a (a_T184_17 :: Maybe a) (a_T184_18 :: Maybe Bool) :: Maybe a where
+      BoogieSym2 a_T184_17 a_T184_18 = Boogie a_T184_17 a_T184_18
     type Trues :: [Bool] -> [Bool]
     type family Trues (a :: [Bool]) :: [Bool] where
-      Trues xs = Apply (Apply (>>=@#@$) xs) (LamCases_0123456789876543210Sym0 xs)
+      Trues xs = Apply (Apply (>>=@#@$) xs) (LamCases_T184_1Sym0 xs)
     type CartProd :: [a] -> [b] -> [(a, b)]
     type family CartProd @a @b (a :: [a]) (a :: [b]) :: [(a, b)] where
-      CartProd xs ys = Apply (Apply (>>=@#@$) xs) (LamCases_0123456789876543210Sym0 xs ys)
+      CartProd xs ys = Apply (Apply (>>=@#@$) xs) (LamCases_T184_5Sym0 xs ys)
     type Zip' :: [a] -> [b] -> [(a, b)]
     type family Zip' @a @b (a :: [a]) (a :: [b]) :: [(a, b)] where
-      Zip' xs ys = Apply (Apply (>>=@#@$) (Apply (Apply MzipSym0 (Apply (Apply (>>=@#@$) xs) (LamCases_0123456789876543210Sym0 xs ys))) (Apply (Apply (>>=@#@$) ys) (LamCases_0123456789876543210Sym0 xs ys)))) (LamCases_0123456789876543210Sym0 xs ys)
+      Zip' xs ys = Apply (Apply (>>=@#@$) (Apply (Apply MzipSym0 (Apply (Apply (>>=@#@$) xs) (LamCases_T184_11Sym0 xs ys))) (Apply (Apply (>>=@#@$) ys) (LamCases_T184_13Sym0 xs ys)))) (LamCases_T184_15Sym0 xs ys)
     type Boogie :: Maybe a -> Maybe Bool -> Maybe a
     type family Boogie @a (a :: Maybe a) (a :: Maybe Bool) :: Maybe a where
-      Boogie ma mb = Apply (Apply (>>=@#@$) ma) (LamCases_0123456789876543210Sym0 ma mb)
+      Boogie ma mb = Apply (Apply (>>=@#@$) ma) (LamCases_T184_19Sym0 ma mb)
     sTrues ::
       (forall (t :: [Bool]). Sing t -> Sing (Trues t :: [Bool]) :: Type)
     sCartProd ::
@@ -224,7 +223,7 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
       = applySing
           (applySing (singFun2 @(>>=@#@$) (%>>=)) sXs)
           (singFun1
-             @(LamCases_0123456789876543210Sym0 xs)
+             @(LamCases_T184_1Sym0 xs)
              (\cases
                 (sX :: Sing x)
                   -> applySing
@@ -236,13 +235,13 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
       = applySing
           (applySing (singFun2 @(>>=@#@$) (%>>=)) sXs)
           (singFun1
-             @(LamCases_0123456789876543210Sym0 xs ys)
+             @(LamCases_T184_5Sym0 xs ys)
              (\cases
                 (sX :: Sing x)
                   -> applySing
                        (applySing (singFun2 @(>>=@#@$) (%>>=)) sYs)
                        (singFun1
-                          @(LamCases_0123456789876543210Sym0 x xs ys)
+                          @(LamCases_T184_6Sym0 x xs ys)
                           (\cases
                              (sY :: Sing y)
                                -> applySing
@@ -258,17 +257,17 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
                    (applySing
                       (applySing (singFun2 @(>>=@#@$) (%>>=)) sXs)
                       (singFun1
-                         @(LamCases_0123456789876543210Sym0 xs ys)
+                         @(LamCases_T184_11Sym0 xs ys)
                          (\cases
                             (sX :: Sing x) -> applySing (singFun1 @ReturnSym0 sReturn) sX))))
                 (applySing
                    (applySing (singFun2 @(>>=@#@$) (%>>=)) sYs)
                    (singFun1
-                      @(LamCases_0123456789876543210Sym0 xs ys)
+                      @(LamCases_T184_13Sym0 xs ys)
                       (\cases
                          (sY :: Sing y) -> applySing (singFun1 @ReturnSym0 sReturn) sY)))))
           (singFun1
-             @(LamCases_0123456789876543210Sym0 xs ys)
+             @(LamCases_T184_15Sym0 xs ys)
              (\cases
                 (STuple2 (sX :: Sing x) (sY :: Sing y))
                   -> applySing
@@ -278,13 +277,13 @@ Singletons/T184.hs:(0,0)-(0,0): Splicing declarations
       = applySing
           (applySing (singFun2 @(>>=@#@$) (%>>=)) sMa)
           (singFun1
-             @(LamCases_0123456789876543210Sym0 ma mb)
+             @(LamCases_T184_19Sym0 ma mb)
              (\cases
                 (sA :: Sing a)
                   -> applySing
                        (applySing (singFun2 @(>>=@#@$) (%>>=)) sMb)
                        (singFun1
-                          @(LamCases_0123456789876543210Sym0 a ma mb)
+                          @(LamCases_T184_20Sym0 a ma mb)
                           (\cases
                              (sB :: Sing b)
                                -> applySing

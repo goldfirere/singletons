@@ -38,139 +38,139 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
     data BazSym0 :: (~>) Nat ((~>) Nat ((~>) Nat Baz))
       where
         BazSym0KindInference :: SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
-                                BazSym0 a0123456789876543210
-    type instance Apply @Nat @((~>) Nat ((~>) Nat Baz)) BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
+                                BazSym0 a_Singletons_AsPattern_10
+    type instance Apply @Nat @((~>) Nat ((~>) Nat Baz)) BazSym0 a_Singletons_AsPattern_10 = BazSym1 a_Singletons_AsPattern_10
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd ((,) BazSym0KindInference ())
     type BazSym1 :: Nat -> (~>) Nat ((~>) Nat Baz)
-    data BazSym1 (a0123456789876543210 :: Nat) :: (~>) Nat ((~>) Nat Baz)
+    data BazSym1 (a_Singletons_AsPattern_10 :: Nat) :: (~>) Nat ((~>) Nat Baz)
       where
-        BazSym1KindInference :: SameKind (Apply (BazSym1 a0123456789876543210) arg) (BazSym2 a0123456789876543210 arg) =>
-                                BazSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Nat @((~>) Nat Baz) (BazSym1 a0123456789876543210) a0123456789876543210 = BazSym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BazSym1 a0123456789876543210) where
+        BazSym1KindInference :: SameKind (Apply (BazSym1 a_Singletons_AsPattern_10) arg) (BazSym2 a_Singletons_AsPattern_10 arg) =>
+                                BazSym1 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11
+    type instance Apply @Nat @((~>) Nat Baz) (BazSym1 a_Singletons_AsPattern_10) a_Singletons_AsPattern_11 = BazSym2 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11
+    instance SuppressUnusedWarnings (BazSym1 a_Singletons_AsPattern_10) where
       suppressUnusedWarnings = snd ((,) BazSym1KindInference ())
     type BazSym2 :: Nat -> Nat -> (~>) Nat Baz
-    data BazSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: (~>) Nat Baz
+    data BazSym2 (a_Singletons_AsPattern_10 :: Nat) (a_Singletons_AsPattern_11 :: Nat) :: (~>) Nat Baz
       where
-        BazSym2KindInference :: SameKind (Apply (BazSym2 a0123456789876543210 a0123456789876543210) arg) (BazSym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                BazSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @Nat @Baz (BazSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BazSym2 a0123456789876543210 a0123456789876543210) where
+        BazSym2KindInference :: SameKind (Apply (BazSym2 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11) arg) (BazSym3 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11 arg) =>
+                                BazSym2 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11 a_Singletons_AsPattern_12
+    type instance Apply @Nat @Baz (BazSym2 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11) a_Singletons_AsPattern_12 = Baz a_Singletons_AsPattern_10 a_Singletons_AsPattern_11 a_Singletons_AsPattern_12
+    instance SuppressUnusedWarnings (BazSym2 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11) where
       suppressUnusedWarnings = snd ((,) BazSym2KindInference ())
     type BazSym3 :: Nat -> Nat -> Nat -> Baz
-    type family BazSym3 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Baz where
-      BazSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210PSym0 where
-      Let0123456789876543210PSym0 = Let0123456789876543210P
-    type family Let0123456789876543210P where
-      Let0123456789876543210P = NilSym0
-    type family Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 = Let0123456789876543210P wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210P wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) NilSym0
-    type family Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 = Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply (Apply (:@#@$) wild_0123456789876543210) (Apply (Apply (:@#@$) wild_0123456789876543210) wild_0123456789876543210)
-    type family Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 = Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 = Apply (Apply Tuple2Sym0 wild_0123456789876543210) wild_0123456789876543210
-    type family Let0123456789876543210PSym0 where
-      Let0123456789876543210PSym0 = Let0123456789876543210P
-    type family Let0123456789876543210P where
-      Let0123456789876543210P = NothingSym0
-    type family Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210PSym0 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 = Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210P wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210 = Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_0123456789876543210) wild_0123456789876543210) wild_0123456789876543210)
-    type family Let0123456789876543210XSym0 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210XSym0 wild_01234567898765432100123456789876543210 = Let0123456789876543210X wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210X wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210X wild_0123456789876543210 = Apply JustSym0 wild_0123456789876543210
-    type family Let0123456789876543210PSym0 where
-      Let0123456789876543210PSym0 = Let0123456789876543210P
-    type family Let0123456789876543210P where
-      Let0123456789876543210P = NothingSym0
+    type family BazSym3 (a_Singletons_AsPattern_10 :: Nat) (a_Singletons_AsPattern_11 :: Nat) (a_Singletons_AsPattern_12 :: Nat) :: Baz where
+      BazSym3 a_Singletons_AsPattern_10 a_Singletons_AsPattern_11 a_Singletons_AsPattern_12 = Baz a_Singletons_AsPattern_10 a_Singletons_AsPattern_11 a_Singletons_AsPattern_12
+    type family Let14PSym0 where
+      Let14PSym0 = Let14P
+    type family Let14P where
+      Let14P = NilSym0
+    type family Let15PSym0 wild_Singletons_AsPattern_90 where
+      Let15PSym0 wild_Singletons_AsPattern_90 = Let15P wild_Singletons_AsPattern_90
+    type family Let15P wild_Singletons_AsPattern_90 where
+      Let15P wild_Singletons_AsPattern_9 = Apply (Apply (:@#@$) wild_Singletons_AsPattern_9) NilSym0
+    type family Let16PSym0 wild_Singletons_AsPattern_60 wild_Singletons_AsPattern_71 wild_Singletons_AsPattern_82 where
+      Let16PSym0 wild_Singletons_AsPattern_60 wild_Singletons_AsPattern_71 wild_Singletons_AsPattern_82 = Let16P wild_Singletons_AsPattern_60 wild_Singletons_AsPattern_71 wild_Singletons_AsPattern_82
+    type family Let16P wild_Singletons_AsPattern_60 wild_Singletons_AsPattern_71 wild_Singletons_AsPattern_82 where
+      Let16P wild_Singletons_AsPattern_6 wild_Singletons_AsPattern_7 wild_Singletons_AsPattern_8 = Apply (Apply (:@#@$) wild_Singletons_AsPattern_6) (Apply (Apply (:@#@$) wild_Singletons_AsPattern_7) wild_Singletons_AsPattern_8)
+    type family Let18PSym0 wild_Singletons_AsPattern_40 wild_Singletons_AsPattern_51 where
+      Let18PSym0 wild_Singletons_AsPattern_40 wild_Singletons_AsPattern_51 = Let18P wild_Singletons_AsPattern_40 wild_Singletons_AsPattern_51
+    type family Let18P wild_Singletons_AsPattern_40 wild_Singletons_AsPattern_51 where
+      Let18P wild_Singletons_AsPattern_4 wild_Singletons_AsPattern_5 = Apply (Apply Tuple2Sym0 wild_Singletons_AsPattern_4) wild_Singletons_AsPattern_5
+    type family Let20PSym0 where
+      Let20PSym0 = Let20P
+    type family Let20P where
+      Let20P = NothingSym0
+    type family Let21PSym0 wild_Singletons_AsPattern_10 wild_Singletons_AsPattern_21 wild_Singletons_AsPattern_32 where
+      Let21PSym0 wild_Singletons_AsPattern_10 wild_Singletons_AsPattern_21 wild_Singletons_AsPattern_32 = Let21P wild_Singletons_AsPattern_10 wild_Singletons_AsPattern_21 wild_Singletons_AsPattern_32
+    type family Let21P wild_Singletons_AsPattern_10 wild_Singletons_AsPattern_21 wild_Singletons_AsPattern_32 where
+      Let21P wild_Singletons_AsPattern_1 wild_Singletons_AsPattern_2 wild_Singletons_AsPattern_3 = Apply JustSym0 (Apply (Apply (Apply BazSym0 wild_Singletons_AsPattern_1) wild_Singletons_AsPattern_2) wild_Singletons_AsPattern_3)
+    type family Let23XSym0 wild_Singletons_AsPattern_00 where
+      Let23XSym0 wild_Singletons_AsPattern_00 = Let23X wild_Singletons_AsPattern_00
+    type family Let23X wild_Singletons_AsPattern_00 where
+      Let23X wild_Singletons_AsPattern_0 = Apply JustSym0 wild_Singletons_AsPattern_0
+    type family Let25PSym0 where
+      Let25PSym0 = Let25P
+    type family Let25P where
+      Let25P = NothingSym0
     type FooSym0 :: (~>) [Nat] [Nat]
     data FooSym0 :: (~>) [Nat] [Nat]
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-                                FooSym0 a0123456789876543210
-    type instance Apply @[Nat] @[Nat] FooSym0 a0123456789876543210 = Foo a0123456789876543210
+                                FooSym0 a_Singletons_AsPattern_13
+    type instance Apply @[Nat] @[Nat] FooSym0 a_Singletons_AsPattern_13 = Foo a_Singletons_AsPattern_13
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: [Nat] -> [Nat]
-    type family FooSym1 (a0123456789876543210 :: [Nat]) :: [Nat] where
-      FooSym1 a0123456789876543210 = Foo a0123456789876543210
+    type family FooSym1 (a_Singletons_AsPattern_13 :: [Nat]) :: [Nat] where
+      FooSym1 a_Singletons_AsPattern_13 = Foo a_Singletons_AsPattern_13
     type TupSym0 :: (~>) (Nat, Nat) (Nat, Nat)
     data TupSym0 :: (~>) (Nat, Nat) (Nat, Nat)
       where
         TupSym0KindInference :: SameKind (Apply TupSym0 arg) (TupSym1 arg) =>
-                                TupSym0 a0123456789876543210
+                                TupSym0 a_Singletons_AsPattern_17
     type instance Apply @(Nat, Nat) @(Nat,
-                                      Nat) TupSym0 a0123456789876543210 = Tup a0123456789876543210
+                                      Nat) TupSym0 a_Singletons_AsPattern_17 = Tup a_Singletons_AsPattern_17
     instance SuppressUnusedWarnings TupSym0 where
       suppressUnusedWarnings = snd ((,) TupSym0KindInference ())
     type TupSym1 :: (Nat, Nat) -> (Nat, Nat)
-    type family TupSym1 (a0123456789876543210 :: (Nat, Nat)) :: (Nat,
-                                                                 Nat) where
-      TupSym1 a0123456789876543210 = Tup a0123456789876543210
+    type family TupSym1 (a_Singletons_AsPattern_17 :: (Nat,
+                                                       Nat)) :: (Nat, Nat) where
+      TupSym1 a_Singletons_AsPattern_17 = Tup a_Singletons_AsPattern_17
     type Baz_Sym0 :: (~>) (Maybe Baz) (Maybe Baz)
     data Baz_Sym0 :: (~>) (Maybe Baz) (Maybe Baz)
       where
         Baz_Sym0KindInference :: SameKind (Apply Baz_Sym0 arg) (Baz_Sym1 arg) =>
-                                 Baz_Sym0 a0123456789876543210
-    type instance Apply @(Maybe Baz) @(Maybe Baz) Baz_Sym0 a0123456789876543210 = Baz_ a0123456789876543210
+                                 Baz_Sym0 a_Singletons_AsPattern_19
+    type instance Apply @(Maybe Baz) @(Maybe Baz) Baz_Sym0 a_Singletons_AsPattern_19 = Baz_ a_Singletons_AsPattern_19
     instance SuppressUnusedWarnings Baz_Sym0 where
       suppressUnusedWarnings = snd ((,) Baz_Sym0KindInference ())
     type Baz_Sym1 :: Maybe Baz -> Maybe Baz
-    type family Baz_Sym1 (a0123456789876543210 :: Maybe Baz) :: Maybe Baz where
-      Baz_Sym1 a0123456789876543210 = Baz_ a0123456789876543210
+    type family Baz_Sym1 (a_Singletons_AsPattern_19 :: Maybe Baz) :: Maybe Baz where
+      Baz_Sym1 a_Singletons_AsPattern_19 = Baz_ a_Singletons_AsPattern_19
     type BarSym0 :: (~>) (Maybe Nat) (Maybe Nat)
     data BarSym0 :: (~>) (Maybe Nat) (Maybe Nat)
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @(Maybe Nat) @(Maybe Nat) BarSym0 a0123456789876543210 = Bar a0123456789876543210
+                                BarSym0 a_Singletons_AsPattern_22
+    type instance Apply @(Maybe Nat) @(Maybe Nat) BarSym0 a_Singletons_AsPattern_22 = Bar a_Singletons_AsPattern_22
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Maybe Nat -> Maybe Nat
-    type family BarSym1 (a0123456789876543210 :: Maybe Nat) :: Maybe Nat where
-      BarSym1 a0123456789876543210 = Bar a0123456789876543210
+    type family BarSym1 (a_Singletons_AsPattern_22 :: Maybe Nat) :: Maybe Nat where
+      BarSym1 a_Singletons_AsPattern_22 = Bar a_Singletons_AsPattern_22
     type MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)
     data MaybePlusSym0 :: (~>) (Maybe Nat) (Maybe Nat)
       where
         MaybePlusSym0KindInference :: SameKind (Apply MaybePlusSym0 arg) (MaybePlusSym1 arg) =>
-                                      MaybePlusSym0 a0123456789876543210
-    type instance Apply @(Maybe Nat) @(Maybe Nat) MaybePlusSym0 a0123456789876543210 = MaybePlus a0123456789876543210
+                                      MaybePlusSym0 a_Singletons_AsPattern_24
+    type instance Apply @(Maybe Nat) @(Maybe Nat) MaybePlusSym0 a_Singletons_AsPattern_24 = MaybePlus a_Singletons_AsPattern_24
     instance SuppressUnusedWarnings MaybePlusSym0 where
       suppressUnusedWarnings = snd ((,) MaybePlusSym0KindInference ())
     type MaybePlusSym1 :: Maybe Nat -> Maybe Nat
-    type family MaybePlusSym1 (a0123456789876543210 :: Maybe Nat) :: Maybe Nat where
-      MaybePlusSym1 a0123456789876543210 = MaybePlus a0123456789876543210
+    type family MaybePlusSym1 (a_Singletons_AsPattern_24 :: Maybe Nat) :: Maybe Nat where
+      MaybePlusSym1 a_Singletons_AsPattern_24 = MaybePlus a_Singletons_AsPattern_24
     type Foo :: [Nat] -> [Nat]
     type family Foo (a :: [Nat]) :: [Nat] where
-      Foo '[] = Let0123456789876543210PSym0
-      Foo '[wild_0123456789876543210] = Let0123456789876543210PSym0 wild_0123456789876543210
-      Foo ('(:) wild_0123456789876543210 ('(:) wild_0123456789876543210 wild_0123456789876543210)) = Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210
+      Foo '[] = Let14PSym0
+      Foo '[wild_Singletons_AsPattern_9] = Let15PSym0 wild_Singletons_AsPattern_9
+      Foo ('(:) wild_Singletons_AsPattern_6 ('(:) wild_Singletons_AsPattern_7 wild_Singletons_AsPattern_8)) = Let16PSym0 wild_Singletons_AsPattern_6 wild_Singletons_AsPattern_7 wild_Singletons_AsPattern_8
     type Tup :: (Nat, Nat) -> (Nat, Nat)
     type family Tup (a :: (Nat, Nat)) :: (Nat, Nat) where
-      Tup '(wild_0123456789876543210,
-            wild_0123456789876543210) = Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210
+      Tup '(wild_Singletons_AsPattern_4,
+            wild_Singletons_AsPattern_5) = Let18PSym0 wild_Singletons_AsPattern_4 wild_Singletons_AsPattern_5
     type Baz_ :: Maybe Baz -> Maybe Baz
     type family Baz_ (a :: Maybe Baz) :: Maybe Baz where
-      Baz_ 'Nothing = Let0123456789876543210PSym0
-      Baz_ ('Just (Baz wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)) = Let0123456789876543210PSym0 wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210
+      Baz_ 'Nothing = Let20PSym0
+      Baz_ ('Just (Baz wild_Singletons_AsPattern_1 wild_Singletons_AsPattern_2 wild_Singletons_AsPattern_3)) = Let21PSym0 wild_Singletons_AsPattern_1 wild_Singletons_AsPattern_2 wild_Singletons_AsPattern_3
     type Bar :: Maybe Nat -> Maybe Nat
     type family Bar (a :: Maybe Nat) :: Maybe Nat where
-      Bar ('Just wild_0123456789876543210) = Let0123456789876543210XSym0 wild_0123456789876543210
+      Bar ('Just wild_Singletons_AsPattern_0) = Let23XSym0 wild_Singletons_AsPattern_0
       Bar 'Nothing = NothingSym0
     type MaybePlus :: Maybe Nat -> Maybe Nat
     type family MaybePlus (a :: Maybe Nat) :: Maybe Nat where
       MaybePlus ('Just n) = Apply JustSym0 (Apply (Apply PlusSym0 (Apply SuccSym0 ZeroSym0)) n)
-      MaybePlus 'Nothing = Let0123456789876543210PSym0
+      MaybePlus 'Nothing = Let25PSym0
     sFoo ::
       (forall (t :: [Nat]). Sing t -> Sing (Foo t :: [Nat]) :: Type)
     sTup ::
@@ -187,71 +187,72 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
        Sing t -> Sing (MaybePlus t :: Maybe Nat) :: Type)
     sFoo SNil
       = let
-          sP :: Sing @_ Let0123456789876543210P
+          sP :: Sing @_ Let14P
           sP = SNil
         in sP
     sFoo
-      (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
+      (SCons (sWild_Singletons_AsPattern_9 :: Sing wild_Singletons_AsPattern_9)
              SNil)
       = let
-          sP :: Sing @_ (Let0123456789876543210P wild_0123456789876543210)
+          sP :: Sing @_ (Let15P wild_Singletons_AsPattern_9)
           sP
             = applySing
-                (applySing (singFun2 @(:@#@$) SCons) sWild_0123456789876543210)
+                (applySing (singFun2 @(:@#@$) SCons) sWild_Singletons_AsPattern_9)
                 SNil
         in sP
     sFoo
-      (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-             (SCons (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-                    (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
+      (SCons (sWild_Singletons_AsPattern_6 :: Sing wild_Singletons_AsPattern_6)
+             (SCons (sWild_Singletons_AsPattern_7 :: Sing wild_Singletons_AsPattern_7)
+                    (sWild_Singletons_AsPattern_8 :: Sing wild_Singletons_AsPattern_8)))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let16P wild_Singletons_AsPattern_6 wild_Singletons_AsPattern_7 wild_Singletons_AsPattern_8)
           sP
             = applySing
-                (applySing (singFun2 @(:@#@$) SCons) sWild_0123456789876543210)
+                (applySing (singFun2 @(:@#@$) SCons) sWild_Singletons_AsPattern_6)
                 (applySing
-                   (applySing (singFun2 @(:@#@$) SCons) sWild_0123456789876543210)
-                   sWild_0123456789876543210)
+                   (applySing (singFun2 @(:@#@$) SCons) sWild_Singletons_AsPattern_7)
+                   sWild_Singletons_AsPattern_8)
         in sP
     sTup
-      (STuple2 (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-               (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      (STuple2 (sWild_Singletons_AsPattern_4 :: Sing wild_Singletons_AsPattern_4)
+               (sWild_Singletons_AsPattern_5 :: Sing wild_Singletons_AsPattern_5))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let18P wild_Singletons_AsPattern_4 wild_Singletons_AsPattern_5)
           sP
             = applySing
                 (applySing
-                   (singFun2 @Tuple2Sym0 STuple2) sWild_0123456789876543210)
-                sWild_0123456789876543210
+                   (singFun2 @Tuple2Sym0 STuple2) sWild_Singletons_AsPattern_4)
+                sWild_Singletons_AsPattern_5
         in sP
     sBaz_ SNothing
       = let
-          sP :: Sing @_ Let0123456789876543210P
+          sP :: Sing @_ Let20P
           sP = SNothing
         in sP
     sBaz_
-      (SJust (SBaz (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-                   (sWild_0123456789876543210 :: Sing wild_0123456789876543210)
-                   (sWild_0123456789876543210 :: Sing wild_0123456789876543210)))
+      (SJust (SBaz (sWild_Singletons_AsPattern_1 :: Sing wild_Singletons_AsPattern_1)
+                   (sWild_Singletons_AsPattern_2 :: Sing wild_Singletons_AsPattern_2)
+                   (sWild_Singletons_AsPattern_3 :: Sing wild_Singletons_AsPattern_3)))
       = let
           sP ::
-            Sing @_ (Let0123456789876543210P wild_0123456789876543210 wild_0123456789876543210 wild_0123456789876543210)
+            Sing @_ (Let21P wild_Singletons_AsPattern_1 wild_Singletons_AsPattern_2 wild_Singletons_AsPattern_3)
           sP
             = applySing
                 (singFun1 @JustSym0 SJust)
                 (applySing
                    (applySing
-                      (applySing (singFun3 @BazSym0 SBaz) sWild_0123456789876543210)
-                      sWild_0123456789876543210)
-                   sWild_0123456789876543210)
+                      (applySing (singFun3 @BazSym0 SBaz) sWild_Singletons_AsPattern_1)
+                      sWild_Singletons_AsPattern_2)
+                   sWild_Singletons_AsPattern_3)
         in sP
     sBar
-      (SJust (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
+      (SJust (sWild_Singletons_AsPattern_0 :: Sing wild_Singletons_AsPattern_0))
       = let
-          sX :: Sing @_ (Let0123456789876543210X wild_0123456789876543210)
-          sX = applySing (singFun1 @JustSym0 SJust) sWild_0123456789876543210
+          sX :: Sing @_ (Let23X wild_Singletons_AsPattern_0)
+          sX
+            = applySing (singFun1 @JustSym0 SJust) sWild_Singletons_AsPattern_0
         in sX
     sBar SNothing = SNothing
     sMaybePlus (SJust (sN :: Sing n))
@@ -264,7 +265,7 @@ Singletons/AsPattern.hs:(0,0)-(0,0): Splicing declarations
              sN)
     sMaybePlus SNothing
       = let
-          sP :: Sing @_ Let0123456789876543210P
+          sP :: Sing @_ Let25P
           sP = SNothing
         in sP
     instance SingI (FooSym0 :: (~>) [Nat] [Nat]) where

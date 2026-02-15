@@ -5,40 +5,40 @@ Singletons/T160.hs:(0,0)-(0,0): Splicing declarations
   ======>
     foo :: (Num a, Eq a) => a -> a
     foo x = if (x == 0) then 1 else (typeError $ ShowType x)
-    type family LamCases_0123456789876543210 (x0123456789876543210 :: a0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 x 'True = FromInteger 1
-      LamCases_0123456789876543210 x 'False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
-    data LamCases_0123456789876543210Sym0 (x0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210
+    type family LamCases_T160_1 (x1 :: a0) a_T160_2 where
+      LamCases_T160_1 x 'True = FromInteger 1
+      LamCases_T160_1 x 'False = Apply (Apply ($@#@$) TypeErrorSym0) (Apply ShowTypeSym0 x)
+    data LamCases_T160_1Sym0 (x1 :: a0) a_T160_2
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210) where
+        LamCases_T160_1Sym0KindInference :: SameKind (Apply (LamCases_T160_1Sym0 x1) arg) (LamCases_T160_1Sym1 x1 arg) =>
+                                            LamCases_T160_1Sym0 x1 a_T160_2
+    type instance Apply @_ @_ (LamCases_T160_1Sym0 x1) a_T160_2 = LamCases_T160_1 x1 a_T160_2
+    instance SuppressUnusedWarnings (LamCases_T160_1Sym0 x1) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (x0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T160_1Sym0KindInference ())
+    type family LamCases_T160_1Sym1 (x1 :: a0) a_T160_2 where
+      LamCases_T160_1Sym1 x1 a_T160_2 = LamCases_T160_1 x1 a_T160_2
     type FooSym0 :: (~>) a a
     data FooSym0 :: (~>) a a
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-                                FooSym0 a0123456789876543210
-    type instance Apply @a @a FooSym0 a0123456789876543210 = Foo a0123456789876543210
+                                FooSym0 a_T160_0
+    type instance Apply @a @a FooSym0 a_T160_0 = Foo a_T160_0
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: a -> a
-    type family FooSym1 @a (a0123456789876543210 :: a) :: a where
-      FooSym1 a0123456789876543210 = Foo a0123456789876543210
+    type family FooSym1 @a (a_T160_0 :: a) :: a where
+      FooSym1 a_T160_0 = Foo a_T160_0
     type Foo :: a -> a
     type family Foo @a (a :: a) :: a where
-      Foo x = Apply (LamCases_0123456789876543210Sym0 x) (Apply (Apply (==@#@$) x) (FromInteger 0))
+      Foo x = Apply (LamCases_T160_1Sym0 x) (Apply (Apply (==@#@$) x) (FromInteger 0))
     sFoo ::
       (forall (t :: a).
        (SNum a, SEq a) => Sing t -> Sing (Foo t :: a) :: Type)
     sFoo (sX :: Sing x)
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 x)
+             @(LamCases_T160_1Sym0 x)
              (\cases
                 STrue -> sFromInteger (sing :: Sing 1)
                 SFalse

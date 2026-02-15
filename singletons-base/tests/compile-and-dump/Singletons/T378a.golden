@@ -34,21 +34,21 @@ Singletons/T378a.hs:(0,0)-(0,0): Splicing declarations
     data ConstBASym0 :: (~>) a ((~>) b a)
       where
         ConstBASym0KindInference :: SameKind (Apply ConstBASym0 arg) (ConstBASym1 arg) =>
-                                    ConstBASym0 a0123456789876543210
-    type instance Apply @a @((~>) b a) ConstBASym0 a0123456789876543210 = ConstBASym1 a0123456789876543210
+                                    ConstBASym0 a_T378a_0
+    type instance Apply @a @((~>) b a) ConstBASym0 a_T378a_0 = ConstBASym1 a_T378a_0
     instance SuppressUnusedWarnings ConstBASym0 where
       suppressUnusedWarnings = snd ((,) ConstBASym0KindInference ())
     type ConstBASym1 :: forall b a. a -> (~>) b a
-    data ConstBASym1 (a0123456789876543210 :: a) :: (~>) b a
+    data ConstBASym1 (a_T378a_0 :: a) :: (~>) b a
       where
-        ConstBASym1KindInference :: SameKind (Apply (ConstBASym1 a0123456789876543210) arg) (ConstBASym2 a0123456789876543210 arg) =>
-                                    ConstBASym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @a (ConstBASym1 a0123456789876543210) a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ConstBASym1 a0123456789876543210) where
+        ConstBASym1KindInference :: SameKind (Apply (ConstBASym1 a_T378a_0) arg) (ConstBASym2 a_T378a_0 arg) =>
+                                    ConstBASym1 a_T378a_0 a_T378a_1
+    type instance Apply @b @a (ConstBASym1 a_T378a_0) a_T378a_1 = ConstBA a_T378a_0 a_T378a_1
+    instance SuppressUnusedWarnings (ConstBASym1 a_T378a_0) where
       suppressUnusedWarnings = snd ((,) ConstBASym1KindInference ())
     type ConstBASym2 :: forall b a. a -> b -> a
-    type family ConstBASym2 @b @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
-      ConstBASym2 a0123456789876543210 a0123456789876543210 = ConstBA a0123456789876543210 a0123456789876543210
+    type family ConstBASym2 @b @a (a_T378a_0 :: a) (a_T378a_1 :: b) :: a where
+      ConstBASym2 a_T378a_0 a_T378a_1 = ConstBA a_T378a_0 a_T378a_1
     type ConstBA :: forall b a. a -> b -> a
     type family ConstBA @b @a (a :: a) (a :: b) :: a where
       ConstBA @b @a (x :: a) (_ :: b) = x

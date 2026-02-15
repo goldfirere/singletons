@@ -11,18 +11,20 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
       = map (\ x -> either_ pred Succ x) [Left Zero, Right (Succ Zero)]
     bar :: [Nat]
     bar = map (either_ pred Succ) [Left Zero, Right (Succ Zero)]
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_LambdasComprehensive_0 a_Singletons_LambdasComprehensive_1 where
+      LamCases_Singletons_LambdasComprehensive_0 x = Apply (Apply (Apply Either_Sym0 PredSym0) SuccSym0) x
+    data LamCases_Singletons_LambdasComprehensive_0Sym0 a_Singletons_LambdasComprehensive_1
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_LambdasComprehensive_0Sym0KindInference :: SameKind (Apply LamCases_Singletons_LambdasComprehensive_0Sym0 arg) (LamCases_Singletons_LambdasComprehensive_0Sym1 arg) =>
+                                                                       LamCases_Singletons_LambdasComprehensive_0Sym0 a_Singletons_LambdasComprehensive_1
+    type instance Apply @_ @_ LamCases_Singletons_LambdasComprehensive_0Sym0 a_Singletons_LambdasComprehensive_1 = LamCases_Singletons_LambdasComprehensive_0 a_Singletons_LambdasComprehensive_1
+    instance SuppressUnusedWarnings LamCases_Singletons_LambdasComprehensive_0Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,)
+               LamCases_Singletons_LambdasComprehensive_0Sym0KindInference ())
+    type family LamCases_Singletons_LambdasComprehensive_0Sym1 a_Singletons_LambdasComprehensive_1 where
+      LamCases_Singletons_LambdasComprehensive_0Sym1 a_Singletons_LambdasComprehensive_1 = LamCases_Singletons_LambdasComprehensive_0 a_Singletons_LambdasComprehensive_1
     type BarSym0 :: [Nat]
     type family BarSym0 :: [Nat] where
       BarSym0 = Bar
@@ -34,7 +36,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
       Bar = Apply (Apply MapSym0 (Apply (Apply Either_Sym0 PredSym0) SuccSym0)) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     type Foo :: [Nat]
     type family Foo :: [Nat] where
-      Foo = Apply (Apply MapSym0 LamCases_0123456789876543210Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
+      Foo = Apply (Apply MapSym0 LamCases_Singletons_LambdasComprehensive_0Sym0) (Apply (Apply (:@#@$) (Apply LeftSym0 ZeroSym0)) (Apply (Apply (:@#@$) (Apply RightSym0 (Apply SuccSym0 ZeroSym0))) NilSym0))
     sBar :: (Sing (Bar :: [Nat]) :: Type)
     sFoo :: (Sing (Foo :: [Nat]) :: Type)
     sBar
@@ -61,7 +63,7 @@ Singletons/LambdasComprehensive.hs:(0,0)-(0,0): Splicing declarations
           (applySing
              (singFun2 @MapSym0 sMap)
              (singFun1
-                @LamCases_0123456789876543210Sym0
+                @LamCases_Singletons_LambdasComprehensive_0Sym0
                 (\cases
                    (sX :: Sing x)
                      -> applySing

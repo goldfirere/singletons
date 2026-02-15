@@ -9,21 +9,21 @@ Singletons/T585.hs:(0,0)-(0,0): Splicing declarations
     data KonstSym0 :: (~>) a ((~>) b a)
       where
         KonstSym0KindInference :: SameKind (Apply KonstSym0 arg) (KonstSym1 arg) =>
-                                  KonstSym0 a0123456789876543210
-    type instance Apply @a @((~>) b a) KonstSym0 a0123456789876543210 = KonstSym1 a0123456789876543210
+                                  KonstSym0 a_T585_0
+    type instance Apply @a @((~>) b a) KonstSym0 a_T585_0 = KonstSym1 a_T585_0
     instance SuppressUnusedWarnings KonstSym0 where
       suppressUnusedWarnings = snd ((,) KonstSym0KindInference ())
     type KonstSym1 :: forall a {b}. a -> (~>) b a
-    data KonstSym1 (a0123456789876543210 :: a) :: (~>) b a
+    data KonstSym1 (a_T585_0 :: a) :: (~>) b a
       where
-        KonstSym1KindInference :: SameKind (Apply (KonstSym1 a0123456789876543210) arg) (KonstSym2 a0123456789876543210 arg) =>
-                                  KonstSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @a (KonstSym1 a0123456789876543210) a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (KonstSym1 a0123456789876543210) where
+        KonstSym1KindInference :: SameKind (Apply (KonstSym1 a_T585_0) arg) (KonstSym2 a_T585_0 arg) =>
+                                  KonstSym1 a_T585_0 a_T585_1
+    type instance Apply @b @a (KonstSym1 a_T585_0) a_T585_1 = Konst a_T585_0 a_T585_1
+    instance SuppressUnusedWarnings (KonstSym1 a_T585_0) where
       suppressUnusedWarnings = snd ((,) KonstSym1KindInference ())
     type KonstSym2 :: forall a {b}. a -> b -> a
-    type family KonstSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
-      KonstSym2 a0123456789876543210 a0123456789876543210 = Konst a0123456789876543210 a0123456789876543210
+    type family KonstSym2 @a (a_T585_0 :: a) (a_T585_1 :: b) :: a where
+      KonstSym2 a_T585_0 a_T585_1 = Konst a_T585_0 a_T585_1
     type Konst :: forall a {b}. a -> b -> a
     type family Konst @a (a :: a) (a :: b) :: a where
       Konst @a (x :: a) (_ :: b) = x

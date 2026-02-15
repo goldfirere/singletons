@@ -15,13 +15,13 @@ Promote/T361.hs:(0,0)-(0,0): Splicing declarations
     data FSym0 :: (~>) (Proxy 1) (Proxy 2)
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
-                              FSym0 a0123456789876543210
-    type instance Apply @(Proxy 1) @(Proxy 2) FSym0 a0123456789876543210 = F a0123456789876543210
+                              FSym0 a_T361_0
+    type instance Apply @(Proxy 1) @(Proxy 2) FSym0 a_T361_0 = F a_T361_0
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: Proxy 1 -> Proxy 2
-    type family FSym1 (a0123456789876543210 :: Proxy 1) :: Proxy 2 where
-      FSym1 a0123456789876543210 = F a0123456789876543210
+    type family FSym1 (a_T361_0 :: Proxy 1) :: Proxy 2 where
+      FSym1 a_T361_0 = F a_T361_0
     type F :: Proxy 1 -> Proxy 2
     type family F (a :: Proxy 1) :: Proxy 2 where
       F 'Proxy = ProxySym0

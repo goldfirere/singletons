@@ -10,30 +10,28 @@ Singletons/T89.hs:0:0:: Splicing declarations
     type FooSym0 :: Foo
     type family FooSym0 :: Foo where
       FooSym0 = Foo
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = FooSym0
-      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 (FromString "toEnum: bad argument")
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+    type family LamCases_T89_2 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T89_3 where
+      LamCases_T89_2 n 'True = FooSym0
+      LamCases_T89_2 n 'False = Apply ErrorSym0 (FromString "toEnum: bad argument")
+    data LamCases_T89_2Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T89_3
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_T89_2Sym0KindInference :: SameKind (Apply (LamCases_T89_2Sym0 n0) arg) (LamCases_T89_2Sym1 n0 arg) =>
+                                           LamCases_T89_2Sym0 n0 a_T89_3
+    type instance Apply @_ @_ (LamCases_T89_2Sym0 n0) a_T89_3 = LamCases_T89_2 n0 a_T89_3
+    instance SuppressUnusedWarnings (LamCases_T89_2Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> Foo
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: Foo where
-      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type FromEnum_0123456789876543210 :: Foo
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 Foo = FromInteger 0
+        = snd ((,) LamCases_T89_2Sym0KindInference ())
+    type family LamCases_T89_2Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T89_3 where
+      LamCases_T89_2Sym1 n0 a_T89_3 = LamCases_T89_2 n0 a_T89_3
+    type ToEnum_T89_0 :: GHC.Internal.Bignum.Natural.Natural -> Foo
+    type family ToEnum_T89_0 (a :: GHC.Internal.Bignum.Natural.Natural) :: Foo where
+      ToEnum_T89_0 n = Apply (LamCases_T89_2Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type FromEnum_T89_4 :: Foo -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_T89_4 (a :: Foo) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_T89_4 Foo = FromInteger 0
     instance PEnum Foo where
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
+      type ToEnum a = ToEnum_T89_0 a
+      type FromEnum a = FromEnum_T89_4 a
     data SFoo :: Foo -> Type where SFoo :: SFoo (Foo :: Foo)
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
@@ -44,7 +42,7 @@ Singletons/T89.hs:0:0:: Splicing declarations
       sToEnum (sN :: Sing n)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 n)
+               @(LamCases_T89_2Sym0 n)
                (\cases
                   STrue -> SFoo
                   SFalse

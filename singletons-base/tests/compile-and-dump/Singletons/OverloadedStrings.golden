@@ -16,13 +16,13 @@ Singletons/OverloadedStrings.hs:(0,0)-(0,0): Splicing declarations
     data SymIdSym0 :: (~>) Symbol Symbol
       where
         SymIdSym0KindInference :: SameKind (Apply SymIdSym0 arg) (SymIdSym1 arg) =>
-                                  SymIdSym0 a0123456789876543210
-    type instance Apply @Symbol @Symbol SymIdSym0 a0123456789876543210 = SymId a0123456789876543210
+                                  SymIdSym0 a_OverloadedStrings_0
+    type instance Apply @Symbol @Symbol SymIdSym0 a_OverloadedStrings_0 = SymId a_OverloadedStrings_0
     instance SuppressUnusedWarnings SymIdSym0 where
       suppressUnusedWarnings = snd ((,) SymIdSym0KindInference ())
     type SymIdSym1 :: Symbol -> Symbol
-    type family SymIdSym1 (a0123456789876543210 :: Symbol) :: Symbol where
-      SymIdSym1 a0123456789876543210 = SymId a0123456789876543210
+    type family SymIdSym1 (a_OverloadedStrings_0 :: Symbol) :: Symbol where
+      SymIdSym1 a_OverloadedStrings_0 = SymId a_OverloadedStrings_0
     type Foo :: Symbol
     type family Foo :: Symbol where
       Foo = Apply SymIdSym0 (FromString "foo")

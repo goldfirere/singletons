@@ -29,23 +29,23 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     data (:*:@#@$) :: (~>) a ((~>) b (T a b))
       where
         (::*:@#@$###) :: SameKind (Apply (:*:@#@$) arg) ((:*:@#@$$) arg) =>
-                         (:*:@#@$) a0123456789876543210
-    type instance Apply @a @((~>) b (T a b)) (:*:@#@$) a0123456789876543210 = (:*:@#@$$) a0123456789876543210
+                         (:*:@#@$) a_Singletons_StandaloneDeriving_12
+    type instance Apply @a @((~>) b (T a b)) (:*:@#@$) a_Singletons_StandaloneDeriving_12 = (:*:@#@$$) a_Singletons_StandaloneDeriving_12
     instance SuppressUnusedWarnings (:*:@#@$) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$###) ())
     infixl 6 type :*:@#@$
     type (:*:@#@$$) :: forall a b. a -> (~>) b (T a b)
-    data (:*:@#@$$) (a0123456789876543210 :: a) :: (~>) b (T a b)
+    data (:*:@#@$$) (a_Singletons_StandaloneDeriving_12 :: a) :: (~>) b (T a b)
       where
-        (::*:@#@$$###) :: SameKind (Apply ((:*:@#@$$) a0123456789876543210) arg) ((:*:@#@$$$) a0123456789876543210 arg) =>
-                          (:*:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @b @(T a b) ((:*:@#@$$) a0123456789876543210) a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:*:@#@$$) a0123456789876543210) where
+        (::*:@#@$$###) :: SameKind (Apply ((:*:@#@$$) a_Singletons_StandaloneDeriving_12) arg) ((:*:@#@$$$) a_Singletons_StandaloneDeriving_12 arg) =>
+                          (:*:@#@$$) a_Singletons_StandaloneDeriving_12 a_Singletons_StandaloneDeriving_13
+    type instance Apply @b @(T a b) ((:*:@#@$$) a_Singletons_StandaloneDeriving_12) a_Singletons_StandaloneDeriving_13 = (:*:) a_Singletons_StandaloneDeriving_12 a_Singletons_StandaloneDeriving_13
+    instance SuppressUnusedWarnings ((:*:@#@$$) a_Singletons_StandaloneDeriving_12) where
       suppressUnusedWarnings = snd ((,) (::*:@#@$$###) ())
     infixl 6 type :*:@#@$$
     type (:*:@#@$$$) :: forall a b. a -> b -> T a b
-    type family (:*:@#@$$$) @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: T a b where
-      (:*:@#@$$$) a0123456789876543210 a0123456789876543210 = (:*:) a0123456789876543210 a0123456789876543210
+    type family (:*:@#@$$$) @a @b (a_Singletons_StandaloneDeriving_12 :: a) (a_Singletons_StandaloneDeriving_13 :: b) :: T a b where
+      (:*:@#@$$$) a_Singletons_StandaloneDeriving_12 a_Singletons_StandaloneDeriving_13 = (:*:) a_Singletons_StandaloneDeriving_12 a_Singletons_StandaloneDeriving_13
     infixl 6 type :*:@#@$$$
     type S1Sym0 :: S
     type family S1Sym0 :: S where
@@ -53,94 +53,96 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
     type S2Sym0 :: S
     type family S2Sym0 :: S where
       S2Sym0 = S2
-    type TFHelper_0123456789876543210 :: forall a. T a ()
-                                                   -> T a () -> Bool
-    type family TFHelper_0123456789876543210 @a (a :: T a ()) (a :: T a ()) :: Bool where
-      TFHelper_0123456789876543210 @a ((:*:) a_0123456789876543210 a_0123456789876543210 :: T a ()) ((:*:) b_0123456789876543210 b_0123456789876543210 :: T a ()) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)
+    type TFHelper_Singletons_StandaloneDeriving_14 :: forall a. T a ()
+                                                                -> T a () -> Bool
+    type family TFHelper_Singletons_StandaloneDeriving_14 @a (a :: T a ()) (a :: T a ()) :: Bool where
+      TFHelper_Singletons_StandaloneDeriving_14 @a ((:*:) a_Singletons_StandaloneDeriving_0 a_Singletons_StandaloneDeriving_1 :: T a ()) ((:*:) b_Singletons_StandaloneDeriving_2 b_Singletons_StandaloneDeriving_3 :: T a ()) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_Singletons_StandaloneDeriving_0) b_Singletons_StandaloneDeriving_2)) (Apply (Apply (==@#@$) a_Singletons_StandaloneDeriving_1) b_Singletons_StandaloneDeriving_3)
     instance PEq (T a ()) where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: forall a. T a ()
-                                                  -> T a () -> Ordering
-    type family Compare_0123456789876543210 @a (a :: T a ()) (a :: T a ()) :: Ordering where
-      Compare_0123456789876543210 @a ((:*:) a_0123456789876543210 a_0123456789876543210 :: T a ()) ((:*:) b_0123456789876543210 b_0123456789876543210 :: T a ()) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0))
+      type (==) a a = TFHelper_Singletons_StandaloneDeriving_14 a a
+    type Compare_Singletons_StandaloneDeriving_17 :: forall a. T a ()
+                                                               -> T a () -> Ordering
+    type family Compare_Singletons_StandaloneDeriving_17 @a (a :: T a ()) (a :: T a ()) :: Ordering where
+      Compare_Singletons_StandaloneDeriving_17 @a ((:*:) a_Singletons_StandaloneDeriving_4 a_Singletons_StandaloneDeriving_5 :: T a ()) ((:*:) b_Singletons_StandaloneDeriving_6 b_Singletons_StandaloneDeriving_7 :: T a ()) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_Singletons_StandaloneDeriving_4) b_Singletons_StandaloneDeriving_6)) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_Singletons_StandaloneDeriving_5) b_Singletons_StandaloneDeriving_7)) NilSym0))
     instance POrd (T a ()) where
-      type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
-                                                    -> T a () -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: T a ()) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) ((:*:) argL_0123456789876543210 argR_0123456789876543210 :: T a ()) (a_0123456789876543210 :: Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 6))) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_0123456789876543210)) (Apply (Apply (.@#@$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_0123456789876543210)))) a_0123456789876543210
+      type Compare a a = Compare_Singletons_StandaloneDeriving_17 a a
+    type ShowsPrec_Singletons_StandaloneDeriving_20 :: forall a. GHC.Internal.Bignum.Natural.Natural
+                                                                 -> T a () -> Symbol -> Symbol
+    type family ShowsPrec_Singletons_StandaloneDeriving_20 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: T a ()) (a :: Symbol) :: Symbol where
+      ShowsPrec_Singletons_StandaloneDeriving_20 @a (p_Singletons_StandaloneDeriving_8 :: GHC.Internal.Bignum.Natural.Natural) ((:*:) argL_Singletons_StandaloneDeriving_9 argR_Singletons_StandaloneDeriving_10 :: T a ()) (a_Singletons_StandaloneDeriving_21 :: Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_Singletons_StandaloneDeriving_8) (FromInteger 6))) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argL_Singletons_StandaloneDeriving_9)) (Apply (Apply (.@#@$) (Apply ShowStringSym0 " :*: ")) (Apply (Apply ShowsPrecSym0 (FromInteger 7)) argR_Singletons_StandaloneDeriving_10)))) a_Singletons_StandaloneDeriving_21
     instance PShow (T a ()) where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    type TFHelper_0123456789876543210 :: S -> S -> Bool
-    type family TFHelper_0123456789876543210 (a :: S) (a :: S) :: Bool where
-      TFHelper_0123456789876543210 S1 S1 = TrueSym0
-      TFHelper_0123456789876543210 S1 S2 = FalseSym0
-      TFHelper_0123456789876543210 S2 S1 = FalseSym0
-      TFHelper_0123456789876543210 S2 S2 = TrueSym0
+      type ShowsPrec a a a = ShowsPrec_Singletons_StandaloneDeriving_20 a a a
+    type TFHelper_Singletons_StandaloneDeriving_25 :: S -> S -> Bool
+    type family TFHelper_Singletons_StandaloneDeriving_25 (a :: S) (a :: S) :: Bool where
+      TFHelper_Singletons_StandaloneDeriving_25 S1 S1 = TrueSym0
+      TFHelper_Singletons_StandaloneDeriving_25 S1 S2 = FalseSym0
+      TFHelper_Singletons_StandaloneDeriving_25 S2 S1 = FalseSym0
+      TFHelper_Singletons_StandaloneDeriving_25 S2 S2 = TrueSym0
     instance PEq S where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: S -> S -> Ordering
-    type family Compare_0123456789876543210 (a :: S) (a :: S) :: Ordering where
-      Compare_0123456789876543210 S1 S1 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 S2 S2 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 S1 S2 = LTSym0
-      Compare_0123456789876543210 S2 S1 = GTSym0
+      type (==) a a = TFHelper_Singletons_StandaloneDeriving_25 a a
+    type Compare_Singletons_StandaloneDeriving_28 :: S -> S -> Ordering
+    type family Compare_Singletons_StandaloneDeriving_28 (a :: S) (a :: S) :: Ordering where
+      Compare_Singletons_StandaloneDeriving_28 S1 S1 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_Singletons_StandaloneDeriving_28 S2 S2 = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_Singletons_StandaloneDeriving_28 S1 S2 = LTSym0
+      Compare_Singletons_StandaloneDeriving_28 S2 S1 = GTSym0
     instance POrd S where
-      type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                          -> S -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: S) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 _ S1 a_0123456789876543210 = Apply (Apply ShowStringSym0 "S1") a_0123456789876543210
-      ShowsPrec_0123456789876543210 _ S2 a_0123456789876543210 = Apply (Apply ShowStringSym0 "S2") a_0123456789876543210
+      type Compare a a = Compare_Singletons_StandaloneDeriving_28 a a
+    type ShowsPrec_Singletons_StandaloneDeriving_31 :: GHC.Internal.Bignum.Natural.Natural
+                                                       -> S -> Symbol -> Symbol
+    type family ShowsPrec_Singletons_StandaloneDeriving_31 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: S) (a :: Symbol) :: Symbol where
+      ShowsPrec_Singletons_StandaloneDeriving_31 _ S1 a_Singletons_StandaloneDeriving_32 = Apply (Apply ShowStringSym0 "S1") a_Singletons_StandaloneDeriving_32
+      ShowsPrec_Singletons_StandaloneDeriving_31 _ S2 a_Singletons_StandaloneDeriving_33 = Apply (Apply ShowStringSym0 "S2") a_Singletons_StandaloneDeriving_33
     instance PShow S where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    type MinBound_0123456789876543210 :: S
-    type family MinBound_0123456789876543210 :: S where
-      MinBound_0123456789876543210 = S1Sym0
-    type MaxBound_0123456789876543210 :: S
-    type family MaxBound_0123456789876543210 :: S where
-      MaxBound_0123456789876543210 = S2Sym0
+      type ShowsPrec a a a = ShowsPrec_Singletons_StandaloneDeriving_31 a a a
+    type MinBound_Singletons_StandaloneDeriving_37 :: S
+    type family MinBound_Singletons_StandaloneDeriving_37 :: S where
+      MinBound_Singletons_StandaloneDeriving_37 = S1Sym0
+    type MaxBound_Singletons_StandaloneDeriving_38 :: S
+    type family MaxBound_Singletons_StandaloneDeriving_38 :: S where
+      MaxBound_Singletons_StandaloneDeriving_38 = S2Sym0
     instance PBounded S where
-      type MinBound = MinBound_0123456789876543210
-      type MaxBound = MaxBound_0123456789876543210
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = S2Sym0
-      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+      type MinBound = MinBound_Singletons_StandaloneDeriving_37
+      type MaxBound = MaxBound_Singletons_StandaloneDeriving_38
+    type family LamCases_Singletons_StandaloneDeriving_42 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_43 where
+      LamCases_Singletons_StandaloneDeriving_42 n 'True = S2Sym0
+      LamCases_Singletons_StandaloneDeriving_42 n 'False = Apply ErrorSym0 "toEnum: bad argument"
+    data LamCases_Singletons_StandaloneDeriving_42Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_43
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_StandaloneDeriving_42Sym0KindInference :: SameKind (Apply (LamCases_Singletons_StandaloneDeriving_42Sym0 n0) arg) (LamCases_Singletons_StandaloneDeriving_42Sym1 n0 arg) =>
+                                                                      LamCases_Singletons_StandaloneDeriving_42Sym0 n0 a_Singletons_StandaloneDeriving_43
+    type instance Apply @_ @_ (LamCases_Singletons_StandaloneDeriving_42Sym0 n0) a_Singletons_StandaloneDeriving_43 = LamCases_Singletons_StandaloneDeriving_42 n0 a_Singletons_StandaloneDeriving_43
+    instance SuppressUnusedWarnings (LamCases_Singletons_StandaloneDeriving_42Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = S1Sym0
-      LamCases_0123456789876543210 n 'False = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_StandaloneDeriving_42Sym0KindInference ())
+    type family LamCases_Singletons_StandaloneDeriving_42Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_43 where
+      LamCases_Singletons_StandaloneDeriving_42Sym1 n0 a_Singletons_StandaloneDeriving_43 = LamCases_Singletons_StandaloneDeriving_42 n0 a_Singletons_StandaloneDeriving_43
+    type family LamCases_Singletons_StandaloneDeriving_41 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_44 where
+      LamCases_Singletons_StandaloneDeriving_41 n 'True = S1Sym0
+      LamCases_Singletons_StandaloneDeriving_41 n 'False = Apply (LamCases_Singletons_StandaloneDeriving_42Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
+    data LamCases_Singletons_StandaloneDeriving_41Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_44
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_StandaloneDeriving_41Sym0KindInference :: SameKind (Apply (LamCases_Singletons_StandaloneDeriving_41Sym0 n0) arg) (LamCases_Singletons_StandaloneDeriving_41Sym1 n0 arg) =>
+                                                                      LamCases_Singletons_StandaloneDeriving_41Sym0 n0 a_Singletons_StandaloneDeriving_44
+    type instance Apply @_ @_ (LamCases_Singletons_StandaloneDeriving_41Sym0 n0) a_Singletons_StandaloneDeriving_44 = LamCases_Singletons_StandaloneDeriving_41 n0 a_Singletons_StandaloneDeriving_44
+    instance SuppressUnusedWarnings (LamCases_Singletons_StandaloneDeriving_41Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> S
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: S where
-      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type FromEnum_0123456789876543210 :: S
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: S) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 S1 = FromInteger 0
-      FromEnum_0123456789876543210 S2 = FromInteger 1
+        = snd
+            ((,) LamCases_Singletons_StandaloneDeriving_41Sym0KindInference ())
+    type family LamCases_Singletons_StandaloneDeriving_41Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_StandaloneDeriving_44 where
+      LamCases_Singletons_StandaloneDeriving_41Sym1 n0 a_Singletons_StandaloneDeriving_44 = LamCases_Singletons_StandaloneDeriving_41 n0 a_Singletons_StandaloneDeriving_44
+    type ToEnum_Singletons_StandaloneDeriving_39 :: GHC.Internal.Bignum.Natural.Natural
+                                                    -> S
+    type family ToEnum_Singletons_StandaloneDeriving_39 (a :: GHC.Internal.Bignum.Natural.Natural) :: S where
+      ToEnum_Singletons_StandaloneDeriving_39 n = Apply (LamCases_Singletons_StandaloneDeriving_41Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type FromEnum_Singletons_StandaloneDeriving_45 :: S
+                                                      -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_Singletons_StandaloneDeriving_45 (a :: S) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_Singletons_StandaloneDeriving_45 S1 = FromInteger 0
+      FromEnum_Singletons_StandaloneDeriving_45 S2 = FromInteger 1
     instance PEnum S where
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
+      type ToEnum a = ToEnum_Singletons_StandaloneDeriving_39 a
+      type FromEnum a = FromEnum_Singletons_StandaloneDeriving_45 a
     infixl 6 data :%*:
     data ST :: forall a b. T a b -> Type
       where
@@ -166,25 +168,27 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing S2 = SomeSing SS2
     instance SEq a => SEq (T a ()) where
       (%==)
-        ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
-                (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        ((:%*:) (sB_0123456789876543210 :: Sing b_0123456789876543210)
-                (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        ((:%*:) (sA_Singletons_StandaloneDeriving_0 :: Sing a_Singletons_StandaloneDeriving_0)
+                (sA_Singletons_StandaloneDeriving_1 :: Sing a_Singletons_StandaloneDeriving_1))
+        ((:%*:) (sB_Singletons_StandaloneDeriving_2 :: Sing b_Singletons_StandaloneDeriving_2)
+                (sB_Singletons_StandaloneDeriving_3 :: Sing b_Singletons_StandaloneDeriving_3))
         = applySing
             (applySing
                (singFun2 @(&&@#@$) (%&&))
                (applySing
-                  (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-                  sB_0123456789876543210))
+                  (applySing
+                     (singFun2 @(==@#@$) (%==)) sA_Singletons_StandaloneDeriving_0)
+                  sB_Singletons_StandaloneDeriving_2))
             (applySing
-               (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-               sB_0123456789876543210)
+               (applySing
+                  (singFun2 @(==@#@$) (%==)) sA_Singletons_StandaloneDeriving_1)
+               sB_Singletons_StandaloneDeriving_3)
     instance SOrd a => SOrd (T a ()) where
       sCompare
-        ((:%*:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
-                (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        ((:%*:) (sB_0123456789876543210 :: Sing b_0123456789876543210)
-                (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        ((:%*:) (sA_Singletons_StandaloneDeriving_4 :: Sing a_Singletons_StandaloneDeriving_4)
+                (sA_Singletons_StandaloneDeriving_5 :: Sing a_Singletons_StandaloneDeriving_5))
+        ((:%*:) (sB_Singletons_StandaloneDeriving_6 :: Sing b_Singletons_StandaloneDeriving_6)
+                (sB_Singletons_StandaloneDeriving_7 :: Sing b_Singletons_StandaloneDeriving_7))
         = applySing
             (applySing
                (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
@@ -193,27 +197,32 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                (applySing
                   (singFun2 @(:@#@$) SCons)
                   (applySing
-                     (applySing (singFun2 @CompareSym0 sCompare) sA_0123456789876543210)
-                     sB_0123456789876543210))
+                     (applySing
+                        (singFun2 @CompareSym0 sCompare)
+                        sA_Singletons_StandaloneDeriving_4)
+                     sB_Singletons_StandaloneDeriving_6))
                (applySing
                   (applySing
                      (singFun2 @(:@#@$) SCons)
                      (applySing
-                        (applySing (singFun2 @CompareSym0 sCompare) sA_0123456789876543210)
-                        sB_0123456789876543210))
+                        (applySing
+                           (singFun2 @CompareSym0 sCompare)
+                           sA_Singletons_StandaloneDeriving_5)
+                        sB_Singletons_StandaloneDeriving_7))
                   SNil))
     instance SShow a => SShow (T a ()) where
       sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        ((:%*:) (sArgL_0123456789876543210 :: Sing argL_0123456789876543210)
-                (sArgR_0123456789876543210 :: Sing argR_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sP_Singletons_StandaloneDeriving_8 :: Sing p_Singletons_StandaloneDeriving_8)
+        ((:%*:) (sArgL_Singletons_StandaloneDeriving_9 :: Sing argL_Singletons_StandaloneDeriving_9)
+                (sArgR_Singletons_StandaloneDeriving_10 :: Sing argR_Singletons_StandaloneDeriving_10))
+        (sA_Singletons_StandaloneDeriving_21 :: Sing a_Singletons_StandaloneDeriving_21)
         = applySing
             (applySing
                (applySing
                   (singFun3 @ShowParenSym0 sShowParen)
                   (applySing
-                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (applySing
+                        (singFun2 @(>@#@$) (%>)) sP_Singletons_StandaloneDeriving_8)
                      (sFromInteger (sing :: Sing 6))))
                (applySing
                   (applySing
@@ -222,7 +231,7 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                         (applySing
                            (singFun3 @ShowsPrecSym0 sShowsPrec)
                            (sFromInteger (sing :: Sing 7)))
-                        sArgL_0123456789876543210))
+                        sArgL_Singletons_StandaloneDeriving_9))
                   (applySing
                      (applySing
                         (singFun3 @(.@#@$) (%.))
@@ -232,8 +241,8 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
                         (applySing
                            (singFun3 @ShowsPrecSym0 sShowsPrec)
                            (sFromInteger (sing :: Sing 7)))
-                        sArgR_0123456789876543210))))
-            sA_0123456789876543210
+                        sArgR_Singletons_StandaloneDeriving_10))))
+            sA_Singletons_StandaloneDeriving_21
     instance SEq S where
       (%==) SS1 SS1 = STrue
       (%==) SS1 SS2 = SFalse
@@ -258,19 +267,19 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       sShowsPrec
         _
         SS1
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_Singletons_StandaloneDeriving_32 :: Sing a_Singletons_StandaloneDeriving_32)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "S1"))
-            sA_0123456789876543210
+            sA_Singletons_StandaloneDeriving_32
       sShowsPrec
         _
         SS2
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_Singletons_StandaloneDeriving_33 :: Sing a_Singletons_StandaloneDeriving_33)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "S2"))
-            sA_0123456789876543210
+            sA_Singletons_StandaloneDeriving_33
     instance SBounded S where
       sMinBound = SS1
       sMaxBound = SS2
@@ -278,13 +287,13 @@ Singletons/StandaloneDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum (sN :: Sing n)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 n)
+               @(LamCases_Singletons_StandaloneDeriving_41Sym0 n)
                (\cases
                   STrue -> SS1
                   SFalse
                     -> applySing
                          (singFun1
-                            @(LamCases_0123456789876543210Sym0 n)
+                            @(LamCases_Singletons_StandaloneDeriving_42Sym0 n)
                             (\cases
                                STrue -> SS2
                                SFalse

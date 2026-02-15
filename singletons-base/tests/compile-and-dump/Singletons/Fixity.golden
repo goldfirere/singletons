@@ -19,23 +19,23 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     data (====@#@$) :: (~>) a ((~>) a a)
       where
         (:====@#@$###) :: SameKind (Apply (====@#@$) arg) ((====@#@$$) arg) =>
-                          (====@#@$) a0123456789876543210
-    type instance Apply @a @((~>) a a) (====@#@$) a0123456789876543210 = (====@#@$$) a0123456789876543210
+                          (====@#@$) a_Singletons_Fixity_0
+    type instance Apply @a @((~>) a a) (====@#@$) a_Singletons_Fixity_0 = (====@#@$$) a_Singletons_Fixity_0
     instance SuppressUnusedWarnings (====@#@$) where
       suppressUnusedWarnings = snd ((,) (:====@#@$###) ())
     infix 4 type ====@#@$
     type (====@#@$$) :: a -> (~>) a a
-    data (====@#@$$) (a0123456789876543210 :: a) :: (~>) a a
+    data (====@#@$$) (a_Singletons_Fixity_0 :: a) :: (~>) a a
       where
-        (:====@#@$$###) :: SameKind (Apply ((====@#@$$) a0123456789876543210) arg) ((====@#@$$$) a0123456789876543210 arg) =>
-                           (====@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @a @a ((====@#@$$) a0123456789876543210) a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((====@#@$$) a0123456789876543210) where
+        (:====@#@$$###) :: SameKind (Apply ((====@#@$$) a_Singletons_Fixity_0) arg) ((====@#@$$$) a_Singletons_Fixity_0 arg) =>
+                           (====@#@$$) a_Singletons_Fixity_0 a_Singletons_Fixity_1
+    type instance Apply @a @a ((====@#@$$) a_Singletons_Fixity_0) a_Singletons_Fixity_1 = (====) a_Singletons_Fixity_0 a_Singletons_Fixity_1
+    instance SuppressUnusedWarnings ((====@#@$$) a_Singletons_Fixity_0) where
       suppressUnusedWarnings = snd ((,) (:====@#@$$###) ())
     infix 4 type ====@#@$$
     type (====@#@$$$) :: a -> a -> a
-    type family (====@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
-      (====@#@$$$) a0123456789876543210 a0123456789876543210 = (====) a0123456789876543210 a0123456789876543210
+    type family (====@#@$$$) @a (a_Singletons_Fixity_0 :: a) (a_Singletons_Fixity_1 :: a) :: a where
+      (====@#@$$$) a_Singletons_Fixity_0 a_Singletons_Fixity_1 = (====) a_Singletons_Fixity_0 a_Singletons_Fixity_1
     infix 4 type ====@#@$$$
     type (====) :: a -> a -> a
     type family (====) @a (a :: a) (a :: a) :: a where
@@ -44,23 +44,23 @@ Singletons/Fixity.hs:(0,0)-(0,0): Splicing declarations
     data (<=>@#@$) :: (~>) a ((~>) a Ordering)
       where
         (:<=>@#@$###) :: SameKind (Apply (<=>@#@$) arg) ((<=>@#@$$) arg) =>
-                         (<=>@#@$) a0123456789876543210
-    type instance Apply @a @((~>) a Ordering) (<=>@#@$) a0123456789876543210 = (<=>@#@$$) a0123456789876543210
+                         (<=>@#@$) a_Singletons_Fixity_2
+    type instance Apply @a @((~>) a Ordering) (<=>@#@$) a_Singletons_Fixity_2 = (<=>@#@$$) a_Singletons_Fixity_2
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<=>@#@$###) ())
     infix 4 type <=>@#@$
     type (<=>@#@$$) :: forall a. a -> (~>) a Ordering
-    data (<=>@#@$$) (a0123456789876543210 :: a) :: (~>) a Ordering
+    data (<=>@#@$$) (a_Singletons_Fixity_2 :: a) :: (~>) a Ordering
       where
-        (:<=>@#@$$###) :: SameKind (Apply ((<=>@#@$$) a0123456789876543210) arg) ((<=>@#@$$$) a0123456789876543210 arg) =>
-                          (<=>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @a @Ordering ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((<=>@#@$$) a0123456789876543210) where
+        (:<=>@#@$$###) :: SameKind (Apply ((<=>@#@$$) a_Singletons_Fixity_2) arg) ((<=>@#@$$$) a_Singletons_Fixity_2 arg) =>
+                          (<=>@#@$$) a_Singletons_Fixity_2 a_Singletons_Fixity_3
+    type instance Apply @a @Ordering ((<=>@#@$$) a_Singletons_Fixity_2) a_Singletons_Fixity_3 = (<=>) a_Singletons_Fixity_2 a_Singletons_Fixity_3
+    instance SuppressUnusedWarnings ((<=>@#@$$) a_Singletons_Fixity_2) where
       suppressUnusedWarnings = snd ((,) (:<=>@#@$$###) ())
     infix 4 type <=>@#@$$
     type (<=>@#@$$$) :: forall a. a -> a -> Ordering
-    type family (<=>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Ordering where
-      (<=>@#@$$$) a0123456789876543210 a0123456789876543210 = (<=>) a0123456789876543210 a0123456789876543210
+    type family (<=>@#@$$$) @a (a_Singletons_Fixity_2 :: a) (a_Singletons_Fixity_3 :: a) :: Ordering where
+      (<=>@#@$$$) a_Singletons_Fixity_2 a_Singletons_Fixity_3 = (<=>) a_Singletons_Fixity_2 a_Singletons_Fixity_3
     infix 4 type <=>@#@$$$
     class PMyOrd a where
       type family (<=>) (arg :: a) (arg :: a) :: Ordering

@@ -9,31 +9,29 @@ Singletons/T376.hs:(0,0)-(0,0): Splicing declarations
     data FSym0 :: (~>) ((~>) () ()) ((~>) () ())
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
-                              FSym0 a0123456789876543210
-    type instance Apply @((~>) () ()) @((~>) () ()) FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+                              FSym0 a_T376_1
+    type instance Apply @((~>) () ()) @((~>) () ()) FSym0 a_T376_1 = FSym1 a_T376_1
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: (~>) () () -> (~>) () ()
-    data FSym1 (a0123456789876543210 :: (~>) () ()) :: (~>) () ()
+    data FSym1 (a_T376_1 :: (~>) () ()) :: (~>) () ()
       where
-        FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
-                              FSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @() @() (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
+        FSym1KindInference :: SameKind (Apply (FSym1 a_T376_1) arg) (FSym2 a_T376_1 arg) =>
+                              FSym1 a_T376_1 a_T376_2
+    type instance Apply @() @() (FSym1 a_T376_1) a_T376_2 = F a_T376_1 a_T376_2
+    instance SuppressUnusedWarnings (FSym1 a_T376_1) where
       suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: (~>) () () -> () -> ()
-    type family FSym2 (a0123456789876543210 :: (~>) () ()) (a0123456789876543210 :: ()) :: () where
-      FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
+    type family FSym2 (a_T376_1 :: (~>) () ()) (a_T376_2 :: ()) :: () where
+      FSym2 a_T376_1 a_T376_2 = F a_T376_1 a_T376_2
     type F :: (~>) () () -> () -> ()
     type family F (a :: (~>) () ()) (a :: ()) :: () where
-      F g a_0123456789876543210 = Apply (g :: (~>) () ()) a_0123456789876543210
+      F g a_T376_0 = Apply (g :: (~>) () ()) a_T376_0
     sF ::
       (forall (t :: (~>) () ()) (t :: ()).
        Sing t -> Sing t -> Sing (F t t :: ()) :: Type)
-    sF
-      (sG :: Sing g)
-      (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = applySing (sG :: Sing (g :: (~>) () ())) sA_0123456789876543210
+    sF (sG :: Sing g) (sA_T376_0 :: Sing a_T376_0)
+      = applySing (sG :: Sing (g :: (~>) () ())) sA_T376_0
     instance SingI (FSym0 :: (~>) ((~>) () ()) ((~>) () ())) where
       sing = singFun2 @FSym0 sF
     instance SingI d =>

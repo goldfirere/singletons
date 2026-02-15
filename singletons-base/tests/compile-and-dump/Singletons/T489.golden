@@ -17,24 +17,24 @@ Singletons/T489.hs:(0,0)-(0,0): Splicing declarations
     data FlurmpSym0 :: (~>) (Maybe ()) ()
       where
         FlurmpSym0KindInference :: SameKind (Apply FlurmpSym0 arg) (FlurmpSym1 arg) =>
-                                   FlurmpSym0 a0123456789876543210
-    type instance Apply @(Maybe ()) @() FlurmpSym0 a0123456789876543210 = Flurmp a0123456789876543210
+                                   FlurmpSym0 a_T489_0
+    type instance Apply @(Maybe ()) @() FlurmpSym0 a_T489_0 = Flurmp a_T489_0
     instance SuppressUnusedWarnings FlurmpSym0 where
       suppressUnusedWarnings = snd ((,) FlurmpSym0KindInference ())
     type FlurmpSym1 :: Maybe () -> ()
-    type family FlurmpSym1 (a0123456789876543210 :: Maybe ()) :: () where
-      FlurmpSym1 a0123456789876543210 = Flurmp a0123456789876543210
+    type family FlurmpSym1 (a_T489_0 :: Maybe ()) :: () where
+      FlurmpSym1 a_T489_0 = Flurmp a_T489_0
     type BlahSym0 :: (~>) (Maybe a) [a]
     data BlahSym0 :: (~>) (Maybe a) [a]
       where
         BlahSym0KindInference :: SameKind (Apply BlahSym0 arg) (BlahSym1 arg) =>
-                                 BlahSym0 a0123456789876543210
-    type instance Apply @(Maybe a) @[a] BlahSym0 a0123456789876543210 = Blah a0123456789876543210
+                                 BlahSym0 a_T489_1
+    type instance Apply @(Maybe a) @[a] BlahSym0 a_T489_1 = Blah a_T489_1
     instance SuppressUnusedWarnings BlahSym0 where
       suppressUnusedWarnings = snd ((,) BlahSym0KindInference ())
     type BlahSym1 :: Maybe a -> [a]
-    type family BlahSym1 @a (a0123456789876543210 :: Maybe a) :: [a] where
-      BlahSym1 a0123456789876543210 = Blah a0123456789876543210
+    type family BlahSym1 @a (a_T489_1 :: Maybe a) :: [a] where
+      BlahSym1 a_T489_1 = Blah a_T489_1
     type Flurmp :: Maybe () -> ()
     type family Flurmp (a :: Maybe ()) :: () where
       Flurmp ('Nothing @_) = Tuple0Sym0

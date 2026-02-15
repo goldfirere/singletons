@@ -21,21 +21,22 @@ Singletons/Classes2.hs:(0,0)-(0,0): Splicing declarations
     data SuccFooSym0 :: (~>) NatFoo NatFoo
       where
         SuccFooSym0KindInference :: SameKind (Apply SuccFooSym0 arg) (SuccFooSym1 arg) =>
-                                    SuccFooSym0 a0123456789876543210
-    type instance Apply @NatFoo @NatFoo SuccFooSym0 a0123456789876543210 = SuccFoo a0123456789876543210
+                                    SuccFooSym0 a_Singletons_Classes2_0
+    type instance Apply @NatFoo @NatFoo SuccFooSym0 a_Singletons_Classes2_0 = SuccFoo a_Singletons_Classes2_0
     instance SuppressUnusedWarnings SuccFooSym0 where
       suppressUnusedWarnings = snd ((,) SuccFooSym0KindInference ())
     type SuccFooSym1 :: NatFoo -> NatFoo
-    type family SuccFooSym1 (a0123456789876543210 :: NatFoo) :: NatFoo where
-      SuccFooSym1 a0123456789876543210 = SuccFoo a0123456789876543210
-    type Mycompare_0123456789876543210 :: NatFoo -> NatFoo -> Ordering
-    type family Mycompare_0123456789876543210 (a :: NatFoo) (a :: NatFoo) :: Ordering where
-      Mycompare_0123456789876543210 ZeroFoo ZeroFoo = EQSym0
-      Mycompare_0123456789876543210 ZeroFoo (SuccFoo _) = LTSym0
-      Mycompare_0123456789876543210 (SuccFoo _) ZeroFoo = GTSym0
-      Mycompare_0123456789876543210 (SuccFoo n) (SuccFoo m) = Apply (Apply MycompareSym0 m) n
+    type family SuccFooSym1 (a_Singletons_Classes2_0 :: NatFoo) :: NatFoo where
+      SuccFooSym1 a_Singletons_Classes2_0 = SuccFoo a_Singletons_Classes2_0
+    type Mycompare_Singletons_Classes2_1 :: NatFoo
+                                            -> NatFoo -> Ordering
+    type family Mycompare_Singletons_Classes2_1 (a :: NatFoo) (a :: NatFoo) :: Ordering where
+      Mycompare_Singletons_Classes2_1 ZeroFoo ZeroFoo = EQSym0
+      Mycompare_Singletons_Classes2_1 ZeroFoo (SuccFoo _) = LTSym0
+      Mycompare_Singletons_Classes2_1 (SuccFoo _) ZeroFoo = GTSym0
+      Mycompare_Singletons_Classes2_1 (SuccFoo n) (SuccFoo m) = Apply (Apply MycompareSym0 m) n
     instance PMyOrd NatFoo where
-      type Mycompare a a = Mycompare_0123456789876543210 a a
+      type Mycompare a a = Mycompare_Singletons_Classes2_1 a a
     data SNatFoo :: NatFoo -> Type
       where
         SZeroFoo :: SNatFoo (ZeroFoo :: NatFoo)

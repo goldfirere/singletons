@@ -10,57 +10,53 @@ Singletons/T190.hs:0:0:: Splicing declarations
     type TSym0 :: T
     type family TSym0 :: T where
       TSym0 = T
-    type TFHelper_0123456789876543210 :: T -> T -> Bool
-    type family TFHelper_0123456789876543210 (a :: T) (a :: T) :: Bool where
-      TFHelper_0123456789876543210 T T = TrueSym0
+    type TFHelper_T190_1 :: T -> T -> Bool
+    type family TFHelper_T190_1 (a :: T) (a :: T) :: Bool where
+      TFHelper_T190_1 T T = TrueSym0
     instance PEq T where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: T -> T -> Ordering
-    type family Compare_0123456789876543210 (a :: T) (a :: T) :: Ordering where
-      Compare_0123456789876543210 T T = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      type (==) a a = TFHelper_T190_1 a a
+    type Compare_T190_4 :: T -> T -> Ordering
+    type family Compare_T190_4 (a :: T) (a :: T) :: Ordering where
+      Compare_T190_4 T T = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
     instance POrd T where
-      type Compare a a = Compare_0123456789876543210 a a
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = TSym0
-      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+      type Compare a a = Compare_T190_4 a a
+    type family LamCases_T190_9 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T190_10 where
+      LamCases_T190_9 n 'True = TSym0
+      LamCases_T190_9 n 'False = Apply ErrorSym0 "toEnum: bad argument"
+    data LamCases_T190_9Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T190_10
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_T190_9Sym0KindInference :: SameKind (Apply (LamCases_T190_9Sym0 n0) arg) (LamCases_T190_9Sym1 n0 arg) =>
+                                            LamCases_T190_9Sym0 n0 a_T190_10
+    type instance Apply @_ @_ (LamCases_T190_9Sym0 n0) a_T190_10 = LamCases_T190_9 n0 a_T190_10
+    instance SuppressUnusedWarnings (LamCases_T190_9Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> T
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: T where
-      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type FromEnum_0123456789876543210 :: T
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: T) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 T = FromInteger 0
+        = snd ((,) LamCases_T190_9Sym0KindInference ())
+    type family LamCases_T190_9Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_T190_10 where
+      LamCases_T190_9Sym1 n0 a_T190_10 = LamCases_T190_9 n0 a_T190_10
+    type ToEnum_T190_7 :: GHC.Internal.Bignum.Natural.Natural -> T
+    type family ToEnum_T190_7 (a :: GHC.Internal.Bignum.Natural.Natural) :: T where
+      ToEnum_T190_7 n = Apply (LamCases_T190_9Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type FromEnum_T190_11 :: T -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_T190_11 (a :: T) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_T190_11 T = FromInteger 0
     instance PEnum T where
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
-    type MinBound_0123456789876543210 :: T
-    type family MinBound_0123456789876543210 :: T where
-      MinBound_0123456789876543210 = TSym0
-    type MaxBound_0123456789876543210 :: T
-    type family MaxBound_0123456789876543210 :: T where
-      MaxBound_0123456789876543210 = TSym0
+      type ToEnum a = ToEnum_T190_7 a
+      type FromEnum a = FromEnum_T190_11 a
+    type MinBound_T190_13 :: T
+    type family MinBound_T190_13 :: T where
+      MinBound_T190_13 = TSym0
+    type MaxBound_T190_14 :: T
+    type family MaxBound_T190_14 :: T where
+      MaxBound_T190_14 = TSym0
     instance PBounded T where
-      type MinBound = MinBound_0123456789876543210
-      type MaxBound = MaxBound_0123456789876543210
-    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                          -> T
-                                             -> GHC.Internal.Types.Symbol
-                                                -> GHC.Internal.Types.Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: T) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
-      ShowsPrec_0123456789876543210 _ T a_0123456789876543210 = Apply (Apply ShowStringSym0 "T") a_0123456789876543210
+      type MinBound = MinBound_T190_13
+      type MaxBound = MaxBound_T190_14
+    type ShowsPrec_T190_15 :: GHC.Internal.Bignum.Natural.Natural
+                              -> T -> GHC.Internal.Types.Symbol -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_T190_15 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: T) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_T190_15 _ T a_T190_16 = Apply (Apply ShowStringSym0 "T") a_T190_16
     instance PShow T where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_T190_15 a a a
     data ST :: T -> Type where ST :: ST (T :: T)
     type instance Sing @T = ST
     instance SingKind T where
@@ -80,7 +76,7 @@ Singletons/T190.hs:0:0:: Splicing declarations
       sToEnum (sN :: Sing n)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 n)
+               @(LamCases_T190_9Sym0 n)
                (\cases
                   STrue -> ST
                   SFalse
@@ -95,14 +91,11 @@ Singletons/T190.hs:0:0:: Splicing declarations
       sMinBound = ST
       sMaxBound = ST
     instance SShow T where
-      sShowsPrec
-        _
-        ST
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sShowsPrec _ ST (sA_T190_16 :: Sing a_T190_16)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "T"))
-            sA_0123456789876543210
+            sA_T190_16
     instance SDecide T where
       (%~) ST ST = Proved Refl
     instance Eq (ST (z :: T)) where

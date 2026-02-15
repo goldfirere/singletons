@@ -12,62 +12,62 @@ Promote/Constructors.hs:(0,0)-(0,0): Splicing declarations
     data (:+@#@$) :: (~>) Foo ((~>) Foo Foo)
       where
         (::+@#@$###) :: SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
-                        (:+@#@$) a0123456789876543210
-    type instance Apply @Foo @((~>) Foo Foo) (:+@#@$) a0123456789876543210 = (:+@#@$$) a0123456789876543210
+                        (:+@#@$) a_Promote_Constructors_0
+    type instance Apply @Foo @((~>) Foo Foo) (:+@#@$) a_Promote_Constructors_0 = (:+@#@$$) a_Promote_Constructors_0
     instance SuppressUnusedWarnings (:+@#@$) where
       suppressUnusedWarnings = snd ((,) (::+@#@$###) ())
     type (:+@#@$$) :: Foo -> (~>) Foo Foo
-    data (:+@#@$$) (a0123456789876543210 :: Foo) :: (~>) Foo Foo
+    data (:+@#@$$) (a_Promote_Constructors_0 :: Foo) :: (~>) Foo Foo
       where
-        (::+@#@$$###) :: SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
-                         (:+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @Foo @Foo ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
+        (::+@#@$$###) :: SameKind (Apply ((:+@#@$$) a_Promote_Constructors_0) arg) ((:+@#@$$$) a_Promote_Constructors_0 arg) =>
+                         (:+@#@$$) a_Promote_Constructors_0 a_Promote_Constructors_1
+    type instance Apply @Foo @Foo ((:+@#@$$) a_Promote_Constructors_0) a_Promote_Constructors_1 = (:+) a_Promote_Constructors_0 a_Promote_Constructors_1
+    instance SuppressUnusedWarnings ((:+@#@$$) a_Promote_Constructors_0) where
       suppressUnusedWarnings = snd ((,) (::+@#@$$###) ())
     type (:+@#@$$$) :: Foo -> Foo -> Foo
-    type family (:+@#@$$$) (a0123456789876543210 :: Foo) (a0123456789876543210 :: Foo) :: Foo where
-      (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
+    type family (:+@#@$$$) (a_Promote_Constructors_0 :: Foo) (a_Promote_Constructors_1 :: Foo) :: Foo where
+      (:+@#@$$$) a_Promote_Constructors_0 a_Promote_Constructors_1 = (:+) a_Promote_Constructors_0 a_Promote_Constructors_1
     type BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
     data BarSym0 :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar))))
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @Bar @((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+                                BarSym0 a_Promote_Constructors_2
+    type instance Apply @Bar @((~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))) BarSym0 a_Promote_Constructors_2 = BarSym1 a_Promote_Constructors_2
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bar
                     -> (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
-    data BarSym1 (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
+    data BarSym1 (a_Promote_Constructors_2 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Bar ((~>) Foo Bar)))
       where
-        BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
-                                BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Bar @((~>) Bar ((~>) Bar ((~>) Foo Bar))) (BarSym1 a0123456789876543210) a0123456789876543210 = BarSym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
+        BarSym1KindInference :: SameKind (Apply (BarSym1 a_Promote_Constructors_2) arg) (BarSym2 a_Promote_Constructors_2 arg) =>
+                                BarSym1 a_Promote_Constructors_2 a_Promote_Constructors_3
+    type instance Apply @Bar @((~>) Bar ((~>) Bar ((~>) Foo Bar))) (BarSym1 a_Promote_Constructors_2) a_Promote_Constructors_3 = BarSym2 a_Promote_Constructors_2 a_Promote_Constructors_3
+    instance SuppressUnusedWarnings (BarSym1 a_Promote_Constructors_2) where
       suppressUnusedWarnings = snd ((,) BarSym1KindInference ())
     type BarSym2 :: Bar -> Bar -> (~>) Bar ((~>) Bar ((~>) Foo Bar))
-    data BarSym2 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Foo Bar))
+    data BarSym2 (a_Promote_Constructors_2 :: Bar) (a_Promote_Constructors_3 :: Bar) :: (~>) Bar ((~>) Bar ((~>) Foo Bar))
       where
-        BarSym2KindInference :: SameKind (Apply (BarSym2 a0123456789876543210 a0123456789876543210) arg) (BarSym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                BarSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @Bar @((~>) Bar ((~>) Foo Bar)) (BarSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym2 a0123456789876543210 a0123456789876543210) where
+        BarSym2KindInference :: SameKind (Apply (BarSym2 a_Promote_Constructors_2 a_Promote_Constructors_3) arg) (BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 arg) =>
+                                BarSym2 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4
+    type instance Apply @Bar @((~>) Bar ((~>) Foo Bar)) (BarSym2 a_Promote_Constructors_2 a_Promote_Constructors_3) a_Promote_Constructors_4 = BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4
+    instance SuppressUnusedWarnings (BarSym2 a_Promote_Constructors_2 a_Promote_Constructors_3) where
       suppressUnusedWarnings = snd ((,) BarSym2KindInference ())
     type BarSym3 :: Bar -> Bar -> Bar -> (~>) Bar ((~>) Foo Bar)
-    data BarSym3 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Bar ((~>) Foo Bar)
+    data BarSym3 (a_Promote_Constructors_2 :: Bar) (a_Promote_Constructors_3 :: Bar) (a_Promote_Constructors_4 :: Bar) :: (~>) Bar ((~>) Foo Bar)
       where
-        BarSym3KindInference :: SameKind (Apply (BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
-                                BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @Bar @((~>) Foo Bar) (BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
+        BarSym3KindInference :: SameKind (Apply (BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4) arg) (BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 arg) =>
+                                BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5
+    type instance Apply @Bar @((~>) Foo Bar) (BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4) a_Promote_Constructors_5 = BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5
+    instance SuppressUnusedWarnings (BarSym3 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4) where
       suppressUnusedWarnings = snd ((,) BarSym3KindInference ())
     type BarSym4 :: Bar -> Bar -> Bar -> Bar -> (~>) Foo Bar
-    data BarSym4 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) :: (~>) Foo Bar
+    data BarSym4 (a_Promote_Constructors_2 :: Bar) (a_Promote_Constructors_3 :: Bar) (a_Promote_Constructors_4 :: Bar) (a_Promote_Constructors_5 :: Bar) :: (~>) Foo Bar
       where
-        BarSym4KindInference :: SameKind (Apply (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (BarSym5 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
-                                BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @Foo @Bar (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
+        BarSym4KindInference :: SameKind (Apply (BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5) arg) (BarSym5 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5 arg) =>
+                                BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5 a_Promote_Constructors_6
+    type instance Apply @Foo @Bar (BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5) a_Promote_Constructors_6 = Bar a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5 a_Promote_Constructors_6
+    instance SuppressUnusedWarnings (BarSym4 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5) where
       suppressUnusedWarnings = snd ((,) BarSym4KindInference ())
     type BarSym5 :: Bar -> Bar -> Bar -> Bar -> Foo -> Bar
-    type family BarSym5 (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Bar) (a0123456789876543210 :: Foo) :: Bar where
-      BarSym5 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type family BarSym5 (a_Promote_Constructors_2 :: Bar) (a_Promote_Constructors_3 :: Bar) (a_Promote_Constructors_4 :: Bar) (a_Promote_Constructors_5 :: Bar) (a_Promote_Constructors_6 :: Foo) :: Bar where
+      BarSym5 a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5 a_Promote_Constructors_6 = Bar a_Promote_Constructors_2 a_Promote_Constructors_3 a_Promote_Constructors_4 a_Promote_Constructors_5 a_Promote_Constructors_6

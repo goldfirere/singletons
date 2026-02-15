@@ -7,33 +7,30 @@ Singletons/T172.hs:(0,0)-(0,0): Splicing declarations
     data ($>@#@$) :: (~>) Natural ((~>) Natural Natural)
       where
         (:$>@#@$###) :: SameKind (Apply ($>@#@$) arg) (($>@#@$$) arg) =>
-                        ($>@#@$) a0123456789876543210
-    type instance Apply @Natural @((~>) Natural Natural) ($>@#@$) a0123456789876543210 = ($>@#@$$) a0123456789876543210
+                        ($>@#@$) a_T172_2
+    type instance Apply @Natural @((~>) Natural Natural) ($>@#@$) a_T172_2 = ($>@#@$$) a_T172_2
     instance SuppressUnusedWarnings ($>@#@$) where
       suppressUnusedWarnings = snd ((,) (:$>@#@$###) ())
     type ($>@#@$$) :: Natural -> (~>) Natural Natural
-    data ($>@#@$$) (a0123456789876543210 :: Natural) :: (~>) Natural Natural
+    data ($>@#@$$) (a_T172_2 :: Natural) :: (~>) Natural Natural
       where
-        (:$>@#@$$###) :: SameKind (Apply (($>@#@$$) a0123456789876543210) arg) (($>@#@$$$) a0123456789876543210 arg) =>
-                         ($>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @Natural @Natural (($>@#@$$) a0123456789876543210) a0123456789876543210 = ($>) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (($>@#@$$) a0123456789876543210) where
+        (:$>@#@$$###) :: SameKind (Apply (($>@#@$$) a_T172_2) arg) (($>@#@$$$) a_T172_2 arg) =>
+                         ($>@#@$$) a_T172_2 a_T172_3
+    type instance Apply @Natural @Natural (($>@#@$$) a_T172_2) a_T172_3 = ($>) a_T172_2 a_T172_3
+    instance SuppressUnusedWarnings (($>@#@$$) a_T172_2) where
       suppressUnusedWarnings = snd ((,) (:$>@#@$$###) ())
     type ($>@#@$$$) :: Natural -> Natural -> Natural
-    type family ($>@#@$$$) (a0123456789876543210 :: Natural) (a0123456789876543210 :: Natural) :: Natural where
-      ($>@#@$$$) a0123456789876543210 a0123456789876543210 = ($>) a0123456789876543210 a0123456789876543210
+    type family ($>@#@$$$) (a_T172_2 :: Natural) (a_T172_3 :: Natural) :: Natural where
+      ($>@#@$$$) a_T172_2 a_T172_3 = ($>) a_T172_2 a_T172_3
     type ($>) :: Natural -> Natural -> Natural
     type family ($>) (a :: Natural) (a :: Natural) :: Natural where
-      ($>) a_0123456789876543210 a_0123456789876543210 = Apply (Apply (+@#@$) a_0123456789876543210) a_0123456789876543210
+      ($>) a_T172_0 a_T172_1 = Apply (Apply (+@#@$) a_T172_0) a_T172_1
     (%$>) ::
       (forall (t :: Natural) (t :: Natural).
        Sing t -> Sing t -> Sing (($>) t t :: Natural) :: Type)
-    (%$>)
-      (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      (sA_0123456789876543210 :: Sing a_0123456789876543210)
+    (%$>) (sA_T172_0 :: Sing a_T172_0) (sA_T172_1 :: Sing a_T172_1)
       = applySing
-          (applySing (singFun2 @(+@#@$) (%+)) sA_0123456789876543210)
-          sA_0123456789876543210
+          (applySing (singFun2 @(+@#@$) (%+)) sA_T172_0) sA_T172_1
     instance SingI (($>@#@$) :: (~>) Natural ((~>) Natural Natural)) where
       sing = singFun2 @($>@#@$) (%$>)
     instance SingI d =>

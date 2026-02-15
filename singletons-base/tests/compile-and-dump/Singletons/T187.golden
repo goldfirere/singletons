@@ -8,16 +8,16 @@ Singletons/T187.hs:(0,0)-(0,0): Splicing declarations
     data Empty
     deriving instance Eq Empty
     deriving instance Ord Empty
-    type TFHelper_0123456789876543210 :: Empty -> Empty -> Bool
-    type family TFHelper_0123456789876543210 (a :: Empty) (a :: Empty) :: Bool where
-      TFHelper_0123456789876543210 _ _ = TrueSym0
+    type TFHelper_T187_0 :: Empty -> Empty -> Bool
+    type family TFHelper_T187_0 (a :: Empty) (a :: Empty) :: Bool where
+      TFHelper_T187_0 _ _ = TrueSym0
     instance PEq Empty where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: Empty -> Empty -> Ordering
-    type family Compare_0123456789876543210 (a :: Empty) (a :: Empty) :: Ordering where
-      Compare_0123456789876543210 _ _ = EQSym0
+      type (==) a a = TFHelper_T187_0 a a
+    type Compare_T187_3 :: Empty -> Empty -> Ordering
+    type family Compare_T187_3 (a :: Empty) (a :: Empty) :: Ordering where
+      Compare_T187_3 _ _ = EQSym0
     instance POrd Empty where
-      type Compare a a = Compare_0123456789876543210 a a
+      type Compare a a = Compare_T187_3 a a
     data SEmpty :: Empty -> Type
     type instance Sing @Empty = SEmpty
     instance SingKind Empty where

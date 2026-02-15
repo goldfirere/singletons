@@ -10,13 +10,13 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
     data MkFooSym0 :: (~>) Bool Foo
       where
         MkFooSym0KindInference :: SameKind (Apply MkFooSym0 arg) (MkFooSym1 arg) =>
-                                  MkFooSym0 a0123456789876543210
-    type instance Apply @Bool @Foo MkFooSym0 a0123456789876543210 = MkFoo a0123456789876543210
+                                  MkFooSym0 a_T563_0
+    type instance Apply @Bool @Foo MkFooSym0 a_T563_0 = MkFoo a_T563_0
     instance SuppressUnusedWarnings MkFooSym0 where
       suppressUnusedWarnings = snd ((,) MkFooSym0KindInference ())
     type MkFooSym1 :: Bool -> Foo
-    type family MkFooSym1 (a0123456789876543210 :: Bool) :: Foo where
-      MkFooSym1 a0123456789876543210 = MkFoo a0123456789876543210
+    type family MkFooSym1 (a_T563_0 :: Bool) :: Foo where
+      MkFooSym1 a_T563_0 = MkFoo a_T563_0
     data SFoo :: Foo -> Type
       where
         SMkFoo :: forall (n :: Bool). (Sing n) -> SFoo (MkFoo n :: Foo)
@@ -42,20 +42,19 @@ Singletons/T563.hs:(0,0)-(0,0): Splicing declarations
     data UnFoo'Sym0 :: (~>) Foo Bool
       where
         UnFoo'Sym0KindInference :: SameKind (Apply UnFoo'Sym0 arg) (UnFoo'Sym1 arg) =>
-                                   UnFoo'Sym0 a0123456789876543210
-    type instance Apply @Foo @Bool UnFoo'Sym0 a0123456789876543210 = UnFoo' a0123456789876543210
+                                   UnFoo'Sym0 a_T563_2
+    type instance Apply @Foo @Bool UnFoo'Sym0 a_T563_2 = UnFoo' a_T563_2
     instance SuppressUnusedWarnings UnFoo'Sym0 where
       suppressUnusedWarnings = snd ((,) UnFoo'Sym0KindInference ())
     type UnFoo'Sym1 :: Foo -> Bool
-    type family UnFoo'Sym1 (a0123456789876543210 :: Foo) :: Bool where
-      UnFoo'Sym1 a0123456789876543210 = UnFoo' a0123456789876543210
+    type family UnFoo'Sym1 (a_T563_2 :: Foo) :: Bool where
+      UnFoo'Sym1 a_T563_2 = UnFoo' a_T563_2
     type UnFoo' :: Foo -> Bool
     type family UnFoo' (a :: Foo) :: Bool where
-      UnFoo' a_0123456789876543210 = Apply UnFooSym0 a_0123456789876543210
+      UnFoo' a_T563_1 = Apply UnFooSym0 a_T563_1
     sUnFoo' ::
       (forall (t :: Foo). Sing t -> Sing (UnFoo' t :: Bool) :: Type)
-    sUnFoo' (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = applySing sUnFoo sA_0123456789876543210
+    sUnFoo' (sA_T563_1 :: Sing a_T563_1) = applySing sUnFoo sA_T563_1
     instance SingI (UnFoo'Sym0 :: (~>) Foo Bool) where
       sing = singFun1 @UnFoo'Sym0 sUnFoo'
 Singletons/T563.hs:0:0: error: [GHC-76037]

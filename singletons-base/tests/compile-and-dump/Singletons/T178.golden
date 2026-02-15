@@ -31,40 +31,39 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
     type Empty :: [(Symbol, Occ)]
     type family Empty :: [(Symbol, Occ)] where
       Empty = NilSym0
-    type TFHelper_0123456789876543210 :: Occ -> Occ -> Bool
-    type family TFHelper_0123456789876543210 (a :: Occ) (a :: Occ) :: Bool where
-      TFHelper_0123456789876543210 Str Str = TrueSym0
-      TFHelper_0123456789876543210 Str Opt = FalseSym0
-      TFHelper_0123456789876543210 Str Many = FalseSym0
-      TFHelper_0123456789876543210 Opt Str = FalseSym0
-      TFHelper_0123456789876543210 Opt Opt = TrueSym0
-      TFHelper_0123456789876543210 Opt Many = FalseSym0
-      TFHelper_0123456789876543210 Many Str = FalseSym0
-      TFHelper_0123456789876543210 Many Opt = FalseSym0
-      TFHelper_0123456789876543210 Many Many = TrueSym0
+    type TFHelper_T178_1 :: Occ -> Occ -> Bool
+    type family TFHelper_T178_1 (a :: Occ) (a :: Occ) :: Bool where
+      TFHelper_T178_1 Str Str = TrueSym0
+      TFHelper_T178_1 Str Opt = FalseSym0
+      TFHelper_T178_1 Str Many = FalseSym0
+      TFHelper_T178_1 Opt Str = FalseSym0
+      TFHelper_T178_1 Opt Opt = TrueSym0
+      TFHelper_T178_1 Opt Many = FalseSym0
+      TFHelper_T178_1 Many Str = FalseSym0
+      TFHelper_T178_1 Many Opt = FalseSym0
+      TFHelper_T178_1 Many Many = TrueSym0
     instance PEq Occ where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: Occ -> Occ -> Ordering
-    type family Compare_0123456789876543210 (a :: Occ) (a :: Occ) :: Ordering where
-      Compare_0123456789876543210 Str Str = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 Opt Opt = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 Many Many = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 Str Opt = LTSym0
-      Compare_0123456789876543210 Str Many = LTSym0
-      Compare_0123456789876543210 Opt Str = GTSym0
-      Compare_0123456789876543210 Opt Many = LTSym0
-      Compare_0123456789876543210 Many Str = GTSym0
-      Compare_0123456789876543210 Many Opt = GTSym0
+      type (==) a a = TFHelper_T178_1 a a
+    type Compare_T178_4 :: Occ -> Occ -> Ordering
+    type family Compare_T178_4 (a :: Occ) (a :: Occ) :: Ordering where
+      Compare_T178_4 Str Str = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_T178_4 Opt Opt = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_T178_4 Many Many = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_T178_4 Str Opt = LTSym0
+      Compare_T178_4 Str Many = LTSym0
+      Compare_T178_4 Opt Str = GTSym0
+      Compare_T178_4 Opt Many = LTSym0
+      Compare_T178_4 Many Str = GTSym0
+      Compare_T178_4 Many Opt = GTSym0
     instance POrd Occ where
-      type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: Natural
-                                          -> Occ -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: Natural) (a :: Occ) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 _ Str a_0123456789876543210 = Apply (Apply ShowStringSym0 "Str") a_0123456789876543210
-      ShowsPrec_0123456789876543210 _ Opt a_0123456789876543210 = Apply (Apply ShowStringSym0 "Opt") a_0123456789876543210
-      ShowsPrec_0123456789876543210 _ Many a_0123456789876543210 = Apply (Apply ShowStringSym0 "Many") a_0123456789876543210
+      type Compare a a = Compare_T178_4 a a
+    type ShowsPrec_T178_7 :: Natural -> Occ -> Symbol -> Symbol
+    type family ShowsPrec_T178_7 (a :: Natural) (a :: Occ) (a :: Symbol) :: Symbol where
+      ShowsPrec_T178_7 _ Str a_T178_8 = Apply (Apply ShowStringSym0 "Str") a_T178_8
+      ShowsPrec_T178_7 _ Opt a_T178_9 = Apply (Apply ShowStringSym0 "Opt") a_T178_9
+      ShowsPrec_T178_7 _ Many a_T178_10 = Apply (Apply ShowStringSym0 "Many") a_T178_10
     instance PShow Occ where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_T178_7 a a a
     sEmpty :: (Sing (Empty :: [(Symbol, Occ)]) :: Type)
     sEmpty = SNil
     data SOcc :: Occ -> Type
@@ -117,30 +116,21 @@ Singletons/T178.hs:(0,0)-(0,0): Splicing declarations
       sCompare SMany SStr = SGT
       sCompare SMany SOpt = SGT
     instance SShow Occ where
-      sShowsPrec
-        _
-        SStr
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sShowsPrec _ SStr (sA_T178_8 :: Sing a_T178_8)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Str"))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SOpt
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            sA_T178_8
+      sShowsPrec _ SOpt (sA_T178_9 :: Sing a_T178_9)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Opt"))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SMany
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            sA_T178_9
+      sShowsPrec _ SMany (sA_T178_10 :: Sing a_T178_10)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Many"))
-            sA_0123456789876543210
+            sA_T178_10
     instance SDecide Occ where
       (%~) SStr SStr = Proved Refl
       (%~) SStr SOpt = Disproved (\case)

@@ -5,13 +5,13 @@ Singletons/T445.hs:0:0:: Splicing declarations
     data LitSym0 :: (~>) Natural Nat
       where
         LitSym0KindInference :: SameKind (Apply LitSym0 arg) (LitSym1 arg) =>
-                                LitSym0 a0123456789876543210
-    type instance Apply @Natural @Nat LitSym0 a0123456789876543210 = Lit a0123456789876543210
+                                LitSym0 a_T445_0
+    type instance Apply @Natural @Nat LitSym0 a_T445_0 = Lit a_T445_0
     instance SuppressUnusedWarnings LitSym0 where
       suppressUnusedWarnings = snd ((,) LitSym0KindInference ())
     type LitSym1 :: Natural -> Nat
-    type family LitSym1 (a0123456789876543210 :: Natural) :: Nat where
-      LitSym1 a0123456789876543210 = Lit a0123456789876543210
+    type family LitSym1 (a_T445_0 :: Natural) :: Nat where
+      LitSym1 a_T445_0 = Lit a_T445_0
 Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
     promoteOnly
       [d| evenb :: Nat -> Bool
@@ -21,44 +21,44 @@ Singletons/T445.hs:(0,0)-(0,0): Splicing declarations
           filterEvenGt7 :: [Nat] -> [Nat]
           filterEvenGt7 = filter (\ x -> evenb x && x > lit 7) |]
   ======>
-    type family LamCases_0123456789876543210 (a_01234567898765432100123456789876543210 :: [Nat]) a_0123456789876543210 where
-      LamCases_0123456789876543210 a_0123456789876543210 x = Apply (Apply (&&@#@$) (Apply EvenbSym0 x)) (Apply (Apply (>@#@$) x) (Apply LitSym0 (FromInteger 7)))
-    data LamCases_0123456789876543210Sym0 (a_01234567898765432100123456789876543210 :: [Nat]) a_01234567898765432100123456789876543210
+    type family LamCases_T445_3 (a_T445_10 :: [Nat]) a_T445_4 where
+      LamCases_T445_3 a_T445_1 x = Apply (Apply (&&@#@$) (Apply EvenbSym0 x)) (Apply (Apply (>@#@$) x) (Apply LitSym0 (FromInteger 7)))
+    data LamCases_T445_3Sym0 (a_T445_10 :: [Nat]) a_T445_4
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_T445_3Sym0KindInference :: SameKind (Apply (LamCases_T445_3Sym0 a_T445_10) arg) (LamCases_T445_3Sym1 a_T445_10 arg) =>
+                                            LamCases_T445_3Sym0 a_T445_10 a_T445_4
+    type instance Apply @_ @_ (LamCases_T445_3Sym0 a_T445_10) a_T445_4 = LamCases_T445_3 a_T445_10 a_T445_4
+    instance SuppressUnusedWarnings (LamCases_T445_3Sym0 a_T445_10) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a_01234567898765432100123456789876543210 :: [Nat]) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_T445_3Sym0KindInference ())
+    type family LamCases_T445_3Sym1 (a_T445_10 :: [Nat]) a_T445_4 where
+      LamCases_T445_3Sym1 a_T445_10 a_T445_4 = LamCases_T445_3 a_T445_10 a_T445_4
     type FilterEvenGt7Sym0 :: (~>) [Nat] [Nat]
     data FilterEvenGt7Sym0 :: (~>) [Nat] [Nat]
       where
         FilterEvenGt7Sym0KindInference :: SameKind (Apply FilterEvenGt7Sym0 arg) (FilterEvenGt7Sym1 arg) =>
-                                          FilterEvenGt7Sym0 a0123456789876543210
-    type instance Apply @[Nat] @[Nat] FilterEvenGt7Sym0 a0123456789876543210 = FilterEvenGt7 a0123456789876543210
+                                          FilterEvenGt7Sym0 a_T445_2
+    type instance Apply @[Nat] @[Nat] FilterEvenGt7Sym0 a_T445_2 = FilterEvenGt7 a_T445_2
     instance SuppressUnusedWarnings FilterEvenGt7Sym0 where
       suppressUnusedWarnings
         = snd ((,) FilterEvenGt7Sym0KindInference ())
     type FilterEvenGt7Sym1 :: [Nat] -> [Nat]
-    type family FilterEvenGt7Sym1 (a0123456789876543210 :: [Nat]) :: [Nat] where
-      FilterEvenGt7Sym1 a0123456789876543210 = FilterEvenGt7 a0123456789876543210
+    type family FilterEvenGt7Sym1 (a_T445_2 :: [Nat]) :: [Nat] where
+      FilterEvenGt7Sym1 a_T445_2 = FilterEvenGt7 a_T445_2
     type EvenbSym0 :: (~>) Nat Bool
     data EvenbSym0 :: (~>) Nat Bool
       where
         EvenbSym0KindInference :: SameKind (Apply EvenbSym0 arg) (EvenbSym1 arg) =>
-                                  EvenbSym0 a0123456789876543210
-    type instance Apply @Nat @Bool EvenbSym0 a0123456789876543210 = Evenb a0123456789876543210
+                                  EvenbSym0 a_T445_5
+    type instance Apply @Nat @Bool EvenbSym0 a_T445_5 = Evenb a_T445_5
     instance SuppressUnusedWarnings EvenbSym0 where
       suppressUnusedWarnings = snd ((,) EvenbSym0KindInference ())
     type EvenbSym1 :: Nat -> Bool
-    type family EvenbSym1 (a0123456789876543210 :: Nat) :: Bool where
-      EvenbSym1 a0123456789876543210 = Evenb a0123456789876543210
+    type family EvenbSym1 (a_T445_5 :: Nat) :: Bool where
+      EvenbSym1 a_T445_5 = Evenb a_T445_5
     type FilterEvenGt7 :: [Nat] -> [Nat]
     type family FilterEvenGt7 (a :: [Nat]) :: [Nat] where
-      FilterEvenGt7 a_0123456789876543210 = Apply (Apply FilterSym0 (LamCases_0123456789876543210Sym0 a_0123456789876543210)) a_0123456789876543210
+      FilterEvenGt7 a_T445_1 = Apply (Apply FilterSym0 (LamCases_T445_3Sym0 a_T445_1)) a_T445_1
     type Evenb :: Nat -> Bool
     type family Evenb (a :: Nat) :: Bool where
       Evenb 'Zero = TrueSym0

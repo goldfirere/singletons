@@ -22,89 +22,89 @@ Singletons/T200.hs:(0,0)-(0,0): Splicing declarations
     data (:$$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (::$$:@#@$###) :: SameKind (Apply (:$$:@#@$) arg) ((:$$:@#@$$) arg) =>
-                          (:$$:@#@$) a0123456789876543210
-    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (:$$:@#@$) a0123456789876543210 = (:$$:@#@$$) a0123456789876543210
+                          (:$$:@#@$) a_T200_0
+    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (:$$:@#@$) a_T200_0 = (:$$:@#@$$) a_T200_0
     instance SuppressUnusedWarnings (:$$:@#@$) where
       suppressUnusedWarnings = snd ((,) (::$$:@#@$###) ())
     type (:$$:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
-    data (:$$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
+    data (:$$:@#@$$) (a_T200_0 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (::$$:@#@$$###) :: SameKind (Apply ((:$$:@#@$$) a0123456789876543210) arg) ((:$$:@#@$$$) a0123456789876543210 arg) =>
-                           (:$$:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @ErrorMessage @ErrorMessage ((:$$:@#@$$) a0123456789876543210) a0123456789876543210 = (:$$:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:$$:@#@$$) a0123456789876543210) where
+        (::$$:@#@$$###) :: SameKind (Apply ((:$$:@#@$$) a_T200_0) arg) ((:$$:@#@$$$) a_T200_0 arg) =>
+                           (:$$:@#@$$) a_T200_0 a_T200_1
+    type instance Apply @ErrorMessage @ErrorMessage ((:$$:@#@$$) a_T200_0) a_T200_1 = (:$$:) a_T200_0 a_T200_1
+    instance SuppressUnusedWarnings ((:$$:@#@$$) a_T200_0) where
       suppressUnusedWarnings = snd ((,) (::$$:@#@$$###) ())
     type (:$$:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
-    type family (:$$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
-      (:$$:@#@$$$) a0123456789876543210 a0123456789876543210 = (:$$:) a0123456789876543210 a0123456789876543210
+    type family (:$$:@#@$$$) (a_T200_0 :: ErrorMessage) (a_T200_1 :: ErrorMessage) :: ErrorMessage where
+      (:$$:@#@$$$) a_T200_0 a_T200_1 = (:$$:) a_T200_0 a_T200_1
     type (:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
     data (:<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (::<>:@#@$###) :: SameKind (Apply (:<>:@#@$) arg) ((:<>:@#@$$) arg) =>
-                          (:<>:@#@$) a0123456789876543210
-    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (:<>:@#@$) a0123456789876543210 = (:<>:@#@$$) a0123456789876543210
+                          (:<>:@#@$) a_T200_2
+    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (:<>:@#@$) a_T200_2 = (:<>:@#@$$) a_T200_2
     instance SuppressUnusedWarnings (:<>:@#@$) where
       suppressUnusedWarnings = snd ((,) (::<>:@#@$###) ())
     type (:<>:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
-    data (:<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
+    data (:<>:@#@$$) (a_T200_2 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (::<>:@#@$$###) :: SameKind (Apply ((:<>:@#@$$) a0123456789876543210) arg) ((:<>:@#@$$$) a0123456789876543210 arg) =>
-                           (:<>:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @ErrorMessage @ErrorMessage ((:<>:@#@$$) a0123456789876543210) a0123456789876543210 = (:<>:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:<>:@#@$$) a0123456789876543210) where
+        (::<>:@#@$$###) :: SameKind (Apply ((:<>:@#@$$) a_T200_2) arg) ((:<>:@#@$$$) a_T200_2 arg) =>
+                           (:<>:@#@$$) a_T200_2 a_T200_3
+    type instance Apply @ErrorMessage @ErrorMessage ((:<>:@#@$$) a_T200_2) a_T200_3 = (:<>:) a_T200_2 a_T200_3
+    instance SuppressUnusedWarnings ((:<>:@#@$$) a_T200_2) where
       suppressUnusedWarnings = snd ((,) (::<>:@#@$$###) ())
     type (:<>:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
-    type family (:<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
-      (:<>:@#@$$$) a0123456789876543210 a0123456789876543210 = (:<>:) a0123456789876543210 a0123456789876543210
+    type family (:<>:@#@$$$) (a_T200_2 :: ErrorMessage) (a_T200_3 :: ErrorMessage) :: ErrorMessage where
+      (:<>:@#@$$$) a_T200_2 a_T200_3 = (:<>:) a_T200_2 a_T200_3
     type EMSym0 :: (~>) [Bool] ErrorMessage
     data EMSym0 :: (~>) [Bool] ErrorMessage
       where
         EMSym0KindInference :: SameKind (Apply EMSym0 arg) (EMSym1 arg) =>
-                               EMSym0 a0123456789876543210
-    type instance Apply @[Bool] @ErrorMessage EMSym0 a0123456789876543210 = EM a0123456789876543210
+                               EMSym0 a_T200_4
+    type instance Apply @[Bool] @ErrorMessage EMSym0 a_T200_4 = EM a_T200_4
     instance SuppressUnusedWarnings EMSym0 where
       suppressUnusedWarnings = snd ((,) EMSym0KindInference ())
     type EMSym1 :: [Bool] -> ErrorMessage
-    type family EMSym1 (a0123456789876543210 :: [Bool]) :: ErrorMessage where
-      EMSym1 a0123456789876543210 = EM a0123456789876543210
+    type family EMSym1 (a_T200_4 :: [Bool]) :: ErrorMessage where
+      EMSym1 a_T200_4 = EM a_T200_4
     type (<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
     data (<>:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (:<>:@#@$###) :: SameKind (Apply (<>:@#@$) arg) ((<>:@#@$$) arg) =>
-                         (<>:@#@$) a0123456789876543210
-    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (<>:@#@$) a0123456789876543210 = (<>:@#@$$) a0123456789876543210
+                         (<>:@#@$) a_T200_5
+    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) (<>:@#@$) a_T200_5 = (<>:@#@$$) a_T200_5
     instance SuppressUnusedWarnings (<>:@#@$) where
       suppressUnusedWarnings = snd ((,) (:<>:@#@$###) ())
     type (<>:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
-    data (<>:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
+    data (<>:@#@$$) (a_T200_5 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (:<>:@#@$$###) :: SameKind (Apply ((<>:@#@$$) a0123456789876543210) arg) ((<>:@#@$$$) a0123456789876543210 arg) =>
-                          (<>:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @ErrorMessage @ErrorMessage ((<>:@#@$$) a0123456789876543210) a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((<>:@#@$$) a0123456789876543210) where
+        (:<>:@#@$$###) :: SameKind (Apply ((<>:@#@$$) a_T200_5) arg) ((<>:@#@$$$) a_T200_5 arg) =>
+                          (<>:@#@$$) a_T200_5 a_T200_6
+    type instance Apply @ErrorMessage @ErrorMessage ((<>:@#@$$) a_T200_5) a_T200_6 = (<>:) a_T200_5 a_T200_6
+    instance SuppressUnusedWarnings ((<>:@#@$$) a_T200_5) where
       suppressUnusedWarnings = snd ((,) (:<>:@#@$$###) ())
     type (<>:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
-    type family (<>:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
-      (<>:@#@$$$) a0123456789876543210 a0123456789876543210 = (<>:) a0123456789876543210 a0123456789876543210
+    type family (<>:@#@$$$) (a_T200_5 :: ErrorMessage) (a_T200_6 :: ErrorMessage) :: ErrorMessage where
+      (<>:@#@$$$) a_T200_5 a_T200_6 = (<>:) a_T200_5 a_T200_6
     type ($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
     data ($$:@#@$) :: (~>) ErrorMessage ((~>) ErrorMessage ErrorMessage)
       where
         (:$$:@#@$###) :: SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
-                         ($$:@#@$) a0123456789876543210
-    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
+                         ($$:@#@$) a_T200_7
+    type instance Apply @ErrorMessage @((~>) ErrorMessage ErrorMessage) ($$:@#@$) a_T200_7 = ($$:@#@$$) a_T200_7
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings = snd ((,) (:$$:@#@$###) ())
     type ($$:@#@$$) :: ErrorMessage -> (~>) ErrorMessage ErrorMessage
-    data ($$:@#@$$) (a0123456789876543210 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
+    data ($$:@#@$$) (a_T200_7 :: ErrorMessage) :: (~>) ErrorMessage ErrorMessage
       where
-        (:$$:@#@$$###) :: SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
-                          ($$:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @ErrorMessage @ErrorMessage (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
+        (:$$:@#@$$###) :: SameKind (Apply (($$:@#@$$) a_T200_7) arg) (($$:@#@$$$) a_T200_7 arg) =>
+                          ($$:@#@$$) a_T200_7 a_T200_8
+    type instance Apply @ErrorMessage @ErrorMessage (($$:@#@$$) a_T200_7) a_T200_8 = ($$:) a_T200_7 a_T200_8
+    instance SuppressUnusedWarnings (($$:@#@$$) a_T200_7) where
       suppressUnusedWarnings = snd ((,) (:$$:@#@$$###) ())
     type ($$:@#@$$$) :: ErrorMessage -> ErrorMessage -> ErrorMessage
-    type family ($$:@#@$$$) (a0123456789876543210 :: ErrorMessage) (a0123456789876543210 :: ErrorMessage) :: ErrorMessage where
-      ($$:@#@$$$) a0123456789876543210 a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
+    type family ($$:@#@$$$) (a_T200_7 :: ErrorMessage) (a_T200_8 :: ErrorMessage) :: ErrorMessage where
+      ($$:@#@$$$) a_T200_7 a_T200_8 = ($$:) a_T200_7 a_T200_8
     type (<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
     type family (<>:) (a :: ErrorMessage) (a :: ErrorMessage) :: ErrorMessage where
       (<>:) x y = Apply (Apply (:<>:@#@$) x) y

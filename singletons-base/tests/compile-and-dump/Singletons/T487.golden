@@ -24,13 +24,13 @@ Singletons/T487.hs:(0,0)-(0,0): Splicing declarations
     data ConsExSym0 :: (~>) Char Symbol
       where
         ConsExSym0KindInference :: SameKind (Apply ConsExSym0 arg) (ConsExSym1 arg) =>
-                                   ConsExSym0 a0123456789876543210
-    type instance Apply @Char @Symbol ConsExSym0 a0123456789876543210 = ConsEx a0123456789876543210
+                                   ConsExSym0 a_T487_0
+    type instance Apply @Char @Symbol ConsExSym0 a_T487_0 = ConsEx a_T487_0
     instance SuppressUnusedWarnings ConsExSym0 where
       suppressUnusedWarnings = snd ((,) ConsExSym0KindInference ())
     type ConsExSym1 :: Char -> Symbol
-    type family ConsExSym1 (a0123456789876543210 :: Char) :: Symbol where
-      ConsExSym1 a0123456789876543210 = ConsEx a0123456789876543210
+    type family ConsExSym1 (a_T487_0 :: Char) :: Symbol where
+      ConsExSym1 a_T487_0 = ConsEx a_T487_0
     type ExprExSym0 :: Char
     type family ExprExSym0 :: Char where
       ExprExSym0 = ExprEx

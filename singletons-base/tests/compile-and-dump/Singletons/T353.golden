@@ -7,29 +7,29 @@ Singletons/T353.hs:(0,0)-(0,0): Splicing declarations
   ======>
     type family Symmetry (a :: Proxy t) (y :: Proxy t) (e :: (:~:) (a :: Proxy (t :: k)) (y :: Proxy (t :: k))) :: Type where
       Symmetry a y _ = (:~:) y a
-    data SymmetrySym0 :: (~>) (Proxy t0123456789876543210) ((~>) (Proxy t0123456789876543210) ((~>) ((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) Type))
+    data SymmetrySym0 :: (~>) (Proxy t0) ((~>) (Proxy t0) ((~>) ((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) Type))
       where
         SymmetrySym0KindInference :: SameKind (Apply SymmetrySym0 arg) (SymmetrySym1 arg) =>
-                                     SymmetrySym0 a0123456789876543210
-    type instance Apply @(Proxy t0123456789876543210) @((~>) (Proxy t0123456789876543210) ((~>) ((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) Type)) SymmetrySym0 a0123456789876543210 = SymmetrySym1 a0123456789876543210
+                                     SymmetrySym0 a1
+    type instance Apply @(Proxy t0) @((~>) (Proxy t0) ((~>) ((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) Type)) SymmetrySym0 a1 = SymmetrySym1 a1
     instance SuppressUnusedWarnings SymmetrySym0 where
       suppressUnusedWarnings = snd ((,) SymmetrySym0KindInference ())
-    data SymmetrySym1 (a0123456789876543210 :: Proxy t0123456789876543210) :: (~>) (Proxy t0123456789876543210) ((~>) ((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) Type)
+    data SymmetrySym1 (a1 :: Proxy t0) :: (~>) (Proxy t0) ((~>) ((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) Type)
       where
-        SymmetrySym1KindInference :: SameKind (Apply (SymmetrySym1 a0123456789876543210) arg) (SymmetrySym2 a0123456789876543210 arg) =>
-                                     SymmetrySym1 a0123456789876543210 y0123456789876543210
-    type instance Apply @(Proxy t0123456789876543210) @((~>) ((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) Type) (SymmetrySym1 a0123456789876543210) y0123456789876543210 = SymmetrySym2 a0123456789876543210 y0123456789876543210
-    instance SuppressUnusedWarnings (SymmetrySym1 a0123456789876543210) where
+        SymmetrySym1KindInference :: SameKind (Apply (SymmetrySym1 a1) arg) (SymmetrySym2 a1 arg) =>
+                                     SymmetrySym1 a1 y2
+    type instance Apply @(Proxy t0) @((~>) ((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) Type) (SymmetrySym1 a1) y2 = SymmetrySym2 a1 y2
+    instance SuppressUnusedWarnings (SymmetrySym1 a1) where
       suppressUnusedWarnings = snd ((,) SymmetrySym1KindInference ())
-    data SymmetrySym2 (a0123456789876543210 :: Proxy t0123456789876543210) (y0123456789876543210 :: Proxy t0123456789876543210) :: (~>) ((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) Type
+    data SymmetrySym2 (a1 :: Proxy t0) (y2 :: Proxy t0) :: (~>) ((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) Type
       where
-        SymmetrySym2KindInference :: SameKind (Apply (SymmetrySym2 a0123456789876543210 y0123456789876543210) arg) (SymmetrySym3 a0123456789876543210 y0123456789876543210 arg) =>
-                                     SymmetrySym2 a0123456789876543210 y0123456789876543210 e0123456789876543210
-    type instance Apply @((:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) @Type (SymmetrySym2 a0123456789876543210 y0123456789876543210) e0123456789876543210 = Symmetry a0123456789876543210 y0123456789876543210 e0123456789876543210
-    instance SuppressUnusedWarnings (SymmetrySym2 a0123456789876543210 y0123456789876543210) where
+        SymmetrySym2KindInference :: SameKind (Apply (SymmetrySym2 a1 y2) arg) (SymmetrySym3 a1 y2 arg) =>
+                                     SymmetrySym2 a1 y2 e4
+    type instance Apply @((:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) @Type (SymmetrySym2 a1 y2) e4 = Symmetry a1 y2 e4
+    instance SuppressUnusedWarnings (SymmetrySym2 a1 y2) where
       suppressUnusedWarnings = snd ((,) SymmetrySym2KindInference ())
-    type family SymmetrySym3 (a0123456789876543210 :: Proxy t0123456789876543210) (y0123456789876543210 :: Proxy t0123456789876543210) (e0123456789876543210 :: (:~:) (a0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210)) (y0123456789876543210 :: Proxy (t0123456789876543210 :: k0123456789876543210))) :: Type where
-      SymmetrySym3 a0123456789876543210 y0123456789876543210 e0123456789876543210 = Symmetry a0123456789876543210 y0123456789876543210 e0123456789876543210
+    type family SymmetrySym3 (a1 :: Proxy t0) (y2 :: Proxy t0) (e4 :: (:~:) (a1 :: Proxy (t0 :: k3)) (y2 :: Proxy (t0 :: k3))) :: Type where
+      SymmetrySym3 a1 y2 e4 = Symmetry a1 y2 e4
 Singletons/T353.hs:0:0:: Splicing declarations
     genDefunSymbols [''Prod]
   ======>
@@ -40,28 +40,28 @@ Singletons/T353.hs:0:0:: Splicing declarations
     data MkProdSym0 :: (~>) (f p) ((~>) (g p) (Prod f g p))
       where
         MkProdSym0KindInference :: SameKind (Apply MkProdSym0 arg) (MkProdSym1 arg) =>
-                                   MkProdSym0 a0123456789876543210
-    type instance Apply @(f p) @((~>) (g p) (Prod f g p)) MkProdSym0 a0123456789876543210 = MkProdSym1 a0123456789876543210
+                                   MkProdSym0 a_T353_0
+    type instance Apply @(f p) @((~>) (g p) (Prod f g p)) MkProdSym0 a_T353_0 = MkProdSym1 a_T353_0
     instance SuppressUnusedWarnings MkProdSym0 where
       suppressUnusedWarnings = snd ((,) MkProdSym0KindInference ())
     type MkProdSym1 :: forall {k :: Type}
                               (f :: k -> Type)
                               (g :: k -> Type)
                               (p :: k). f p -> (~>) (g p) (Prod f g p)
-    data MkProdSym1 (a0123456789876543210 :: f p) :: (~>) (g p) (Prod f g p)
+    data MkProdSym1 (a_T353_0 :: f p) :: (~>) (g p) (Prod f g p)
       where
-        MkProdSym1KindInference :: SameKind (Apply (MkProdSym1 a0123456789876543210) arg) (MkProdSym2 a0123456789876543210 arg) =>
-                                   MkProdSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(g p) @(Prod f g p) (MkProdSym1 a0123456789876543210) a0123456789876543210 = 'MkProd a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkProdSym1 a0123456789876543210) where
+        MkProdSym1KindInference :: SameKind (Apply (MkProdSym1 a_T353_0) arg) (MkProdSym2 a_T353_0 arg) =>
+                                   MkProdSym1 a_T353_0 a_T353_1
+    type instance Apply @(g p) @(Prod f g p) (MkProdSym1 a_T353_0) a_T353_1 = 'MkProd a_T353_0 a_T353_1
+    instance SuppressUnusedWarnings (MkProdSym1 a_T353_0) where
       suppressUnusedWarnings = snd ((,) MkProdSym1KindInference ())
     type MkProdSym2 :: forall {k :: Type}
                               (f :: k -> Type)
                               (g :: k -> Type)
                               (p :: k). f p -> g p -> Prod f g p
     type family MkProdSym2 @(f :: k -> Type) @(g :: k
-                                                    -> Type) @(p :: k) (a0123456789876543210 :: f p) (a0123456789876543210 :: g p) :: Prod f g p where
-      MkProdSym2 a0123456789876543210 a0123456789876543210 = 'MkProd a0123456789876543210 a0123456789876543210
+                                                    -> Type) @(p :: k) (a_T353_0 :: f p) (a_T353_1 :: g p) :: Prod f g p where
+      MkProdSym2 a_T353_0 a_T353_1 = 'MkProd a_T353_0 a_T353_1
 Singletons/T353.hs:0:0:: Splicing declarations
     genDefunSymbols [''Foo]
   ======>
@@ -72,24 +72,24 @@ Singletons/T353.hs:0:0:: Splicing declarations
     data MkFooSym0 :: (~>) (Proxy a) ((~>) (Proxy b) (Foo a b))
       where
         MkFooSym0KindInference :: SameKind (Apply MkFooSym0 arg) (MkFooSym1 arg) =>
-                                  MkFooSym0 a0123456789876543210
-    type instance Apply @(Proxy a) @((~>) (Proxy b) (Foo a b)) MkFooSym0 a0123456789876543210 = MkFooSym1 a0123456789876543210
+                                  MkFooSym0 a_T353_2
+    type instance Apply @(Proxy a) @((~>) (Proxy b) (Foo a b)) MkFooSym0 a_T353_2 = MkFooSym1 a_T353_2
     instance SuppressUnusedWarnings MkFooSym0 where
       suppressUnusedWarnings = snd ((,) MkFooSym0KindInference ())
     type MkFooSym1 :: forall {k :: Type}
                              {k :: Type}
                              (a :: k)
                              (b :: k). Proxy a -> (~>) (Proxy b) (Foo a b)
-    data MkFooSym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (Foo a b)
+    data MkFooSym1 (a_T353_2 :: Proxy a) :: (~>) (Proxy b) (Foo a b)
       where
-        MkFooSym1KindInference :: SameKind (Apply (MkFooSym1 a0123456789876543210) arg) (MkFooSym2 a0123456789876543210 arg) =>
-                                  MkFooSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Proxy b) @(Foo a b) (MkFooSym1 a0123456789876543210) a0123456789876543210 = 'MkFoo a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkFooSym1 a0123456789876543210) where
+        MkFooSym1KindInference :: SameKind (Apply (MkFooSym1 a_T353_2) arg) (MkFooSym2 a_T353_2 arg) =>
+                                  MkFooSym1 a_T353_2 a_T353_3
+    type instance Apply @(Proxy b) @(Foo a b) (MkFooSym1 a_T353_2) a_T353_3 = 'MkFoo a_T353_2 a_T353_3
+    instance SuppressUnusedWarnings (MkFooSym1 a_T353_2) where
       suppressUnusedWarnings = snd ((,) MkFooSym1KindInference ())
     type MkFooSym2 :: forall {k :: Type}
                              {k :: Type}
                              (a :: k)
                              (b :: k). Proxy a -> Proxy b -> Foo a b
-    type family MkFooSym2 @(a :: k) @(b :: k) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: Foo a b where
-      MkFooSym2 a0123456789876543210 a0123456789876543210 = 'MkFoo a0123456789876543210 a0123456789876543210
+    type family MkFooSym2 @(a :: k) @(b :: k) (a_T353_2 :: Proxy a) (a_T353_3 :: Proxy b) :: Foo a b where
+      MkFooSym2 a_T353_2 a_T353_3 = 'MkFoo a_T353_2 a_T353_3

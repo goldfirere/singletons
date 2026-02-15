@@ -13,31 +13,29 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
     type QuaternionSym0 :: MyPropKind
     type family QuaternionSym0 :: MyPropKind where
       QuaternionSym0 = Quaternion
-    type TFHelper_0123456789876543210 :: MyPropKind
-                                         -> MyPropKind -> Bool
-    type family TFHelper_0123456789876543210 (a :: MyPropKind) (a :: MyPropKind) :: Bool where
-      TFHelper_0123456789876543210 Location Location = TrueSym0
-      TFHelper_0123456789876543210 Location Quaternion = FalseSym0
-      TFHelper_0123456789876543210 Quaternion Location = FalseSym0
-      TFHelper_0123456789876543210 Quaternion Quaternion = TrueSym0
+    type TFHelper_T555_1 :: MyPropKind -> MyPropKind -> Bool
+    type family TFHelper_T555_1 (a :: MyPropKind) (a :: MyPropKind) :: Bool where
+      TFHelper_T555_1 Location Location = TrueSym0
+      TFHelper_T555_1 Location Quaternion = FalseSym0
+      TFHelper_T555_1 Quaternion Location = FalseSym0
+      TFHelper_T555_1 Quaternion Quaternion = TrueSym0
     instance PEq MyPropKind where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: MyPropKind
-                                        -> MyPropKind -> Ordering
-    type family Compare_0123456789876543210 (a :: MyPropKind) (a :: MyPropKind) :: Ordering where
-      Compare_0123456789876543210 Location Location = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 Quaternion Quaternion = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
-      Compare_0123456789876543210 Location Quaternion = LTSym0
-      Compare_0123456789876543210 Quaternion Location = GTSym0
+      type (==) a a = TFHelper_T555_1 a a
+    type Compare_T555_4 :: MyPropKind -> MyPropKind -> Ordering
+    type family Compare_T555_4 (a :: MyPropKind) (a :: MyPropKind) :: Ordering where
+      Compare_T555_4 Location Location = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_T555_4 Quaternion Quaternion = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) NilSym0
+      Compare_T555_4 Location Quaternion = LTSym0
+      Compare_T555_4 Quaternion Location = GTSym0
     instance POrd MyPropKind where
-      type Compare a a = Compare_0123456789876543210 a a
-    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                          -> MyPropKind -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: MyPropKind) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 _ Location a_0123456789876543210 = Apply (Apply ShowStringSym0 "Location") a_0123456789876543210
-      ShowsPrec_0123456789876543210 _ Quaternion a_0123456789876543210 = Apply (Apply ShowStringSym0 "Quaternion") a_0123456789876543210
+      type Compare a a = Compare_T555_4 a a
+    type ShowsPrec_T555_7 :: GHC.Internal.Bignum.Natural.Natural
+                             -> MyPropKind -> Symbol -> Symbol
+    type family ShowsPrec_T555_7 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: MyPropKind) (a :: Symbol) :: Symbol where
+      ShowsPrec_T555_7 _ Location a_T555_8 = Apply (Apply ShowStringSym0 "Location") a_T555_8
+      ShowsPrec_T555_7 _ Quaternion a_T555_9 = Apply (Apply ShowStringSym0 "Quaternion") a_T555_9
     instance PShow MyPropKind where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_T555_7 a a a
     data SMyPropKind :: MyPropKind -> Type
       where
         SLocation :: SMyPropKind (Location :: MyPropKind)
@@ -70,22 +68,16 @@ Singletons/T555.hs:(0,0)-(0,0): Splicing declarations
       sCompare SLocation SQuaternion = SLT
       sCompare SQuaternion SLocation = SGT
     instance SShow MyPropKind where
-      sShowsPrec
-        _
-        SLocation
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sShowsPrec _ SLocation (sA_T555_8 :: Sing a_T555_8)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Location"))
-            sA_0123456789876543210
-      sShowsPrec
-        _
-        SQuaternion
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+            sA_T555_8
+      sShowsPrec _ SQuaternion (sA_T555_9 :: Sing a_T555_9)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Quaternion"))
-            sA_0123456789876543210
+            sA_T555_9
     instance SDecide MyPropKind where
       (%~) SLocation SLocation = Proved Refl
       (%~) SLocation SQuaternion = Disproved (\case)

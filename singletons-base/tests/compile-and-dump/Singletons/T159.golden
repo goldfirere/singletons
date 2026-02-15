@@ -62,45 +62,45 @@ Singletons/T159.hs:0:0:: Splicing declarations
     data C1Sym0 :: (~>) T0 ((~>) T1 T1)
       where
         C1Sym0KindInference :: SameKind (Apply C1Sym0 arg) (C1Sym1 arg) =>
-                               C1Sym0 a0123456789876543210
-    type instance Apply @T0 @((~>) T1 T1) C1Sym0 a0123456789876543210 = C1Sym1 a0123456789876543210
+                               C1Sym0 a_T159_0
+    type instance Apply @T0 @((~>) T1 T1) C1Sym0 a_T159_0 = C1Sym1 a_T159_0
     instance SuppressUnusedWarnings C1Sym0 where
       suppressUnusedWarnings = snd ((,) C1Sym0KindInference ())
     infixr 5 type `C1Sym0`
     type C1Sym1 :: T0 -> (~>) T1 T1
-    data C1Sym1 (a0123456789876543210 :: T0) :: (~>) T1 T1
+    data C1Sym1 (a_T159_0 :: T0) :: (~>) T1 T1
       where
-        C1Sym1KindInference :: SameKind (Apply (C1Sym1 a0123456789876543210) arg) (C1Sym2 a0123456789876543210 arg) =>
-                               C1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @T1 @T1 (C1Sym1 a0123456789876543210) a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (C1Sym1 a0123456789876543210) where
+        C1Sym1KindInference :: SameKind (Apply (C1Sym1 a_T159_0) arg) (C1Sym2 a_T159_0 arg) =>
+                               C1Sym1 a_T159_0 a_T159_1
+    type instance Apply @T1 @T1 (C1Sym1 a_T159_0) a_T159_1 = 'C1 a_T159_0 a_T159_1
+    instance SuppressUnusedWarnings (C1Sym1 a_T159_0) where
       suppressUnusedWarnings = snd ((,) C1Sym1KindInference ())
     infixr 5 type `C1Sym1`
     type C1Sym2 :: T0 -> T1 -> T1
-    type family C1Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) :: T1 where
-      C1Sym2 a0123456789876543210 a0123456789876543210 = 'C1 a0123456789876543210 a0123456789876543210
+    type family C1Sym2 (a_T159_0 :: T0) (a_T159_1 :: T1) :: T1 where
+      C1Sym2 a_T159_0 a_T159_1 = 'C1 a_T159_0 a_T159_1
     infixr 5 type `C1Sym2`
     type (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
     data (:&&@#@$) :: (~>) T0 ((~>) T1 T1)
       where
         (::&&@#@$###) :: SameKind (Apply (:&&@#@$) arg) ((:&&@#@$$) arg) =>
-                         (:&&@#@$) a0123456789876543210
-    type instance Apply @T0 @((~>) T1 T1) (:&&@#@$) a0123456789876543210 = (:&&@#@$$) a0123456789876543210
+                         (:&&@#@$) a_T159_2
+    type instance Apply @T0 @((~>) T1 T1) (:&&@#@$) a_T159_2 = (:&&@#@$$) a_T159_2
     instance SuppressUnusedWarnings (:&&@#@$) where
       suppressUnusedWarnings = snd ((,) (::&&@#@$###) ())
     infixr 5 type :&&@#@$
     type (:&&@#@$$) :: T0 -> (~>) T1 T1
-    data (:&&@#@$$) (a0123456789876543210 :: T0) :: (~>) T1 T1
+    data (:&&@#@$$) (a_T159_2 :: T0) :: (~>) T1 T1
       where
-        (::&&@#@$$###) :: SameKind (Apply ((:&&@#@$$) a0123456789876543210) arg) ((:&&@#@$$$) a0123456789876543210 arg) =>
-                          (:&&@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @T1 @T1 ((:&&@#@$$) a0123456789876543210) a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:&&@#@$$) a0123456789876543210) where
+        (::&&@#@$$###) :: SameKind (Apply ((:&&@#@$$) a_T159_2) arg) ((:&&@#@$$$) a_T159_2 arg) =>
+                          (:&&@#@$$) a_T159_2 a_T159_3
+    type instance Apply @T1 @T1 ((:&&@#@$$) a_T159_2) a_T159_3 = '(:&&) a_T159_2 a_T159_3
+    instance SuppressUnusedWarnings ((:&&@#@$$) a_T159_2) where
       suppressUnusedWarnings = snd ((,) (::&&@#@$$###) ())
     infixr 5 type :&&@#@$$
     type (:&&@#@$$$) :: T0 -> T1 -> T1
-    type family (:&&@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T1) :: T1 where
-      (:&&@#@$$$) a0123456789876543210 a0123456789876543210 = '(:&&) a0123456789876543210 a0123456789876543210
+    type family (:&&@#@$$$) (a_T159_2 :: T0) (a_T159_3 :: T1) :: T1 where
+      (:&&@#@$$$) a_T159_2 a_T159_3 = '(:&&) a_T159_2 a_T159_3
     infixr 5 type :&&@#@$$$
     type ST1 :: T1 -> Type
     data ST1 :: T1 -> Type
@@ -173,45 +173,45 @@ Singletons/T159.hs:(0,0)-(0,0): Splicing declarations
     data C2Sym0 :: (~>) T0 ((~>) T2 T2)
       where
         C2Sym0KindInference :: SameKind (Apply C2Sym0 arg) (C2Sym1 arg) =>
-                               C2Sym0 a0123456789876543210
-    type instance Apply @T0 @((~>) T2 T2) C2Sym0 a0123456789876543210 = C2Sym1 a0123456789876543210
+                               C2Sym0 a_T159_4
+    type instance Apply @T0 @((~>) T2 T2) C2Sym0 a_T159_4 = C2Sym1 a_T159_4
     instance SuppressUnusedWarnings C2Sym0 where
       suppressUnusedWarnings = snd ((,) C2Sym0KindInference ())
     infixr 5 type `C2Sym0`
     type C2Sym1 :: T0 -> (~>) T2 T2
-    data C2Sym1 (a0123456789876543210 :: T0) :: (~>) T2 T2
+    data C2Sym1 (a_T159_4 :: T0) :: (~>) T2 T2
       where
-        C2Sym1KindInference :: SameKind (Apply (C2Sym1 a0123456789876543210) arg) (C2Sym2 a0123456789876543210 arg) =>
-                               C2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @T2 @T2 (C2Sym1 a0123456789876543210) a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (C2Sym1 a0123456789876543210) where
+        C2Sym1KindInference :: SameKind (Apply (C2Sym1 a_T159_4) arg) (C2Sym2 a_T159_4 arg) =>
+                               C2Sym1 a_T159_4 a_T159_5
+    type instance Apply @T2 @T2 (C2Sym1 a_T159_4) a_T159_5 = C2 a_T159_4 a_T159_5
+    instance SuppressUnusedWarnings (C2Sym1 a_T159_4) where
       suppressUnusedWarnings = snd ((,) C2Sym1KindInference ())
     infixr 5 type `C2Sym1`
     type C2Sym2 :: T0 -> T2 -> T2
-    type family C2Sym2 (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) :: T2 where
-      C2Sym2 a0123456789876543210 a0123456789876543210 = C2 a0123456789876543210 a0123456789876543210
+    type family C2Sym2 (a_T159_4 :: T0) (a_T159_5 :: T2) :: T2 where
+      C2Sym2 a_T159_4 a_T159_5 = C2 a_T159_4 a_T159_5
     infixr 5 type `C2Sym2`
     type (:||@#@$) :: (~>) T0 ((~>) T2 T2)
     data (:||@#@$) :: (~>) T0 ((~>) T2 T2)
       where
         (::||@#@$###) :: SameKind (Apply (:||@#@$) arg) ((:||@#@$$) arg) =>
-                         (:||@#@$) a0123456789876543210
-    type instance Apply @T0 @((~>) T2 T2) (:||@#@$) a0123456789876543210 = (:||@#@$$) a0123456789876543210
+                         (:||@#@$) a_T159_6
+    type instance Apply @T0 @((~>) T2 T2) (:||@#@$) a_T159_6 = (:||@#@$$) a_T159_6
     instance SuppressUnusedWarnings (:||@#@$) where
       suppressUnusedWarnings = snd ((,) (::||@#@$###) ())
     infixr 5 type :||@#@$
     type (:||@#@$$) :: T0 -> (~>) T2 T2
-    data (:||@#@$$) (a0123456789876543210 :: T0) :: (~>) T2 T2
+    data (:||@#@$$) (a_T159_6 :: T0) :: (~>) T2 T2
       where
-        (::||@#@$$###) :: SameKind (Apply ((:||@#@$$) a0123456789876543210) arg) ((:||@#@$$$) a0123456789876543210 arg) =>
-                          (:||@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @T2 @T2 ((:||@#@$$) a0123456789876543210) a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((:||@#@$$) a0123456789876543210) where
+        (::||@#@$$###) :: SameKind (Apply ((:||@#@$$) a_T159_6) arg) ((:||@#@$$$) a_T159_6 arg) =>
+                          (:||@#@$$) a_T159_6 a_T159_7
+    type instance Apply @T2 @T2 ((:||@#@$$) a_T159_6) a_T159_7 = (:||) a_T159_6 a_T159_7
+    instance SuppressUnusedWarnings ((:||@#@$$) a_T159_6) where
       suppressUnusedWarnings = snd ((,) (::||@#@$$###) ())
     infixr 5 type :||@#@$$
     type (:||@#@$$$) :: T0 -> T2 -> T2
-    type family (:||@#@$$$) (a0123456789876543210 :: T0) (a0123456789876543210 :: T2) :: T2 where
-      (:||@#@$$$) a0123456789876543210 a0123456789876543210 = (:||) a0123456789876543210 a0123456789876543210
+    type family (:||@#@$$$) (a_T159_6 :: T0) (a_T159_7 :: T2) :: T2 where
+      (:||@#@$$$) a_T159_6 a_T159_7 = (:||) a_T159_6 a_T159_7
     infixr 5 type :||@#@$$$
     infixr 5 data :%||
     infixr 5 data `SC2`

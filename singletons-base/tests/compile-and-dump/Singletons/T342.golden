@@ -7,12 +7,12 @@ Singletons/T342.hs:(0,0)-(0,0): Splicing declarations
        pure $ syn : defuns
   ======>
     type MyId a = a
-    data MyIdSym0 a0123456789876543210
+    data MyIdSym0 a0
       where
         MyIdSym0KindInference :: SameKind (Apply MyIdSym0 arg) (MyIdSym1 arg) =>
-                                 MyIdSym0 a0123456789876543210
-    type instance Apply @_ @_ MyIdSym0 a0123456789876543210 = MyId a0123456789876543210
+                                 MyIdSym0 a0
+    type instance Apply @_ @_ MyIdSym0 a0 = MyId a0
     instance SuppressUnusedWarnings MyIdSym0 where
       suppressUnusedWarnings = snd ((,) MyIdSym0KindInference ())
-    type family MyIdSym1 a0123456789876543210 where
-      MyIdSym1 a0123456789876543210 = MyId a0123456789876543210
+    type family MyIdSym1 a0 where
+      MyIdSym1 a0 = MyId a0
