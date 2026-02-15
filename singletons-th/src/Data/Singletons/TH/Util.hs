@@ -7,7 +7,10 @@ This file contains helper functions internal to the singletons-th package.
 Users of the package should not need to consult this file.
 -}
 
-module Data.Singletons.TH.Util ( module Data.Singletons.TH.Util, UniqueCounter(..) ) where
+module Data.Singletons.TH.Util
+  ( module Data.Singletons.TH.Util
+  , UniqueCounter(..)
+  ) where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
 import Language.Haskell.TH ( pprint )
@@ -384,23 +387,28 @@ filterInvisTvbArgs (DFAForalls tele args) =
     DForallVis   _     -> res
     DForallInvis tvbs' -> tvbs' ++ res
 
--- | Change all unique Names with a NameU or NameL namespace to non-unique Names
--- by performing a syb-based traversal. See Note [Pitfalls of NameU/NameL] for
--- why this is useful.
+-- | Change all unique 'Name's with a 'NameU' or 'NameL' namespace to non-unique
+-- 'Name's by performing a syb-based traversal. See @Note [Pitfalls of
+-- NameU/NameL]@ for why this is useful.
 --
--- Each variable encountered during the traversal will be given a fresh non-unique Name
--- which is the variable OccName followed by an incrementing counter.
--- For example: x0 y1 z2 x3 etc
+-- Each variable encountered during the traversal will be given a fresh
+-- non-unique 'Name' which is the variable OccName followed by an incrementing
+-- counter. For example: @x0@, @y1@, @z2@, @x3@, etc.
 --
--- Each call to `noExactTyVars` starts producing names from 0, so
+-- Each call to 'noExactTyVars' starts producing names from @0@. As a result,
+-- if you call 'noExactTyVars' in two different locations, then there is no
+-- guarantee that the 'Name's used in one location will be distinct from the
+-- other location. It is the responsibility of the caller to ensure that this
+-- does not result in name clashes.
 noExactTyVars :: Data a => a -> a
 noExactTyVars = runFreshen . freshenTyVarsM
 
--- | This function performs an SYB traversal and replaces `Name`s with a fresh name,
--- and substitutes the fresh name for all other occurences of the name in the expression.
+-- | This function performs an SYB traversal and replaces `Name`s with a fresh
+-- name, and substitutes the fresh name for all other occurences of the name in
+-- the expression.
 --
--- The scope of 'freshenTyVarsM' is indicated by executing the stateful computation using
--- `runFreshen`.
+-- The scope of 'freshenTyVarsM' is indicated by executing the stateful
+-- computation using 'runFreshen'.
 freshenTyVarsM :: Data a => a -> State FreshenState a
 freshenTyVarsM = everywhereM freshenTyVarsStep
   where
@@ -435,17 +443,22 @@ freshenTyVarsM = everywhereM freshenTyVarsStep
       n' <- freshenName n
       pure LocalVar { lvName = n', lvKind = mbKind }
 
+-- | The state maintained by 'freshenTyVarsM'.
 data FreshenState = FreshenState
-  { fsNextId   :: !Int
+  { fsNextId    :: !Int
   , fsRenamings :: Map Name Name
   }
 
+-- | The initial state for 'freshenTyVarsM': identifiers will start from @0@,
+-- and no renamings will have yet occurred.
 initialFreshenState :: FreshenState
 initialFreshenState = FreshenState 0 Map.empty
 
+-- | Run a stateful computation that involves 'FreshenState'.
 runFreshen :: State FreshenState a -> a
 runFreshen = (`evalState` initialFreshenState)
 
+-- | Create a fresh name and update the 'FreshenState' accordingly.
 freshenName :: Name -> State FreshenState Name
 freshenName n@(Name (OccName occ) ns) =
   case ns of

@@ -298,7 +298,7 @@ defunctionalize name m_fixity defun_ki = do
     defun_fallback locals tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
-      -- Use noExactTyVars below to avoid GHC#11812.
+      -- Use deterministic names below to avoid GHC#11812.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
       let (locals', tvbs_no_exact, m_res_no_exact) =
             runFreshen $ do

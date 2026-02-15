@@ -88,8 +88,8 @@ data Options = Options
     -- ^ Given the name of the original, unrefined value, produces the name of
     --   the promoted equivalent of the value. This is used for both top-level
     --   and @let@-bound names, and the difference is encoded in the
-    --   @'Maybe' 'Int'@ argument. If promoting a top-level name, the argument
-    --   is 'Nothing'. If promoting a @let@-bound name, the argument is
+    --   @'Maybe' 'UniqueCounter'@ argument. If promoting a top-level name, the
+    --   argument is 'Nothing'. If promoting a @let@-bound name, the argument is
     --   @Just idx@, where @idx@ is a deterministic counter that can be used
     --   to distinguish the name from other local definitions of the same name
     --   (e.g., if two functions both use @let x = ... in x@).

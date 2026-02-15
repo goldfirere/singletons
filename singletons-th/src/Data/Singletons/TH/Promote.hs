@@ -1010,7 +1010,7 @@ data LetDecRHSSort
 promoteLetDecRHS :: LetDecRHSSort
                  -> OMap Name DType      -- local type env't
                  -> OMap Name Fixity     -- local fixity env't
-                 -> Maybe UniqueCounter       -- let-binding identifier (if locally bound)
+                 -> Maybe UniqueCounter  -- let-binding identifier (if locally bound)
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( [DDec]        -- promoted type family dec, plus the
@@ -1585,7 +1585,8 @@ dTypeFamilyHead_with_locals tf_nm local_vars arg_tvbs res_sig =
     Nothing
   where
     -- We take care to only apply `noExactTyVars` to the local variables and not
-    -- to any of the argument/result types. The latter are more likely to appear in haddocks.
+    -- to any of the argument/result types. The latter are more likely to appear
+    -- in Haddocks.
     local_vars' = noExactTyVars local_vars
 
     -- Ensure that all references to local_nms are substituted away.
