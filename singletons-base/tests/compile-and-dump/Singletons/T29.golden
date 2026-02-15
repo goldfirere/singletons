@@ -21,46 +21,46 @@ Singletons/T29.hs:(0,0)-(0,0): Splicing declarations
     data BanSym0 :: (~>) Bool Bool
       where
         BanSym0KindInference :: SameKind (Apply BanSym0 arg) (BanSym1 arg) =>
-                                BanSym0 a0123456789876543210
-    type instance Apply @Bool @Bool BanSym0 a0123456789876543210 = Ban a0123456789876543210
+                                BanSym0 a_Singletons_T29_0
+    type instance Apply @Bool @Bool BanSym0 a_Singletons_T29_0 = Ban a_Singletons_T29_0
     instance SuppressUnusedWarnings BanSym0 where
       suppressUnusedWarnings = snd ((,) BanSym0KindInference ())
     type BanSym1 :: Bool -> Bool
-    type family BanSym1 (a0123456789876543210 :: Bool) :: Bool where
-      BanSym1 a0123456789876543210 = Ban a0123456789876543210
+    type family BanSym1 (a_Singletons_T29_0 :: Bool) :: Bool where
+      BanSym1 a_Singletons_T29_0 = Ban a_Singletons_T29_0
     type BazSym0 :: (~>) Bool Bool
     data BazSym0 :: (~>) Bool Bool
       where
         BazSym0KindInference :: SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
-                                BazSym0 a0123456789876543210
-    type instance Apply @Bool @Bool BazSym0 a0123456789876543210 = Baz a0123456789876543210
+                                BazSym0 a_Singletons_T29_1
+    type instance Apply @Bool @Bool BazSym0 a_Singletons_T29_1 = Baz a_Singletons_T29_1
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd ((,) BazSym0KindInference ())
     type BazSym1 :: Bool -> Bool
-    type family BazSym1 (a0123456789876543210 :: Bool) :: Bool where
-      BazSym1 a0123456789876543210 = Baz a0123456789876543210
+    type family BazSym1 (a_Singletons_T29_1 :: Bool) :: Bool where
+      BazSym1 a_Singletons_T29_1 = Baz a_Singletons_T29_1
     type BarSym0 :: (~>) Bool Bool
     data BarSym0 :: (~>) Bool Bool
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @Bool @Bool BarSym0 a0123456789876543210 = Bar a0123456789876543210
+                                BarSym0 a_Singletons_T29_2
+    type instance Apply @Bool @Bool BarSym0 a_Singletons_T29_2 = Bar a_Singletons_T29_2
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> Bool
-    type family BarSym1 (a0123456789876543210 :: Bool) :: Bool where
-      BarSym1 a0123456789876543210 = Bar a0123456789876543210
+    type family BarSym1 (a_Singletons_T29_2 :: Bool) :: Bool where
+      BarSym1 a_Singletons_T29_2 = Bar a_Singletons_T29_2
     type FooSym0 :: (~>) Bool Bool
     data FooSym0 :: (~>) Bool Bool
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-                                FooSym0 a0123456789876543210
-    type instance Apply @Bool @Bool FooSym0 a0123456789876543210 = Foo a0123456789876543210
+                                FooSym0 a_Singletons_T29_3
+    type instance Apply @Bool @Bool FooSym0 a_Singletons_T29_3 = Foo a_Singletons_T29_3
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Bool -> Bool
-    type family FooSym1 (a0123456789876543210 :: Bool) :: Bool where
-      FooSym1 a0123456789876543210 = Foo a0123456789876543210
+    type family FooSym1 (a_Singletons_T29_3 :: Bool) :: Bool where
+      FooSym1 a_Singletons_T29_3 = Foo a_Singletons_T29_3
     type Ban :: Bool -> Bool
     type family Ban (a :: Bool) :: Bool where
       Ban x = Apply (Apply ($!@#@$) (Apply (Apply (.@#@$) NotSym0) (Apply (Apply (.@#@$) NotSym0) NotSym0))) x

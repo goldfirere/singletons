@@ -84,13 +84,13 @@ data Options = Options
   , promotedClassName :: Name -> Name
     -- ^ Given the name of the original, unrefined class, produces the name of
     --   the promoted equivalent of the class.
-  , promotedValueName :: Name -> Maybe Uniq -> Name
+  , promotedValueName :: Name -> Maybe UniqueCounter -> Name
     -- ^ Given the name of the original, unrefined value, produces the name of
     --   the promoted equivalent of the value. This is used for both top-level
     --   and @let@-bound names, and the difference is encoded in the
-    --   @'Maybe' 'Uniq'@ argument. If promoting a top-level name, the argument
-    --   is 'Nothing'. If promoting a @let@-bound name, the argument is
-    --   @Just uniq@, where @uniq@ is a globally unique number that can be used
+    --   @'Maybe' 'UniqueCounter'@ argument. If promoting a top-level name, the
+    --   argument is 'Nothing'. If promoting a @let@-bound name, the argument is
+    --   @Just idx@, where @idx@ is a deterministic counter that can be used
     --   to distinguish the name from other local definitions of the same name
     --   (e.g., if two functions both use @let x = ... in x@).
   , singledDataTypeName :: Name -> Name
@@ -150,9 +150,9 @@ promotedTopLevelValueName :: Options -> Name -> Name
 promotedTopLevelValueName opts name = promotedValueName opts name Nothing
 
 -- | Given the name of the original, unrefined, @let@-bound value and its
--- globally unique number, produces the name of the promoted equivalent of the
--- value.
-promotedLetBoundValueName :: Options -> Name -> Uniq -> Name
+-- deterministic identifier, produces the name of the promoted equivalent of
+-- the value.
+promotedLetBoundValueName :: Options -> Name -> UniqueCounter -> Name
 promotedLetBoundValueName opts name = promotedValueName opts name . Just
 
 -- | Given the original name of a function (term- or type-level), produces a
@@ -203,11 +203,11 @@ withOptions opts (OptionsM x) = runReaderT x opts
 -- Used when a value name appears in a pattern context.
 -- Works only for proper variables (lower-case names).
 --
--- If the Maybe Uniq argument is Nothing, then the name is top-level (and
+-- If the Maybe 'UniqueCounter' argument is Nothing, then the name is top-level (and
 -- thus globally unique on its own).
--- If the Maybe Uniq argument is `Just uniq`, then the name is let-bound and
--- should use `uniq` to make the promoted name globally unique.
-promoteValNameLhs :: Name -> Maybe Uniq -> Name
+-- If the Maybe 'UniqueCounter' argument is `Just idx`, then the name is let-bound and
+-- should use `idx` to make the promoted name unique within the generated code.
+promoteValNameLhs :: Name -> Maybe UniqueCounter -> Name
 promoteValNameLhs n mb_let_uniq
     -- We can't promote promote idenitifers beginning with underscores to
     -- type names, so we work around the issue by prepending "US" at the
@@ -218,8 +218,27 @@ promoteValNameLhs n mb_let_uniq
   | otherwise
   = mkName $ toUpcaseStr pres n
   where
-    pres = maybe noPrefix (uniquePrefixes "Let" "<<<") mb_let_uniq
+    pres = maybe noPrefix deterministicPrefixes mb_let_uniq
     (alpha, _) = pres
+    deterministicPrefixes (UniqueCounter idx) =
+      let suffix = show idx
+          symSuffix = map digitToSymbol suffix in
+      ("Let" ++ suffix, "<<<" ++ symSuffix)
+
+    -- Symbolic names can't contain numbers, so we convert the numeric suffix
+    -- into suitable characters.
+    digitToSymbol :: Char -> Char
+    digitToSymbol '0' = '!'
+    digitToSymbol '1' = '#'
+    digitToSymbol '2' = '$'
+    digitToSymbol '3' = '%'
+    digitToSymbol '4' = '&'
+    digitToSymbol '5' = '*'
+    digitToSymbol '6' = '+'
+    digitToSymbol '7' = '.'
+    digitToSymbol '8' = '/'
+    digitToSymbol '9' = '='
+    digitToSymbol c   = c
 
 -- generates type-level symbol for a given name. Int parameter represents
 -- saturation: 0 - no parameters passed to the symbol, 1 - one parameter

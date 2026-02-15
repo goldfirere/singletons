@@ -12,28 +12,28 @@ Promote/T605.hs:(0,0)-(0,0): Splicing declarations
     data Traverse'Sym0 :: (~>) ((~>) a (f b)) ((~>) (t a) (t (f b)))
       where
         Traverse'Sym0KindInference :: SameKind (Apply Traverse'Sym0 arg) (Traverse'Sym1 arg) =>
-                                      Traverse'Sym0 a0123456789876543210
-    type instance Apply @((~>) a (f b)) @((~>) (t a) (t (f b))) Traverse'Sym0 a0123456789876543210 = Traverse'Sym1 a0123456789876543210
+                                      Traverse'Sym0 a_T605_0
+    type instance Apply @((~>) a (f b)) @((~>) (t a) (t (f b))) Traverse'Sym0 a_T605_0 = Traverse'Sym1 a_T605_0
     instance SuppressUnusedWarnings Traverse'Sym0 where
       suppressUnusedWarnings = snd ((,) Traverse'Sym0KindInference ())
     type Traverse'Sym1 :: forall (t :: Type -> Type)
                                  a
                                  f
                                  b. (~>) a (f b) -> (~>) (t a) (t (f b))
-    data Traverse'Sym1 (a0123456789876543210 :: (~>) a (f b)) :: (~>) (t a) (t (f b))
+    data Traverse'Sym1 (a_T605_0 :: (~>) a (f b)) :: (~>) (t a) (t (f b))
       where
-        Traverse'Sym1KindInference :: SameKind (Apply (Traverse'Sym1 a0123456789876543210) arg) (Traverse'Sym2 a0123456789876543210 arg) =>
-                                      Traverse'Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(t a) @(t (f b)) (Traverse'Sym1 a0123456789876543210) a0123456789876543210 = Traverse' a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Traverse'Sym1 a0123456789876543210) where
+        Traverse'Sym1KindInference :: SameKind (Apply (Traverse'Sym1 a_T605_0) arg) (Traverse'Sym2 a_T605_0 arg) =>
+                                      Traverse'Sym1 a_T605_0 a_T605_1
+    type instance Apply @(t a) @(t (f b)) (Traverse'Sym1 a_T605_0) a_T605_1 = Traverse' a_T605_0 a_T605_1
+    instance SuppressUnusedWarnings (Traverse'Sym1 a_T605_0) where
       suppressUnusedWarnings = snd ((,) Traverse'Sym1KindInference ())
     type Traverse'Sym2 :: forall (t :: Type -> Type)
                                  a
                                  f
                                  b. (~>) a (f b) -> t a -> t (f b)
     type family Traverse'Sym2 @(t :: Type
-                                     -> Type) @a @f @b (a0123456789876543210 :: (~>) a (f b)) (a0123456789876543210 :: t a) :: t (f b) where
-      Traverse'Sym2 a0123456789876543210 a0123456789876543210 = Traverse' a0123456789876543210 a0123456789876543210
+                                     -> Type) @a @f @b (a_T605_0 :: (~>) a (f b)) (a_T605_1 :: t a) :: t (f b) where
+      Traverse'Sym2 a_T605_0 a_T605_1 = Traverse' a_T605_0 a_T605_1
     type PTraversable' :: (Type -> Type) -> Constraint
     class PTraversable' t where
       type family Traverse' (arg :: (~>) a (f b)) (arg :: t a) :: t (f b)

@@ -12,62 +12,62 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
     data FoosPrecSym0 :: (~>) Natural ((~>) a ((~>) [Bool] [Bool]))
       where
         FoosPrecSym0KindInference :: SameKind (Apply FoosPrecSym0 arg) (FoosPrecSym1 arg) =>
-                                     FoosPrecSym0 a0123456789876543210
-    type instance Apply @Natural @((~>) a ((~>) [Bool] [Bool])) FoosPrecSym0 a0123456789876543210 = FoosPrecSym1 a0123456789876543210
+                                     FoosPrecSym0 a_Singletons_T167_0
+    type instance Apply @Natural @((~>) a ((~>) [Bool] [Bool])) FoosPrecSym0 a_Singletons_T167_0 = FoosPrecSym1 a_Singletons_T167_0
     instance SuppressUnusedWarnings FoosPrecSym0 where
       suppressUnusedWarnings = snd ((,) FoosPrecSym0KindInference ())
     type FoosPrecSym1 :: forall a. Natural
                                    -> (~>) a ((~>) [Bool] [Bool])
-    data FoosPrecSym1 (a0123456789876543210 :: Natural) :: (~>) a ((~>) [Bool] [Bool])
+    data FoosPrecSym1 (a_Singletons_T167_0 :: Natural) :: (~>) a ((~>) [Bool] [Bool])
       where
-        FoosPrecSym1KindInference :: SameKind (Apply (FoosPrecSym1 a0123456789876543210) arg) (FoosPrecSym2 a0123456789876543210 arg) =>
-                                     FoosPrecSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @a @((~>) [Bool] [Bool]) (FoosPrecSym1 a0123456789876543210) a0123456789876543210 = FoosPrecSym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (FoosPrecSym1 a0123456789876543210) where
+        FoosPrecSym1KindInference :: SameKind (Apply (FoosPrecSym1 a_Singletons_T167_0) arg) (FoosPrecSym2 a_Singletons_T167_0 arg) =>
+                                     FoosPrecSym1 a_Singletons_T167_0 a_Singletons_T167_1
+    type instance Apply @a @((~>) [Bool] [Bool]) (FoosPrecSym1 a_Singletons_T167_0) a_Singletons_T167_1 = FoosPrecSym2 a_Singletons_T167_0 a_Singletons_T167_1
+    instance SuppressUnusedWarnings (FoosPrecSym1 a_Singletons_T167_0) where
       suppressUnusedWarnings = snd ((,) FoosPrecSym1KindInference ())
     type FoosPrecSym2 :: forall a. Natural -> a -> (~>) [Bool] [Bool]
-    data FoosPrecSym2 (a0123456789876543210 :: Natural) (a0123456789876543210 :: a) :: (~>) [Bool] [Bool]
+    data FoosPrecSym2 (a_Singletons_T167_0 :: Natural) (a_Singletons_T167_1 :: a) :: (~>) [Bool] [Bool]
       where
-        FoosPrecSym2KindInference :: SameKind (Apply (FoosPrecSym2 a0123456789876543210 a0123456789876543210) arg) (FoosPrecSym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                     FoosPrecSym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @[Bool] @[Bool] (FoosPrecSym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = FoosPrec a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (FoosPrecSym2 a0123456789876543210 a0123456789876543210) where
+        FoosPrecSym2KindInference :: SameKind (Apply (FoosPrecSym2 a_Singletons_T167_0 a_Singletons_T167_1) arg) (FoosPrecSym3 a_Singletons_T167_0 a_Singletons_T167_1 arg) =>
+                                     FoosPrecSym2 a_Singletons_T167_0 a_Singletons_T167_1 a_Singletons_T167_2
+    type instance Apply @[Bool] @[Bool] (FoosPrecSym2 a_Singletons_T167_0 a_Singletons_T167_1) a_Singletons_T167_2 = FoosPrec a_Singletons_T167_0 a_Singletons_T167_1 a_Singletons_T167_2
+    instance SuppressUnusedWarnings (FoosPrecSym2 a_Singletons_T167_0 a_Singletons_T167_1) where
       suppressUnusedWarnings = snd ((,) FoosPrecSym2KindInference ())
     type FoosPrecSym3 :: forall a. Natural -> a -> [Bool] -> [Bool]
-    type family FoosPrecSym3 @a (a0123456789876543210 :: Natural) (a0123456789876543210 :: a) (a0123456789876543210 :: [Bool]) :: [Bool] where
-      FoosPrecSym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 = FoosPrec a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type family FoosPrecSym3 @a (a_Singletons_T167_0 :: Natural) (a_Singletons_T167_1 :: a) (a_Singletons_T167_2 :: [Bool]) :: [Bool] where
+      FoosPrecSym3 a_Singletons_T167_0 a_Singletons_T167_1 a_Singletons_T167_2 = FoosPrec a_Singletons_T167_0 a_Singletons_T167_1 a_Singletons_T167_2
     type FooListSym0 :: forall a. (~>) a ((~>) [Bool] [Bool])
     data FooListSym0 :: (~>) a ((~>) [Bool] [Bool])
       where
         FooListSym0KindInference :: SameKind (Apply FooListSym0 arg) (FooListSym1 arg) =>
-                                    FooListSym0 a0123456789876543210
-    type instance Apply @a @((~>) [Bool] [Bool]) FooListSym0 a0123456789876543210 = FooListSym1 a0123456789876543210
+                                    FooListSym0 a_Singletons_T167_3
+    type instance Apply @a @((~>) [Bool] [Bool]) FooListSym0 a_Singletons_T167_3 = FooListSym1 a_Singletons_T167_3
     instance SuppressUnusedWarnings FooListSym0 where
       suppressUnusedWarnings = snd ((,) FooListSym0KindInference ())
     type FooListSym1 :: forall a. a -> (~>) [Bool] [Bool]
-    data FooListSym1 (a0123456789876543210 :: a) :: (~>) [Bool] [Bool]
+    data FooListSym1 (a_Singletons_T167_3 :: a) :: (~>) [Bool] [Bool]
       where
-        FooListSym1KindInference :: SameKind (Apply (FooListSym1 a0123456789876543210) arg) (FooListSym2 a0123456789876543210 arg) =>
-                                    FooListSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @[Bool] @[Bool] (FooListSym1 a0123456789876543210) a0123456789876543210 = FooList a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (FooListSym1 a0123456789876543210) where
+        FooListSym1KindInference :: SameKind (Apply (FooListSym1 a_Singletons_T167_3) arg) (FooListSym2 a_Singletons_T167_3 arg) =>
+                                    FooListSym1 a_Singletons_T167_3 a_Singletons_T167_4
+    type instance Apply @[Bool] @[Bool] (FooListSym1 a_Singletons_T167_3) a_Singletons_T167_4 = FooList a_Singletons_T167_3 a_Singletons_T167_4
+    instance SuppressUnusedWarnings (FooListSym1 a_Singletons_T167_3) where
       suppressUnusedWarnings = snd ((,) FooListSym1KindInference ())
     type FooListSym2 :: forall a. a -> [Bool] -> [Bool]
-    type family FooListSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: [Bool]) :: [Bool] where
-      FooListSym2 a0123456789876543210 a0123456789876543210 = FooList a0123456789876543210 a0123456789876543210
-    type FooList_0123456789876543210 :: forall a. a -> [Bool] -> [Bool]
-    type family FooList_0123456789876543210 @a (a :: a) (a :: [Bool]) :: [Bool] where
-      FooList_0123456789876543210 @a (a_0123456789876543210 :: a) (a_0123456789876543210 :: [Bool]) = Apply (Apply UndefinedSym0 a_0123456789876543210) a_0123456789876543210
+    type family FooListSym2 @a (a_Singletons_T167_3 :: a) (a_Singletons_T167_4 :: [Bool]) :: [Bool] where
+      FooListSym2 a_Singletons_T167_3 a_Singletons_T167_4 = FooList a_Singletons_T167_3 a_Singletons_T167_4
+    type FooList_Singletons_T167_5 :: forall a. a -> [Bool] -> [Bool]
+    type family FooList_Singletons_T167_5 @a (a :: a) (a :: [Bool]) :: [Bool] where
+      FooList_Singletons_T167_5 @a (a_Singletons_T167_6 :: a) (a_Singletons_T167_7 :: [Bool]) = Apply (Apply UndefinedSym0 a_Singletons_T167_6) a_Singletons_T167_7
     class PFoo a where
       type family FoosPrec (arg :: Natural) (arg :: a) (arg :: [Bool]) :: [Bool]
       type family FooList (arg :: a) (arg :: [Bool]) :: [Bool]
-      type FooList a a = FooList_0123456789876543210 a a
-    type FoosPrec_0123456789876543210 :: forall a. Natural
-                                                   -> [a] -> [Bool] -> [Bool]
-    type family FoosPrec_0123456789876543210 @a (a :: Natural) (a :: [a]) (a :: [Bool]) :: [Bool] where
-      FoosPrec_0123456789876543210 @a (_ :: Natural) (a_0123456789876543210 :: [a]) (a_0123456789876543210 :: [Bool]) = Apply (Apply FooListSym0 a_0123456789876543210) a_0123456789876543210
+      type FooList a a = FooList_Singletons_T167_5 a a
+    type FoosPrec_Singletons_T167_10 :: forall a. Natural
+                                                  -> [a] -> [Bool] -> [Bool]
+    type family FoosPrec_Singletons_T167_10 @a (a :: Natural) (a :: [a]) (a :: [Bool]) :: [Bool] where
+      FoosPrec_Singletons_T167_10 @a (_ :: Natural) (a_Singletons_T167_11 :: [a]) (a_Singletons_T167_12 :: [Bool]) = Apply (Apply FooListSym0 a_Singletons_T167_11) a_Singletons_T167_12
     instance PFoo [a] where
-      type FoosPrec a a a = FoosPrec_0123456789876543210 a a a
+      type FoosPrec a a a = FoosPrec_Singletons_T167_10 a a a
     class SFoo a where
       sFoosPrec ::
         (forall (t :: Natural) (t :: a) (t :: [Bool]).
@@ -78,22 +78,21 @@ Singletons/T167.hs:(0,0)-(0,0): Splicing declarations
          Sing t -> Sing t -> Sing (FooList t t :: [Bool]) :: Type)
       default sFooList ::
                 (forall (t :: a) (t :: [Bool]).
-                 ((FooList t t :: [Bool]) ~ FooList_0123456789876543210 t t) =>
+                 ((FooList t t :: [Bool]) ~ FooList_Singletons_T167_5 t t) =>
                  Sing t -> Sing t -> Sing (FooList t t :: [Bool]) :: Type)
       sFooList
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_Singletons_T167_6 :: Sing a_Singletons_T167_6)
+        (sA_Singletons_T167_7 :: Sing a_Singletons_T167_7)
         = applySing
-            (applySing sUndefined sA_0123456789876543210)
-            sA_0123456789876543210
+            (applySing sUndefined sA_Singletons_T167_6) sA_Singletons_T167_7
     instance SFoo a => SFoo [a] where
       sFoosPrec
         _
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sA_Singletons_T167_11 :: Sing a_Singletons_T167_11)
+        (sA_Singletons_T167_12 :: Sing a_Singletons_T167_12)
         = applySing
-            (applySing (singFun2 @FooListSym0 sFooList) sA_0123456789876543210)
-            sA_0123456789876543210
+            (applySing (singFun2 @FooListSym0 sFooList) sA_Singletons_T167_11)
+            sA_Singletons_T167_12
     instance SFoo a =>
              SingI (FoosPrecSym0 :: (~>) Natural ((~>) a ((~>) [Bool] [Bool]))) where
       sing = singFun3 @FoosPrecSym0 sFoosPrec

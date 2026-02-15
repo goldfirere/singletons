@@ -10,7 +10,7 @@ type level. It is an internal module to the singletons-th package.
 module Data.Singletons.TH.Promote where
 
 import Language.Haskell.TH hiding ( Q, cxt )
-import Language.Haskell.TH.Syntax ( NameSpace(..), Quasi(..), Uniq )
+import Language.Haskell.TH.Syntax ( NameSpace(..), Quasi(..) )
 import Language.Haskell.TH.Desugar
 import qualified Language.Haskell.TH.Desugar.OMap.Strict as OMap
 import Language.Haskell.TH.Desugar.OMap.Strict (OMap)
@@ -206,7 +206,7 @@ promoteDecs raw_decls = do
   mapM_ (promoteInstanceDec orig_meth_sigs cls_tvbs_map) insts
 
 -- curious about ALetDecEnv? See the LetDecEnv module for an explanation.
-promoteLetDecs :: Maybe Uniq -- let-binding unique (if locally bound)
+promoteLetDecs :: Maybe UniqueCounter -- let-binding identifier (if locally bound)
                -> [DLetDec] -> PrM ([LetBind], ALetDecEnv)
 promoteLetDecs mb_let_uniq decls = do
   opts <- getOptions
@@ -865,7 +865,7 @@ substitute in the kinds of the instance itself to determine the kinds of
 promoted method implementations like MHelper2.
 -}
 
-promoteLetDecEnv :: Maybe Uniq -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
+promoteLetDecEnv :: Maybe UniqueCounter -> ULetDecEnv -> PrM ([DDec], ALetDecEnv)
 promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
                                         , lde_types = type_env
                                         , lde_infix = fix_env }) = do
@@ -893,7 +893,7 @@ promoteLetDecEnv mb_let_uniq (LetDecEnv { lde_defns = value_env
 
 -- Promote a fixity declaration.
 promoteInfixDecl :: forall q. OptionsMonad q
-                 => Maybe Uniq -> Name -> Fixity
+                 => Maybe UniqueCounter -> Name -> Fixity
                  -> NamespaceSpecifier
                     -- The namespace specifier for the fixity declaration. We
                     -- only pass this for the sake of checking if we need to
@@ -1010,7 +1010,7 @@ data LetDecRHSSort
 promoteLetDecRHS :: LetDecRHSSort
                  -> OMap Name DType      -- local type env't
                  -> OMap Name Fixity     -- local fixity env't
-                 -> Maybe Uniq           -- let-binding unique (if locally bound)
+                 -> Maybe UniqueCounter  -- let-binding identifier (if locally bound)
                  -> Name                 -- name of the thing being promoted
                  -> ULetDecRHS           -- body of the thing
                  -> PrM ( [DDec]        -- promoted type family dec, plus the
@@ -1337,8 +1337,8 @@ Note that we do not bind @b here. The `dtvbSpecsToBndrVis` function is
 responsible for filtering out inferred type variable binders.
 -}
 
-promoteClause :: Maybe Uniq
-                 -- ^ Let-binding unique (if locally bound)
+promoteClause :: Maybe UniqueCounter
+                 -- ^ Let-binding identifier (if locally bound)
               -> Name
                  -- ^ Name of the function being promoted
               -> Maybe LetDecRHSKindInfo
@@ -1472,8 +1472,8 @@ promoteExp (DLamCasesE clauses) = do
           all_locals
   pure (prom_lam_cases, ADLamCasesE num_args prom_lam_cases ann_clauses)
 promoteExp (DLetE decs exp) = do
-  unique <- qNewUnique
-  (binds, ann_env) <- promoteLetDecs (Just unique) decs
+  letId <- nextUnique
+  (binds, ann_env) <- promoteLetDecs (Just letId) decs
   (exp', ann_exp) <- letBind binds $ promoteExp exp
   return (exp', ADLetE ann_env ann_exp)
 promoteExp (DSigE exp ty) = do
@@ -1525,8 +1525,8 @@ promoteLitPat lit =
 -- Data.Singletons.TH.Promote.Monad.) Otherwise, it will include any local
 -- variables that it closes over as explicit arguments.
 promoteLetDecName ::
-     Maybe Uniq
-     -- ^ Let-binding unique (if locally bound)
+     Maybe UniqueCounter
+     -- ^ Let-binding identifier (if locally bound)
   -> Name
      -- ^ Name of the function being promoted
   -> Maybe LetDecRHSKindInfo
@@ -1565,7 +1565,7 @@ promoteLetDecName mb_let_uniq name m_ldrki all_locals = do
   pure $ applyDType (DConT proName) type_args
 
 -- Construct a 'DTypeFamilyHead' that closes over some local variables. We
--- apply `noExactName` to each local variable to avoid GHC#11812.
+-- apply `noExactTyVars` to each local variable to avoid GHC#11812.
 -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
 dTypeFamilyHead_with_locals ::
      Name
@@ -1585,9 +1585,8 @@ dTypeFamilyHead_with_locals tf_nm local_vars arg_tvbs res_sig =
     Nothing
   where
     -- We take care to only apply `noExactTyVars` to the local variables and not
-    -- to any of the argument/result types. The latter are much more likely to
-    -- show up in the Haddocks, and `noExactTyVars` produces incredibly long
-    -- Names that are much harder to read in the rendered Haddocks.
+    -- to any of the argument/result types. The latter are more likely to appear
+    -- in Haddocks.
     local_vars' = noExactTyVars local_vars
 
     -- Ensure that all references to local_nms are substituted away.

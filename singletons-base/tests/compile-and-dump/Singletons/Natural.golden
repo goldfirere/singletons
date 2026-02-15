@@ -14,32 +14,32 @@ Singletons/Natural.hs:(0,0)-(0,0): Splicing declarations
     data MkAgeSym0 :: (~>) Natural Age
       where
         MkAgeSym0KindInference :: SameKind (Apply MkAgeSym0 arg) (MkAgeSym1 arg) =>
-                                  MkAgeSym0 a0123456789876543210
-    type instance Apply @Natural @Age MkAgeSym0 a0123456789876543210 = MkAge a0123456789876543210
+                                  MkAgeSym0 a_Singletons_Natural_0
+    type instance Apply @Natural @Age MkAgeSym0 a_Singletons_Natural_0 = MkAge a_Singletons_Natural_0
     instance SuppressUnusedWarnings MkAgeSym0 where
       suppressUnusedWarnings = snd ((,) MkAgeSym0KindInference ())
     type MkAgeSym1 :: Natural -> Age
-    type family MkAgeSym1 (a0123456789876543210 :: Natural) :: Age where
-      MkAgeSym1 a0123456789876543210 = MkAge a0123456789876543210
+    type family MkAgeSym1 (a_Singletons_Natural_0 :: Natural) :: Age where
+      MkAgeSym1 a_Singletons_Natural_0 = MkAge a_Singletons_Natural_0
     type AddAgeSym0 :: (~>) Age ((~>) Age Age)
     data AddAgeSym0 :: (~>) Age ((~>) Age Age)
       where
         AddAgeSym0KindInference :: SameKind (Apply AddAgeSym0 arg) (AddAgeSym1 arg) =>
-                                   AddAgeSym0 a0123456789876543210
-    type instance Apply @Age @((~>) Age Age) AddAgeSym0 a0123456789876543210 = AddAgeSym1 a0123456789876543210
+                                   AddAgeSym0 a_Singletons_Natural_1
+    type instance Apply @Age @((~>) Age Age) AddAgeSym0 a_Singletons_Natural_1 = AddAgeSym1 a_Singletons_Natural_1
     instance SuppressUnusedWarnings AddAgeSym0 where
       suppressUnusedWarnings = snd ((,) AddAgeSym0KindInference ())
     type AddAgeSym1 :: Age -> (~>) Age Age
-    data AddAgeSym1 (a0123456789876543210 :: Age) :: (~>) Age Age
+    data AddAgeSym1 (a_Singletons_Natural_1 :: Age) :: (~>) Age Age
       where
-        AddAgeSym1KindInference :: SameKind (Apply (AddAgeSym1 a0123456789876543210) arg) (AddAgeSym2 a0123456789876543210 arg) =>
-                                   AddAgeSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Age @Age (AddAgeSym1 a0123456789876543210) a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (AddAgeSym1 a0123456789876543210) where
+        AddAgeSym1KindInference :: SameKind (Apply (AddAgeSym1 a_Singletons_Natural_1) arg) (AddAgeSym2 a_Singletons_Natural_1 arg) =>
+                                   AddAgeSym1 a_Singletons_Natural_1 a_Singletons_Natural_2
+    type instance Apply @Age @Age (AddAgeSym1 a_Singletons_Natural_1) a_Singletons_Natural_2 = AddAge a_Singletons_Natural_1 a_Singletons_Natural_2
+    instance SuppressUnusedWarnings (AddAgeSym1 a_Singletons_Natural_1) where
       suppressUnusedWarnings = snd ((,) AddAgeSym1KindInference ())
     type AddAgeSym2 :: Age -> Age -> Age
-    type family AddAgeSym2 (a0123456789876543210 :: Age) (a0123456789876543210 :: Age) :: Age where
-      AddAgeSym2 a0123456789876543210 a0123456789876543210 = AddAge a0123456789876543210 a0123456789876543210
+    type family AddAgeSym2 (a_Singletons_Natural_1 :: Age) (a_Singletons_Natural_2 :: Age) :: Age where
+      AddAgeSym2 a_Singletons_Natural_1 a_Singletons_Natural_2 = AddAge a_Singletons_Natural_1 a_Singletons_Natural_2
     type AddAge :: Age -> Age -> Age
     type family AddAge (a :: Age) (a :: Age) :: Age where
       AddAge (MkAge (x :: Natural)) (MkAge (y :: Natural)) = Apply MkAgeSym0 (Apply (Apply (+@#@$) x) y :: Natural)

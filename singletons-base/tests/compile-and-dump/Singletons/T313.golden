@@ -22,42 +22,42 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       type PFoo4 a = Maybe a
     instance PC a where
       type PFoo4 a = Maybe a
-    data PFoo1Sym0 a0123456789876543210
+    data PFoo1Sym0 a0
       where
         PFoo1Sym0KindInference :: SameKind (Apply PFoo1Sym0 arg) (PFoo1Sym1 arg) =>
-                                  PFoo1Sym0 a0123456789876543210
-    type instance Apply @_ @_ PFoo1Sym0 a0123456789876543210 = PFoo1 a0123456789876543210
+                                  PFoo1Sym0 a0
+    type instance Apply @_ @_ PFoo1Sym0 a0 = PFoo1 a0
     instance SuppressUnusedWarnings PFoo1Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo1Sym0KindInference ())
-    type family PFoo1Sym1 a0123456789876543210 where
-      PFoo1Sym1 a0123456789876543210 = PFoo1 a0123456789876543210
-    data PFoo3Sym0 a0123456789876543210
+    type family PFoo1Sym1 a0 where
+      PFoo1Sym1 a0 = PFoo1 a0
+    data PFoo3Sym0 a0
       where
         PFoo3Sym0KindInference :: SameKind (Apply PFoo3Sym0 arg) (PFoo3Sym1 arg) =>
-                                  PFoo3Sym0 a0123456789876543210
-    type instance Apply @_ @_ PFoo3Sym0 a0123456789876543210 = PFoo3 a0123456789876543210
+                                  PFoo3Sym0 a0
+    type instance Apply @_ @_ PFoo3Sym0 a0 = PFoo3 a0
     instance SuppressUnusedWarnings PFoo3Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo3Sym0KindInference ())
-    type family PFoo3Sym1 a0123456789876543210 where
-      PFoo3Sym1 a0123456789876543210 = PFoo3 a0123456789876543210
+    type family PFoo3Sym1 a0 where
+      PFoo3Sym1 a0 = PFoo3 a0
     data PFoo2Sym0 :: (~>) Type Type
       where
         PFoo2Sym0KindInference :: SameKind (Apply PFoo2Sym0 arg) (PFoo2Sym1 arg) =>
-                                  PFoo2Sym0 a0123456789876543210
-    type instance Apply @Type @Type PFoo2Sym0 a0123456789876543210 = PFoo2 a0123456789876543210
+                                  PFoo2Sym0 a0
+    type instance Apply @Type @Type PFoo2Sym0 a0 = PFoo2 a0
     instance SuppressUnusedWarnings PFoo2Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo2Sym0KindInference ())
-    type family PFoo2Sym1 (a0123456789876543210 :: Type) :: Type where
-      PFoo2Sym1 a0123456789876543210 = PFoo2 a0123456789876543210
-    data PFoo4Sym0 a0123456789876543210
+    type family PFoo2Sym1 (a0 :: Type) :: Type where
+      PFoo2Sym1 a0 = PFoo2 a0
+    data PFoo4Sym0 a0
       where
         PFoo4Sym0KindInference :: SameKind (Apply PFoo4Sym0 arg) (PFoo4Sym1 arg) =>
-                                  PFoo4Sym0 a0123456789876543210
-    type instance Apply @Type @_ PFoo4Sym0 a0123456789876543210 = PFoo4 a0123456789876543210
+                                  PFoo4Sym0 a0
+    type instance Apply @Type @_ PFoo4Sym0 a0 = PFoo4 a0
     instance SuppressUnusedWarnings PFoo4Sym0 where
       suppressUnusedWarnings = snd ((,) PFoo4Sym0KindInference ())
-    type family PFoo4Sym1 (a0123456789876543210 :: Type) where
-      PFoo4Sym1 a0123456789876543210 = PFoo4 a0123456789876543210
+    type family PFoo4Sym1 (a0 :: Type) where
+      PFoo4Sym1 a0 = PFoo4 a0
     class PPC (a :: Type)
     instance PPC a
 Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
@@ -84,42 +84,42 @@ Singletons/T313.hs:(0,0)-(0,0): Splicing declarations
       type SFoo4 a = Maybe a
     instance SC a where
       type SFoo4 a = Maybe a
-    data SFoo1Sym0 a0123456789876543210
+    data SFoo1Sym0 a0
       where
         SFoo1Sym0KindInference :: SameKind (Apply SFoo1Sym0 arg) (SFoo1Sym1 arg) =>
-                                  SFoo1Sym0 a0123456789876543210
-    type instance Apply @_ @_ SFoo1Sym0 a0123456789876543210 = SFoo1 a0123456789876543210
+                                  SFoo1Sym0 a0
+    type instance Apply @_ @_ SFoo1Sym0 a0 = SFoo1 a0
     instance SuppressUnusedWarnings SFoo1Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo1Sym0KindInference ())
-    type family SFoo1Sym1 a0123456789876543210 where
-      SFoo1Sym1 a0123456789876543210 = SFoo1 a0123456789876543210
-    data SFoo3Sym0 a0123456789876543210
+    type family SFoo1Sym1 a0 where
+      SFoo1Sym1 a0 = SFoo1 a0
+    data SFoo3Sym0 a0
       where
         SFoo3Sym0KindInference :: SameKind (Apply SFoo3Sym0 arg) (SFoo3Sym1 arg) =>
-                                  SFoo3Sym0 a0123456789876543210
-    type instance Apply @_ @_ SFoo3Sym0 a0123456789876543210 = SFoo3 a0123456789876543210
+                                  SFoo3Sym0 a0
+    type instance Apply @_ @_ SFoo3Sym0 a0 = SFoo3 a0
     instance SuppressUnusedWarnings SFoo3Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo3Sym0KindInference ())
-    type family SFoo3Sym1 a0123456789876543210 where
-      SFoo3Sym1 a0123456789876543210 = SFoo3 a0123456789876543210
+    type family SFoo3Sym1 a0 where
+      SFoo3Sym1 a0 = SFoo3 a0
     data SFoo2Sym0 :: (~>) Type Type
       where
         SFoo2Sym0KindInference :: SameKind (Apply SFoo2Sym0 arg) (SFoo2Sym1 arg) =>
-                                  SFoo2Sym0 a0123456789876543210
-    type instance Apply @Type @Type SFoo2Sym0 a0123456789876543210 = SFoo2 a0123456789876543210
+                                  SFoo2Sym0 a0
+    type instance Apply @Type @Type SFoo2Sym0 a0 = SFoo2 a0
     instance SuppressUnusedWarnings SFoo2Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo2Sym0KindInference ())
-    type family SFoo2Sym1 (a0123456789876543210 :: Type) :: Type where
-      SFoo2Sym1 a0123456789876543210 = SFoo2 a0123456789876543210
-    data SFoo4Sym0 a0123456789876543210
+    type family SFoo2Sym1 (a0 :: Type) :: Type where
+      SFoo2Sym1 a0 = SFoo2 a0
+    data SFoo4Sym0 a0
       where
         SFoo4Sym0KindInference :: SameKind (Apply SFoo4Sym0 arg) (SFoo4Sym1 arg) =>
-                                  SFoo4Sym0 a0123456789876543210
-    type instance Apply @Type @_ SFoo4Sym0 a0123456789876543210 = SFoo4 a0123456789876543210
+                                  SFoo4Sym0 a0
+    type instance Apply @Type @_ SFoo4Sym0 a0 = SFoo4 a0
     instance SuppressUnusedWarnings SFoo4Sym0 where
       suppressUnusedWarnings = snd ((,) SFoo4Sym0KindInference ())
-    type family SFoo4Sym1 (a0123456789876543210 :: Type) where
-      SFoo4Sym1 a0123456789876543210 = SFoo4 a0123456789876543210
+    type family SFoo4Sym1 (a0 :: Type) where
+      SFoo4Sym1 a0 = SFoo4 a0
     class PSC (a :: Type)
     instance PSC a
     class SSC (a :: Type)

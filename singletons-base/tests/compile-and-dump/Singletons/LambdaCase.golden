@@ -29,110 +29,110 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
           (Just d)
     foo3 :: a -> b -> a
     foo3 a b = (\case (p, _) -> p) (a, b)
-    type family LamCases_0123456789876543210 (a0123456789876543210 :: a0123456789876543210) (b0123456789876543210 :: b0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 a b '(p, _) = p
-    data LamCases_0123456789876543210Sym0 (a0123456789876543210 :: a0123456789876543210) (b0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_LambdaCase_2 (a1 :: a0) (b3 :: b2) a_Singletons_LambdaCase_3 where
+      LamCases_Singletons_LambdaCase_2 a b '(p, _) = p
+    data LamCases_Singletons_LambdaCase_2Sym0 (a1 :: a0) (b3 :: b2) a_Singletons_LambdaCase_3
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210) where
+        LamCases_Singletons_LambdaCase_2Sym0KindInference :: SameKind (Apply (LamCases_Singletons_LambdaCase_2Sym0 a1 b3) arg) (LamCases_Singletons_LambdaCase_2Sym1 a1 b3 arg) =>
+                                                             LamCases_Singletons_LambdaCase_2Sym0 a1 b3 a_Singletons_LambdaCase_3
+    type instance Apply @_ @_ (LamCases_Singletons_LambdaCase_2Sym0 a1 b3) a_Singletons_LambdaCase_3 = LamCases_Singletons_LambdaCase_2 a1 b3 a_Singletons_LambdaCase_3
+    instance SuppressUnusedWarnings (LamCases_Singletons_LambdaCase_2Sym0 a1 b3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a0123456789876543210 :: a0123456789876543210) (b0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (d0123456789876543210 :: a0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 d ('Just y) = y
-      LamCases_0123456789876543210 d 'Nothing = d
-    data LamCases_0123456789876543210Sym0 (d0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_LambdaCase_2Sym0KindInference ())
+    type family LamCases_Singletons_LambdaCase_2Sym1 (a1 :: a0) (b3 :: b2) a_Singletons_LambdaCase_3 where
+      LamCases_Singletons_LambdaCase_2Sym1 a1 b3 a_Singletons_LambdaCase_3 = LamCases_Singletons_LambdaCase_2 a1 b3 a_Singletons_LambdaCase_3
+    type family LamCases_Singletons_LambdaCase_6 (d1 :: a0) a_Singletons_LambdaCase_7 where
+      LamCases_Singletons_LambdaCase_6 d ('Just y) = y
+      LamCases_Singletons_LambdaCase_6 d 'Nothing = d
+    data LamCases_Singletons_LambdaCase_6Sym0 (d1 :: a0) a_Singletons_LambdaCase_7
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 d0123456789876543210) arg) (LamCases_0123456789876543210Sym1 d0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 d0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 d0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 d0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 d0123456789876543210) where
+        LamCases_Singletons_LambdaCase_6Sym0KindInference :: SameKind (Apply (LamCases_Singletons_LambdaCase_6Sym0 d1) arg) (LamCases_Singletons_LambdaCase_6Sym1 d1 arg) =>
+                                                             LamCases_Singletons_LambdaCase_6Sym0 d1 a_Singletons_LambdaCase_7
+    type instance Apply @_ @_ (LamCases_Singletons_LambdaCase_6Sym0 d1) a_Singletons_LambdaCase_7 = LamCases_Singletons_LambdaCase_6 d1 a_Singletons_LambdaCase_7
+    instance SuppressUnusedWarnings (LamCases_Singletons_LambdaCase_6Sym0 d1) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (d0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 d0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 d0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (d0123456789876543210 :: a0123456789876543210) (x0123456789876543210 :: Maybe a0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 d x ('Just y) = y
-      LamCases_0123456789876543210 d x 'Nothing = d
-    data LamCases_0123456789876543210Sym0 (d0123456789876543210 :: a0123456789876543210) (x0123456789876543210 :: Maybe a0123456789876543210) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_LambdaCase_6Sym0KindInference ())
+    type family LamCases_Singletons_LambdaCase_6Sym1 (d1 :: a0) a_Singletons_LambdaCase_7 where
+      LamCases_Singletons_LambdaCase_6Sym1 d1 a_Singletons_LambdaCase_7 = LamCases_Singletons_LambdaCase_6 d1 a_Singletons_LambdaCase_7
+    type family LamCases_Singletons_LambdaCase_10 (d1 :: a0) (x2 :: Maybe a0) a_Singletons_LambdaCase_11 where
+      LamCases_Singletons_LambdaCase_10 d x ('Just y) = y
+      LamCases_Singletons_LambdaCase_10 d x 'Nothing = d
+    data LamCases_Singletons_LambdaCase_10Sym0 (d1 :: a0) (x2 :: Maybe a0) a_Singletons_LambdaCase_11
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 d0123456789876543210 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 d0123456789876543210 x0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 d0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 d0123456789876543210 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 d0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 d0123456789876543210 x0123456789876543210) where
+        LamCases_Singletons_LambdaCase_10Sym0KindInference :: SameKind (Apply (LamCases_Singletons_LambdaCase_10Sym0 d1 x2) arg) (LamCases_Singletons_LambdaCase_10Sym1 d1 x2 arg) =>
+                                                              LamCases_Singletons_LambdaCase_10Sym0 d1 x2 a_Singletons_LambdaCase_11
+    type instance Apply @_ @_ (LamCases_Singletons_LambdaCase_10Sym0 d1 x2) a_Singletons_LambdaCase_11 = LamCases_Singletons_LambdaCase_10 d1 x2 a_Singletons_LambdaCase_11
+    instance SuppressUnusedWarnings (LamCases_Singletons_LambdaCase_10Sym0 d1 x2) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (d0123456789876543210 :: a0123456789876543210) (x0123456789876543210 :: Maybe a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 d0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 d0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_LambdaCase_10Sym0KindInference ())
+    type family LamCases_Singletons_LambdaCase_10Sym1 (d1 :: a0) (x2 :: Maybe a0) a_Singletons_LambdaCase_11 where
+      LamCases_Singletons_LambdaCase_10Sym1 d1 x2 a_Singletons_LambdaCase_11 = LamCases_Singletons_LambdaCase_10 d1 x2 a_Singletons_LambdaCase_11
     type Foo3Sym0 :: (~>) a ((~>) b a)
     data Foo3Sym0 :: (~>) a ((~>) b a)
       where
         Foo3Sym0KindInference :: SameKind (Apply Foo3Sym0 arg) (Foo3Sym1 arg) =>
-                                 Foo3Sym0 a0123456789876543210
-    type instance Apply @a @((~>) b a) Foo3Sym0 a0123456789876543210 = Foo3Sym1 a0123456789876543210
+                                 Foo3Sym0 a_Singletons_LambdaCase_0
+    type instance Apply @a @((~>) b a) Foo3Sym0 a_Singletons_LambdaCase_0 = Foo3Sym1 a_Singletons_LambdaCase_0
     instance SuppressUnusedWarnings Foo3Sym0 where
       suppressUnusedWarnings = snd ((,) Foo3Sym0KindInference ())
     type Foo3Sym1 :: a -> (~>) b a
-    data Foo3Sym1 (a0123456789876543210 :: a) :: (~>) b a
+    data Foo3Sym1 (a_Singletons_LambdaCase_0 :: a) :: (~>) b a
       where
-        Foo3Sym1KindInference :: SameKind (Apply (Foo3Sym1 a0123456789876543210) arg) (Foo3Sym2 a0123456789876543210 arg) =>
-                                 Foo3Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @a (Foo3Sym1 a0123456789876543210) a0123456789876543210 = Foo3 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Foo3Sym1 a0123456789876543210) where
+        Foo3Sym1KindInference :: SameKind (Apply (Foo3Sym1 a_Singletons_LambdaCase_0) arg) (Foo3Sym2 a_Singletons_LambdaCase_0 arg) =>
+                                 Foo3Sym1 a_Singletons_LambdaCase_0 a_Singletons_LambdaCase_1
+    type instance Apply @b @a (Foo3Sym1 a_Singletons_LambdaCase_0) a_Singletons_LambdaCase_1 = Foo3 a_Singletons_LambdaCase_0 a_Singletons_LambdaCase_1
+    instance SuppressUnusedWarnings (Foo3Sym1 a_Singletons_LambdaCase_0) where
       suppressUnusedWarnings = snd ((,) Foo3Sym1KindInference ())
     type Foo3Sym2 :: a -> b -> a
-    type family Foo3Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: a where
-      Foo3Sym2 a0123456789876543210 a0123456789876543210 = Foo3 a0123456789876543210 a0123456789876543210
+    type family Foo3Sym2 @a @b (a_Singletons_LambdaCase_0 :: a) (a_Singletons_LambdaCase_1 :: b) :: a where
+      Foo3Sym2 a_Singletons_LambdaCase_0 a_Singletons_LambdaCase_1 = Foo3 a_Singletons_LambdaCase_0 a_Singletons_LambdaCase_1
     type Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)
     data Foo2Sym0 :: (~>) a ((~>) (Maybe a) a)
       where
         Foo2Sym0KindInference :: SameKind (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
-                                 Foo2Sym0 a0123456789876543210
-    type instance Apply @a @((~>) (Maybe a) a) Foo2Sym0 a0123456789876543210 = Foo2Sym1 a0123456789876543210
+                                 Foo2Sym0 a_Singletons_LambdaCase_4
+    type instance Apply @a @((~>) (Maybe a) a) Foo2Sym0 a_Singletons_LambdaCase_4 = Foo2Sym1 a_Singletons_LambdaCase_4
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings = snd ((,) Foo2Sym0KindInference ())
     type Foo2Sym1 :: a -> (~>) (Maybe a) a
-    data Foo2Sym1 (a0123456789876543210 :: a) :: (~>) (Maybe a) a
+    data Foo2Sym1 (a_Singletons_LambdaCase_4 :: a) :: (~>) (Maybe a) a
       where
-        Foo2Sym1KindInference :: SameKind (Apply (Foo2Sym1 a0123456789876543210) arg) (Foo2Sym2 a0123456789876543210 arg) =>
-                                 Foo2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe a) @a (Foo2Sym1 a0123456789876543210) a0123456789876543210 = Foo2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Foo2Sym1 a0123456789876543210) where
+        Foo2Sym1KindInference :: SameKind (Apply (Foo2Sym1 a_Singletons_LambdaCase_4) arg) (Foo2Sym2 a_Singletons_LambdaCase_4 arg) =>
+                                 Foo2Sym1 a_Singletons_LambdaCase_4 a_Singletons_LambdaCase_5
+    type instance Apply @(Maybe a) @a (Foo2Sym1 a_Singletons_LambdaCase_4) a_Singletons_LambdaCase_5 = Foo2 a_Singletons_LambdaCase_4 a_Singletons_LambdaCase_5
+    instance SuppressUnusedWarnings (Foo2Sym1 a_Singletons_LambdaCase_4) where
       suppressUnusedWarnings = snd ((,) Foo2Sym1KindInference ())
     type Foo2Sym2 :: a -> Maybe a -> a
-    type family Foo2Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
-      Foo2Sym2 a0123456789876543210 a0123456789876543210 = Foo2 a0123456789876543210 a0123456789876543210
+    type family Foo2Sym2 @a (a_Singletons_LambdaCase_4 :: a) (a_Singletons_LambdaCase_5 :: Maybe a) :: a where
+      Foo2Sym2 a_Singletons_LambdaCase_4 a_Singletons_LambdaCase_5 = Foo2 a_Singletons_LambdaCase_4 a_Singletons_LambdaCase_5
     type Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)
     data Foo1Sym0 :: (~>) a ((~>) (Maybe a) a)
       where
         Foo1Sym0KindInference :: SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
-                                 Foo1Sym0 a0123456789876543210
-    type instance Apply @a @((~>) (Maybe a) a) Foo1Sym0 a0123456789876543210 = Foo1Sym1 a0123456789876543210
+                                 Foo1Sym0 a_Singletons_LambdaCase_8
+    type instance Apply @a @((~>) (Maybe a) a) Foo1Sym0 a_Singletons_LambdaCase_8 = Foo1Sym1 a_Singletons_LambdaCase_8
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd ((,) Foo1Sym0KindInference ())
     type Foo1Sym1 :: a -> (~>) (Maybe a) a
-    data Foo1Sym1 (a0123456789876543210 :: a) :: (~>) (Maybe a) a
+    data Foo1Sym1 (a_Singletons_LambdaCase_8 :: a) :: (~>) (Maybe a) a
       where
-        Foo1Sym1KindInference :: SameKind (Apply (Foo1Sym1 a0123456789876543210) arg) (Foo1Sym2 a0123456789876543210 arg) =>
-                                 Foo1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe a) @a (Foo1Sym1 a0123456789876543210) a0123456789876543210 = Foo1 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Foo1Sym1 a0123456789876543210) where
+        Foo1Sym1KindInference :: SameKind (Apply (Foo1Sym1 a_Singletons_LambdaCase_8) arg) (Foo1Sym2 a_Singletons_LambdaCase_8 arg) =>
+                                 Foo1Sym1 a_Singletons_LambdaCase_8 a_Singletons_LambdaCase_9
+    type instance Apply @(Maybe a) @a (Foo1Sym1 a_Singletons_LambdaCase_8) a_Singletons_LambdaCase_9 = Foo1 a_Singletons_LambdaCase_8 a_Singletons_LambdaCase_9
+    instance SuppressUnusedWarnings (Foo1Sym1 a_Singletons_LambdaCase_8) where
       suppressUnusedWarnings = snd ((,) Foo1Sym1KindInference ())
     type Foo1Sym2 :: a -> Maybe a -> a
-    type family Foo1Sym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: a where
-      Foo1Sym2 a0123456789876543210 a0123456789876543210 = Foo1 a0123456789876543210 a0123456789876543210
+    type family Foo1Sym2 @a (a_Singletons_LambdaCase_8 :: a) (a_Singletons_LambdaCase_9 :: Maybe a) :: a where
+      Foo1Sym2 a_Singletons_LambdaCase_8 a_Singletons_LambdaCase_9 = Foo1 a_Singletons_LambdaCase_8 a_Singletons_LambdaCase_9
     type Foo3 :: a -> b -> a
     type family Foo3 @a @b (a :: a) (a :: b) :: a where
-      Foo3 a b = Apply (LamCases_0123456789876543210Sym0 a b) (Apply (Apply Tuple2Sym0 a) b)
+      Foo3 a b = Apply (LamCases_Singletons_LambdaCase_2Sym0 a b) (Apply (Apply Tuple2Sym0 a) b)
     type Foo2 :: a -> Maybe a -> a
     type family Foo2 @a (a :: a) (a :: Maybe a) :: a where
-      Foo2 d _ = Apply (LamCases_0123456789876543210Sym0 d) (Apply JustSym0 d)
+      Foo2 d _ = Apply (LamCases_Singletons_LambdaCase_6Sym0 d) (Apply JustSym0 d)
     type Foo1 :: a -> Maybe a -> a
     type family Foo1 @a (a :: a) (a :: Maybe a) :: a where
-      Foo1 d x = Apply (LamCases_0123456789876543210Sym0 d x) x
+      Foo1 d x = Apply (LamCases_Singletons_LambdaCase_10Sym0 d x) x
     sFoo3 ::
       (forall (t :: a) (t :: b).
        Sing t -> Sing t -> Sing (Foo3 t t :: a) :: Type)
@@ -145,13 +145,13 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     sFoo3 (sA :: Sing a) (sB :: Sing b)
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 a b)
+             @(LamCases_Singletons_LambdaCase_2Sym0 a b)
              (\cases (STuple2 (sP :: Sing p) _) -> sP))
           (applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sA) sB)
     sFoo2 (sD :: Sing d) _
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 d)
+             @(LamCases_Singletons_LambdaCase_6Sym0 d)
              (\cases
                 (SJust (sY :: Sing y)) -> sY
                 SNothing -> sD))
@@ -159,7 +159,7 @@ Singletons/LambdaCase.hs:(0,0)-(0,0): Splicing declarations
     sFoo1 (sD :: Sing d) (sX :: Sing x)
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 d x)
+             @(LamCases_Singletons_LambdaCase_10Sym0 d x)
              (\cases
                 (SJust (sY :: Sing y)) -> sY
                 SNothing -> sD))

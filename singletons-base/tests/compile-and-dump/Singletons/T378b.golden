@@ -23,53 +23,53 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     natMinus Zero _ = Zero
     natMinus (Succ a) (Succ b) = natMinus a b
     natMinus a@(Succ _) Zero = a
-    type family Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210ASym0 wild_01234567898765432100123456789876543210 = Let0123456789876543210A wild_01234567898765432100123456789876543210
-    type family Let0123456789876543210A wild_01234567898765432100123456789876543210 where
-      Let0123456789876543210A wild_0123456789876543210 = Apply SuccSym0 wild_0123456789876543210
+    type family Let3ASym0 wild_T378b_00 where
+      Let3ASym0 wild_T378b_00 = Let3A wild_T378b_00
+    type family Let3A wild_T378b_00 where
+      Let3A wild_T378b_0 = Apply SuccSym0 wild_T378b_0
     type NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)
     data NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)
       where
         NatMinusSym0KindInference :: SameKind (Apply NatMinusSym0 arg) (NatMinusSym1 arg) =>
-                                     NatMinusSym0 a0123456789876543210
-    type instance Apply @Nat @((~>) Nat Nat) NatMinusSym0 a0123456789876543210 = NatMinusSym1 a0123456789876543210
+                                     NatMinusSym0 a_T378b_1
+    type instance Apply @Nat @((~>) Nat Nat) NatMinusSym0 a_T378b_1 = NatMinusSym1 a_T378b_1
     instance SuppressUnusedWarnings NatMinusSym0 where
       suppressUnusedWarnings = snd ((,) NatMinusSym0KindInference ())
     type NatMinusSym1 :: Nat -> (~>) Nat Nat
-    data NatMinusSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    data NatMinusSym1 (a_T378b_1 :: Nat) :: (~>) Nat Nat
       where
-        NatMinusSym1KindInference :: SameKind (Apply (NatMinusSym1 a0123456789876543210) arg) (NatMinusSym2 a0123456789876543210 arg) =>
-                                     NatMinusSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Nat @Nat (NatMinusSym1 a0123456789876543210) a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (NatMinusSym1 a0123456789876543210) where
+        NatMinusSym1KindInference :: SameKind (Apply (NatMinusSym1 a_T378b_1) arg) (NatMinusSym2 a_T378b_1 arg) =>
+                                     NatMinusSym1 a_T378b_1 a_T378b_2
+    type instance Apply @Nat @Nat (NatMinusSym1 a_T378b_1) a_T378b_2 = NatMinus a_T378b_1 a_T378b_2
+    instance SuppressUnusedWarnings (NatMinusSym1 a_T378b_1) where
       suppressUnusedWarnings = snd ((,) NatMinusSym1KindInference ())
     type NatMinusSym2 :: Nat -> Nat -> Nat
-    type family NatMinusSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
-      NatMinusSym2 a0123456789876543210 a0123456789876543210 = NatMinus a0123456789876543210 a0123456789876543210
+    type family NatMinusSym2 (a_T378b_1 :: Nat) (a_T378b_2 :: Nat) :: Nat where
+      NatMinusSym2 a_T378b_1 a_T378b_2 = NatMinus a_T378b_1 a_T378b_2
     type FSym0 :: forall b a. (~>) a ((~>) b ())
     data FSym0 :: (~>) a ((~>) b ())
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
-                              FSym0 a0123456789876543210
-    type instance Apply @a @((~>) b ()) FSym0 a0123456789876543210 = FSym1 a0123456789876543210
+                              FSym0 a_T378b_4
+    type instance Apply @a @((~>) b ()) FSym0 a_T378b_4 = FSym1 a_T378b_4
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings = snd ((,) FSym0KindInference ())
     type FSym1 :: forall b a. a -> (~>) b ()
-    data FSym1 (a0123456789876543210 :: a) :: (~>) b ()
+    data FSym1 (a_T378b_4 :: a) :: (~>) b ()
       where
-        FSym1KindInference :: SameKind (Apply (FSym1 a0123456789876543210) arg) (FSym2 a0123456789876543210 arg) =>
-                              FSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @() (FSym1 a0123456789876543210) a0123456789876543210 = F a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (FSym1 a0123456789876543210) where
+        FSym1KindInference :: SameKind (Apply (FSym1 a_T378b_4) arg) (FSym2 a_T378b_4 arg) =>
+                              FSym1 a_T378b_4 a_T378b_5
+    type instance Apply @b @() (FSym1 a_T378b_4) a_T378b_5 = F a_T378b_4 a_T378b_5
+    instance SuppressUnusedWarnings (FSym1 a_T378b_4) where
       suppressUnusedWarnings = snd ((,) FSym1KindInference ())
     type FSym2 :: forall b a. a -> b -> ()
-    type family FSym2 @b @a (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: () where
-      FSym2 a0123456789876543210 a0123456789876543210 = F a0123456789876543210 a0123456789876543210
+    type family FSym2 @b @a (a_T378b_4 :: a) (a_T378b_5 :: b) :: () where
+      FSym2 a_T378b_4 a_T378b_5 = F a_T378b_4 a_T378b_5
     type NatMinus :: Nat -> Nat -> Nat
     type family NatMinus (a :: Nat) (a :: Nat) :: Nat where
       NatMinus 'Zero _ = ZeroSym0
       NatMinus ('Succ a) ('Succ b) = Apply (Apply NatMinusSym0 a) b
-      NatMinus ('Succ wild_0123456789876543210) 'Zero = Let0123456789876543210ASym0 wild_0123456789876543210
+      NatMinus ('Succ wild_T378b_0) 'Zero = Let3ASym0 wild_T378b_0
     type F :: forall b a. a -> b -> ()
     type family F @b @a (a :: a) (a :: b) :: () where
       F @b @a (_ :: a) (_ :: b) = Tuple0Sym0
@@ -84,12 +84,10 @@ Singletons/T378b.hs:(0,0)-(0,0): Splicing declarations
     sNatMinus SZero _ = SZero
     sNatMinus (SSucc (sA :: Sing a)) (SSucc (sB :: Sing b))
       = applySing (applySing (singFun2 @NatMinusSym0 sNatMinus) sA) sB
-    sNatMinus
-      (SSucc (sWild_0123456789876543210 :: Sing wild_0123456789876543210))
-      SZero
+    sNatMinus (SSucc (sWild_T378b_0 :: Sing wild_T378b_0)) SZero
       = let
-          sA :: Sing @_ (Let0123456789876543210A wild_0123456789876543210)
-          sA = applySing (singFun1 @SuccSym0 SSucc) sWild_0123456789876543210
+          sA :: Sing @_ (Let3A wild_T378b_0)
+          sA = applySing (singFun1 @SuccSym0 SSucc) sWild_T378b_0
         in sA
     sF _ _ = STuple0
     instance SingI (NatMinusSym0 :: (~>) Nat ((~>) Nat Nat)) where

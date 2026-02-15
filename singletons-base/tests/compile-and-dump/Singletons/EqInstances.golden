@@ -1,36 +1,36 @@
 Singletons/EqInstances.hs:0:0:: Splicing declarations
     singEqInstances [''Foo, ''Empty]
   ======>
-    type TFHelper_0123456789876543210 :: Foo -> Foo -> Bool
-    type family TFHelper_0123456789876543210 (a :: Foo) (a :: Foo) :: Bool where
-      TFHelper_0123456789876543210 'FLeaf 'FLeaf = TrueSym0
-      TFHelper_0123456789876543210 'FLeaf ('(:+:) _ _) = FalseSym0
-      TFHelper_0123456789876543210 ('(:+:) _ _) 'FLeaf = FalseSym0
-      TFHelper_0123456789876543210 ('(:+:) a_0123456789876543210 a_0123456789876543210) ('(:+:) b_0123456789876543210 b_0123456789876543210) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)) (Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210)
+    type TFHelper_Singletons_EqInstances_4 :: Foo -> Foo -> Bool
+    type family TFHelper_Singletons_EqInstances_4 (a :: Foo) (a :: Foo) :: Bool where
+      TFHelper_Singletons_EqInstances_4 'FLeaf 'FLeaf = TrueSym0
+      TFHelper_Singletons_EqInstances_4 'FLeaf ('(:+:) _ _) = FalseSym0
+      TFHelper_Singletons_EqInstances_4 ('(:+:) _ _) 'FLeaf = FalseSym0
+      TFHelper_Singletons_EqInstances_4 ('(:+:) a_Singletons_EqInstances_0 a_Singletons_EqInstances_1) ('(:+:) b_Singletons_EqInstances_2 b_Singletons_EqInstances_3) = Apply (Apply (&&@#@$) (Apply (Apply (==@#@$) a_Singletons_EqInstances_0) b_Singletons_EqInstances_2)) (Apply (Apply (==@#@$) a_Singletons_EqInstances_1) b_Singletons_EqInstances_3)
     instance PEq Foo where
-      type (==) a a = TFHelper_0123456789876543210 a a
+      type (==) a a = TFHelper_Singletons_EqInstances_4 a a
     instance SEq Foo => SEq Foo where
       (%==) SFLeaf SFLeaf = STrue
       (%==) SFLeaf ((:%+:) _ _) = SFalse
       (%==) ((:%+:) _ _) SFLeaf = SFalse
       (%==)
-        ((:%+:) (sA_0123456789876543210 :: Sing a_0123456789876543210)
-                (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        ((:%+:) (sB_0123456789876543210 :: Sing b_0123456789876543210)
-                (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        ((:%+:) (sA_Singletons_EqInstances_0 :: Sing a_Singletons_EqInstances_0)
+                (sA_Singletons_EqInstances_1 :: Sing a_Singletons_EqInstances_1))
+        ((:%+:) (sB_Singletons_EqInstances_2 :: Sing b_Singletons_EqInstances_2)
+                (sB_Singletons_EqInstances_3 :: Sing b_Singletons_EqInstances_3))
         = applySing
             (applySing
                (singFun2 @(&&@#@$) (%&&))
                (applySing
-                  (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-                  sB_0123456789876543210))
+                  (applySing (singFun2 @(==@#@$) (%==)) sA_Singletons_EqInstances_0)
+                  sB_Singletons_EqInstances_2))
             (applySing
-               (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-               sB_0123456789876543210)
-    type TFHelper_0123456789876543210 :: Empty -> Empty -> Bool
-    type family TFHelper_0123456789876543210 (a :: Empty) (a :: Empty) :: Bool where
-      TFHelper_0123456789876543210 _ _ = TrueSym0
+               (applySing (singFun2 @(==@#@$) (%==)) sA_Singletons_EqInstances_1)
+               sB_Singletons_EqInstances_3)
+    type TFHelper_Singletons_EqInstances_7 :: Empty -> Empty -> Bool
+    type family TFHelper_Singletons_EqInstances_7 (a :: Empty) (a :: Empty) :: Bool where
+      TFHelper_Singletons_EqInstances_7 _ _ = TrueSym0
     instance PEq Empty where
-      type (==) a a = TFHelper_0123456789876543210 a a
+      type (==) a a = TFHelper_Singletons_EqInstances_7 a a
     instance SEq Empty where
       (%==) _ _ = STrue

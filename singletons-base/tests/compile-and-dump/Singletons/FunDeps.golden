@@ -27,45 +27,45 @@ Singletons/FunDeps.hs:(0,0)-(0,0): Splicing declarations
     data MethSym0 :: (~>) a a
       where
         MethSym0KindInference :: SameKind (Apply MethSym0 arg) (MethSym1 arg) =>
-                                 MethSym0 a0123456789876543210
-    type instance Apply @a @a MethSym0 a0123456789876543210 = Meth a0123456789876543210
+                                 MethSym0 a_Singletons_FunDeps_0
+    type instance Apply @a @a MethSym0 a_Singletons_FunDeps_0 = Meth a_Singletons_FunDeps_0
     instance SuppressUnusedWarnings MethSym0 where
       suppressUnusedWarnings = snd ((,) MethSym0KindInference ())
     type MethSym1 :: forall a. a -> a
-    type family MethSym1 @a (a0123456789876543210 :: a) :: a where
-      MethSym1 a0123456789876543210 = Meth a0123456789876543210
+    type family MethSym1 @a (a_Singletons_FunDeps_0 :: a) :: a where
+      MethSym1 a_Singletons_FunDeps_0 = Meth a_Singletons_FunDeps_0
     type L2rSym0 :: forall a b. (~>) a b
     data L2rSym0 :: (~>) a b
       where
         L2rSym0KindInference :: SameKind (Apply L2rSym0 arg) (L2rSym1 arg) =>
-                                L2rSym0 a0123456789876543210
-    type instance Apply @a @b L2rSym0 a0123456789876543210 = L2r a0123456789876543210
+                                L2rSym0 a_Singletons_FunDeps_1
+    type instance Apply @a @b L2rSym0 a_Singletons_FunDeps_1 = L2r a_Singletons_FunDeps_1
     instance SuppressUnusedWarnings L2rSym0 where
       suppressUnusedWarnings = snd ((,) L2rSym0KindInference ())
     type L2rSym1 :: forall a b. a -> b
-    type family L2rSym1 @a @b (a0123456789876543210 :: a) :: b where
-      L2rSym1 a0123456789876543210 = L2r a0123456789876543210
+    type family L2rSym1 @a @b (a_Singletons_FunDeps_1 :: a) :: b where
+      L2rSym1 a_Singletons_FunDeps_1 = L2r a_Singletons_FunDeps_1
     class PFD a b | a -> b where
       type family Meth (arg :: a) :: a
       type family L2r (arg :: a) :: b
-    type Meth_0123456789876543210 :: Bool -> Bool
-    type family Meth_0123456789876543210 (a :: Bool) :: Bool where
-      Meth_0123456789876543210 a_0123456789876543210 = Apply NotSym0 a_0123456789876543210
-    type L2r_0123456789876543210 :: Bool -> Natural
-    type family L2r_0123456789876543210 (a :: Bool) :: Natural where
-      L2r_0123456789876543210 'False = FromInteger 0
-      L2r_0123456789876543210 'True = FromInteger 1
+    type Meth_Singletons_FunDeps_2 :: Bool -> Bool
+    type family Meth_Singletons_FunDeps_2 (a :: Bool) :: Bool where
+      Meth_Singletons_FunDeps_2 a_Singletons_FunDeps_3 = Apply NotSym0 a_Singletons_FunDeps_3
+    type L2r_Singletons_FunDeps_5 :: Bool -> Natural
+    type family L2r_Singletons_FunDeps_5 (a :: Bool) :: Natural where
+      L2r_Singletons_FunDeps_5 'False = FromInteger 0
+      L2r_Singletons_FunDeps_5 'True = FromInteger 1
     instance PFD Bool Natural where
-      type Meth a = Meth_0123456789876543210 a
-      type L2r a = L2r_0123456789876543210 a
+      type Meth a = Meth_Singletons_FunDeps_2 a
+      type L2r a = L2r_Singletons_FunDeps_5 a
     sT1 :: Sing @_ T1
     sT1 = applySing (singFun1 @MethSym0 sMeth) STrue
     class SFD a b | a -> b where
       sMeth :: (forall (t :: a). Sing t -> Sing (Meth t :: a) :: Type)
       sL2r :: (forall (t :: a). Sing t -> Sing (L2r t :: b) :: Type)
     instance SFD Bool Natural where
-      sMeth (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        = applySing (singFun1 @NotSym0 sNot) sA_0123456789876543210
+      sMeth (sA_Singletons_FunDeps_3 :: Sing a_Singletons_FunDeps_3)
+        = applySing (singFun1 @NotSym0 sNot) sA_Singletons_FunDeps_3
       sL2r SFalse = sFromInteger (sing :: Sing 0)
       sL2r STrue = sFromInteger (sing :: Sing 1)
     instance SFD a b => SingI (MethSym0 :: (~>) a a) where

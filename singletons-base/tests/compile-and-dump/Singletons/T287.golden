@@ -14,41 +14,41 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     data (<<>>@#@$) :: (~>) a ((~>) a a)
       where
         (:<<>>@#@$###) :: SameKind (Apply (<<>>@#@$) arg) ((<<>>@#@$$) arg) =>
-                          (<<>>@#@$) a0123456789876543210
-    type instance Apply @a @((~>) a a) (<<>>@#@$) a0123456789876543210 = (<<>>@#@$$) a0123456789876543210
+                          (<<>>@#@$) a_T287_0
+    type instance Apply @a @((~>) a a) (<<>>@#@$) a_T287_0 = (<<>>@#@$$) a_T287_0
     instance SuppressUnusedWarnings (<<>>@#@$) where
       suppressUnusedWarnings = snd ((,) (:<<>>@#@$###) ())
     type (<<>>@#@$$) :: forall a. a -> (~>) a a
-    data (<<>>@#@$$) (a0123456789876543210 :: a) :: (~>) a a
+    data (<<>>@#@$$) (a_T287_0 :: a) :: (~>) a a
       where
-        (:<<>>@#@$$###) :: SameKind (Apply ((<<>>@#@$$) a0123456789876543210) arg) ((<<>>@#@$$$) a0123456789876543210 arg) =>
-                           (<<>>@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @a @a ((<<>>@#@$$) a0123456789876543210) a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings ((<<>>@#@$$) a0123456789876543210) where
+        (:<<>>@#@$$###) :: SameKind (Apply ((<<>>@#@$$) a_T287_0) arg) ((<<>>@#@$$$) a_T287_0 arg) =>
+                           (<<>>@#@$$) a_T287_0 a_T287_1
+    type instance Apply @a @a ((<<>>@#@$$) a_T287_0) a_T287_1 = (<<>>) a_T287_0 a_T287_1
+    instance SuppressUnusedWarnings ((<<>>@#@$$) a_T287_0) where
       suppressUnusedWarnings = snd ((,) (:<<>>@#@$$###) ())
     type (<<>>@#@$$$) :: forall a. a -> a -> a
-    type family (<<>>@#@$$$) @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: a where
-      (<<>>@#@$$$) a0123456789876543210 a0123456789876543210 = (<<>>) a0123456789876543210 a0123456789876543210
+    type family (<<>>@#@$$$) @a (a_T287_0 :: a) (a_T287_1 :: a) :: a where
+      (<<>>@#@$$$) a_T287_0 a_T287_1 = (<<>>) a_T287_0 a_T287_1
     class PS a where
       type family (<<>>) (arg :: a) (arg :: a) :: a
-    type family LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 (f0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) (g0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 a b f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
-    data LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 (f0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) (g0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210
+    type family LamCases_T287_5 a0 b1 (f2 :: (~>) a0 b1) (g3 :: (~>) a0 b1) a_T287_6 where
+      LamCases_T287_5 a b f g x = Apply (Apply (<<>>@#@$) (Apply f x)) (Apply g x)
+    data LamCases_T287_5Sym0 a0 b1 (f2 :: (~>) a0 b1) (g3 :: (~>) a0 b1) a_T287_6
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210) where
+        LamCases_T287_5Sym0KindInference :: SameKind (Apply (LamCases_T287_5Sym0 a0 b1 f2 g3) arg) (LamCases_T287_5Sym1 a0 b1 f2 g3 arg) =>
+                                            LamCases_T287_5Sym0 a0 b1 f2 g3 a_T287_6
+    type instance Apply @_ @_ (LamCases_T287_5Sym0 a0 b1 f2 g3) a_T287_6 = LamCases_T287_5 a0 b1 f2 g3 a_T287_6
+    instance SuppressUnusedWarnings (LamCases_T287_5Sym0 a0 b1 f2 g3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 (f0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) (g0123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 f0123456789876543210 g0123456789876543210 a_01234567898765432100123456789876543210
-    type TFHelper_0123456789876543210 :: forall a b. (~>) a b
-                                                     -> (~>) a b -> (~>) a b
-    type family TFHelper_0123456789876543210 @a @b (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
-      TFHelper_0123456789876543210 @a @b (f :: (~>) a b) (g :: (~>) a b) = LamCases_0123456789876543210Sym0 a b f g
+        = snd ((,) LamCases_T287_5Sym0KindInference ())
+    type family LamCases_T287_5Sym1 a0 b1 (f2 :: (~>) a0 b1) (g3 :: (~>) a0 b1) a_T287_6 where
+      LamCases_T287_5Sym1 a0 b1 f2 g3 a_T287_6 = LamCases_T287_5 a0 b1 f2 g3 a_T287_6
+    type TFHelper_T287_2 :: forall a b. (~>) a b
+                                        -> (~>) a b -> (~>) a b
+    type family TFHelper_T287_2 @a @b (a :: (~>) a b) (a :: (~>) a b) :: (~>) a b where
+      TFHelper_T287_2 @a @b (f :: (~>) a b) (g :: (~>) a b) = LamCases_T287_5Sym0 a b f g
     instance PS ((~>) a b) where
-      type (<<>>) a a = TFHelper_0123456789876543210 a a
+      type (<<>>) a a = TFHelper_T287_2 a a
     class SS a where
       (%<<>>) ::
         (forall (t :: a) (t :: a).
@@ -56,7 +56,7 @@ Singletons/T287.hs:(0,0)-(0,0): Splicing declarations
     instance SS b => SS ((~>) a b) where
       (%<<>>) (sF :: Sing f) (sG :: Sing g)
         = singFun1
-            @(LamCases_0123456789876543210Sym0 a b f g)
+            @(LamCases_T287_5Sym0 a b f g)
             (\cases
                (sX :: Sing x)
                  -> applySing

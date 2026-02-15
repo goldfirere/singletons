@@ -9,13 +9,13 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     data SuccSym0 :: (~>) Nat Nat
       where
         SuccSym0KindInference :: SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
-                                 SuccSym0 a0123456789876543210
-    type instance Apply @Nat @Nat SuccSym0 a0123456789876543210 = Succ a0123456789876543210
+                                 SuccSym0 a_InsertionSort_InsertionSortImp_0
+    type instance Apply @Nat @Nat SuccSym0 a_InsertionSort_InsertionSortImp_0 = Succ a_InsertionSort_InsertionSortImp_0
     instance SuppressUnusedWarnings SuccSym0 where
       suppressUnusedWarnings = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: Nat -> Nat
-    type family SuccSym1 (a0123456789876543210 :: Nat) :: Nat where
-      SuccSym1 a0123456789876543210 = Succ a0123456789876543210
+    type family SuccSym1 (a_InsertionSort_InsertionSortImp_0 :: Nat) :: Nat where
+      SuccSym1 a_InsertionSort_InsertionSortImp_0 = Succ a_InsertionSort_InsertionSortImp_0
     data SNat :: Nat -> Type
       where
         SZero :: SNat (Zero :: Nat)
@@ -62,69 +62,70 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     insertionSort :: [Nat] -> [Nat]
     insertionSort [] = []
     insertionSort (h : t) = insert h (insertionSort t)
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: Nat) h0123456789876543210 t0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 n h t 'True = Apply (Apply (:@#@$) n) (Apply (Apply (:@#@$) h) t)
-      LamCases_0123456789876543210 n h t 'False = Apply (Apply (:@#@$) h) (Apply (Apply InsertSym0 n) t)
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: Nat) h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210
+    type family LamCases_InsertionSort_InsertionSortImp_4 (n0 :: Nat) h1 t2 a_InsertionSort_InsertionSortImp_5 where
+      LamCases_InsertionSort_InsertionSortImp_4 n h t 'True = Apply (Apply (:@#@$) n) (Apply (Apply (:@#@$) h) t)
+      LamCases_InsertionSort_InsertionSortImp_4 n h t 'False = Apply (Apply (:@#@$) h) (Apply (Apply InsertSym0 n) t)
+    data LamCases_InsertionSort_InsertionSortImp_4Sym0 (n0 :: Nat) h1 t2 a_InsertionSort_InsertionSortImp_5
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210 h0123456789876543210 t0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 h0123456789876543210 t0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210 h0123456789876543210 t0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210 h0123456789876543210 t0123456789876543210) where
+        LamCases_InsertionSort_InsertionSortImp_4Sym0KindInference :: SameKind (Apply (LamCases_InsertionSort_InsertionSortImp_4Sym0 n0 h1 t2) arg) (LamCases_InsertionSort_InsertionSortImp_4Sym1 n0 h1 t2 arg) =>
+                                                                      LamCases_InsertionSort_InsertionSortImp_4Sym0 n0 h1 t2 a_InsertionSort_InsertionSortImp_5
+    type instance Apply @_ @_ (LamCases_InsertionSort_InsertionSortImp_4Sym0 n0 h1 t2) a_InsertionSort_InsertionSortImp_5 = LamCases_InsertionSort_InsertionSortImp_4 n0 h1 t2 a_InsertionSort_InsertionSortImp_5
+    instance SuppressUnusedWarnings (LamCases_InsertionSort_InsertionSortImp_4Sym0 n0 h1 t2) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: Nat) h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 h0123456789876543210 t0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_InsertionSort_InsertionSortImp_4Sym0KindInference ())
+    type family LamCases_InsertionSort_InsertionSortImp_4Sym1 (n0 :: Nat) h1 t2 a_InsertionSort_InsertionSortImp_5 where
+      LamCases_InsertionSort_InsertionSortImp_4Sym1 n0 h1 t2 a_InsertionSort_InsertionSortImp_5 = LamCases_InsertionSort_InsertionSortImp_4 n0 h1 t2 a_InsertionSort_InsertionSortImp_5
     type InsertionSortSym0 :: (~>) [Nat] [Nat]
     data InsertionSortSym0 :: (~>) [Nat] [Nat]
       where
         InsertionSortSym0KindInference :: SameKind (Apply InsertionSortSym0 arg) (InsertionSortSym1 arg) =>
-                                          InsertionSortSym0 a0123456789876543210
-    type instance Apply @[Nat] @[Nat] InsertionSortSym0 a0123456789876543210 = InsertionSort a0123456789876543210
+                                          InsertionSortSym0 a_InsertionSort_InsertionSortImp_1
+    type instance Apply @[Nat] @[Nat] InsertionSortSym0 a_InsertionSort_InsertionSortImp_1 = InsertionSort a_InsertionSort_InsertionSortImp_1
     instance SuppressUnusedWarnings InsertionSortSym0 where
       suppressUnusedWarnings
         = snd ((,) InsertionSortSym0KindInference ())
     type InsertionSortSym1 :: [Nat] -> [Nat]
-    type family InsertionSortSym1 (a0123456789876543210 :: [Nat]) :: [Nat] where
-      InsertionSortSym1 a0123456789876543210 = InsertionSort a0123456789876543210
+    type family InsertionSortSym1 (a_InsertionSort_InsertionSortImp_1 :: [Nat]) :: [Nat] where
+      InsertionSortSym1 a_InsertionSort_InsertionSortImp_1 = InsertionSort a_InsertionSort_InsertionSortImp_1
     type InsertSym0 :: (~>) Nat ((~>) [Nat] [Nat])
     data InsertSym0 :: (~>) Nat ((~>) [Nat] [Nat])
       where
         InsertSym0KindInference :: SameKind (Apply InsertSym0 arg) (InsertSym1 arg) =>
-                                   InsertSym0 a0123456789876543210
-    type instance Apply @Nat @((~>) [Nat] [Nat]) InsertSym0 a0123456789876543210 = InsertSym1 a0123456789876543210
+                                   InsertSym0 a_InsertionSort_InsertionSortImp_2
+    type instance Apply @Nat @((~>) [Nat] [Nat]) InsertSym0 a_InsertionSort_InsertionSortImp_2 = InsertSym1 a_InsertionSort_InsertionSortImp_2
     instance SuppressUnusedWarnings InsertSym0 where
       suppressUnusedWarnings = snd ((,) InsertSym0KindInference ())
     type InsertSym1 :: Nat -> (~>) [Nat] [Nat]
-    data InsertSym1 (a0123456789876543210 :: Nat) :: (~>) [Nat] [Nat]
+    data InsertSym1 (a_InsertionSort_InsertionSortImp_2 :: Nat) :: (~>) [Nat] [Nat]
       where
-        InsertSym1KindInference :: SameKind (Apply (InsertSym1 a0123456789876543210) arg) (InsertSym2 a0123456789876543210 arg) =>
-                                   InsertSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @[Nat] @[Nat] (InsertSym1 a0123456789876543210) a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (InsertSym1 a0123456789876543210) where
+        InsertSym1KindInference :: SameKind (Apply (InsertSym1 a_InsertionSort_InsertionSortImp_2) arg) (InsertSym2 a_InsertionSort_InsertionSortImp_2 arg) =>
+                                   InsertSym1 a_InsertionSort_InsertionSortImp_2 a_InsertionSort_InsertionSortImp_3
+    type instance Apply @[Nat] @[Nat] (InsertSym1 a_InsertionSort_InsertionSortImp_2) a_InsertionSort_InsertionSortImp_3 = Insert a_InsertionSort_InsertionSortImp_2 a_InsertionSort_InsertionSortImp_3
+    instance SuppressUnusedWarnings (InsertSym1 a_InsertionSort_InsertionSortImp_2) where
       suppressUnusedWarnings = snd ((,) InsertSym1KindInference ())
     type InsertSym2 :: Nat -> [Nat] -> [Nat]
-    type family InsertSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: [Nat]) :: [Nat] where
-      InsertSym2 a0123456789876543210 a0123456789876543210 = Insert a0123456789876543210 a0123456789876543210
+    type family InsertSym2 (a_InsertionSort_InsertionSortImp_2 :: Nat) (a_InsertionSort_InsertionSortImp_3 :: [Nat]) :: [Nat] where
+      InsertSym2 a_InsertionSort_InsertionSortImp_2 a_InsertionSort_InsertionSortImp_3 = Insert a_InsertionSort_InsertionSortImp_2 a_InsertionSort_InsertionSortImp_3
     type LeqSym0 :: (~>) Nat ((~>) Nat Bool)
     data LeqSym0 :: (~>) Nat ((~>) Nat Bool)
       where
         LeqSym0KindInference :: SameKind (Apply LeqSym0 arg) (LeqSym1 arg) =>
-                                LeqSym0 a0123456789876543210
-    type instance Apply @Nat @((~>) Nat Bool) LeqSym0 a0123456789876543210 = LeqSym1 a0123456789876543210
+                                LeqSym0 a_InsertionSort_InsertionSortImp_6
+    type instance Apply @Nat @((~>) Nat Bool) LeqSym0 a_InsertionSort_InsertionSortImp_6 = LeqSym1 a_InsertionSort_InsertionSortImp_6
     instance SuppressUnusedWarnings LeqSym0 where
       suppressUnusedWarnings = snd ((,) LeqSym0KindInference ())
     type LeqSym1 :: Nat -> (~>) Nat Bool
-    data LeqSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Bool
+    data LeqSym1 (a_InsertionSort_InsertionSortImp_6 :: Nat) :: (~>) Nat Bool
       where
-        LeqSym1KindInference :: SameKind (Apply (LeqSym1 a0123456789876543210) arg) (LeqSym2 a0123456789876543210 arg) =>
-                                LeqSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Nat @Bool (LeqSym1 a0123456789876543210) a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (LeqSym1 a0123456789876543210) where
+        LeqSym1KindInference :: SameKind (Apply (LeqSym1 a_InsertionSort_InsertionSortImp_6) arg) (LeqSym2 a_InsertionSort_InsertionSortImp_6 arg) =>
+                                LeqSym1 a_InsertionSort_InsertionSortImp_6 a_InsertionSort_InsertionSortImp_7
+    type instance Apply @Nat @Bool (LeqSym1 a_InsertionSort_InsertionSortImp_6) a_InsertionSort_InsertionSortImp_7 = Leq a_InsertionSort_InsertionSortImp_6 a_InsertionSort_InsertionSortImp_7
+    instance SuppressUnusedWarnings (LeqSym1 a_InsertionSort_InsertionSortImp_6) where
       suppressUnusedWarnings = snd ((,) LeqSym1KindInference ())
     type LeqSym2 :: Nat -> Nat -> Bool
-    type family LeqSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Bool where
-      LeqSym2 a0123456789876543210 a0123456789876543210 = Leq a0123456789876543210 a0123456789876543210
+    type family LeqSym2 (a_InsertionSort_InsertionSortImp_6 :: Nat) (a_InsertionSort_InsertionSortImp_7 :: Nat) :: Bool where
+      LeqSym2 a_InsertionSort_InsertionSortImp_6 a_InsertionSort_InsertionSortImp_7 = Leq a_InsertionSort_InsertionSortImp_6 a_InsertionSort_InsertionSortImp_7
     type InsertionSort :: [Nat] -> [Nat]
     type family InsertionSort (a :: [Nat]) :: [Nat] where
       InsertionSort '[] = NilSym0
@@ -132,7 +133,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     type Insert :: Nat -> [Nat] -> [Nat]
     type family Insert (a :: Nat) (a :: [Nat]) :: [Nat] where
       Insert n '[] = Apply (Apply (:@#@$) n) NilSym0
-      Insert n ('(:) h t) = Apply (LamCases_0123456789876543210Sym0 n h t) (Apply (Apply LeqSym0 n) h)
+      Insert n ('(:) h t) = Apply (LamCases_InsertionSort_InsertionSortImp_4Sym0 n h t) (Apply (Apply LeqSym0 n) h)
     type Leq :: Nat -> Nat -> Bool
     type family Leq (a :: Nat) (a :: Nat) :: Bool where
       Leq 'Zero _ = TrueSym0
@@ -157,7 +158,7 @@ InsertionSort/InsertionSortImp.hs:(0,0)-(0,0): Splicing declarations
     sInsert (sN :: Sing n) (SCons (sH :: Sing h) (sT :: Sing t))
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 n h t)
+             @(LamCases_InsertionSort_InsertionSortImp_4Sym0 n h t)
              (\cases
                 STrue
                   -> applySing

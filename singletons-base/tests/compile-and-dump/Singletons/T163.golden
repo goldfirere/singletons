@@ -6,24 +6,24 @@ Singletons/T163.hs:0:0:: Splicing declarations
     data LSym0 :: (~>) a ((+) a b)
       where
         LSym0KindInference :: SameKind (Apply LSym0 arg) (LSym1 arg) =>
-                              LSym0 a0123456789876543210
-    type instance Apply @a @((+) a b) LSym0 a0123456789876543210 = L a0123456789876543210
+                              LSym0 a_T163_0
+    type instance Apply @a @((+) a b) LSym0 a_T163_0 = L a_T163_0
     instance SuppressUnusedWarnings LSym0 where
       suppressUnusedWarnings = snd ((,) LSym0KindInference ())
     type LSym1 :: forall a b. a -> (+) a b
-    type family LSym1 @a @b (a0123456789876543210 :: a) :: (+) a b where
-      LSym1 a0123456789876543210 = L a0123456789876543210
+    type family LSym1 @a @b (a_T163_0 :: a) :: (+) a b where
+      LSym1 a_T163_0 = L a_T163_0
     type RSym0 :: forall a b. (~>) b ((+) a b)
     data RSym0 :: (~>) b ((+) a b)
       where
         RSym0KindInference :: SameKind (Apply RSym0 arg) (RSym1 arg) =>
-                              RSym0 a0123456789876543210
-    type instance Apply @b @((+) a b) RSym0 a0123456789876543210 = R a0123456789876543210
+                              RSym0 a_T163_1
+    type instance Apply @b @((+) a b) RSym0 a_T163_1 = R a_T163_1
     instance SuppressUnusedWarnings RSym0 where
       suppressUnusedWarnings = snd ((,) RSym0KindInference ())
     type RSym1 :: forall a b. b -> (+) a b
-    type family RSym1 @a @b (a0123456789876543210 :: b) :: (+) a b where
-      RSym1 a0123456789876543210 = R a0123456789876543210
+    type family RSym1 @a @b (a_T163_1 :: b) :: (+) a b where
+      RSym1 a_T163_1 = R a_T163_1
     data (%+) :: forall a b. (+) a b -> Type
       where
         SL :: forall a b (n :: a). (Sing n) -> (%+) (L n :: (+) a b)

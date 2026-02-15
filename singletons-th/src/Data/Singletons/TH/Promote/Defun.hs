@@ -205,9 +205,9 @@ defunctionalize name m_fixity defun_ki = do
       opts <- getOptions
       extra_name <- qNewName "arg"
       let sak_arg_n = length sak_arg_kis
-      -- Use noExactName below to avoid GHC#17537.
+      -- Use deterministic names below to avoid GHC#17537.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
-      arg_names <- replicateM sak_arg_n (noExactName <$> qNewName "a")
+      arg_names <- replicateM sak_arg_n (newUniqueName "a")
 
       let -- The inner loop. @go n arg_nks res_nks@ returns @(res_k, decls)@.
           -- Using one particular example:
@@ -298,10 +298,15 @@ defunctionalize name m_fixity defun_ki = do
     defun_fallback locals tvbs' m_res' = do
       opts <- getOptions
       extra_name <- qNewName "arg"
-      -- Use noExactTyVars below to avoid GHC#11812.
+      -- Use deterministic names below to avoid GHC#11812.
       -- See also Note [Pitfalls of NameU/NameL] in Data.Singletons.TH.Util.
-      let locals' = noExactTyVars locals
-      (tvbs, m_res) <- eta_expand (noExactTyVars tvbs') (noExactTyVars m_res')
+      let (locals', tvbs_no_exact, m_res_no_exact) =
+            runFreshen $ do
+              locals'' <- traverse freshenTyVarsM locals
+              tvbs''   <- traverse freshenTyVarsM tvbs'
+              m_res''  <- traverse freshenTyVarsM m_res'
+              pure (locals'', tvbs'', m_res'')
+      (tvbs, m_res) <- eta_expand tvbs_no_exact m_res_no_exact
 
       let tvbs_n = length tvbs
 
@@ -456,10 +461,10 @@ defunctionalize name m_fixity defun_ki = do
       case vfa of
         DVisFADep tvb -> pure (BndrReq <$ tvb)
         DVisFAAnon k  -> (\n -> DKindedTV n BndrReq k) <$>
-                           -- Use noExactName below to avoid GHC#19743.
+                           -- Use deterministic names below to avoid GHC#19743.
                            -- See also Note [Pitfalls of NameU/NameL]
                            -- in Data.Singletons.TH.Util.
-                           (noExactName <$> qNewName "e")
+                           (newUniqueName "e")
 
     mk_fix_decl :: Name -> Fixity -> DDec
     mk_fix_decl n f = DLetDec $ DInfixD f TypeNamespaceSpecifier n

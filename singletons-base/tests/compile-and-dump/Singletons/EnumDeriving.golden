@@ -24,58 +24,58 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
     type Q2Sym0 :: Quux
     type family Q2Sym0 :: Quux where
       Q2Sym0 = Q2
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = BumSym0
-      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_EnumDeriving_4 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_5 where
+      LamCases_Singletons_EnumDeriving_4 n 'True = BumSym0
+      LamCases_Singletons_EnumDeriving_4 n 'False = Apply ErrorSym0 "toEnum: bad argument"
+    data LamCases_Singletons_EnumDeriving_4Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_5
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_EnumDeriving_4Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EnumDeriving_4Sym0 n0) arg) (LamCases_Singletons_EnumDeriving_4Sym1 n0 arg) =>
+                                                               LamCases_Singletons_EnumDeriving_4Sym0 n0 a_Singletons_EnumDeriving_5
+    type instance Apply @_ @_ (LamCases_Singletons_EnumDeriving_4Sym0 n0) a_Singletons_EnumDeriving_5 = LamCases_Singletons_EnumDeriving_4 n0 a_Singletons_EnumDeriving_5
+    instance SuppressUnusedWarnings (LamCases_Singletons_EnumDeriving_4Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = BazSym0
-      LamCases_0123456789876543210 n 'False = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 2))
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_EnumDeriving_4Sym0KindInference ())
+    type family LamCases_Singletons_EnumDeriving_4Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_5 where
+      LamCases_Singletons_EnumDeriving_4Sym1 n0 a_Singletons_EnumDeriving_5 = LamCases_Singletons_EnumDeriving_4 n0 a_Singletons_EnumDeriving_5
+    type family LamCases_Singletons_EnumDeriving_3 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_6 where
+      LamCases_Singletons_EnumDeriving_3 n 'True = BazSym0
+      LamCases_Singletons_EnumDeriving_3 n 'False = Apply (LamCases_Singletons_EnumDeriving_4Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 2))
+    data LamCases_Singletons_EnumDeriving_3Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_6
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_EnumDeriving_3Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EnumDeriving_3Sym0 n0) arg) (LamCases_Singletons_EnumDeriving_3Sym1 n0 arg) =>
+                                                               LamCases_Singletons_EnumDeriving_3Sym0 n0 a_Singletons_EnumDeriving_6
+    type instance Apply @_ @_ (LamCases_Singletons_EnumDeriving_3Sym0 n0) a_Singletons_EnumDeriving_6 = LamCases_Singletons_EnumDeriving_3 n0 a_Singletons_EnumDeriving_6
+    instance SuppressUnusedWarnings (LamCases_Singletons_EnumDeriving_3Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = BarSym0
-      LamCases_0123456789876543210 n 'False = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_EnumDeriving_3Sym0KindInference ())
+    type family LamCases_Singletons_EnumDeriving_3Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_6 where
+      LamCases_Singletons_EnumDeriving_3Sym1 n0 a_Singletons_EnumDeriving_6 = LamCases_Singletons_EnumDeriving_3 n0 a_Singletons_EnumDeriving_6
+    type family LamCases_Singletons_EnumDeriving_2 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_7 where
+      LamCases_Singletons_EnumDeriving_2 n 'True = BarSym0
+      LamCases_Singletons_EnumDeriving_2 n 'False = Apply (LamCases_Singletons_EnumDeriving_3Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
+    data LamCases_Singletons_EnumDeriving_2Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_7
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_EnumDeriving_2Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EnumDeriving_2Sym0 n0) arg) (LamCases_Singletons_EnumDeriving_2Sym1 n0 arg) =>
+                                                               LamCases_Singletons_EnumDeriving_2Sym0 n0 a_Singletons_EnumDeriving_7
+    type instance Apply @_ @_ (LamCases_Singletons_EnumDeriving_2Sym0 n0) a_Singletons_EnumDeriving_7 = LamCases_Singletons_EnumDeriving_2 n0 a_Singletons_EnumDeriving_7
+    instance SuppressUnusedWarnings (LamCases_Singletons_EnumDeriving_2Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> Foo
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: Foo where
-      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type FromEnum_0123456789876543210 :: Foo
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: Foo) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 Bar = FromInteger 0
-      FromEnum_0123456789876543210 Baz = FromInteger 1
-      FromEnum_0123456789876543210 Bum = FromInteger 2
+        = snd ((,) LamCases_Singletons_EnumDeriving_2Sym0KindInference ())
+    type family LamCases_Singletons_EnumDeriving_2Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_7 where
+      LamCases_Singletons_EnumDeriving_2Sym1 n0 a_Singletons_EnumDeriving_7 = LamCases_Singletons_EnumDeriving_2 n0 a_Singletons_EnumDeriving_7
+    type ToEnum_Singletons_EnumDeriving_0 :: GHC.Internal.Bignum.Natural.Natural
+                                             -> Foo
+    type family ToEnum_Singletons_EnumDeriving_0 (a :: GHC.Internal.Bignum.Natural.Natural) :: Foo where
+      ToEnum_Singletons_EnumDeriving_0 n = Apply (LamCases_Singletons_EnumDeriving_2Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type FromEnum_Singletons_EnumDeriving_8 :: Foo
+                                               -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_Singletons_EnumDeriving_8 (a :: Foo) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_Singletons_EnumDeriving_8 Bar = FromInteger 0
+      FromEnum_Singletons_EnumDeriving_8 Baz = FromInteger 1
+      FromEnum_Singletons_EnumDeriving_8 Bum = FromInteger 2
     instance PEnum Foo where
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
+      type ToEnum a = ToEnum_Singletons_EnumDeriving_0 a
+      type FromEnum a = FromEnum_Singletons_EnumDeriving_8 a
     data SFoo :: Foo -> Type
       where
         SBar :: SFoo (Bar :: Foo)
@@ -105,19 +105,19 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
       sToEnum (sN :: Sing n)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 n)
+               @(LamCases_Singletons_EnumDeriving_2Sym0 n)
                (\cases
                   STrue -> SBar
                   SFalse
                     -> applySing
                          (singFun1
-                            @(LamCases_0123456789876543210Sym0 n)
+                            @(LamCases_Singletons_EnumDeriving_3Sym0 n)
                             (\cases
                                STrue -> SBaz
                                SFalse
                                  -> applySing
                                       (singFun1
-                                         @(LamCases_0123456789876543210Sym0 n)
+                                         @(LamCases_Singletons_EnumDeriving_4Sym0 n)
                                          (\cases
                                             STrue -> SBum
                                             SFalse
@@ -149,55 +149,55 @@ Singletons/EnumDeriving.hs:(0,0)-(0,0): Splicing declarations
 Singletons/EnumDeriving.hs:0:0:: Splicing declarations
     singEnumInstance ''Quux
   ======>
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = Q2Sym0
-      LamCases_0123456789876543210 n 'False = Apply ErrorSym0 "toEnum: bad argument"
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_EnumDeriving_13 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_14 where
+      LamCases_Singletons_EnumDeriving_13 n 'True = Q2Sym0
+      LamCases_Singletons_EnumDeriving_13 n 'False = Apply ErrorSym0 "toEnum: bad argument"
+    data LamCases_Singletons_EnumDeriving_13Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_14
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_EnumDeriving_13Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EnumDeriving_13Sym0 n0) arg) (LamCases_Singletons_EnumDeriving_13Sym1 n0 arg) =>
+                                                                LamCases_Singletons_EnumDeriving_13Sym0 n0 a_Singletons_EnumDeriving_14
+    type instance Apply @_ @_ (LamCases_Singletons_EnumDeriving_13Sym0 n0) a_Singletons_EnumDeriving_14 = LamCases_Singletons_EnumDeriving_13 n0 a_Singletons_EnumDeriving_14
+    instance SuppressUnusedWarnings (LamCases_Singletons_EnumDeriving_13Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 n 'True = Q1Sym0
-      LamCases_0123456789876543210 n 'False = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
-    data LamCases_0123456789876543210Sym0 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Singletons_EnumDeriving_13Sym0KindInference ())
+    type family LamCases_Singletons_EnumDeriving_13Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_14 where
+      LamCases_Singletons_EnumDeriving_13Sym1 n0 a_Singletons_EnumDeriving_14 = LamCases_Singletons_EnumDeriving_13 n0 a_Singletons_EnumDeriving_14
+    type family LamCases_Singletons_EnumDeriving_12 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_15 where
+      LamCases_Singletons_EnumDeriving_12 n 'True = Q1Sym0
+      LamCases_Singletons_EnumDeriving_12 n 'False = Apply (LamCases_Singletons_EnumDeriving_13Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 1))
+    data LamCases_Singletons_EnumDeriving_12Sym0 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_15
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 n0123456789876543210) arg) (LamCases_0123456789876543210Sym1 n0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 n0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 n0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 n0123456789876543210) where
+        LamCases_Singletons_EnumDeriving_12Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EnumDeriving_12Sym0 n0) arg) (LamCases_Singletons_EnumDeriving_12Sym1 n0 arg) =>
+                                                                LamCases_Singletons_EnumDeriving_12Sym0 n0 a_Singletons_EnumDeriving_15
+    type instance Apply @_ @_ (LamCases_Singletons_EnumDeriving_12Sym0 n0) a_Singletons_EnumDeriving_15 = LamCases_Singletons_EnumDeriving_12 n0 a_Singletons_EnumDeriving_15
+    instance SuppressUnusedWarnings (LamCases_Singletons_EnumDeriving_12Sym0 n0) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (n0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 n0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 n0123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> Quux
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: Quux where
-      ToEnum_0123456789876543210 n = Apply (LamCases_0123456789876543210Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
-    type FromEnum_0123456789876543210 :: Quux
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: Quux) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 'Q1 = FromInteger 0
-      FromEnum_0123456789876543210 'Q2 = FromInteger 1
+        = snd ((,) LamCases_Singletons_EnumDeriving_12Sym0KindInference ())
+    type family LamCases_Singletons_EnumDeriving_12Sym1 (n0 :: GHC.Internal.Bignum.Natural.Natural) a_Singletons_EnumDeriving_15 where
+      LamCases_Singletons_EnumDeriving_12Sym1 n0 a_Singletons_EnumDeriving_15 = LamCases_Singletons_EnumDeriving_12 n0 a_Singletons_EnumDeriving_15
+    type ToEnum_Singletons_EnumDeriving_10 :: GHC.Internal.Bignum.Natural.Natural
+                                              -> Quux
+    type family ToEnum_Singletons_EnumDeriving_10 (a :: GHC.Internal.Bignum.Natural.Natural) :: Quux where
+      ToEnum_Singletons_EnumDeriving_10 n = Apply (LamCases_Singletons_EnumDeriving_12Sym0 n) (Apply (Apply (==@#@$) n) (FromInteger 0))
+    type FromEnum_Singletons_EnumDeriving_16 :: Quux
+                                                -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_Singletons_EnumDeriving_16 (a :: Quux) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_Singletons_EnumDeriving_16 'Q1 = FromInteger 0
+      FromEnum_Singletons_EnumDeriving_16 'Q2 = FromInteger 1
     instance PEnum Quux where
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
+      type ToEnum a = ToEnum_Singletons_EnumDeriving_10 a
+      type FromEnum a = FromEnum_Singletons_EnumDeriving_16 a
     instance SEnum Quux where
       sToEnum (sN :: Sing n)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 n)
+               @(LamCases_Singletons_EnumDeriving_12Sym0 n)
                (\cases
                   STrue -> SQ1
                   SFalse
                     -> applySing
                          (singFun1
-                            @(LamCases_0123456789876543210Sym0 n)
+                            @(LamCases_Singletons_EnumDeriving_13Sym0 n)
                             (\cases
                                STrue -> SQ2
                                SFalse

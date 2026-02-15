@@ -6,25 +6,26 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
   ======>
     data Foo
     deriving instance Show Foo
-    type family LamCases_0123456789876543210 (v_01234567898765432100123456789876543210 :: Foo) (a_01234567898765432100123456789876543210 :: GHC.Internal.Types.Symbol) a_0123456789876543210 where
-    data LamCases_0123456789876543210Sym0 (v_01234567898765432100123456789876543210 :: Foo) (a_01234567898765432100123456789876543210 :: GHC.Internal.Types.Symbol) a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_EmptyShowDeriving_7 (v_Singletons_EmptyShowDeriving_10 :: Foo) (a_Singletons_EmptyShowDeriving_31 :: GHC.Internal.Types.Symbol) a_Singletons_EmptyShowDeriving_8 where
+    data LamCases_Singletons_EmptyShowDeriving_7Sym0 (v_Singletons_EmptyShowDeriving_10 :: Foo) (a_Singletons_EmptyShowDeriving_31 :: GHC.Internal.Types.Symbol) a_Singletons_EmptyShowDeriving_8
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_Singletons_EmptyShowDeriving_7Sym0KindInference :: SameKind (Apply (LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31) arg) (LamCases_Singletons_EmptyShowDeriving_7Sym1 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31 arg) =>
+                                                                    LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31 a_Singletons_EmptyShowDeriving_8
+    type instance Apply @_ @_ (LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31) a_Singletons_EmptyShowDeriving_8 = LamCases_Singletons_EmptyShowDeriving_7 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31 a_Singletons_EmptyShowDeriving_8
+    instance SuppressUnusedWarnings (LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (v_01234567898765432100123456789876543210 :: Foo) (a_01234567898765432100123456789876543210 :: GHC.Internal.Types.Symbol) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type ShowsPrec_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                          -> Foo
-                                             -> GHC.Internal.Types.Symbol
-                                                -> GHC.Internal.Types.Symbol
-    type family ShowsPrec_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Foo) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
-      ShowsPrec_0123456789876543210 _ v_0123456789876543210 a_0123456789876543210 = Apply (Apply (LamCases_0123456789876543210Sym0 v_0123456789876543210 a_0123456789876543210) v_0123456789876543210) a_0123456789876543210
+        = snd
+            ((,) LamCases_Singletons_EmptyShowDeriving_7Sym0KindInference ())
+    type family LamCases_Singletons_EmptyShowDeriving_7Sym1 (v_Singletons_EmptyShowDeriving_10 :: Foo) (a_Singletons_EmptyShowDeriving_31 :: GHC.Internal.Types.Symbol) a_Singletons_EmptyShowDeriving_8 where
+      LamCases_Singletons_EmptyShowDeriving_7Sym1 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31 a_Singletons_EmptyShowDeriving_8 = LamCases_Singletons_EmptyShowDeriving_7 v_Singletons_EmptyShowDeriving_10 a_Singletons_EmptyShowDeriving_31 a_Singletons_EmptyShowDeriving_8
+    type ShowsPrec_Singletons_EmptyShowDeriving_2 :: GHC.Internal.Bignum.Natural.Natural
+                                                     -> Foo
+                                                        -> GHC.Internal.Types.Symbol
+                                                           -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_Singletons_EmptyShowDeriving_2 (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Foo) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_Singletons_EmptyShowDeriving_2 _ v_Singletons_EmptyShowDeriving_1 a_Singletons_EmptyShowDeriving_3 = Apply (Apply (LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_1 a_Singletons_EmptyShowDeriving_3) v_Singletons_EmptyShowDeriving_1) a_Singletons_EmptyShowDeriving_3
     instance PShow Foo where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_Singletons_EmptyShowDeriving_2 a a a
     data SFoo :: Foo -> Type
     type instance Sing @Foo = SFoo
     instance SingKind Foo where
@@ -34,13 +35,13 @@ Singletons/EmptyShowDeriving.hs:(0,0)-(0,0): Splicing declarations
     instance SShow Foo where
       sShowsPrec
         _
-        (sV_0123456789876543210 :: Sing v_0123456789876543210)
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sV_Singletons_EmptyShowDeriving_1 :: Sing v_Singletons_EmptyShowDeriving_1)
+        (sA_Singletons_EmptyShowDeriving_3 :: Sing a_Singletons_EmptyShowDeriving_3)
         = applySing
             (applySing
                (singFun1
-                  @(LamCases_0123456789876543210Sym0 v_0123456789876543210 a_0123456789876543210)
+                  @(LamCases_Singletons_EmptyShowDeriving_7Sym0 v_Singletons_EmptyShowDeriving_1 a_Singletons_EmptyShowDeriving_3)
                   (\case))
-               sV_0123456789876543210)
-            sA_0123456789876543210
+               sV_Singletons_EmptyShowDeriving_1)
+            sA_Singletons_EmptyShowDeriving_3
     deriving instance Show (SFoo (z :: Foo))

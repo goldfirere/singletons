@@ -1,6 +1,12 @@
 Changelog for the `singletons-th` project
 =========================================
 
+next [????.??.??]
+-----------------
+* The unique names that `singletons-th` generates are now deterministic. This
+  should not affect the public-facing API portions of the TH-generated code,
+  but the resulting Haddocks should be a bit more compact and readable.
+
 3.5.1 [2026.01.10]
 ------------------
 * Require building with GHC 9.14.

@@ -14,325 +14,328 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
     data MkT1Sym0 :: (~>) x ((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))))
       where
         MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
-                                 MkT1Sym0 a0123456789876543210
-    type instance Apply @x @((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) MkT1Sym0 a0123456789876543210 = MkT1Sym1 a0123456789876543210
+                                 MkT1Sym0 a_FunctorLikeDeriving_50
+    type instance Apply @x @((~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))) MkT1Sym0 a_FunctorLikeDeriving_50 = MkT1Sym1 a_FunctorLikeDeriving_50
     instance SuppressUnusedWarnings MkT1Sym0 where
       suppressUnusedWarnings = snd ((,) MkT1Sym0KindInference ())
     type MkT1Sym1 :: forall x a. x
                                  -> (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
-    data MkT1Sym1 (a0123456789876543210 :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
+    data MkT1Sym1 (a_FunctorLikeDeriving_50 :: x) :: (~>) a ((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a)))
       where
-        MkT1Sym1KindInference :: SameKind (Apply (MkT1Sym1 a0123456789876543210) arg) (MkT1Sym2 a0123456789876543210 arg) =>
-                                 MkT1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @a @((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) (MkT1Sym1 a0123456789876543210) a0123456789876543210 = MkT1Sym2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkT1Sym1 a0123456789876543210) where
+        MkT1Sym1KindInference :: SameKind (Apply (MkT1Sym1 a_FunctorLikeDeriving_50) arg) (MkT1Sym2 a_FunctorLikeDeriving_50 arg) =>
+                                 MkT1Sym1 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51
+    type instance Apply @a @((~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))) (MkT1Sym1 a_FunctorLikeDeriving_50) a_FunctorLikeDeriving_51 = MkT1Sym2 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51
+    instance SuppressUnusedWarnings (MkT1Sym1 a_FunctorLikeDeriving_50) where
       suppressUnusedWarnings = snd ((,) MkT1Sym1KindInference ())
     type MkT1Sym2 :: forall x a. x
                                  -> a -> (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
-    data MkT1Sym2 (a0123456789876543210 :: x) (a0123456789876543210 :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
+    data MkT1Sym2 (a_FunctorLikeDeriving_50 :: x) (a_FunctorLikeDeriving_51 :: a) :: (~>) (Maybe a) ((~>) (Maybe (Maybe a)) (T x a))
       where
-        MkT1Sym2KindInference :: SameKind (Apply (MkT1Sym2 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym3 a0123456789876543210 a0123456789876543210 arg) =>
-                                 MkT1Sym2 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe a) @((~>) (Maybe (Maybe a)) (T x a)) (MkT1Sym2 a0123456789876543210 a0123456789876543210) a0123456789876543210 = MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkT1Sym2 a0123456789876543210 a0123456789876543210) where
+        MkT1Sym2KindInference :: SameKind (Apply (MkT1Sym2 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51) arg) (MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 arg) =>
+                                 MkT1Sym2 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52
+    type instance Apply @(Maybe a) @((~>) (Maybe (Maybe a)) (T x a)) (MkT1Sym2 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51) a_FunctorLikeDeriving_52 = MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52
+    instance SuppressUnusedWarnings (MkT1Sym2 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51) where
       suppressUnusedWarnings = snd ((,) MkT1Sym2KindInference ())
     type MkT1Sym3 :: forall x a. x
                                  -> a -> Maybe a -> (~>) (Maybe (Maybe a)) (T x a)
-    data MkT1Sym3 (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)
+    data MkT1Sym3 (a_FunctorLikeDeriving_50 :: x) (a_FunctorLikeDeriving_51 :: a) (a_FunctorLikeDeriving_52 :: Maybe a) :: (~>) (Maybe (Maybe a)) (T x a)
       where
-        MkT1Sym3KindInference :: SameKind (Apply (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) arg) (MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 arg) =>
-                                 MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe (Maybe a)) @(T x a) (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) a0123456789876543210 = MkT1 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkT1Sym3 a0123456789876543210 a0123456789876543210 a0123456789876543210) where
+        MkT1Sym3KindInference :: SameKind (Apply (MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52) arg) (MkT1Sym4 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52 arg) =>
+                                 MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52 a_FunctorLikeDeriving_53
+    type instance Apply @(Maybe (Maybe a)) @(T x a) (MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52) a_FunctorLikeDeriving_53 = MkT1 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52 a_FunctorLikeDeriving_53
+    instance SuppressUnusedWarnings (MkT1Sym3 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52) where
       suppressUnusedWarnings = snd ((,) MkT1Sym3KindInference ())
     type MkT1Sym4 :: forall x a. x
                                  -> a -> Maybe a -> Maybe (Maybe a) -> T x a
-    type family MkT1Sym4 @x @a (a0123456789876543210 :: x) (a0123456789876543210 :: a) (a0123456789876543210 :: Maybe a) (a0123456789876543210 :: Maybe (Maybe a)) :: T x a where
-      MkT1Sym4 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210 = MkT1 a0123456789876543210 a0123456789876543210 a0123456789876543210 a0123456789876543210
+    type family MkT1Sym4 @x @a (a_FunctorLikeDeriving_50 :: x) (a_FunctorLikeDeriving_51 :: a) (a_FunctorLikeDeriving_52 :: Maybe a) (a_FunctorLikeDeriving_53 :: Maybe (Maybe a)) :: T x a where
+      MkT1Sym4 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52 a_FunctorLikeDeriving_53 = MkT1 a_FunctorLikeDeriving_50 a_FunctorLikeDeriving_51 a_FunctorLikeDeriving_52 a_FunctorLikeDeriving_53
     type MkT2Sym0 :: forall x a. (~>) (Maybe x) (T x a)
     data MkT2Sym0 :: (~>) (Maybe x) (T x a)
       where
         MkT2Sym0KindInference :: SameKind (Apply MkT2Sym0 arg) (MkT2Sym1 arg) =>
-                                 MkT2Sym0 a0123456789876543210
-    type instance Apply @(Maybe x) @(T x a) MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
+                                 MkT2Sym0 a_FunctorLikeDeriving_54
+    type instance Apply @(Maybe x) @(T x a) MkT2Sym0 a_FunctorLikeDeriving_54 = MkT2 a_FunctorLikeDeriving_54
     instance SuppressUnusedWarnings MkT2Sym0 where
       suppressUnusedWarnings = snd ((,) MkT2Sym0KindInference ())
     type MkT2Sym1 :: forall x a. Maybe x -> T x a
-    type family MkT2Sym1 @x @a (a0123456789876543210 :: Maybe x) :: T x a where
-      MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+    type family MkT2Sym1 @x @a (a_FunctorLikeDeriving_54 :: Maybe x) :: T x a where
+      MkT2Sym1 a_FunctorLikeDeriving_54 = MkT2 a_FunctorLikeDeriving_54
+    type family LamCases_FunctorLikeDeriving_58 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59 where
+      LamCases_FunctorLikeDeriving_58 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_3 a_FunctorLikeDeriving_4 a_FunctorLikeDeriving_5 a_FunctorLikeDeriving_6 n_FunctorLikeDeriving_2 = n_FunctorLikeDeriving_2
+    data LamCases_FunctorLikeDeriving_58Sym0 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_58Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_58Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67) arg) (LamCases_FunctorLikeDeriving_58Sym1 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 arg) =>
+                                                            LamCases_FunctorLikeDeriving_58Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_58Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67) a_FunctorLikeDeriving_59 = LamCases_FunctorLikeDeriving_58 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_58Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_58Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_58Sym1 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59 where
+      LamCases_FunctorLikeDeriving_58Sym1 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59 = LamCases_FunctorLikeDeriving_58 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_34 a_FunctorLikeDeriving_45 a_FunctorLikeDeriving_56 a_FunctorLikeDeriving_67 a_FunctorLikeDeriving_59
+    type family LamCases_FunctorLikeDeriving_60 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61 where
+      LamCases_FunctorLikeDeriving_60 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_8 n_FunctorLikeDeriving_7 = n_FunctorLikeDeriving_7
+    data LamCases_FunctorLikeDeriving_60Sym0 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_60Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_60Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84) arg) (LamCases_FunctorLikeDeriving_60Sym1 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84 arg) =>
+                                                            LamCases_FunctorLikeDeriving_60Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_60Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84) a_FunctorLikeDeriving_61 = LamCases_FunctorLikeDeriving_60 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_60Sym0 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type Fmap_0123456789876543210 :: forall x a b. (~>) a b
-                                                   -> T x a -> T x b
-    type family Fmap_0123456789876543210 @x @a @b (a :: (~>) a b) (a :: T x a) :: T x b where
-      Fmap_0123456789876543210 @x @a @b (_f_0123456789876543210 :: (~>) a b) (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: T x a) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210)) (Apply _f_0123456789876543210 a_0123456789876543210)) (Apply (Apply FmapSym0 _f_0123456789876543210) a_0123456789876543210)) (Apply (Apply FmapSym0 (Apply FmapSym0 _f_0123456789876543210)) a_0123456789876543210)
-      Fmap_0123456789876543210 @x @a @b (_f_0123456789876543210 :: (~>) a b) (MkT2 a_0123456789876543210 :: T x a) = Apply MkT2Sym0 (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210) a_0123456789876543210)
-    type family LamCases_0123456789876543210 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_60Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_60Sym1 x0 (_f_FunctorLikeDeriving_03 :: (~>) a1 b2) a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61 where
+      LamCases_FunctorLikeDeriving_60Sym1 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61 = LamCases_FunctorLikeDeriving_60 x0 _f_FunctorLikeDeriving_03 a_FunctorLikeDeriving_84 a_FunctorLikeDeriving_61
+    type Fmap_FunctorLikeDeriving_55 :: forall x a b. (~>) a b
+                                                      -> T x a -> T x b
+    type family Fmap_FunctorLikeDeriving_55 @x @a @b (a :: (~>) a b) (a :: T x a) :: T x b where
+      Fmap_FunctorLikeDeriving_55 @x @a @b (_f_FunctorLikeDeriving_0 :: (~>) a b) (MkT1 a_FunctorLikeDeriving_3 a_FunctorLikeDeriving_4 a_FunctorLikeDeriving_5 a_FunctorLikeDeriving_6 :: T x a) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (LamCases_FunctorLikeDeriving_58Sym0 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_3 a_FunctorLikeDeriving_4 a_FunctorLikeDeriving_5 a_FunctorLikeDeriving_6) a_FunctorLikeDeriving_3)) (Apply _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_4)) (Apply (Apply FmapSym0 _f_FunctorLikeDeriving_0) a_FunctorLikeDeriving_5)) (Apply (Apply FmapSym0 (Apply FmapSym0 _f_FunctorLikeDeriving_0)) a_FunctorLikeDeriving_6)
+      Fmap_FunctorLikeDeriving_55 @x @a @b (_f_FunctorLikeDeriving_0 :: (~>) a b) (MkT2 a_FunctorLikeDeriving_8 :: T x a) = Apply MkT2Sym0 (Apply (LamCases_FunctorLikeDeriving_60Sym0 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_8) a_FunctorLikeDeriving_8)
+    type family LamCases_FunctorLikeDeriving_65 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66 where
+      LamCases_FunctorLikeDeriving_65 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13 n_FunctorLikeDeriving_9 = n_FunctorLikeDeriving_9
+    data LamCases_FunctorLikeDeriving_65Sym0 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_65Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_65Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) arg) (LamCases_FunctorLikeDeriving_65Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 arg) =>
+                                                            LamCases_FunctorLikeDeriving_65Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_65Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) a_FunctorLikeDeriving_66 = LamCases_FunctorLikeDeriving_65 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_65Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 _ = _z_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_65Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_65Sym1 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66 where
+      LamCases_FunctorLikeDeriving_65Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66 = LamCases_FunctorLikeDeriving_65 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_66
+    type family LamCases_FunctorLikeDeriving_67 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68 where
+      LamCases_FunctorLikeDeriving_67 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13 _ = _z_FunctorLikeDeriving_1
+    data LamCases_FunctorLikeDeriving_67Sym0 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_67Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_67Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) arg) (LamCases_FunctorLikeDeriving_67Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 arg) =>
+                                                            LamCases_FunctorLikeDeriving_67Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_67Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) a_FunctorLikeDeriving_68 = LamCases_FunctorLikeDeriving_67 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_67Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _z_0123456789876543210 a_0123456789876543210 n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_67Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_67Sym1 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68 where
+      LamCases_FunctorLikeDeriving_67Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68 = LamCases_FunctorLikeDeriving_67 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_103 a_FunctorLikeDeriving_114 a_FunctorLikeDeriving_125 a_FunctorLikeDeriving_136 a_FunctorLikeDeriving_68
+    type family LamCases_FunctorLikeDeriving_69 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70 where
+      LamCases_FunctorLikeDeriving_69 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_15 n_FunctorLikeDeriving_14 = n_FunctorLikeDeriving_14
+    data LamCases_FunctorLikeDeriving_69Sym0 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_69Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_69Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153) arg) (LamCases_FunctorLikeDeriving_69Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153 arg) =>
+                                                            LamCases_FunctorLikeDeriving_69Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_69Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153) a_FunctorLikeDeriving_70 = LamCases_FunctorLikeDeriving_69 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_69Sym0 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_z_01234567898765432100123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type TFHelper_0123456789876543210 :: forall x a b. a
-                                                       -> T x b -> T x a
-    type family TFHelper_0123456789876543210 @x @a @b (a :: a) (a :: T x b) :: T x a where
-      TFHelper_0123456789876543210 @x @a @b (_z_0123456789876543210 :: a) (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: T x b) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210)) (Apply (LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210)) (Apply (Apply (<$@#@$) _z_0123456789876543210) a_0123456789876543210)) (Apply (Apply FmapSym0 (Apply (<$@#@$) _z_0123456789876543210)) a_0123456789876543210)
-      TFHelper_0123456789876543210 @x @a @b (_z_0123456789876543210 :: a) (MkT2 a_0123456789876543210 :: T x b) = Apply MkT2Sym0 (Apply (LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210) a_0123456789876543210)
+        = snd ((,) LamCases_FunctorLikeDeriving_69Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_69Sym1 x0 (_z_FunctorLikeDeriving_12 :: a1) a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70 where
+      LamCases_FunctorLikeDeriving_69Sym1 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70 = LamCases_FunctorLikeDeriving_69 x0 _z_FunctorLikeDeriving_12 a_FunctorLikeDeriving_153 a_FunctorLikeDeriving_70
+    type TFHelper_FunctorLikeDeriving_62 :: forall x a b. a
+                                                          -> T x b -> T x a
+    type family TFHelper_FunctorLikeDeriving_62 @x @a @b (a :: a) (a :: T x b) :: T x a where
+      TFHelper_FunctorLikeDeriving_62 @x @a @b (_z_FunctorLikeDeriving_1 :: a) (MkT1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13 :: T x b) = Apply (Apply (Apply (Apply MkT1Sym0 (Apply (LamCases_FunctorLikeDeriving_65Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13) a_FunctorLikeDeriving_10)) (Apply (LamCases_FunctorLikeDeriving_67Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13) a_FunctorLikeDeriving_11)) (Apply (Apply (<$@#@$) _z_FunctorLikeDeriving_1) a_FunctorLikeDeriving_12)) (Apply (Apply FmapSym0 (Apply (<$@#@$) _z_FunctorLikeDeriving_1)) a_FunctorLikeDeriving_13)
+      TFHelper_FunctorLikeDeriving_62 @x @a @b (_z_FunctorLikeDeriving_1 :: a) (MkT2 a_FunctorLikeDeriving_15 :: T x b) = Apply MkT2Sym0 (Apply (LamCases_FunctorLikeDeriving_69Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_15) a_FunctorLikeDeriving_15)
     instance PFunctor (T x) where
-      type Fmap a a = Fmap_0123456789876543210 a a
-      type (<$) a a = TFHelper_0123456789876543210 a a
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 _ = MemptySym0
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+      type Fmap a a = Fmap_FunctorLikeDeriving_55 a a
+      type (<$) a a = TFHelper_FunctorLikeDeriving_62 a a
+    type family LamCases_FunctorLikeDeriving_74 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75 where
+      LamCases_FunctorLikeDeriving_74 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_18 a_FunctorLikeDeriving_19 a_FunctorLikeDeriving_20 a_FunctorLikeDeriving_21 _ = MemptySym0
+    data LamCases_FunctorLikeDeriving_74Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_74Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_74Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217) arg) (LamCases_FunctorLikeDeriving_74Sym1 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 arg) =>
+                                                            LamCases_FunctorLikeDeriving_74Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_74Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217) a_FunctorLikeDeriving_75 = LamCases_FunctorLikeDeriving_74 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_74Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 a_0123456789876543210 _ = MemptySym0
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_74Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_74Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75 where
+      LamCases_FunctorLikeDeriving_74Sym1 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75 = LamCases_FunctorLikeDeriving_74 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_184 a_FunctorLikeDeriving_195 a_FunctorLikeDeriving_206 a_FunctorLikeDeriving_217 a_FunctorLikeDeriving_75
+    type family LamCases_FunctorLikeDeriving_76 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77 where
+      LamCases_FunctorLikeDeriving_76 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_22 _ = MemptySym0
+    data LamCases_FunctorLikeDeriving_76Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_76Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_76Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224) arg) (LamCases_FunctorLikeDeriving_76Sym1 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224 arg) =>
+                                                            LamCases_FunctorLikeDeriving_76Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_76Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224) a_FunctorLikeDeriving_77 = LamCases_FunctorLikeDeriving_76 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_76Sym0 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 m0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type FoldMap_0123456789876543210 :: forall x a m. (~>) a m
-                                                      -> T x a -> m
-    type family FoldMap_0123456789876543210 @x @a @m (a :: (~>) a m) (a :: T x a) :: m where
-      FoldMap_0123456789876543210 @x @a @m (_f_0123456789876543210 :: (~>) a m) (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: T x a) = Apply (Apply MappendSym0 (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210)) (Apply (Apply MappendSym0 (Apply _f_0123456789876543210 a_0123456789876543210)) (Apply (Apply MappendSym0 (Apply (Apply FoldMapSym0 _f_0123456789876543210) a_0123456789876543210)) (Apply (Apply FoldMapSym0 (Apply FoldMapSym0 _f_0123456789876543210)) a_0123456789876543210)))
-      FoldMap_0123456789876543210 @x @a @m (_f_0123456789876543210 :: (~>) a m) (MkT2 a_0123456789876543210 :: T x a) = Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210) a_0123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 _ n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_76Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_76Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 m2) a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77 where
+      LamCases_FunctorLikeDeriving_76Sym1 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77 = LamCases_FunctorLikeDeriving_76 x0 _f_FunctorLikeDeriving_163 a_FunctorLikeDeriving_224 a_FunctorLikeDeriving_77
+    type FoldMap_FunctorLikeDeriving_71 :: forall x a m. (~>) a m
+                                                         -> T x a -> m
+    type family FoldMap_FunctorLikeDeriving_71 @x @a @m (a :: (~>) a m) (a :: T x a) :: m where
+      FoldMap_FunctorLikeDeriving_71 @x @a @m (_f_FunctorLikeDeriving_16 :: (~>) a m) (MkT1 a_FunctorLikeDeriving_18 a_FunctorLikeDeriving_19 a_FunctorLikeDeriving_20 a_FunctorLikeDeriving_21 :: T x a) = Apply (Apply MappendSym0 (Apply (LamCases_FunctorLikeDeriving_74Sym0 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_18 a_FunctorLikeDeriving_19 a_FunctorLikeDeriving_20 a_FunctorLikeDeriving_21) a_FunctorLikeDeriving_18)) (Apply (Apply MappendSym0 (Apply _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_19)) (Apply (Apply MappendSym0 (Apply (Apply FoldMapSym0 _f_FunctorLikeDeriving_16) a_FunctorLikeDeriving_20)) (Apply (Apply FoldMapSym0 (Apply FoldMapSym0 _f_FunctorLikeDeriving_16)) a_FunctorLikeDeriving_21)))
+      FoldMap_FunctorLikeDeriving_71 @x @a @m (_f_FunctorLikeDeriving_16 :: (~>) a m) (MkT2 a_FunctorLikeDeriving_22 :: T x a) = Apply (LamCases_FunctorLikeDeriving_76Sym0 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_22) a_FunctorLikeDeriving_22
+    type family LamCases_FunctorLikeDeriving_82 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84 where
+      LamCases_FunctorLikeDeriving_82 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33 _ n_FunctorLikeDeriving_23 = n_FunctorLikeDeriving_23
+    data LamCases_FunctorLikeDeriving_82Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_82Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_82Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) arg) (LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 arg) =>
+                                                            LamCases_FunctorLikeDeriving_82Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_82Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) a_FunctorLikeDeriving_83 = LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_82Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    data LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_82Sym0KindInference ())
+    data LamCases_FunctorLikeDeriving_82Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84
       where
-        LamCases_0123456789876543210Sym1KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_82Sym1KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83) arg) (LamCases_FunctorLikeDeriving_82Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 arg) =>
+                                                            LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83) a_FunctorLikeDeriving_84 = LamCases_FunctorLikeDeriving_82 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_82Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym1KindInference ())
-    type family LamCases_0123456789876543210Sym2 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n1_0123456789876543210 n2_0123456789876543210 = Apply (Apply (Apply FoldrSym0 _f_0123456789876543210) n2_0123456789876543210) n1_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_82Sym1KindInference ())
+    type family LamCases_FunctorLikeDeriving_82Sym2 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84 where
+      LamCases_FunctorLikeDeriving_82Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84 = LamCases_FunctorLikeDeriving_82 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_83 a_FunctorLikeDeriving_84
+    type family LamCases_FunctorLikeDeriving_85 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87 where
+      LamCases_FunctorLikeDeriving_85 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33 n1_FunctorLikeDeriving_24 n2_FunctorLikeDeriving_25 = Apply (Apply (Apply FoldrSym0 _f_FunctorLikeDeriving_16) n2_FunctorLikeDeriving_25) n1_FunctorLikeDeriving_24
+    data LamCases_FunctorLikeDeriving_85Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_85Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_85Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) arg) (LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 arg) =>
+                                                            LamCases_FunctorLikeDeriving_85Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_85Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) a_FunctorLikeDeriving_86 = LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_85Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    data LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_85Sym0KindInference ())
+    data LamCases_FunctorLikeDeriving_85Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87
       where
-        LamCases_0123456789876543210Sym1KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_85Sym1KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86) arg) (LamCases_FunctorLikeDeriving_85Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 arg) =>
+                                                            LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86) a_FunctorLikeDeriving_87 = LamCases_FunctorLikeDeriving_85 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_85Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym1KindInference ())
-    type family LamCases_0123456789876543210Sym2 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x n1_0123456789876543210 n2_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n1_0123456789876543210 n2_0123456789876543210 = Apply (Apply (Apply FoldrSym0 _f_0123456789876543210) n2_0123456789876543210) n1_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_85Sym1KindInference ())
+    type family LamCases_FunctorLikeDeriving_85Sym2 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87 where
+      LamCases_FunctorLikeDeriving_85Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87 = LamCases_FunctorLikeDeriving_85 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_86 a_FunctorLikeDeriving_87
+    type family LamCases_FunctorLikeDeriving_89 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 (_f_FunctorLikeDeriving_165 :: (~>) a3 ((~>) b4 b4)) (_z_FunctorLikeDeriving_176 :: b4) a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91 where
+      LamCases_FunctorLikeDeriving_89 x n1_FunctorLikeDeriving_28 n2_FunctorLikeDeriving_29 _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33 n1_FunctorLikeDeriving_26 n2_FunctorLikeDeriving_27 = Apply (Apply (Apply FoldrSym0 _f_FunctorLikeDeriving_16) n2_FunctorLikeDeriving_27) n1_FunctorLikeDeriving_26
+    data LamCases_FunctorLikeDeriving_89Sym0 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 (_f_FunctorLikeDeriving_165 :: (~>) a3 ((~>) b4 b4)) (_z_FunctorLikeDeriving_176 :: b4) a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_89Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_89Sym0 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310) arg) (LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 arg) =>
+                                                            LamCases_FunctorLikeDeriving_89Sym0 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_89Sym0 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310) a_FunctorLikeDeriving_90 = LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_89Sym0 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    data LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_89Sym0KindInference ())
+    data LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 (_f_FunctorLikeDeriving_165 :: (~>) a3 ((~>) b4 b4)) (_z_FunctorLikeDeriving_176 :: b4) a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91
       where
-        LamCases_0123456789876543210Sym1KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym2 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym1 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_89Sym1KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90) arg) (LamCases_FunctorLikeDeriving_89Sym2 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 arg) =>
+                                                            LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90) a_FunctorLikeDeriving_91 = LamCases_FunctorLikeDeriving_89 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_89Sym1 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym1KindInference ())
-    type family LamCases_0123456789876543210Sym2 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym2 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 n1_01234567898765432100123456789876543210 n2_01234567898765432100123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 n1_0123456789876543210 n2_0123456789876543210 = Apply (Apply (Apply FoldrSym0 (LamCases_0123456789876543210Sym0 x n1_0123456789876543210 n2_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)) n2_0123456789876543210) n1_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_89Sym1KindInference ())
+    type family LamCases_FunctorLikeDeriving_89Sym2 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 (_f_FunctorLikeDeriving_165 :: (~>) a3 ((~>) b4 b4)) (_z_FunctorLikeDeriving_176 :: b4) a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91 where
+      LamCases_FunctorLikeDeriving_89Sym2 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91 = LamCases_FunctorLikeDeriving_89 x0 n1_FunctorLikeDeriving_281 n2_FunctorLikeDeriving_292 _f_FunctorLikeDeriving_165 _z_FunctorLikeDeriving_176 a_FunctorLikeDeriving_307 a_FunctorLikeDeriving_318 a_FunctorLikeDeriving_329 a_FunctorLikeDeriving_3310 a_FunctorLikeDeriving_90 a_FunctorLikeDeriving_91
+    type family LamCases_FunctorLikeDeriving_88 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93 where
+      LamCases_FunctorLikeDeriving_88 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33 n1_FunctorLikeDeriving_28 n2_FunctorLikeDeriving_29 = Apply (Apply (Apply FoldrSym0 (LamCases_FunctorLikeDeriving_89Sym0 x n1_FunctorLikeDeriving_28 n2_FunctorLikeDeriving_29 _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33)) n2_FunctorLikeDeriving_29) n1_FunctorLikeDeriving_28
+    data LamCases_FunctorLikeDeriving_88Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_88Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_88Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) arg) (LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 arg) =>
+                                                            LamCases_FunctorLikeDeriving_88Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_88Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) a_FunctorLikeDeriving_92 = LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_88Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    data LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_88Sym0KindInference ())
+    data LamCases_FunctorLikeDeriving_88Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93
       where
-        LamCases_0123456789876543210Sym1KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_88Sym1KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92) arg) (LamCases_FunctorLikeDeriving_88Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 arg) =>
+                                                            LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92) a_FunctorLikeDeriving_93 = LamCases_FunctorLikeDeriving_88 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_88Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym1KindInference ())
-    type family LamCases_0123456789876543210Sym2 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 _ n_0123456789876543210 = n_0123456789876543210
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_88Sym1KindInference ())
+    type family LamCases_FunctorLikeDeriving_88Sym2 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93 where
+      LamCases_FunctorLikeDeriving_88Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93 = LamCases_FunctorLikeDeriving_88 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_305 a_FunctorLikeDeriving_316 a_FunctorLikeDeriving_327 a_FunctorLikeDeriving_338 a_FunctorLikeDeriving_92 a_FunctorLikeDeriving_93
+    type family LamCases_FunctorLikeDeriving_94 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96 where
+      LamCases_FunctorLikeDeriving_94 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_35 _ n_FunctorLikeDeriving_34 = n_FunctorLikeDeriving_34
+    data LamCases_FunctorLikeDeriving_94Sym0 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_94Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_94Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355) arg) (LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 arg) =>
+                                                            LamCases_FunctorLikeDeriving_94Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_94Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355) a_FunctorLikeDeriving_95 = LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_94Sym0 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    data LamCases_0123456789876543210Sym1 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_94Sym0KindInference ())
+    data LamCases_FunctorLikeDeriving_94Sym1 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96
       where
-        LamCases_0123456789876543210Sym1KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym1 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_94Sym1KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95) arg) (LamCases_FunctorLikeDeriving_94Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 arg) =>
+                                                            LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95) a_FunctorLikeDeriving_96 = LamCases_FunctorLikeDeriving_94 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_94Sym1 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym1KindInference ())
-    type family LamCases_0123456789876543210Sym2 x0123456789876543210 (_f_01234567898765432100123456789876543210 :: (~>) a0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)) (_z_01234567898765432100123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym2 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 _f_01234567898765432100123456789876543210 _z_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type Foldr_0123456789876543210 :: forall x a b. (~>) a ((~>) b b)
-                                                    -> b -> T x a -> b
-    type family Foldr_0123456789876543210 @x @a @b (a :: (~>) a ((~>) b b)) (a :: b) (a :: T x a) :: b where
-      Foldr_0123456789876543210 @x @a @b (_f_0123456789876543210 :: (~>) a ((~>) b b)) (_z_0123456789876543210 :: b) (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: T x a) = Apply (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210) (Apply (Apply _f_0123456789876543210 a_0123456789876543210) (Apply (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210) (Apply (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210) a_0123456789876543210) _z_0123456789876543210)))
-      Foldr_0123456789876543210 @x @a @b (_f_0123456789876543210 :: (~>) a ((~>) b b)) (_z_0123456789876543210 :: b) (MkT2 a_0123456789876543210 :: T x a) = Apply (Apply (LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210) a_0123456789876543210) _z_0123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_94Sym1KindInference ())
+    type family LamCases_FunctorLikeDeriving_94Sym2 x0 (_f_FunctorLikeDeriving_163 :: (~>) a1 ((~>) b2 b2)) (_z_FunctorLikeDeriving_174 :: b2) a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96 where
+      LamCases_FunctorLikeDeriving_94Sym2 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96 = LamCases_FunctorLikeDeriving_94 x0 _f_FunctorLikeDeriving_163 _z_FunctorLikeDeriving_174 a_FunctorLikeDeriving_355 a_FunctorLikeDeriving_95 a_FunctorLikeDeriving_96
+    type Foldr_FunctorLikeDeriving_78 :: forall x
+                                                a
+                                                b. (~>) a ((~>) b b) -> b -> T x a -> b
+    type family Foldr_FunctorLikeDeriving_78 @x @a @b (a :: (~>) a ((~>) b b)) (a :: b) (a :: T x a) :: b where
+      Foldr_FunctorLikeDeriving_78 @x @a @b (_f_FunctorLikeDeriving_16 :: (~>) a ((~>) b b)) (_z_FunctorLikeDeriving_17 :: b) (MkT1 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33 :: T x a) = Apply (Apply (LamCases_FunctorLikeDeriving_82Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33) a_FunctorLikeDeriving_30) (Apply (Apply _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_31) (Apply (Apply (LamCases_FunctorLikeDeriving_85Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33) a_FunctorLikeDeriving_32) (Apply (Apply (LamCases_FunctorLikeDeriving_88Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33) a_FunctorLikeDeriving_33) _z_FunctorLikeDeriving_17)))
+      Foldr_FunctorLikeDeriving_78 @x @a @b (_f_FunctorLikeDeriving_16 :: (~>) a ((~>) b b)) (_z_FunctorLikeDeriving_17 :: b) (MkT2 a_FunctorLikeDeriving_35 :: T x a) = Apply (Apply (LamCases_FunctorLikeDeriving_94Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_35) a_FunctorLikeDeriving_35) _z_FunctorLikeDeriving_17
     instance PFoldable (T x) where
-      type FoldMap a a = FoldMap_0123456789876543210 a a
-      type Foldr a a a = Foldr_0123456789876543210 a a a
-    type Traverse_0123456789876543210 :: forall x a f b. (~>) a (f b)
-                                                         -> T x a -> f (T x b)
-    type family Traverse_0123456789876543210 @x @a @f @b (a :: (~>) a (f b)) (a :: T x a) :: f (T x b) where
-      Traverse_0123456789876543210 @x @a @f @b (_f_0123456789876543210 :: (~>) a (f b)) (MkT1 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 :: T x a) = Apply (Apply (<*>@#@$) (Apply (Apply (<*>@#@$) (Apply (Apply (Apply LiftA2Sym0 MkT1Sym0) (Apply PureSym0 a_0123456789876543210)) (Apply _f_0123456789876543210 a_0123456789876543210))) (Apply (Apply TraverseSym0 _f_0123456789876543210) a_0123456789876543210))) (Apply (Apply TraverseSym0 (Apply TraverseSym0 _f_0123456789876543210)) a_0123456789876543210)
-      Traverse_0123456789876543210 @x @a @f @b (_f_0123456789876543210 :: (~>) a (f b)) (MkT2 a_0123456789876543210 :: T x a) = Apply (Apply FmapSym0 MkT2Sym0) (Apply PureSym0 a_0123456789876543210)
+      type FoldMap a a = FoldMap_FunctorLikeDeriving_71 a a
+      type Foldr a a a = Foldr_FunctorLikeDeriving_78 a a a
+    type Traverse_FunctorLikeDeriving_97 :: forall x
+                                                   a
+                                                   f
+                                                   b. (~>) a (f b) -> T x a -> f (T x b)
+    type family Traverse_FunctorLikeDeriving_97 @x @a @f @b (a :: (~>) a (f b)) (a :: T x a) :: f (T x b) where
+      Traverse_FunctorLikeDeriving_97 @x @a @f @b (_f_FunctorLikeDeriving_36 :: (~>) a (f b)) (MkT1 a_FunctorLikeDeriving_37 a_FunctorLikeDeriving_38 a_FunctorLikeDeriving_39 a_FunctorLikeDeriving_40 :: T x a) = Apply (Apply (<*>@#@$) (Apply (Apply (<*>@#@$) (Apply (Apply (Apply LiftA2Sym0 MkT1Sym0) (Apply PureSym0 a_FunctorLikeDeriving_37)) (Apply _f_FunctorLikeDeriving_36 a_FunctorLikeDeriving_38))) (Apply (Apply TraverseSym0 _f_FunctorLikeDeriving_36) a_FunctorLikeDeriving_39))) (Apply (Apply TraverseSym0 (Apply TraverseSym0 _f_FunctorLikeDeriving_36)) a_FunctorLikeDeriving_40)
+      Traverse_FunctorLikeDeriving_97 @x @a @f @b (_f_FunctorLikeDeriving_36 :: (~>) a (f b)) (MkT2 a_FunctorLikeDeriving_41 :: T x a) = Apply (Apply FmapSym0 MkT2Sym0) (Apply PureSym0 a_FunctorLikeDeriving_41)
     instance PTraversable (T x) where
-      type Traverse a a = Traverse_0123456789876543210 a a
-    type family LamCases_0123456789876543210 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_0123456789876543210 where
-    data LamCases_0123456789876543210Sym0 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_01234567898765432100123456789876543210
+      type Traverse a a = Traverse_FunctorLikeDeriving_97 a a
+    type family LamCases_FunctorLikeDeriving_103 (v_FunctorLikeDeriving_441 :: Empty a0) a_FunctorLikeDeriving_104 where
+    data LamCases_FunctorLikeDeriving_103Sym0 (v_FunctorLikeDeriving_441 :: Empty a0) a_FunctorLikeDeriving_104
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_103Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_441) arg) (LamCases_FunctorLikeDeriving_103Sym1 v_FunctorLikeDeriving_441 arg) =>
+                                                             LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_441 a_FunctorLikeDeriving_104
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_441) a_FunctorLikeDeriving_104 = LamCases_FunctorLikeDeriving_103 v_FunctorLikeDeriving_441 a_FunctorLikeDeriving_104
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_441) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type Fmap_0123456789876543210 :: forall a b. (~>) a b
-                                                 -> Empty a -> Empty b
-    type family Fmap_0123456789876543210 @a @b (a :: (~>) a b) (a :: Empty a) :: Empty b where
-      Fmap_0123456789876543210 @a @b _ v_0123456789876543210 = Apply (LamCases_0123456789876543210Sym0 v_0123456789876543210) v_0123456789876543210
-    type family LamCases_0123456789876543210 (v_01234567898765432100123456789876543210 :: Empty b0123456789876543210) a_0123456789876543210 where
-    data LamCases_0123456789876543210Sym0 (v_01234567898765432100123456789876543210 :: Empty b0123456789876543210) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_103Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_103Sym1 (v_FunctorLikeDeriving_441 :: Empty a0) a_FunctorLikeDeriving_104 where
+      LamCases_FunctorLikeDeriving_103Sym1 v_FunctorLikeDeriving_441 a_FunctorLikeDeriving_104 = LamCases_FunctorLikeDeriving_103 v_FunctorLikeDeriving_441 a_FunctorLikeDeriving_104
+    type Fmap_FunctorLikeDeriving_100 :: forall a b. (~>) a b
+                                                     -> Empty a -> Empty b
+    type family Fmap_FunctorLikeDeriving_100 @a @b (a :: (~>) a b) (a :: Empty a) :: Empty b where
+      Fmap_FunctorLikeDeriving_100 @a @b _ v_FunctorLikeDeriving_44 = Apply (LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_44) v_FunctorLikeDeriving_44
+    type family LamCases_FunctorLikeDeriving_108 (v_FunctorLikeDeriving_451 :: Empty b0) a_FunctorLikeDeriving_109 where
+    data LamCases_FunctorLikeDeriving_108Sym0 (v_FunctorLikeDeriving_451 :: Empty b0) a_FunctorLikeDeriving_109
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_108Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_451) arg) (LamCases_FunctorLikeDeriving_108Sym1 v_FunctorLikeDeriving_451 arg) =>
+                                                             LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_451 a_FunctorLikeDeriving_109
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_451) a_FunctorLikeDeriving_109 = LamCases_FunctorLikeDeriving_108 v_FunctorLikeDeriving_451 a_FunctorLikeDeriving_109
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_451) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (v_01234567898765432100123456789876543210 :: Empty b0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type TFHelper_0123456789876543210 :: forall a b. a
-                                                     -> Empty b -> Empty a
-    type family TFHelper_0123456789876543210 @a @b (a :: a) (a :: Empty b) :: Empty a where
-      TFHelper_0123456789876543210 @a @b _ v_0123456789876543210 = Apply (LamCases_0123456789876543210Sym0 v_0123456789876543210) v_0123456789876543210
+        = snd ((,) LamCases_FunctorLikeDeriving_108Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_108Sym1 (v_FunctorLikeDeriving_451 :: Empty b0) a_FunctorLikeDeriving_109 where
+      LamCases_FunctorLikeDeriving_108Sym1 v_FunctorLikeDeriving_451 a_FunctorLikeDeriving_109 = LamCases_FunctorLikeDeriving_108 v_FunctorLikeDeriving_451 a_FunctorLikeDeriving_109
+    type TFHelper_FunctorLikeDeriving_105 :: forall a b. a
+                                                         -> Empty b -> Empty a
+    type family TFHelper_FunctorLikeDeriving_105 @a @b (a :: a) (a :: Empty b) :: Empty a where
+      TFHelper_FunctorLikeDeriving_105 @a @b _ v_FunctorLikeDeriving_45 = Apply (LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_45) v_FunctorLikeDeriving_45
     instance PFunctor Empty where
-      type Fmap a a = Fmap_0123456789876543210 a a
-      type (<$) a a = TFHelper_0123456789876543210 a a
-    type FoldMap_0123456789876543210 :: forall a m. (~>) a m
-                                                    -> Empty a -> m
-    type family FoldMap_0123456789876543210 @a @m (a :: (~>) a m) (a :: Empty a) :: m where
-      FoldMap_0123456789876543210 @a @m _ _ = MemptySym0
+      type Fmap a a = Fmap_FunctorLikeDeriving_100 a a
+      type (<$) a a = TFHelper_FunctorLikeDeriving_105 a a
+    type FoldMap_FunctorLikeDeriving_110 :: forall a m. (~>) a m
+                                                        -> Empty a -> m
+    type family FoldMap_FunctorLikeDeriving_110 @a @m (a :: (~>) a m) (a :: Empty a) :: m where
+      FoldMap_FunctorLikeDeriving_110 @a @m _ _ = MemptySym0
     instance PFoldable Empty where
-      type FoldMap a a = FoldMap_0123456789876543210 a a
-    type family LamCases_0123456789876543210 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_0123456789876543210 where
-    data LamCases_0123456789876543210Sym0 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_01234567898765432100123456789876543210
+      type FoldMap a a = FoldMap_FunctorLikeDeriving_110 a a
+    type family LamCases_FunctorLikeDeriving_116 (v_FunctorLikeDeriving_491 :: Empty a0) a_FunctorLikeDeriving_117 where
+    data LamCases_FunctorLikeDeriving_116Sym0 (v_FunctorLikeDeriving_491 :: Empty a0) a_FunctorLikeDeriving_117
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 v_01234567898765432100123456789876543210) where
+        LamCases_FunctorLikeDeriving_116Sym0KindInference :: SameKind (Apply (LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_491) arg) (LamCases_FunctorLikeDeriving_116Sym1 v_FunctorLikeDeriving_491 arg) =>
+                                                             LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_491 a_FunctorLikeDeriving_117
+    type instance Apply @_ @_ (LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_491) a_FunctorLikeDeriving_117 = LamCases_FunctorLikeDeriving_116 v_FunctorLikeDeriving_491 a_FunctorLikeDeriving_117
+    instance SuppressUnusedWarnings (LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_491) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (v_01234567898765432100123456789876543210 :: Empty a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 v_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type Traverse_0123456789876543210 :: forall a f b. (~>) a (f b)
-                                                       -> Empty a -> f (Empty b)
-    type family Traverse_0123456789876543210 @a @f @b (a :: (~>) a (f b)) (a :: Empty a) :: f (Empty b) where
-      Traverse_0123456789876543210 @a @f @b _ v_0123456789876543210 = Apply PureSym0 (Apply (LamCases_0123456789876543210Sym0 v_0123456789876543210) v_0123456789876543210)
+        = snd ((,) LamCases_FunctorLikeDeriving_116Sym0KindInference ())
+    type family LamCases_FunctorLikeDeriving_116Sym1 (v_FunctorLikeDeriving_491 :: Empty a0) a_FunctorLikeDeriving_117 where
+      LamCases_FunctorLikeDeriving_116Sym1 v_FunctorLikeDeriving_491 a_FunctorLikeDeriving_117 = LamCases_FunctorLikeDeriving_116 v_FunctorLikeDeriving_491 a_FunctorLikeDeriving_117
+    type Traverse_FunctorLikeDeriving_113 :: forall a f b. (~>) a (f b)
+                                                           -> Empty a -> f (Empty b)
+    type family Traverse_FunctorLikeDeriving_113 @a @f @b (a :: (~>) a (f b)) (a :: Empty a) :: f (Empty b) where
+      Traverse_FunctorLikeDeriving_113 @a @f @b _ v_FunctorLikeDeriving_49 = Apply PureSym0 (Apply (LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_49) v_FunctorLikeDeriving_49)
     instance PTraversable Empty where
-      type Traverse a a = Traverse_0123456789876543210 a a
+      type Traverse a a = Traverse_FunctorLikeDeriving_113 a a
     data ST :: forall x a. T x a -> Type
       where
         SMkT1 :: forall x
@@ -374,11 +377,11 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
       toSing x = SomeSing ((\case) x)
     instance SFunctor (T x) where
       sFmap
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_0 :: Sing _f_FunctorLikeDeriving_0)
+        (SMkT1 (sA_FunctorLikeDeriving_3 :: Sing a_FunctorLikeDeriving_3)
+               (sA_FunctorLikeDeriving_4 :: Sing a_FunctorLikeDeriving_4)
+               (sA_FunctorLikeDeriving_5 :: Sing a_FunctorLikeDeriving_5)
+               (sA_FunctorLikeDeriving_6 :: Sing a_FunctorLikeDeriving_6))
         = applySing
             (applySing
                (applySing
@@ -386,38 +389,38 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                      (singFun4 @MkT1Sym0 SMkT1)
                      (applySing
                         (singFun1
-                           @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                           @(LamCases_FunctorLikeDeriving_58Sym0 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_3 a_FunctorLikeDeriving_4 a_FunctorLikeDeriving_5 a_FunctorLikeDeriving_6)
                            (\cases
-                              (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                                -> sN_0123456789876543210))
-                        sA_0123456789876543210))
-                  (applySing _sf_0123456789876543210 sA_0123456789876543210))
+                              (sN_FunctorLikeDeriving_2 :: Sing n_FunctorLikeDeriving_2)
+                                -> sN_FunctorLikeDeriving_2))
+                        sA_FunctorLikeDeriving_3))
+                  (applySing _sf_FunctorLikeDeriving_0 sA_FunctorLikeDeriving_4))
                (applySing
-                  (applySing (singFun2 @FmapSym0 sFmap) _sf_0123456789876543210)
-                  sA_0123456789876543210))
+                  (applySing (singFun2 @FmapSym0 sFmap) _sf_FunctorLikeDeriving_0)
+                  sA_FunctorLikeDeriving_5))
             (applySing
                (applySing
                   (singFun2 @FmapSym0 sFmap)
-                  (applySing (singFun2 @FmapSym0 sFmap) _sf_0123456789876543210))
-               sA_0123456789876543210)
+                  (applySing (singFun2 @FmapSym0 sFmap) _sf_FunctorLikeDeriving_0))
+               sA_FunctorLikeDeriving_6)
       sFmap
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT2 (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_0 :: Sing _f_FunctorLikeDeriving_0)
+        (SMkT2 (sA_FunctorLikeDeriving_8 :: Sing a_FunctorLikeDeriving_8))
         = applySing
             (singFun1 @MkT2Sym0 SMkT2)
             (applySing
                (singFun1
-                  @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210)
+                  @(LamCases_FunctorLikeDeriving_60Sym0 x _f_FunctorLikeDeriving_0 a_FunctorLikeDeriving_8)
                   (\cases
-                     (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                       -> sN_0123456789876543210))
-               sA_0123456789876543210)
+                     (sN_FunctorLikeDeriving_7 :: Sing n_FunctorLikeDeriving_7)
+                       -> sN_FunctorLikeDeriving_7))
+               sA_FunctorLikeDeriving_8)
       (%<$)
-        (_sz_0123456789876543210 :: Sing _z_0123456789876543210)
-        (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sz_FunctorLikeDeriving_1 :: Sing _z_FunctorLikeDeriving_1)
+        (SMkT1 (sA_FunctorLikeDeriving_10 :: Sing a_FunctorLikeDeriving_10)
+               (sA_FunctorLikeDeriving_11 :: Sing a_FunctorLikeDeriving_11)
+               (sA_FunctorLikeDeriving_12 :: Sing a_FunctorLikeDeriving_12)
+               (sA_FunctorLikeDeriving_13 :: Sing a_FunctorLikeDeriving_13))
         = applySing
             (applySing
                (applySing
@@ -425,154 +428,154 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                      (singFun4 @MkT1Sym0 SMkT1)
                      (applySing
                         (singFun1
-                           @(LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                           @(LamCases_FunctorLikeDeriving_65Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13)
                            (\cases
-                              (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                                -> sN_0123456789876543210))
-                        sA_0123456789876543210))
+                              (sN_FunctorLikeDeriving_9 :: Sing n_FunctorLikeDeriving_9)
+                                -> sN_FunctorLikeDeriving_9))
+                        sA_FunctorLikeDeriving_10))
                   (applySing
                      (singFun1
-                        @(LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
-                        (\cases _ -> _sz_0123456789876543210))
-                     sA_0123456789876543210))
+                        @(LamCases_FunctorLikeDeriving_67Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_10 a_FunctorLikeDeriving_11 a_FunctorLikeDeriving_12 a_FunctorLikeDeriving_13)
+                        (\cases _ -> _sz_FunctorLikeDeriving_1))
+                     sA_FunctorLikeDeriving_11))
                (applySing
-                  (applySing (singFun2 @(<$@#@$) (%<$)) _sz_0123456789876543210)
-                  sA_0123456789876543210))
+                  (applySing (singFun2 @(<$@#@$) (%<$)) _sz_FunctorLikeDeriving_1)
+                  sA_FunctorLikeDeriving_12))
             (applySing
                (applySing
                   (singFun2 @FmapSym0 sFmap)
-                  (applySing (singFun2 @(<$@#@$) (%<$)) _sz_0123456789876543210))
-               sA_0123456789876543210)
+                  (applySing (singFun2 @(<$@#@$) (%<$)) _sz_FunctorLikeDeriving_1))
+               sA_FunctorLikeDeriving_13)
       (%<$)
-        (_sz_0123456789876543210 :: Sing _z_0123456789876543210)
-        (SMkT2 (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sz_FunctorLikeDeriving_1 :: Sing _z_FunctorLikeDeriving_1)
+        (SMkT2 (sA_FunctorLikeDeriving_15 :: Sing a_FunctorLikeDeriving_15))
         = applySing
             (singFun1 @MkT2Sym0 SMkT2)
             (applySing
                (singFun1
-                  @(LamCases_0123456789876543210Sym0 x _z_0123456789876543210 a_0123456789876543210)
+                  @(LamCases_FunctorLikeDeriving_69Sym0 x _z_FunctorLikeDeriving_1 a_FunctorLikeDeriving_15)
                   (\cases
-                     (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                       -> sN_0123456789876543210))
-               sA_0123456789876543210)
+                     (sN_FunctorLikeDeriving_14 :: Sing n_FunctorLikeDeriving_14)
+                       -> sN_FunctorLikeDeriving_14))
+               sA_FunctorLikeDeriving_15)
     instance SFoldable (T x) where
       sFoldMap
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_16 :: Sing _f_FunctorLikeDeriving_16)
+        (SMkT1 (sA_FunctorLikeDeriving_18 :: Sing a_FunctorLikeDeriving_18)
+               (sA_FunctorLikeDeriving_19 :: Sing a_FunctorLikeDeriving_19)
+               (sA_FunctorLikeDeriving_20 :: Sing a_FunctorLikeDeriving_20)
+               (sA_FunctorLikeDeriving_21 :: Sing a_FunctorLikeDeriving_21))
         = applySing
             (applySing
                (singFun2 @MappendSym0 sMappend)
                (applySing
                   (singFun1
-                     @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                     @(LamCases_FunctorLikeDeriving_74Sym0 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_18 a_FunctorLikeDeriving_19 a_FunctorLikeDeriving_20 a_FunctorLikeDeriving_21)
                      (\cases _ -> sMempty))
-                  sA_0123456789876543210))
+                  sA_FunctorLikeDeriving_18))
             (applySing
                (applySing
                   (singFun2 @MappendSym0 sMappend)
-                  (applySing _sf_0123456789876543210 sA_0123456789876543210))
+                  (applySing _sf_FunctorLikeDeriving_16 sA_FunctorLikeDeriving_19))
                (applySing
                   (applySing
                      (singFun2 @MappendSym0 sMappend)
                      (applySing
                         (applySing
-                           (singFun2 @FoldMapSym0 sFoldMap) _sf_0123456789876543210)
-                        sA_0123456789876543210))
+                           (singFun2 @FoldMapSym0 sFoldMap) _sf_FunctorLikeDeriving_16)
+                        sA_FunctorLikeDeriving_20))
                   (applySing
                      (applySing
                         (singFun2 @FoldMapSym0 sFoldMap)
                         (applySing
-                           (singFun2 @FoldMapSym0 sFoldMap) _sf_0123456789876543210))
-                     sA_0123456789876543210)))
+                           (singFun2 @FoldMapSym0 sFoldMap) _sf_FunctorLikeDeriving_16))
+                     sA_FunctorLikeDeriving_21)))
       sFoldMap
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT2 (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_16 :: Sing _f_FunctorLikeDeriving_16)
+        (SMkT2 (sA_FunctorLikeDeriving_22 :: Sing a_FunctorLikeDeriving_22))
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 a_0123456789876543210)
+               @(LamCases_FunctorLikeDeriving_76Sym0 x _f_FunctorLikeDeriving_16 a_FunctorLikeDeriving_22)
                (\cases _ -> sMempty))
-            sA_0123456789876543210
+            sA_FunctorLikeDeriving_22
       sFoldr
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (_sz_0123456789876543210 :: Sing _z_0123456789876543210)
-        (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_16 :: Sing _f_FunctorLikeDeriving_16)
+        (_sz_FunctorLikeDeriving_17 :: Sing _z_FunctorLikeDeriving_17)
+        (SMkT1 (sA_FunctorLikeDeriving_30 :: Sing a_FunctorLikeDeriving_30)
+               (sA_FunctorLikeDeriving_31 :: Sing a_FunctorLikeDeriving_31)
+               (sA_FunctorLikeDeriving_32 :: Sing a_FunctorLikeDeriving_32)
+               (sA_FunctorLikeDeriving_33 :: Sing a_FunctorLikeDeriving_33))
         = applySing
             (applySing
                (singFun2
-                  @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                  @(LamCases_FunctorLikeDeriving_82Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33)
                   (\cases
-                     _ (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                       -> sN_0123456789876543210))
-               sA_0123456789876543210)
+                     _ (sN_FunctorLikeDeriving_23 :: Sing n_FunctorLikeDeriving_23)
+                       -> sN_FunctorLikeDeriving_23))
+               sA_FunctorLikeDeriving_30)
             (applySing
-               (applySing _sf_0123456789876543210 sA_0123456789876543210)
+               (applySing _sf_FunctorLikeDeriving_16 sA_FunctorLikeDeriving_31)
                (applySing
                   (applySing
                      (singFun2
-                        @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                        @(LamCases_FunctorLikeDeriving_85Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33)
                         (\cases
-                           (sN1_0123456789876543210 :: Sing n1_0123456789876543210)
-                             (sN2_0123456789876543210 :: Sing n2_0123456789876543210)
+                           (sN1_FunctorLikeDeriving_24 :: Sing n1_FunctorLikeDeriving_24)
+                             (sN2_FunctorLikeDeriving_25 :: Sing n2_FunctorLikeDeriving_25)
                              -> applySing
                                   (applySing
                                      (applySing
-                                        (singFun3 @FoldrSym0 sFoldr) _sf_0123456789876543210)
-                                     sN2_0123456789876543210)
-                                  sN1_0123456789876543210))
-                     sA_0123456789876543210)
+                                        (singFun3 @FoldrSym0 sFoldr) _sf_FunctorLikeDeriving_16)
+                                     sN2_FunctorLikeDeriving_25)
+                                  sN1_FunctorLikeDeriving_24))
+                     sA_FunctorLikeDeriving_32)
                   (applySing
                      (applySing
                         (singFun2
-                           @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                           @(LamCases_FunctorLikeDeriving_88Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33)
                            (\cases
-                              (sN1_0123456789876543210 :: Sing n1_0123456789876543210)
-                                (sN2_0123456789876543210 :: Sing n2_0123456789876543210)
+                              (sN1_FunctorLikeDeriving_28 :: Sing n1_FunctorLikeDeriving_28)
+                                (sN2_FunctorLikeDeriving_29 :: Sing n2_FunctorLikeDeriving_29)
                                 -> applySing
                                      (applySing
                                         (applySing
                                            (singFun3 @FoldrSym0 sFoldr)
                                            (singFun2
-                                              @(LamCases_0123456789876543210Sym0 x n1_0123456789876543210 n2_0123456789876543210 _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210 a_0123456789876543210)
+                                              @(LamCases_FunctorLikeDeriving_89Sym0 x n1_FunctorLikeDeriving_28 n2_FunctorLikeDeriving_29 _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_30 a_FunctorLikeDeriving_31 a_FunctorLikeDeriving_32 a_FunctorLikeDeriving_33)
                                               (\cases
-                                                 (sN1_0123456789876543210 :: Sing n1_0123456789876543210)
-                                                   (sN2_0123456789876543210 :: Sing n2_0123456789876543210)
+                                                 (sN1_FunctorLikeDeriving_26 :: Sing n1_FunctorLikeDeriving_26)
+                                                   (sN2_FunctorLikeDeriving_27 :: Sing n2_FunctorLikeDeriving_27)
                                                    -> applySing
                                                         (applySing
                                                            (applySing
                                                               (singFun3 @FoldrSym0 sFoldr)
-                                                              _sf_0123456789876543210)
-                                                           sN2_0123456789876543210)
-                                                        sN1_0123456789876543210)))
-                                        sN2_0123456789876543210)
-                                     sN1_0123456789876543210))
-                        sA_0123456789876543210)
-                     _sz_0123456789876543210)))
+                                                              _sf_FunctorLikeDeriving_16)
+                                                           sN2_FunctorLikeDeriving_27)
+                                                        sN1_FunctorLikeDeriving_26)))
+                                        sN2_FunctorLikeDeriving_29)
+                                     sN1_FunctorLikeDeriving_28))
+                        sA_FunctorLikeDeriving_33)
+                     _sz_FunctorLikeDeriving_17)))
       sFoldr
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (_sz_0123456789876543210 :: Sing _z_0123456789876543210)
-        (SMkT2 (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_16 :: Sing _f_FunctorLikeDeriving_16)
+        (_sz_FunctorLikeDeriving_17 :: Sing _z_FunctorLikeDeriving_17)
+        (SMkT2 (sA_FunctorLikeDeriving_35 :: Sing a_FunctorLikeDeriving_35))
         = applySing
             (applySing
                (singFun2
-                  @(LamCases_0123456789876543210Sym0 x _f_0123456789876543210 _z_0123456789876543210 a_0123456789876543210)
+                  @(LamCases_FunctorLikeDeriving_94Sym0 x _f_FunctorLikeDeriving_16 _z_FunctorLikeDeriving_17 a_FunctorLikeDeriving_35)
                   (\cases
-                     _ (sN_0123456789876543210 :: Sing n_0123456789876543210)
-                       -> sN_0123456789876543210))
-               sA_0123456789876543210)
-            _sz_0123456789876543210
+                     _ (sN_FunctorLikeDeriving_34 :: Sing n_FunctorLikeDeriving_34)
+                       -> sN_FunctorLikeDeriving_34))
+               sA_FunctorLikeDeriving_35)
+            _sz_FunctorLikeDeriving_17
     instance STraversable (T x) where
       sTraverse
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT1 (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210)
-               (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_36 :: Sing _f_FunctorLikeDeriving_36)
+        (SMkT1 (sA_FunctorLikeDeriving_37 :: Sing a_FunctorLikeDeriving_37)
+               (sA_FunctorLikeDeriving_38 :: Sing a_FunctorLikeDeriving_38)
+               (sA_FunctorLikeDeriving_39 :: Sing a_FunctorLikeDeriving_39)
+               (sA_FunctorLikeDeriving_40 :: Sing a_FunctorLikeDeriving_40))
         = applySing
             (applySing
                (singFun2 @(<*>@#@$) (%<*>))
@@ -583,45 +586,54 @@ Singletons/FunctorLikeDeriving.hs:(0,0)-(0,0): Splicing declarations
                         (applySing
                            (applySing
                               (singFun3 @LiftA2Sym0 sLiftA2) (singFun4 @MkT1Sym0 SMkT1))
-                           (applySing (singFun1 @PureSym0 sPure) sA_0123456789876543210))
-                        (applySing _sf_0123456789876543210 sA_0123456789876543210)))
+                           (applySing (singFun1 @PureSym0 sPure) sA_FunctorLikeDeriving_37))
+                        (applySing _sf_FunctorLikeDeriving_36 sA_FunctorLikeDeriving_38)))
                   (applySing
                      (applySing
-                        (singFun2 @TraverseSym0 sTraverse) _sf_0123456789876543210)
-                     sA_0123456789876543210)))
+                        (singFun2 @TraverseSym0 sTraverse) _sf_FunctorLikeDeriving_36)
+                     sA_FunctorLikeDeriving_39)))
             (applySing
                (applySing
                   (singFun2 @TraverseSym0 sTraverse)
                   (applySing
-                     (singFun2 @TraverseSym0 sTraverse) _sf_0123456789876543210))
-               sA_0123456789876543210)
+                     (singFun2 @TraverseSym0 sTraverse) _sf_FunctorLikeDeriving_36))
+               sA_FunctorLikeDeriving_40)
       sTraverse
-        (_sf_0123456789876543210 :: Sing _f_0123456789876543210)
-        (SMkT2 (sA_0123456789876543210 :: Sing a_0123456789876543210))
+        (_sf_FunctorLikeDeriving_36 :: Sing _f_FunctorLikeDeriving_36)
+        (SMkT2 (sA_FunctorLikeDeriving_41 :: Sing a_FunctorLikeDeriving_41))
         = applySing
             (applySing (singFun2 @FmapSym0 sFmap) (singFun1 @MkT2Sym0 SMkT2))
-            (applySing (singFun1 @PureSym0 sPure) sA_0123456789876543210)
+            (applySing (singFun1 @PureSym0 sPure) sA_FunctorLikeDeriving_41)
     instance SFunctor Empty where
-      sFmap _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
+      sFmap
+        _
+        (sV_FunctorLikeDeriving_44 :: Sing v_FunctorLikeDeriving_44)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 v_0123456789876543210) (\case))
-            sV_0123456789876543210
-      (%<$) _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
+               @(LamCases_FunctorLikeDeriving_103Sym0 v_FunctorLikeDeriving_44)
+               (\case))
+            sV_FunctorLikeDeriving_44
+      (%<$)
+        _
+        (sV_FunctorLikeDeriving_45 :: Sing v_FunctorLikeDeriving_45)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 v_0123456789876543210) (\case))
-            sV_0123456789876543210
+               @(LamCases_FunctorLikeDeriving_108Sym0 v_FunctorLikeDeriving_45)
+               (\case))
+            sV_FunctorLikeDeriving_45
     instance SFoldable Empty where
       sFoldMap _ _ = sMempty
     instance STraversable Empty where
-      sTraverse _ (sV_0123456789876543210 :: Sing v_0123456789876543210)
+      sTraverse
+        _
+        (sV_FunctorLikeDeriving_49 :: Sing v_FunctorLikeDeriving_49)
         = applySing
             (singFun1 @PureSym0 sPure)
             (applySing
                (singFun1
-                  @(LamCases_0123456789876543210Sym0 v_0123456789876543210) (\case))
-               sV_0123456789876543210)
+                  @(LamCases_FunctorLikeDeriving_116Sym0 v_FunctorLikeDeriving_49)
+                  (\case))
+               sV_FunctorLikeDeriving_49)
     instance (SingI n, SingI n, SingI n, SingI n) =>
              SingI (MkT1 (n :: x) (n :: a) (n :: Maybe a) (n :: Maybe (Maybe a))) where
       sing = SMkT1 sing sing sing sing

@@ -26,14 +26,14 @@ Singletons/T536.hs:(0,0)-(0,0): Splicing declarations
     data PMkMessageSym0 :: (Data.Singletons.~>) Symbol PMessage
       where
         PMkMessageSym0KindInference :: Data.Singletons.SameKind (Data.Singletons.Apply PMkMessageSym0 arg) (PMkMessageSym1 arg) =>
-                                       PMkMessageSym0 a0123456789876543210
-    type instance Data.Singletons.Apply @Symbol @PMessage PMkMessageSym0 a0123456789876543210 = 'PMkMessage a0123456789876543210
+                                       PMkMessageSym0 a_T536_0
+    type instance Data.Singletons.Apply @Symbol @PMessage PMkMessageSym0 a_T536_0 = 'PMkMessage a_T536_0
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings PMkMessageSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) PMkMessageSym0KindInference ())
     type PMkMessageSym1 :: Symbol -> PMessage
-    type family PMkMessageSym1 (a0123456789876543210 :: Symbol) :: PMessage where
-      PMkMessageSym1 a0123456789876543210 = 'PMkMessage a0123456789876543210
+    type family PMkMessageSym1 (a_T536_0 :: Symbol) :: PMessage where
+      PMkMessageSym1 a_T536_0 = 'PMkMessage a_T536_0
     type SMessage :: PMessage -> Type
     data SMessage :: PMessage -> Type
       where

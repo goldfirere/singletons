@@ -11,13 +11,13 @@ Singletons/Error.hs:(0,0)-(0,0): Splicing declarations
     data HeadSym0 :: (~>) [a] a
       where
         HeadSym0KindInference :: SameKind (Apply HeadSym0 arg) (HeadSym1 arg) =>
-                                 HeadSym0 a0123456789876543210
-    type instance Apply @[a] @a HeadSym0 a0123456789876543210 = Head a0123456789876543210
+                                 HeadSym0 a_Singletons_Error_0
+    type instance Apply @[a] @a HeadSym0 a_Singletons_Error_0 = Head a_Singletons_Error_0
     instance SuppressUnusedWarnings HeadSym0 where
       suppressUnusedWarnings = snd ((,) HeadSym0KindInference ())
     type HeadSym1 :: [a] -> a
-    type family HeadSym1 @a (a0123456789876543210 :: [a]) :: a where
-      HeadSym1 a0123456789876543210 = Head a0123456789876543210
+    type family HeadSym1 @a (a_Singletons_Error_0 :: [a]) :: a where
+      HeadSym1 a_Singletons_Error_0 = Head a_Singletons_Error_0
     type Head :: [a] -> a
     type family Head @a (a :: [a]) :: a where
       Head ('(:) a _) = a

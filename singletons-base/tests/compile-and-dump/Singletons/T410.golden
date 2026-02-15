@@ -14,27 +14,27 @@ Singletons/T410.hs:(0,0)-(0,0): Splicing declarations
     data EqualsSym0 :: (~>) a ((~>) a Bool)
       where
         EqualsSym0KindInference :: SameKind (Apply EqualsSym0 arg) (EqualsSym1 arg) =>
-                                   EqualsSym0 a0123456789876543210
-    type instance Apply @a @((~>) a Bool) EqualsSym0 a0123456789876543210 = EqualsSym1 a0123456789876543210
+                                   EqualsSym0 a_T410_0
+    type instance Apply @a @((~>) a Bool) EqualsSym0 a_T410_0 = EqualsSym1 a_T410_0
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings EqualsSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) EqualsSym0KindInference ())
     type EqualsSym1 :: forall a. a -> (~>) a Bool
-    data EqualsSym1 (a0123456789876543210 :: a) :: (~>) a Bool
+    data EqualsSym1 (a_T410_0 :: a) :: (~>) a Bool
       where
-        EqualsSym1KindInference :: SameKind (Apply (EqualsSym1 a0123456789876543210) arg) (EqualsSym2 a0123456789876543210 arg) =>
-                                   EqualsSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @a @Bool (EqualsSym1 a0123456789876543210) a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
-    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (EqualsSym1 a0123456789876543210) where
+        EqualsSym1KindInference :: SameKind (Apply (EqualsSym1 a_T410_0) arg) (EqualsSym2 a_T410_0 arg) =>
+                                   EqualsSym1 a_T410_0 a_T410_1
+    type instance Apply @a @Bool (EqualsSym1 a_T410_0) a_T410_1 = Equals a_T410_0 a_T410_1
+    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (EqualsSym1 a_T410_0) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) EqualsSym1KindInference ())
     type EqualsSym2 :: forall a. a -> a -> Bool
-    type family EqualsSym2 @a (a0123456789876543210 :: a) (a0123456789876543210 :: a) :: Bool where
-      EqualsSym2 a0123456789876543210 a0123456789876543210 = Equals a0123456789876543210 a0123456789876543210
+    type family EqualsSym2 @a (a_T410_0 :: a) (a_T410_1 :: a) :: Bool where
+      EqualsSym2 a_T410_0 a_T410_1 = Equals a_T410_0 a_T410_1
     class PEq a where
       type family Equals (arg :: a) (arg :: a) :: Bool
-    type Equals_0123456789876543210 :: () -> () -> Bool
-    type family Equals_0123456789876543210 (a :: ()) (a :: ()) :: Bool where
-      Equals_0123456789876543210 '() '() = TrueSym0
+    type Equals_T410_2 :: () -> () -> Bool
+    type family Equals_T410_2 (a :: ()) (a :: ()) :: Bool where
+      Equals_T410_2 '() '() = TrueSym0
     instance PEq () where
-      type Equals a a = Equals_0123456789876543210 a a
+      type Equals a a = Equals_T410_2 a a

@@ -6,25 +6,25 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     data LiftMaybeSym0 :: (~>) ((~>) a b) ((~>) (Maybe a) (Maybe b))
       where
         LiftMaybeSym0KindInference :: Data.Singletons.SameKind (Apply LiftMaybeSym0 arg) (LiftMaybeSym1 arg) =>
-                                      LiftMaybeSym0 a0123456789876543210
-    type instance Apply @((~>) a b) @((~>) (Maybe a) (Maybe b)) LiftMaybeSym0 a0123456789876543210 = LiftMaybeSym1 a0123456789876543210
+                                      LiftMaybeSym0 a_Promote_GenDefunSymbols_0
+    type instance Apply @((~>) a b) @((~>) (Maybe a) (Maybe b)) LiftMaybeSym0 a_Promote_GenDefunSymbols_0 = LiftMaybeSym1 a_Promote_GenDefunSymbols_0
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings LiftMaybeSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) LiftMaybeSym0KindInference ())
     type LiftMaybeSym1 :: forall (a :: Type) (b :: Type). (~>) a b
                                                           -> (~>) (Maybe a) (Maybe b)
-    data LiftMaybeSym1 (a0123456789876543210 :: (~>) a b) :: (~>) (Maybe a) (Maybe b)
+    data LiftMaybeSym1 (a_Promote_GenDefunSymbols_0 :: (~>) a b) :: (~>) (Maybe a) (Maybe b)
       where
-        LiftMaybeSym1KindInference :: Data.Singletons.SameKind (Apply (LiftMaybeSym1 a0123456789876543210) arg) (LiftMaybeSym2 a0123456789876543210 arg) =>
-                                      LiftMaybeSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Maybe a) @(Maybe b) (LiftMaybeSym1 a0123456789876543210) a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
-    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (LiftMaybeSym1 a0123456789876543210) where
+        LiftMaybeSym1KindInference :: Data.Singletons.SameKind (Apply (LiftMaybeSym1 a_Promote_GenDefunSymbols_0) arg) (LiftMaybeSym2 a_Promote_GenDefunSymbols_0 arg) =>
+                                      LiftMaybeSym1 a_Promote_GenDefunSymbols_0 a_Promote_GenDefunSymbols_1
+    type instance Apply @(Maybe a) @(Maybe b) (LiftMaybeSym1 a_Promote_GenDefunSymbols_0) a_Promote_GenDefunSymbols_1 = LiftMaybe a_Promote_GenDefunSymbols_0 a_Promote_GenDefunSymbols_1
+    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (LiftMaybeSym1 a_Promote_GenDefunSymbols_0) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) LiftMaybeSym1KindInference ())
     type LiftMaybeSym2 :: forall (a :: Type) (b :: Type). (~>) a b
                                                           -> Maybe a -> Maybe b
-    type family LiftMaybeSym2 @(a :: Type) @(b :: Type) (a0123456789876543210 :: (~>) a b) (a0123456789876543210 :: Maybe a) :: Maybe b where
-      LiftMaybeSym2 a0123456789876543210 a0123456789876543210 = LiftMaybe a0123456789876543210 a0123456789876543210
+    type family LiftMaybeSym2 @(a :: Type) @(b :: Type) (a_Promote_GenDefunSymbols_0 :: (~>) a b) (a_Promote_GenDefunSymbols_1 :: Maybe a) :: Maybe b where
+      LiftMaybeSym2 a_Promote_GenDefunSymbols_0 a_Promote_GenDefunSymbols_1 = LiftMaybe a_Promote_GenDefunSymbols_0 a_Promote_GenDefunSymbols_1
     type ZeroSym0 :: NatT
     type family ZeroSym0 :: NatT where
       ZeroSym0 = 'Zero
@@ -32,32 +32,32 @@ Promote/GenDefunSymbols.hs:0:0:: Splicing declarations
     data SuccSym0 :: (~>) NatT NatT
       where
         SuccSym0KindInference :: Data.Singletons.SameKind (Apply SuccSym0 arg) (SuccSym1 arg) =>
-                                 SuccSym0 a0123456789876543210
-    type instance Apply @NatT @NatT SuccSym0 a0123456789876543210 = 'Succ a0123456789876543210
+                                 SuccSym0 a_Promote_GenDefunSymbols_2
+    type instance Apply @NatT @NatT SuccSym0 a_Promote_GenDefunSymbols_2 = 'Succ a_Promote_GenDefunSymbols_2
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings SuccSym0 where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) SuccSym0KindInference ())
     type SuccSym1 :: NatT -> NatT
-    type family SuccSym1 (a0123456789876543210 :: NatT) :: NatT where
-      SuccSym1 a0123456789876543210 = 'Succ a0123456789876543210
+    type family SuccSym1 (a_Promote_GenDefunSymbols_2 :: NatT) :: NatT where
+      SuccSym1 a_Promote_GenDefunSymbols_2 = 'Succ a_Promote_GenDefunSymbols_2
     type (:+@#@$) :: (~>) Natural ((~>) Natural Natural)
     data (:+@#@$) :: (~>) Natural ((~>) Natural Natural)
       where
         (::+@#@$###) :: Data.Singletons.SameKind (Apply (:+@#@$) arg) ((:+@#@$$) arg) =>
-                        (:+@#@$) a0123456789876543210
-    type instance Apply @Natural @((~>) Natural Natural) (:+@#@$) a0123456789876543210 = (:+@#@$$) a0123456789876543210
+                        (:+@#@$) a_Promote_GenDefunSymbols_3
+    type instance Apply @Natural @((~>) Natural Natural) (:+@#@$) a_Promote_GenDefunSymbols_3 = (:+@#@$$) a_Promote_GenDefunSymbols_3
     instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings (:+@#@$) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) (::+@#@$###) ())
     type (:+@#@$$) :: Natural -> (~>) Natural Natural
-    data (:+@#@$$) (a0123456789876543210 :: Natural) :: (~>) Natural Natural
+    data (:+@#@$$) (a_Promote_GenDefunSymbols_3 :: Natural) :: (~>) Natural Natural
       where
-        (::+@#@$$###) :: Data.Singletons.SameKind (Apply ((:+@#@$$) a0123456789876543210) arg) ((:+@#@$$$) a0123456789876543210 arg) =>
-                         (:+@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @Natural @Natural ((:+@#@$$) a0123456789876543210) a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
-    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings ((:+@#@$$) a0123456789876543210) where
+        (::+@#@$$###) :: Data.Singletons.SameKind (Apply ((:+@#@$$) a_Promote_GenDefunSymbols_3) arg) ((:+@#@$$$) a_Promote_GenDefunSymbols_3 arg) =>
+                         (:+@#@$$) a_Promote_GenDefunSymbols_3 a_Promote_GenDefunSymbols_4
+    type instance Apply @Natural @Natural ((:+@#@$$) a_Promote_GenDefunSymbols_3) a_Promote_GenDefunSymbols_4 = (:+) a_Promote_GenDefunSymbols_3 a_Promote_GenDefunSymbols_4
+    instance Data.Singletons.TH.SuppressUnusedWarnings.SuppressUnusedWarnings ((:+@#@$$) a_Promote_GenDefunSymbols_3) where
       Data.Singletons.TH.SuppressUnusedWarnings.suppressUnusedWarnings
         = snd ((,) (::+@#@$$###) ())
     type (:+@#@$$$) :: Natural -> Natural -> Natural
-    type family (:+@#@$$$) (a0123456789876543210 :: Natural) (a0123456789876543210 :: Natural) :: Natural where
-      (:+@#@$$$) a0123456789876543210 a0123456789876543210 = (:+) a0123456789876543210 a0123456789876543210
+    type family (:+@#@$$$) (a_Promote_GenDefunSymbols_3 :: Natural) (a_Promote_GenDefunSymbols_4 :: Natural) :: Natural where
+      (:+@#@$$$) a_Promote_GenDefunSymbols_3 a_Promote_GenDefunSymbols_4 = (:+) a_Promote_GenDefunSymbols_3 a_Promote_GenDefunSymbols_4

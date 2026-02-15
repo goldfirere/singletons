@@ -23,71 +23,69 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
     data BarSym0 :: (~>) a ((~>) b b)
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @a @((~>) b b) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+                                BarSym0 a_T312_0
+    type instance Apply @a @((~>) b b) BarSym0 a_T312_0 = BarSym1 a_T312_0
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: forall a b. a -> (~>) b b
-    data BarSym1 (a0123456789876543210 :: a) :: (~>) b b
+    data BarSym1 (a_T312_0 :: a) :: (~>) b b
       where
-        BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
-                                BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @b (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
+        BarSym1KindInference :: SameKind (Apply (BarSym1 a_T312_0) arg) (BarSym2 a_T312_0 arg) =>
+                                BarSym1 a_T312_0 a_T312_1
+    type instance Apply @b @b (BarSym1 a_T312_0) a_T312_1 = Bar a_T312_0 a_T312_1
+    instance SuppressUnusedWarnings (BarSym1 a_T312_0) where
       suppressUnusedWarnings = snd ((,) BarSym1KindInference ())
     type BarSym2 :: forall a b. a -> b -> b
-    type family BarSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
-      BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
+    type family BarSym2 @a @b (a_T312_0 :: a) (a_T312_1 :: b) :: b where
+      BarSym2 a_T312_0 a_T312_1 = Bar a_T312_0 a_T312_1
     type BazSym0 :: forall a b. (~>) a ((~>) b b)
     data BazSym0 :: (~>) a ((~>) b b)
       where
         BazSym0KindInference :: SameKind (Apply BazSym0 arg) (BazSym1 arg) =>
-                                BazSym0 a0123456789876543210
-    type instance Apply @a @((~>) b b) BazSym0 a0123456789876543210 = BazSym1 a0123456789876543210
+                                BazSym0 a_T312_2
+    type instance Apply @a @((~>) b b) BazSym0 a_T312_2 = BazSym1 a_T312_2
     instance SuppressUnusedWarnings BazSym0 where
       suppressUnusedWarnings = snd ((,) BazSym0KindInference ())
     type BazSym1 :: forall a b. a -> (~>) b b
-    data BazSym1 (a0123456789876543210 :: a) :: (~>) b b
+    data BazSym1 (a_T312_2 :: a) :: (~>) b b
       where
-        BazSym1KindInference :: SameKind (Apply (BazSym1 a0123456789876543210) arg) (BazSym2 a0123456789876543210 arg) =>
-                                BazSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @b (BazSym1 a0123456789876543210) a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BazSym1 a0123456789876543210) where
+        BazSym1KindInference :: SameKind (Apply (BazSym1 a_T312_2) arg) (BazSym2 a_T312_2 arg) =>
+                                BazSym1 a_T312_2 a_T312_3
+    type instance Apply @b @b (BazSym1 a_T312_2) a_T312_3 = Baz a_T312_2 a_T312_3
+    instance SuppressUnusedWarnings (BazSym1 a_T312_2) where
       suppressUnusedWarnings = snd ((,) BazSym1KindInference ())
     type BazSym2 :: forall a b. a -> b -> b
-    type family BazSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: b where
-      BazSym2 a0123456789876543210 a0123456789876543210 = Baz a0123456789876543210 a0123456789876543210
-    type Bar_0123456789876543210 :: forall a b. a -> b -> b
-    type family Bar_0123456789876543210 @a @b (a :: a) (a :: b) :: b where
-      Bar_0123456789876543210 @a @b (_ :: a) (x :: b) = x
-    data Let0123456789876543210HSym0 a0123456789876543210 b0123456789876543210 (a_01234567898765432100123456789876543210 :: a0123456789876543210) (a_01234567898765432100123456789876543210 :: b0123456789876543210) :: (~>) c0123456789876543210 ((~>) b0123456789876543210 b0123456789876543210)
+    type family BazSym2 @a @b (a_T312_2 :: a) (a_T312_3 :: b) :: b where
+      BazSym2 a_T312_2 a_T312_3 = Baz a_T312_2 a_T312_3
+    type Bar_T312_4 :: forall a b. a -> b -> b
+    type family Bar_T312_4 @a @b (a :: a) (a :: b) :: b where
+      Bar_T312_4 @a @b (_ :: a) (x :: b) = x
+    data Let12HSym0 a0 b1 (a_T312_82 :: a0) (a_T312_93 :: b1) :: (~>) c4 ((~>) b1 b1)
       where
-        Let0123456789876543210HSym0KindInference :: SameKind (Apply (Let0123456789876543210HSym0 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) arg) (Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 arg) =>
-                                                    Let0123456789876543210HSym0 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210
-    type instance Apply @c0123456789876543210 @((~>) b0123456789876543210 b0123456789876543210) (Let0123456789876543210HSym0 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) a0123456789876543210 = Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Let0123456789876543210HSym0 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) Let0123456789876543210HSym0KindInference ())
-    data Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 (a_01234567898765432100123456789876543210 :: a0123456789876543210) (a_01234567898765432100123456789876543210 :: b0123456789876543210) (a0123456789876543210 :: c0123456789876543210) :: (~>) b0123456789876543210 b0123456789876543210
+        Let12HSym0KindInference :: SameKind (Apply (Let12HSym0 a0 b1 a_T312_82 a_T312_93) arg) (Let12HSym1 a0 b1 a_T312_82 a_T312_93 arg) =>
+                                   Let12HSym0 a0 b1 a_T312_82 a_T312_93 a5
+    type instance Apply @c4 @((~>) b1 b1) (Let12HSym0 a0 b1 a_T312_82 a_T312_93) a5 = Let12HSym1 a0 b1 a_T312_82 a_T312_93 a5
+    instance SuppressUnusedWarnings (Let12HSym0 a0 b1 a_T312_82 a_T312_93) where
+      suppressUnusedWarnings = snd ((,) Let12HSym0KindInference ())
+    data Let12HSym1 a0 b1 (a_T312_82 :: a0) (a_T312_93 :: b1) (a5 :: c4) :: (~>) b1 b1
       where
-        Let0123456789876543210HSym1KindInference :: SameKind (Apply (Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) arg) (Let0123456789876543210HSym2 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 arg) =>
-                                                    Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210
-    type instance Apply @b0123456789876543210 @b0123456789876543210 (Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) a0123456789876543210 = Let0123456789876543210H a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (Let0123456789876543210HSym1 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210) where
-      suppressUnusedWarnings
-        = snd ((,) Let0123456789876543210HSym1KindInference ())
-    type family Let0123456789876543210HSym2 a0123456789876543210 b0123456789876543210 (a_01234567898765432100123456789876543210 :: a0123456789876543210) (a_01234567898765432100123456789876543210 :: b0123456789876543210) (a0123456789876543210 :: c0123456789876543210) (a0123456789876543210 :: b0123456789876543210) :: b0123456789876543210 where
-      Let0123456789876543210HSym2 a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210 = Let0123456789876543210H a0123456789876543210 b0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 a0123456789876543210 a0123456789876543210
-    type family Let0123456789876543210H a0123456789876543210 b0123456789876543210 (a_01234567898765432100123456789876543210 :: a0123456789876543210) (a_01234567898765432100123456789876543210 :: b0123456789876543210) (a :: c) (a :: b0123456789876543210) :: b0123456789876543210 where
-      Let0123456789876543210H a b a_0123456789876543210 a_0123456789876543210 (_ :: c) (x :: b) = x
-    type Baz_0123456789876543210 :: forall a b. a -> b -> b
-    type family Baz_0123456789876543210 @a @b (a :: a) (a :: b) :: b where
-      Baz_0123456789876543210 @a @b (a_0123456789876543210 :: a) (a_0123456789876543210 :: b) = Apply (Apply (Let0123456789876543210HSym0 a b a_0123456789876543210 a_0123456789876543210) a_0123456789876543210) a_0123456789876543210
+        Let12HSym1KindInference :: SameKind (Apply (Let12HSym1 a0 b1 a_T312_82 a_T312_93 a5) arg) (Let12HSym2 a0 b1 a_T312_82 a_T312_93 a5 arg) =>
+                                   Let12HSym1 a0 b1 a_T312_82 a_T312_93 a5 a6
+    type instance Apply @b1 @b1 (Let12HSym1 a0 b1 a_T312_82 a_T312_93 a5) a6 = Let12H a0 b1 a_T312_82 a_T312_93 a5 a6
+    instance SuppressUnusedWarnings (Let12HSym1 a0 b1 a_T312_82 a_T312_93 a5) where
+      suppressUnusedWarnings = snd ((,) Let12HSym1KindInference ())
+    type family Let12HSym2 a0 b1 (a_T312_82 :: a0) (a_T312_93 :: b1) (a5 :: c4) (a6 :: b1) :: b1 where
+      Let12HSym2 a0 b1 a_T312_82 a_T312_93 a5 a6 = Let12H a0 b1 a_T312_82 a_T312_93 a5 a6
+    type family Let12H a0 b1 (a_T312_82 :: a0) (a_T312_93 :: b1) (a :: c) (a :: b1) :: b1 where
+      Let12H a b a_T312_8 a_T312_9 (_ :: c) (x :: b) = x
+    type Baz_T312_7 :: forall a b. a -> b -> b
+    type family Baz_T312_7 @a @b (a :: a) (a :: b) :: b where
+      Baz_T312_7 @a @b (a_T312_8 :: a) (a_T312_9 :: b) = Apply (Apply (Let12HSym0 a b a_T312_8 a_T312_9) a_T312_8) a_T312_9
     class PFoo a where
       type family Bar (arg :: a) (arg :: b) :: b
       type family Baz (arg :: a) (arg :: b) :: b
-      type Bar a a = Bar_0123456789876543210 a a
-      type Baz a a = Baz_0123456789876543210 a a
+      type Bar a a = Bar_T312_4 a a
+      type Baz a a = Baz_T312_7 a a
     class SFoo a where
       sBar ::
         (forall (t :: a) (t :: b).
@@ -96,30 +94,24 @@ Singletons/T312.hs:(0,0)-(0,0): Splicing declarations
         forall b (t :: a) (t :: b). Sing t -> Sing t -> Sing (Baz t t :: b)
       default sBar ::
                 (forall (t :: a) (t :: b).
-                 ((Bar t t :: b) ~ Bar_0123456789876543210 t t) =>
+                 ((Bar t t :: b) ~ Bar_T312_4 t t) =>
                  Sing t -> Sing t -> Sing (Bar t t :: b) :: Type)
       default sBaz ::
-                forall b (t :: a) (t :: b). ((Baz t t :: b)
-                                             ~ Baz_0123456789876543210 t t) =>
+                forall b (t :: a) (t :: b). ((Baz t t :: b) ~ Baz_T312_7 t t) =>
                                             Sing t -> Sing t -> Sing (Baz t t :: b)
       sBar _ (sX :: Sing x) = sX
-      sBaz
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sBaz (sA_T312_8 :: Sing a_T312_8) (sA_T312_9 :: Sing a_T312_9)
         = applySing
             (applySing
                (let
                   sH ::
                     forall c (t :: c) (t :: b). Sing t
                                                 -> Sing t
-                                                   -> Sing (Let0123456789876543210H a b a_0123456789876543210 a_0123456789876543210 t t :: b)
+                                                   -> Sing (Let12H a b a_T312_8 a_T312_9 t t :: b)
                   sH _ (sX :: Sing x) = sX
-                in
-                  singFun2
-                    @(Let0123456789876543210HSym0 a b a_0123456789876543210 a_0123456789876543210)
-                    sH)
-               sA_0123456789876543210)
-            sA_0123456789876543210
+                in singFun2 @(Let12HSym0 a b a_T312_8 a_T312_9) sH)
+               sA_T312_8)
+            sA_T312_9
     instance SFoo a => SingI (BarSym0 :: (~>) a ((~>) b b)) where
       sing = singFun2 @BarSym0 sBar
     instance (SFoo a, SingI d) =>

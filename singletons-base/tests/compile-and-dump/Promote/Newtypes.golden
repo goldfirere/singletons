@@ -13,40 +13,40 @@ Promote/Newtypes.hs:(0,0)-(0,0): Splicing declarations
     data FooSym0 :: (~>) Nat Foo
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-                                FooSym0 a0123456789876543210
-    type instance Apply @Nat @Foo FooSym0 a0123456789876543210 = Foo a0123456789876543210
+                                FooSym0 a_Promote_Newtypes_2
+    type instance Apply @Nat @Foo FooSym0 a_Promote_Newtypes_2 = Foo a_Promote_Newtypes_2
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Nat -> Foo
-    type family FooSym1 (a0123456789876543210 :: Nat) :: Foo where
-      FooSym1 a0123456789876543210 = Foo a0123456789876543210
+    type family FooSym1 (a_Promote_Newtypes_2 :: Nat) :: Foo where
+      FooSym1 a_Promote_Newtypes_2 = Foo a_Promote_Newtypes_2
     type BarSym0 :: (~>) Nat Bar
     data BarSym0 :: (~>) Nat Bar
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @Nat @Bar BarSym0 a0123456789876543210 = Bar a0123456789876543210
+                                BarSym0 a_Promote_Newtypes_3
+    type instance Apply @Nat @Bar BarSym0 a_Promote_Newtypes_3 = Bar a_Promote_Newtypes_3
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings = snd ((,) BarSym0KindInference ())
     type BarSym1 :: Nat -> Bar
-    type family BarSym1 (a0123456789876543210 :: Nat) :: Bar where
-      BarSym1 a0123456789876543210 = Bar a0123456789876543210
+    type family BarSym1 (a_Promote_Newtypes_3 :: Nat) :: Bar where
+      BarSym1 a_Promote_Newtypes_3 = Bar a_Promote_Newtypes_3
     type UnBarSym0 :: (~>) Bar Nat
     data UnBarSym0 :: (~>) Bar Nat
       where
         UnBarSym0KindInference :: SameKind (Apply UnBarSym0 arg) (UnBarSym1 arg) =>
-                                  UnBarSym0 a0123456789876543210
-    type instance Apply @Bar @Nat UnBarSym0 a0123456789876543210 = UnBar a0123456789876543210
+                                  UnBarSym0 a_Promote_Newtypes_4
+    type instance Apply @Bar @Nat UnBarSym0 a_Promote_Newtypes_4 = UnBar a_Promote_Newtypes_4
     instance SuppressUnusedWarnings UnBarSym0 where
       suppressUnusedWarnings = snd ((,) UnBarSym0KindInference ())
     type UnBarSym1 :: Bar -> Nat
-    type family UnBarSym1 (a0123456789876543210 :: Bar) :: Nat where
-      UnBarSym1 a0123456789876543210 = UnBar a0123456789876543210
+    type family UnBarSym1 (a_Promote_Newtypes_4 :: Bar) :: Nat where
+      UnBarSym1 a_Promote_Newtypes_4 = UnBar a_Promote_Newtypes_4
     type UnBar :: Bar -> Nat
     type family UnBar (a :: Bar) :: Nat where
       UnBar (Bar field) = field
-    type TFHelper_0123456789876543210 :: Foo -> Foo -> Bool
-    type family TFHelper_0123456789876543210 (a :: Foo) (a :: Foo) :: Bool where
-      TFHelper_0123456789876543210 (Foo a_0123456789876543210) (Foo b_0123456789876543210) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type TFHelper_Promote_Newtypes_5 :: Foo -> Foo -> Bool
+    type family TFHelper_Promote_Newtypes_5 (a :: Foo) (a :: Foo) :: Bool where
+      TFHelper_Promote_Newtypes_5 (Foo a_Promote_Newtypes_0) (Foo b_Promote_Newtypes_1) = Apply (Apply (==@#@$) a_Promote_Newtypes_0) b_Promote_Newtypes_1
     instance PEq Foo where
-      type (==) a a = TFHelper_0123456789876543210 a a
+      type (==) a a = TFHelper_Promote_Newtypes_5 a a

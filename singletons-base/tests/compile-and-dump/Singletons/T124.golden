@@ -11,13 +11,13 @@ Singletons/T124.hs:(0,0)-(0,0): Splicing declarations
     data FooSym0 :: (~>) Bool ()
       where
         FooSym0KindInference :: SameKind (Apply FooSym0 arg) (FooSym1 arg) =>
-                                FooSym0 a0123456789876543210
-    type instance Apply @Bool @() FooSym0 a0123456789876543210 = Foo a0123456789876543210
+                                FooSym0 a_Singletons_T124_0
+    type instance Apply @Bool @() FooSym0 a_Singletons_T124_0 = Foo a_Singletons_T124_0
     instance SuppressUnusedWarnings FooSym0 where
       suppressUnusedWarnings = snd ((,) FooSym0KindInference ())
     type FooSym1 :: Bool -> ()
-    type family FooSym1 (a0123456789876543210 :: Bool) :: () where
-      FooSym1 a0123456789876543210 = Foo a0123456789876543210
+    type family FooSym1 (a_Singletons_T124_0 :: Bool) :: () where
+      FooSym1 a_Singletons_T124_0 = Foo a_Singletons_T124_0
     type Foo :: Bool -> ()
     type family Foo (a :: Bool) :: () where
       Foo 'True = Tuple0Sym0

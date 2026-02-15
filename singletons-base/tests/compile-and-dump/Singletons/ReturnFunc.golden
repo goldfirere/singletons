@@ -17,60 +17,60 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     data IdFooSym0 :: (~>) c ((~>) a a)
       where
         IdFooSym0KindInference :: SameKind (Apply IdFooSym0 arg) (IdFooSym1 arg) =>
-                                  IdFooSym0 a0123456789876543210
-    type instance Apply @c @((~>) a a) IdFooSym0 a0123456789876543210 = IdFooSym1 a0123456789876543210
+                                  IdFooSym0 a_Singletons_ReturnFunc_1
+    type instance Apply @c @((~>) a a) IdFooSym0 a_Singletons_ReturnFunc_1 = IdFooSym1 a_Singletons_ReturnFunc_1
     instance SuppressUnusedWarnings IdFooSym0 where
       suppressUnusedWarnings = snd ((,) IdFooSym0KindInference ())
     type IdFooSym1 :: c -> (~>) a a
-    data IdFooSym1 (a0123456789876543210 :: c) :: (~>) a a
+    data IdFooSym1 (a_Singletons_ReturnFunc_1 :: c) :: (~>) a a
       where
-        IdFooSym1KindInference :: SameKind (Apply (IdFooSym1 a0123456789876543210) arg) (IdFooSym2 a0123456789876543210 arg) =>
-                                  IdFooSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @a @a (IdFooSym1 a0123456789876543210) a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (IdFooSym1 a0123456789876543210) where
+        IdFooSym1KindInference :: SameKind (Apply (IdFooSym1 a_Singletons_ReturnFunc_1) arg) (IdFooSym2 a_Singletons_ReturnFunc_1 arg) =>
+                                  IdFooSym1 a_Singletons_ReturnFunc_1 a_Singletons_ReturnFunc_2
+    type instance Apply @a @a (IdFooSym1 a_Singletons_ReturnFunc_1) a_Singletons_ReturnFunc_2 = IdFoo a_Singletons_ReturnFunc_1 a_Singletons_ReturnFunc_2
+    instance SuppressUnusedWarnings (IdFooSym1 a_Singletons_ReturnFunc_1) where
       suppressUnusedWarnings = snd ((,) IdFooSym1KindInference ())
     type IdFooSym2 :: c -> a -> a
-    type family IdFooSym2 @c @a (a0123456789876543210 :: c) (a0123456789876543210 :: a) :: a where
-      IdFooSym2 a0123456789876543210 a0123456789876543210 = IdFoo a0123456789876543210 a0123456789876543210
+    type family IdFooSym2 @c @a (a_Singletons_ReturnFunc_1 :: c) (a_Singletons_ReturnFunc_2 :: a) :: a where
+      IdFooSym2 a_Singletons_ReturnFunc_1 a_Singletons_ReturnFunc_2 = IdFoo a_Singletons_ReturnFunc_1 a_Singletons_ReturnFunc_2
     type IdSym0 :: (~>) a a
     data IdSym0 :: (~>) a a
       where
         IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
-                               IdSym0 a0123456789876543210
-    type instance Apply @a @a IdSym0 a0123456789876543210 = Id a0123456789876543210
+                               IdSym0 a_Singletons_ReturnFunc_3
+    type instance Apply @a @a IdSym0 a_Singletons_ReturnFunc_3 = Id a_Singletons_ReturnFunc_3
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings = snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
-    type family IdSym1 @a (a0123456789876543210 :: a) :: a where
-      IdSym1 a0123456789876543210 = Id a0123456789876543210
+    type family IdSym1 @a (a_Singletons_ReturnFunc_3 :: a) :: a where
+      IdSym1 a_Singletons_ReturnFunc_3 = Id a_Singletons_ReturnFunc_3
     type ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
     data ReturnFuncSym0 :: (~>) Nat ((~>) Nat Nat)
       where
         ReturnFuncSym0KindInference :: SameKind (Apply ReturnFuncSym0 arg) (ReturnFuncSym1 arg) =>
-                                       ReturnFuncSym0 a0123456789876543210
-    type instance Apply @Nat @((~>) Nat Nat) ReturnFuncSym0 a0123456789876543210 = ReturnFuncSym1 a0123456789876543210
+                                       ReturnFuncSym0 a_Singletons_ReturnFunc_5
+    type instance Apply @Nat @((~>) Nat Nat) ReturnFuncSym0 a_Singletons_ReturnFunc_5 = ReturnFuncSym1 a_Singletons_ReturnFunc_5
     instance SuppressUnusedWarnings ReturnFuncSym0 where
       suppressUnusedWarnings = snd ((,) ReturnFuncSym0KindInference ())
     type ReturnFuncSym1 :: Nat -> (~>) Nat Nat
-    data ReturnFuncSym1 (a0123456789876543210 :: Nat) :: (~>) Nat Nat
+    data ReturnFuncSym1 (a_Singletons_ReturnFunc_5 :: Nat) :: (~>) Nat Nat
       where
-        ReturnFuncSym1KindInference :: SameKind (Apply (ReturnFuncSym1 a0123456789876543210) arg) (ReturnFuncSym2 a0123456789876543210 arg) =>
-                                       ReturnFuncSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Nat @Nat (ReturnFuncSym1 a0123456789876543210) a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (ReturnFuncSym1 a0123456789876543210) where
+        ReturnFuncSym1KindInference :: SameKind (Apply (ReturnFuncSym1 a_Singletons_ReturnFunc_5) arg) (ReturnFuncSym2 a_Singletons_ReturnFunc_5 arg) =>
+                                       ReturnFuncSym1 a_Singletons_ReturnFunc_5 a_Singletons_ReturnFunc_6
+    type instance Apply @Nat @Nat (ReturnFuncSym1 a_Singletons_ReturnFunc_5) a_Singletons_ReturnFunc_6 = ReturnFunc a_Singletons_ReturnFunc_5 a_Singletons_ReturnFunc_6
+    instance SuppressUnusedWarnings (ReturnFuncSym1 a_Singletons_ReturnFunc_5) where
       suppressUnusedWarnings = snd ((,) ReturnFuncSym1KindInference ())
     type ReturnFuncSym2 :: Nat -> Nat -> Nat
-    type family ReturnFuncSym2 (a0123456789876543210 :: Nat) (a0123456789876543210 :: Nat) :: Nat where
-      ReturnFuncSym2 a0123456789876543210 a0123456789876543210 = ReturnFunc a0123456789876543210 a0123456789876543210
+    type family ReturnFuncSym2 (a_Singletons_ReturnFunc_5 :: Nat) (a_Singletons_ReturnFunc_6 :: Nat) :: Nat where
+      ReturnFuncSym2 a_Singletons_ReturnFunc_5 a_Singletons_ReturnFunc_6 = ReturnFunc a_Singletons_ReturnFunc_5 a_Singletons_ReturnFunc_6
     type IdFoo :: c -> a -> a
     type family IdFoo @c @a (a :: c) (a :: a) :: a where
-      IdFoo _ a_0123456789876543210 = Apply IdSym0 a_0123456789876543210
+      IdFoo _ a_Singletons_ReturnFunc_0 = Apply IdSym0 a_Singletons_ReturnFunc_0
     type Id :: a -> a
     type family Id @a (a :: a) :: a where
       Id x = x
     type ReturnFunc :: Nat -> Nat -> Nat
     type family ReturnFunc (a :: Nat) (a :: Nat) :: Nat where
-      ReturnFunc _ a_0123456789876543210 = Apply SuccSym0 a_0123456789876543210
+      ReturnFunc _ a_Singletons_ReturnFunc_4 = Apply SuccSym0 a_Singletons_ReturnFunc_4
     sIdFoo ::
       (forall (t :: c) (t :: a).
        Sing t -> Sing t -> Sing (IdFoo t t :: a) :: Type)
@@ -78,13 +78,15 @@ Singletons/ReturnFunc.hs:(0,0)-(0,0): Splicing declarations
     sReturnFunc ::
       (forall (t :: Nat) (t :: Nat).
        Sing t -> Sing t -> Sing (ReturnFunc t t :: Nat) :: Type)
-    sIdFoo _ (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = applySing (singFun1 @IdSym0 sId) sA_0123456789876543210
+    sIdFoo
+      _
+      (sA_Singletons_ReturnFunc_0 :: Sing a_Singletons_ReturnFunc_0)
+      = applySing (singFun1 @IdSym0 sId) sA_Singletons_ReturnFunc_0
     sId (sX :: Sing x) = sX
     sReturnFunc
       _
-      (sA_0123456789876543210 :: Sing a_0123456789876543210)
-      = applySing (singFun1 @SuccSym0 SSucc) sA_0123456789876543210
+      (sA_Singletons_ReturnFunc_4 :: Sing a_Singletons_ReturnFunc_4)
+      = applySing (singFun1 @SuccSym0 SSucc) sA_Singletons_ReturnFunc_4
     instance SingI (IdFooSym0 :: (~>) c ((~>) a a)) where
       sing = singFun2 @IdFooSym0 sIdFoo
     instance SingI d => SingI (IdFooSym1 (d :: c) :: (~>) a a) where

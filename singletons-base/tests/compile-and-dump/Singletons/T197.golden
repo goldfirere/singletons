@@ -12,23 +12,23 @@ Singletons/T197.hs:(0,0)-(0,0): Splicing declarations
     data ($$:@#@$) :: (~>) Bool ((~>) Bool Bool)
       where
         (:$$:@#@$###) :: SameKind (Apply ($$:@#@$) arg) (($$:@#@$$) arg) =>
-                         ($$:@#@$) a0123456789876543210
-    type instance Apply @Bool @((~>) Bool Bool) ($$:@#@$) a0123456789876543210 = ($$:@#@$$) a0123456789876543210
+                         ($$:@#@$) a_T197_0
+    type instance Apply @Bool @((~>) Bool Bool) ($$:@#@$) a_T197_0 = ($$:@#@$$) a_T197_0
     instance SuppressUnusedWarnings ($$:@#@$) where
       suppressUnusedWarnings = snd ((,) (:$$:@#@$###) ())
     infixl 5 type $$:@#@$
     type ($$:@#@$$) :: Bool -> (~>) Bool Bool
-    data ($$:@#@$$) (a0123456789876543210 :: Bool) :: (~>) Bool Bool
+    data ($$:@#@$$) (a_T197_0 :: Bool) :: (~>) Bool Bool
       where
-        (:$$:@#@$$###) :: SameKind (Apply (($$:@#@$$) a0123456789876543210) arg) (($$:@#@$$$) a0123456789876543210 arg) =>
-                          ($$:@#@$$) a0123456789876543210 a0123456789876543210
-    type instance Apply @Bool @Bool (($$:@#@$$) a0123456789876543210) a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (($$:@#@$$) a0123456789876543210) where
+        (:$$:@#@$$###) :: SameKind (Apply (($$:@#@$$) a_T197_0) arg) (($$:@#@$$$) a_T197_0 arg) =>
+                          ($$:@#@$$) a_T197_0 a_T197_1
+    type instance Apply @Bool @Bool (($$:@#@$$) a_T197_0) a_T197_1 = ($$:) a_T197_0 a_T197_1
+    instance SuppressUnusedWarnings (($$:@#@$$) a_T197_0) where
       suppressUnusedWarnings = snd ((,) (:$$:@#@$$###) ())
     infixl 5 type $$:@#@$$
     type ($$:@#@$$$) :: Bool -> Bool -> Bool
-    type family ($$:@#@$$$) (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Bool where
-      ($$:@#@$$$) a0123456789876543210 a0123456789876543210 = ($$:) a0123456789876543210 a0123456789876543210
+    type family ($$:@#@$$$) (a_T197_0 :: Bool) (a_T197_1 :: Bool) :: Bool where
+      ($$:@#@$$$) a_T197_0 a_T197_1 = ($$:) a_T197_0 a_T197_1
     infixl 5 type $$:@#@$$$
     type ($$:) :: Bool -> Bool -> Bool
     type family ($$:) (a :: Bool) (a :: Bool) :: Bool where

@@ -18,49 +18,48 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
     data ConstantSym0 :: (~>) a (Constant a b)
       where
         ConstantSym0KindInference :: SameKind (Apply ConstantSym0 arg) (ConstantSym1 arg) =>
-                                     ConstantSym0 a0123456789876543210
-    type instance Apply @a @(Constant a b) ConstantSym0 a0123456789876543210 = Constant a0123456789876543210
+                                     ConstantSym0 a_T271_8
+    type instance Apply @a @(Constant a b) ConstantSym0 a_T271_8 = Constant a_T271_8
     instance SuppressUnusedWarnings ConstantSym0 where
       suppressUnusedWarnings = snd ((,) ConstantSym0KindInference ())
     type ConstantSym1 :: forall (a :: Type) (b :: Type). a
                                                          -> Constant a b
-    type family ConstantSym1 @(a :: Type) @(b :: Type) (a0123456789876543210 :: a) :: Constant a b where
-      ConstantSym1 a0123456789876543210 = Constant a0123456789876543210
+    type family ConstantSym1 @(a :: Type) @(b :: Type) (a_T271_8 :: a) :: Constant a b where
+      ConstantSym1 a_T271_8 = Constant a_T271_8
     type IdentitySym0 :: (~>) a (Identity a)
     data IdentitySym0 :: (~>) a (Identity a)
       where
         IdentitySym0KindInference :: SameKind (Apply IdentitySym0 arg) (IdentitySym1 arg) =>
-                                     IdentitySym0 a0123456789876543210
-    type instance Apply @a @(Identity a) IdentitySym0 a0123456789876543210 = Identity a0123456789876543210
+                                     IdentitySym0 a_T271_9
+    type instance Apply @a @(Identity a) IdentitySym0 a_T271_9 = Identity a_T271_9
     instance SuppressUnusedWarnings IdentitySym0 where
       suppressUnusedWarnings = snd ((,) IdentitySym0KindInference ())
     type IdentitySym1 :: a -> Identity a
-    type family IdentitySym1 @a (a0123456789876543210 :: a) :: Identity a where
-      IdentitySym1 a0123456789876543210 = Identity a0123456789876543210
-    type TFHelper_0123456789876543210 :: forall a b. Constant a b
-                                                     -> Constant a b -> Bool
-    type family TFHelper_0123456789876543210 @a @b (a :: Constant a b) (a :: Constant a b) :: Bool where
-      TFHelper_0123456789876543210 @a @b (Constant a_0123456789876543210 :: Constant a b) (Constant b_0123456789876543210 :: Constant a b) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+    type family IdentitySym1 @a (a_T271_9 :: a) :: Identity a where
+      IdentitySym1 a_T271_9 = Identity a_T271_9
+    type TFHelper_T271_10 :: forall a b. Constant a b
+                                         -> Constant a b -> Bool
+    type family TFHelper_T271_10 @a @b (a :: Constant a b) (a :: Constant a b) :: Bool where
+      TFHelper_T271_10 @a @b (Constant a_T271_0 :: Constant a b) (Constant b_T271_1 :: Constant a b) = Apply (Apply (==@#@$) a_T271_0) b_T271_1
     instance PEq (Constant a b) where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: forall a b. Constant a b
-                                                    -> Constant a b -> Ordering
-    type family Compare_0123456789876543210 @a @b (a :: Constant a b) (a :: Constant a b) :: Ordering where
-      Compare_0123456789876543210 @a @b (Constant a_0123456789876543210 :: Constant a b) (Constant b_0123456789876543210 :: Constant a b) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
+      type (==) a a = TFHelper_T271_10 a a
+    type Compare_T271_13 :: forall a b. Constant a b
+                                        -> Constant a b -> Ordering
+    type family Compare_T271_13 @a @b (a :: Constant a b) (a :: Constant a b) :: Ordering where
+      Compare_T271_13 @a @b (Constant a_T271_2 :: Constant a b) (Constant b_T271_3 :: Constant a b) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_T271_2) b_T271_3)) NilSym0)
     instance POrd (Constant a b) where
-      type Compare a a = Compare_0123456789876543210 a a
-    type TFHelper_0123456789876543210 :: forall a. Identity a
-                                                   -> Identity a -> Bool
-    type family TFHelper_0123456789876543210 @a (a :: Identity a) (a :: Identity a) :: Bool where
-      TFHelper_0123456789876543210 @a (Identity a_0123456789876543210 :: Identity a) (Identity b_0123456789876543210 :: Identity a) = Apply (Apply (==@#@$) a_0123456789876543210) b_0123456789876543210
+      type Compare a a = Compare_T271_13 a a
+    type TFHelper_T271_16 :: forall a. Identity a -> Identity a -> Bool
+    type family TFHelper_T271_16 @a (a :: Identity a) (a :: Identity a) :: Bool where
+      TFHelper_T271_16 @a (Identity a_T271_4 :: Identity a) (Identity b_T271_5 :: Identity a) = Apply (Apply (==@#@$) a_T271_4) b_T271_5
     instance PEq (Identity a) where
-      type (==) a a = TFHelper_0123456789876543210 a a
-    type Compare_0123456789876543210 :: forall a. Identity a
-                                                  -> Identity a -> Ordering
-    type family Compare_0123456789876543210 @a (a :: Identity a) (a :: Identity a) :: Ordering where
-      Compare_0123456789876543210 @a (Identity a_0123456789876543210 :: Identity a) (Identity b_0123456789876543210 :: Identity a) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_0123456789876543210) b_0123456789876543210)) NilSym0)
+      type (==) a a = TFHelper_T271_16 a a
+    type Compare_T271_19 :: forall a. Identity a
+                                      -> Identity a -> Ordering
+    type family Compare_T271_19 @a (a :: Identity a) (a :: Identity a) :: Ordering where
+      Compare_T271_19 @a (Identity a_T271_6 :: Identity a) (Identity b_T271_7 :: Identity a) = Apply (Apply (Apply FoldlSym0 (<>@#@$)) EQSym0) (Apply (Apply (:@#@$) (Apply (Apply CompareSym0 a_T271_6) b_T271_7)) NilSym0)
     instance POrd (Identity a) where
-      type Compare a a = Compare_0123456789876543210 a a
+      type Compare a a = Compare_T271_19 a a
     data SConstant :: forall (a :: Type) (b :: Type).
                       Constant a b -> Type
       where
@@ -86,15 +85,14 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
             (toSing b :: SomeSing a)
     instance SEq a => SEq (Constant a b) where
       (%==)
-        (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        (SConstant (sA_T271_0 :: Sing a_T271_0))
+        (SConstant (sB_T271_1 :: Sing b_T271_1))
         = applySing
-            (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-            sB_0123456789876543210
+            (applySing (singFun2 @(==@#@$) (%==)) sA_T271_0) sB_T271_1
     instance SOrd a => SOrd (Constant a b) where
       sCompare
-        (SConstant (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SConstant (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        (SConstant (sA_T271_2 :: Sing a_T271_2))
+        (SConstant (sB_T271_3 :: Sing b_T271_3))
         = applySing
             (applySing
                (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
@@ -103,20 +101,18 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                (applySing
                   (singFun2 @(:@#@$) SCons)
                   (applySing
-                     (applySing (singFun2 @CompareSym0 sCompare) sA_0123456789876543210)
-                     sB_0123456789876543210))
+                     (applySing (singFun2 @CompareSym0 sCompare) sA_T271_2) sB_T271_3))
                SNil)
     instance SEq a => SEq (Identity a) where
       (%==)
-        (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        (SIdentity (sA_T271_4 :: Sing a_T271_4))
+        (SIdentity (sB_T271_5 :: Sing b_T271_5))
         = applySing
-            (applySing (singFun2 @(==@#@$) (%==)) sA_0123456789876543210)
-            sB_0123456789876543210
+            (applySing (singFun2 @(==@#@$) (%==)) sA_T271_4) sB_T271_5
     instance SOrd a => SOrd (Identity a) where
       sCompare
-        (SIdentity (sA_0123456789876543210 :: Sing a_0123456789876543210))
-        (SIdentity (sB_0123456789876543210 :: Sing b_0123456789876543210))
+        (SIdentity (sA_T271_6 :: Sing a_T271_6))
+        (SIdentity (sB_T271_7 :: Sing b_T271_7))
         = applySing
             (applySing
                (applySing (singFun3 @FoldlSym0 sFoldl) (singFun2 @(<>@#@$) (%<>)))
@@ -125,8 +121,7 @@ Singletons/T271.hs:(0,0)-(0,0): Splicing declarations
                (applySing
                   (singFun2 @(:@#@$) SCons)
                   (applySing
-                     (applySing (singFun2 @CompareSym0 sCompare) sA_0123456789876543210)
-                     sB_0123456789876543210))
+                     (applySing (singFun2 @CompareSym0 sCompare) sA_T271_6) sB_T271_7))
                SNil)
     instance SDecide a => SDecide (Constant a b) where
       (%~) (SConstant a) (SConstant b)

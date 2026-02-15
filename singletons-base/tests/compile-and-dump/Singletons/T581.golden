@@ -50,135 +50,127 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
     data M1Sym0 :: (~>) a (Maybe (a, b))
       where
         M1Sym0KindInference :: SameKind (Apply M1Sym0 arg) (M1Sym1 arg) =>
-                               M1Sym0 a0123456789876543210
+                               M1Sym0 a_T581_0
     type instance Apply @a @(Maybe (a,
-                                    b)) M1Sym0 a0123456789876543210 = M1 a0123456789876543210
+                                    b)) M1Sym0 a_T581_0 = M1 a_T581_0
     instance SuppressUnusedWarnings M1Sym0 where
       suppressUnusedWarnings = snd ((,) M1Sym0KindInference ())
     type M1Sym1 :: forall a b. a -> Maybe (a, b)
-    type family M1Sym1 @a @b (a0123456789876543210 :: a) :: Maybe (a,
-                                                                   b) where
-      M1Sym1 a0123456789876543210 = M1 a0123456789876543210
-    type M1_0123456789876543210 :: forall a b. a -> Maybe (a, b)
-    type family M1_0123456789876543210 @a @b (a :: a) :: Maybe (a,
-                                                                b) where
-      M1_0123456789876543210 @a @b (_ :: a) = NothingSym0 :: Maybe (a, b)
+    type family M1Sym1 @a @b (a_T581_0 :: a) :: Maybe (a, b) where
+      M1Sym1 a_T581_0 = M1 a_T581_0
+    type M1_T581_1 :: forall a b. a -> Maybe (a, b)
+    type family M1_T581_1 @a @b (a :: a) :: Maybe (a, b) where
+      M1_T581_1 @a @b (_ :: a) = NothingSym0 :: Maybe (a, b)
     class PC1 a where
       type family M1 (arg :: a) :: Maybe (a, b)
-      type M1 a = M1_0123456789876543210 a
+      type M1 a = M1_T581_1 a
     type M2Sym0 :: forall b a. (~>) b (Maybe a)
     data M2Sym0 :: (~>) b (Maybe a)
       where
         M2Sym0KindInference :: SameKind (Apply M2Sym0 arg) (M2Sym1 arg) =>
-                               M2Sym0 a0123456789876543210
-    type instance Apply @b @(Maybe a) M2Sym0 a0123456789876543210 = M2 a0123456789876543210
+                               M2Sym0 a_T581_3
+    type instance Apply @b @(Maybe a) M2Sym0 a_T581_3 = M2 a_T581_3
     instance SuppressUnusedWarnings M2Sym0 where
       suppressUnusedWarnings = snd ((,) M2Sym0KindInference ())
     type M2Sym1 :: forall b a. b -> Maybe a
-    type family M2Sym1 @b @a (a0123456789876543210 :: b) :: Maybe a where
-      M2Sym1 a0123456789876543210 = M2 a0123456789876543210
-    type M2_0123456789876543210 :: forall a b. b -> Maybe a
-    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe a where
-      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe a
+    type family M2Sym1 @b @a (a_T581_3 :: b) :: Maybe a where
+      M2Sym1 a_T581_3 = M2 a_T581_3
+    type M2_T581_4 :: forall a b. b -> Maybe a
+    type family M2_T581_4 @a @b (a :: b) :: Maybe a where
+      M2_T581_4 @a @b (_ :: b) = NothingSym0 :: Maybe a
     class PC2 a where
       type family M2 (arg :: b) :: Maybe a
-      type M2 a = M2_0123456789876543210 a
+      type M2 a = M2_T581_4 a
     type M3Sym0 :: forall a b. (~>) a ((~>) b (a, b))
     data M3Sym0 :: (~>) a ((~>) b (a, b))
       where
         M3Sym0KindInference :: SameKind (Apply M3Sym0 arg) (M3Sym1 arg) =>
-                               M3Sym0 a0123456789876543210
+                               M3Sym0 a_T581_6
     type instance Apply @a @((~>) b (a,
-                                     b)) M3Sym0 a0123456789876543210 = M3Sym1 a0123456789876543210
+                                     b)) M3Sym0 a_T581_6 = M3Sym1 a_T581_6
     instance SuppressUnusedWarnings M3Sym0 where
       suppressUnusedWarnings = snd ((,) M3Sym0KindInference ())
     type M3Sym1 :: forall a b. a -> (~>) b (a, b)
-    data M3Sym1 (a0123456789876543210 :: a) :: (~>) b (a, b)
+    data M3Sym1 (a_T581_6 :: a) :: (~>) b (a, b)
       where
-        M3Sym1KindInference :: SameKind (Apply (M3Sym1 a0123456789876543210) arg) (M3Sym2 a0123456789876543210 arg) =>
-                               M3Sym1 a0123456789876543210 a0123456789876543210
+        M3Sym1KindInference :: SameKind (Apply (M3Sym1 a_T581_6) arg) (M3Sym2 a_T581_6 arg) =>
+                               M3Sym1 a_T581_6 a_T581_7
     type instance Apply @b @(a,
-                             b) (M3Sym1 a0123456789876543210) a0123456789876543210 = M3 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (M3Sym1 a0123456789876543210) where
+                             b) (M3Sym1 a_T581_6) a_T581_7 = M3 a_T581_6 a_T581_7
+    instance SuppressUnusedWarnings (M3Sym1 a_T581_6) where
       suppressUnusedWarnings = snd ((,) M3Sym1KindInference ())
     type M3Sym2 :: forall a b. a -> b -> (a, b)
-    type family M3Sym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: (a,
-                                                                                         b) where
-      M3Sym2 a0123456789876543210 a0123456789876543210 = M3 a0123456789876543210 a0123456789876543210
-    type M3_0123456789876543210 :: forall a b. a -> b -> (a, b)
-    type family M3_0123456789876543210 @a @b (a :: a) (a :: b) :: (a,
-                                                                   b) where
-      M3_0123456789876543210 @a @b (x :: a) (y :: b) = Apply (Apply Tuple2Sym0 x) y :: (a,
-                                                                                        b)
+    type family M3Sym2 @a @b (a_T581_6 :: a) (a_T581_7 :: b) :: (a,
+                                                                 b) where
+      M3Sym2 a_T581_6 a_T581_7 = M3 a_T581_6 a_T581_7
+    type M3_T581_8 :: forall a b. a -> b -> (a, b)
+    type family M3_T581_8 @a @b (a :: a) (a :: b) :: (a, b) where
+      M3_T581_8 @a @b (x :: a) (y :: b) = Apply (Apply Tuple2Sym0 x) y :: (a,
+                                                                           b)
     class PC3 a where
       type family M3 (arg :: a) (arg :: b) :: (a, b)
-      type M3 a a = M3_0123456789876543210 a a
-    type M1_0123456789876543210 :: forall a b. [a] -> Maybe ([a], b)
-    type family M1_0123456789876543210 @a @b (a :: [a]) :: Maybe ([a],
-                                                                  b) where
-      M1_0123456789876543210 @a @b (_ :: [a]) = NothingSym0 :: Maybe ([a],
-                                                                      b)
+      type M3 a a = M3_T581_8 a a
+    type M1_T581_11 :: forall a b. [a] -> Maybe ([a], b)
+    type family M1_T581_11 @a @b (a :: [a]) :: Maybe ([a], b) where
+      M1_T581_11 @a @b (_ :: [a]) = NothingSym0 :: Maybe ([a], b)
     instance PC1 [a] where
-      type M1 a = M1_0123456789876543210 a
-    type M2_0123456789876543210 :: forall a b. b -> Maybe [a]
-    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe [a] where
-      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe [a]
+      type M1 a = M1_T581_11 a
+    type M2_T581_13 :: forall a b. b -> Maybe [a]
+    type family M2_T581_13 @a @b (a :: b) :: Maybe [a] where
+      M2_T581_13 @a @b (_ :: b) = NothingSym0 :: Maybe [a]
     instance PC2 [a] where
-      type M2 a = M2_0123456789876543210 a
-    type M2_0123456789876543210 :: forall a b. b -> Maybe (Maybe a)
-    type family M2_0123456789876543210 @a @b (a :: b) :: Maybe (Maybe a) where
-      M2_0123456789876543210 @a @b (_ :: b) = NothingSym0 :: Maybe (Maybe a)
+      type M2 a = M2_T581_13 a
+    type M2_T581_15 :: forall a b. b -> Maybe (Maybe a)
+    type family M2_T581_15 @a @b (a :: b) :: Maybe (Maybe a) where
+      M2_T581_15 @a @b (_ :: b) = NothingSym0 :: Maybe (Maybe a)
     instance PC2 (Maybe a) where
-      type M2 a = M2_0123456789876543210 a
-    type family LamCases_0123456789876543210 a0123456789876543210 (x0123456789876543210 :: Maybe a0123456789876543210) (y0123456789876543210 :: b0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 a x y xx = xx :: a
-    data LamCases_0123456789876543210Sym0 a0123456789876543210 (x0123456789876543210 :: Maybe a0123456789876543210) (y0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210
+      type M2 a = M2_T581_15 a
+    type family LamCases_T581_20 a0 (x1 :: Maybe a0) (y3 :: b2) a_T581_21 where
+      LamCases_T581_20 a x y xx = xx :: a
+    data LamCases_T581_20Sym0 a0 (x1 :: Maybe a0) (y3 :: b2) a_T581_21
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) where
+        LamCases_T581_20Sym0KindInference :: SameKind (Apply (LamCases_T581_20Sym0 a0 x1 y3) arg) (LamCases_T581_20Sym1 a0 x1 y3 arg) =>
+                                             LamCases_T581_20Sym0 a0 x1 y3 a_T581_21
+    type instance Apply @_ @_ (LamCases_T581_20Sym0 a0 x1 y3) a_T581_21 = LamCases_T581_20 a0 x1 y3 a_T581_21
+    instance SuppressUnusedWarnings (LamCases_T581_20Sym0 a0 x1 y3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a0123456789876543210 (x0123456789876543210 :: Maybe a0123456789876543210) (y0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type M3_0123456789876543210 :: forall a b. Maybe a
-                                               -> b -> (Maybe a, b)
-    type family M3_0123456789876543210 @a @b (a :: Maybe a) (a :: b) :: (Maybe a,
-                                                                         b) where
-      M3_0123456789876543210 @a @b (x :: Maybe a) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (LamCases_0123456789876543210Sym0 a x y)) x)) y
+        = snd ((,) LamCases_T581_20Sym0KindInference ())
+    type family LamCases_T581_20Sym1 a0 (x1 :: Maybe a0) (y3 :: b2) a_T581_21 where
+      LamCases_T581_20Sym1 a0 x1 y3 a_T581_21 = LamCases_T581_20 a0 x1 y3 a_T581_21
+    type M3_T581_17 :: forall a b. Maybe a -> b -> (Maybe a, b)
+    type family M3_T581_17 @a @b (a :: Maybe a) (a :: b) :: (Maybe a,
+                                                             b) where
+      M3_T581_17 @a @b (x :: Maybe a) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (LamCases_T581_20Sym0 a x y)) x)) y
     instance PC3 (Maybe a) where
-      type M3 a a = M3_0123456789876543210 a a
-    type family LamCases_0123456789876543210 a0123456789876543210 (x0123456789876543210 :: [a0123456789876543210]) (y0123456789876543210 :: b0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 a x y xx = xx :: a
-    data LamCases_0123456789876543210Sym0 a0123456789876543210 (x0123456789876543210 :: [a0123456789876543210]) (y0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210
+      type M3 a a = M3_T581_17 a a
+    type family LamCases_T581_25 a0 (x1 :: [a0]) (y3 :: b2) a_T581_26 where
+      LamCases_T581_25 a x y xx = xx :: a
+    data LamCases_T581_25Sym0 a0 (x1 :: [a0]) (y3 :: b2) a_T581_26
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 x0123456789876543210 y0123456789876543210) where
+        LamCases_T581_25Sym0KindInference :: SameKind (Apply (LamCases_T581_25Sym0 a0 x1 y3) arg) (LamCases_T581_25Sym1 a0 x1 y3 arg) =>
+                                             LamCases_T581_25Sym0 a0 x1 y3 a_T581_26
+    type instance Apply @_ @_ (LamCases_T581_25Sym0 a0 x1 y3) a_T581_26 = LamCases_T581_25 a0 x1 y3 a_T581_26
+    instance SuppressUnusedWarnings (LamCases_T581_25Sym0 a0 x1 y3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a0123456789876543210 (x0123456789876543210 :: [a0123456789876543210]) (y0123456789876543210 :: b0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type M3_0123456789876543210 :: forall a b. [a] -> b -> ([a], b)
-    type family M3_0123456789876543210 @a @b (a :: [a]) (a :: b) :: ([a],
-                                                                     b) where
-      M3_0123456789876543210 @a @b (x :: [a]) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (LamCases_0123456789876543210Sym0 a x y)) x)) y
+        = snd ((,) LamCases_T581_25Sym0KindInference ())
+    type family LamCases_T581_25Sym1 a0 (x1 :: [a0]) (y3 :: b2) a_T581_26 where
+      LamCases_T581_25Sym1 a0 x1 y3 a_T581_26 = LamCases_T581_25 a0 x1 y3 a_T581_26
+    type M3_T581_22 :: forall a b. [a] -> b -> ([a], b)
+    type family M3_T581_22 @a @b (a :: [a]) (a :: b) :: ([a], b) where
+      M3_T581_22 @a @b (x :: [a]) (y :: b) = Apply (Apply Tuple2Sym0 (Apply (Apply FmapSym0 (LamCases_T581_25Sym0 a x y)) x)) y
     instance PC3 [a] where
-      type M3 a a = M3_0123456789876543210 a a
+      type M3 a a = M3_T581_22 a a
     class SC1 a where
       sM1 :: forall b (t :: a). Sing t -> Sing (M1 t :: Maybe (a, b))
       default sM1 ::
-                forall b (t :: a). ((M1 t :: Maybe (a, b))
-                                    ~ M1_0123456789876543210 t) =>
+                forall b (t :: a). ((M1 t :: Maybe (a, b)) ~ M1_T581_1 t) =>
                                    Sing t -> Sing (M1 t :: Maybe (a, b))
       sM1 _ = SNothing :: Sing (NothingSym0 :: Maybe (a, b))
     class SC2 a where
       sM2 :: (forall (t :: b). Sing t -> Sing (M2 t :: Maybe a) :: Type)
       default sM2 ::
                 (forall (t :: b).
-                 ((M2 t :: Maybe a) ~ M2_0123456789876543210 t) =>
+                 ((M2 t :: Maybe a) ~ M2_T581_4 t) =>
                  Sing t -> Sing (M2 t :: Maybe a) :: Type)
       sM2 _ = SNothing :: Sing (NothingSym0 :: Maybe a)
     class SC3 a where
@@ -186,8 +178,7 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
         forall b (t :: a) (t :: b). Sing t
                                     -> Sing t -> Sing (M3 t t :: (a, b))
       default sM3 ::
-                forall b (t :: a) (t :: b). ((M3 t t :: (a, b))
-                                             ~ M3_0123456789876543210 t t) =>
+                forall b (t :: a) (t :: b). ((M3 t t :: (a, b)) ~ M3_T581_8 t t) =>
                                             Sing t -> Sing t -> Sing (M3 t t :: (a, b))
       sM3 (sX :: Sing x) (sY :: Sing y)
         = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY ::
@@ -213,7 +204,7 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
                   (applySing
                      (singFun2 @FmapSym0 sFmap)
                      (singFun1
-                        @(LamCases_0123456789876543210Sym0 a x y)
+                        @(LamCases_T581_20Sym0 a x y)
                         (\cases (sXx :: Sing xx) -> sXx :: Sing (xx :: a))))
                   sX))
             sY
@@ -226,7 +217,7 @@ Singletons/T581.hs:(0,0)-(0,0): Splicing declarations
                   (applySing
                      (singFun2 @FmapSym0 sFmap)
                      (singFun1
-                        @(LamCases_0123456789876543210Sym0 a x y)
+                        @(LamCases_T581_25Sym0 a x y)
                         (\cases (sXx :: Sing xx) -> sXx :: Sing (xx :: a))))
                   sX))
             sY

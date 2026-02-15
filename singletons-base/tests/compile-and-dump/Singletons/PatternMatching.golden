@@ -20,21 +20,21 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     data PairSym0 :: (~>) a ((~>) b (Pair a b))
       where
         PairSym0KindInference :: SameKind (Apply PairSym0 arg) (PairSym1 arg) =>
-                                 PairSym0 a0123456789876543210
-    type instance Apply @a @((~>) b (Pair a b)) PairSym0 a0123456789876543210 = PairSym1 a0123456789876543210
+                                 PairSym0 a_Singletons_PatternMatching_3
+    type instance Apply @a @((~>) b (Pair a b)) PairSym0 a_Singletons_PatternMatching_3 = PairSym1 a_Singletons_PatternMatching_3
     instance SuppressUnusedWarnings PairSym0 where
       suppressUnusedWarnings = snd ((,) PairSym0KindInference ())
     type PairSym1 :: forall a b. a -> (~>) b (Pair a b)
-    data PairSym1 (a0123456789876543210 :: a) :: (~>) b (Pair a b)
+    data PairSym1 (a_Singletons_PatternMatching_3 :: a) :: (~>) b (Pair a b)
       where
-        PairSym1KindInference :: SameKind (Apply (PairSym1 a0123456789876543210) arg) (PairSym2 a0123456789876543210 arg) =>
-                                 PairSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @b @(Pair a b) (PairSym1 a0123456789876543210) a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (PairSym1 a0123456789876543210) where
+        PairSym1KindInference :: SameKind (Apply (PairSym1 a_Singletons_PatternMatching_3) arg) (PairSym2 a_Singletons_PatternMatching_3 arg) =>
+                                 PairSym1 a_Singletons_PatternMatching_3 a_Singletons_PatternMatching_4
+    type instance Apply @b @(Pair a b) (PairSym1 a_Singletons_PatternMatching_3) a_Singletons_PatternMatching_4 = Pair a_Singletons_PatternMatching_3 a_Singletons_PatternMatching_4
+    instance SuppressUnusedWarnings (PairSym1 a_Singletons_PatternMatching_3) where
       suppressUnusedWarnings = snd ((,) PairSym1KindInference ())
     type PairSym2 :: forall a b. a -> b -> Pair a b
-    type family PairSym2 @a @b (a0123456789876543210 :: a) (a0123456789876543210 :: b) :: Pair a b where
-      PairSym2 a0123456789876543210 a0123456789876543210 = Pair a0123456789876543210 a0123456789876543210
+    type family PairSym2 @a @b (a_Singletons_PatternMatching_3 :: a) (a_Singletons_PatternMatching_4 :: b) :: Pair a b where
+      PairSym2 a_Singletons_PatternMatching_3 a_Singletons_PatternMatching_4 = Pair a_Singletons_PatternMatching_3 a_Singletons_PatternMatching_4
     type family AListSym0 where
       AListSym0 = AList
     type family TupleSym0 where
@@ -51,13 +51,13 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       Complex = Apply (Apply PairSym0 (Apply (Apply PairSym0 (Apply JustSym0 ZeroSym0)) ZeroSym0)) FalseSym0
     type family Pr where
       Pr = Apply (Apply PairSym0 (Apply SuccSym0 ZeroSym0)) (Apply (Apply (:@#@$) ZeroSym0) NilSym0)
-    type ShowsPrec_0123456789876543210 :: forall a
-                                                 b. GHC.Internal.Bignum.Natural.Natural
-                                                    -> Pair a b -> Symbol -> Symbol
-    type family ShowsPrec_0123456789876543210 @a @b (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Pair a b) (a :: Symbol) :: Symbol where
-      ShowsPrec_0123456789876543210 @a @b (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (Pair arg_0123456789876543210 arg_0123456789876543210 :: Pair a b) (a_0123456789876543210 :: Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Pair ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))))) a_0123456789876543210
+    type ShowsPrec_Singletons_PatternMatching_5 :: forall a
+                                                          b. GHC.Internal.Bignum.Natural.Natural
+                                                             -> Pair a b -> Symbol -> Symbol
+    type family ShowsPrec_Singletons_PatternMatching_5 @a @b (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Pair a b) (a :: Symbol) :: Symbol where
+      ShowsPrec_Singletons_PatternMatching_5 @a @b (p_Singletons_PatternMatching_0 :: GHC.Internal.Bignum.Natural.Natural) (Pair arg_Singletons_PatternMatching_1 arg_Singletons_PatternMatching_2 :: Pair a b) (a_Singletons_PatternMatching_6 :: Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_Singletons_PatternMatching_0) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Pair ")) (Apply (Apply (.@#@$) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_Singletons_PatternMatching_1)) (Apply (Apply (.@#@$) ShowSpaceSym0) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_Singletons_PatternMatching_2))))) a_Singletons_PatternMatching_6
     instance PShow (Pair a b) where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_Singletons_PatternMatching_5 a a a
     sAList :: Sing @_ AList
     sTuple :: Sing @_ Tuple
     sComplex :: Sing @_ Complex
@@ -111,16 +111,17 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
             (toSing b :: SomeSing a) (toSing b :: SomeSing b)
     instance (SShow a, SShow b) => SShow (Pair a b) where
       sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SPair (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
-               (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sP_Singletons_PatternMatching_0 :: Sing p_Singletons_PatternMatching_0)
+        (SPair (sArg_Singletons_PatternMatching_1 :: Sing arg_Singletons_PatternMatching_1)
+               (sArg_Singletons_PatternMatching_2 :: Sing arg_Singletons_PatternMatching_2))
+        (sA_Singletons_PatternMatching_6 :: Sing a_Singletons_PatternMatching_6)
         = applySing
             (applySing
                (applySing
                   (singFun3 @ShowParenSym0 sShowParen)
                   (applySing
-                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (applySing
+                        (singFun2 @(>@#@$) (%>)) sP_Singletons_PatternMatching_0)
                      (sFromInteger (sing :: Sing 10))))
                (applySing
                   (applySing
@@ -134,7 +135,7 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                            (applySing
                               (singFun3 @ShowsPrecSym0 sShowsPrec)
                               (sFromInteger (sing :: Sing 11)))
-                           sArg_0123456789876543210))
+                           sArg_Singletons_PatternMatching_1))
                      (applySing
                         (applySing
                            (singFun3 @(.@#@$) (%.)) (singFun1 @ShowSpaceSym0 sShowSpace))
@@ -142,8 +143,8 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
                            (applySing
                               (singFun3 @ShowsPrecSym0 sShowsPrec)
                               (sFromInteger (sing :: Sing 11)))
-                           sArg_0123456789876543210)))))
-            sA_0123456789876543210
+                           sArg_Singletons_PatternMatching_2)))))
+            sA_Singletons_PatternMatching_6
     deriving instance (Data.Singletons.ShowSing.ShowSing a,
                        Data.Singletons.ShowSing.ShowSing b) =>
                       Show (SPair (z :: Pair a b))
@@ -188,241 +189,255 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
     foo2 t@(# x, y #) = case t of (# a, b #) -> (\ _ -> a) b
     silly :: a -> ()
     silly x = case x of _ -> ()
-    type family LamCases_0123456789876543210 (x0123456789876543210 :: a0123456789876543210) a_0123456789876543210 where
-      LamCases_0123456789876543210 x _ = Tuple0Sym0
-    data LamCases_0123456789876543210Sym0 (x0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_PatternMatching_25 (x1 :: a0) a_Singletons_PatternMatching_26 where
+      LamCases_Singletons_PatternMatching_25 x _ = Tuple0Sym0
+    data LamCases_Singletons_PatternMatching_25Sym0 (x1 :: a0) a_Singletons_PatternMatching_26
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210) where
+        LamCases_Singletons_PatternMatching_25Sym0KindInference :: SameKind (Apply (LamCases_Singletons_PatternMatching_25Sym0 x1) arg) (LamCases_Singletons_PatternMatching_25Sym1 x1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_25Sym0 x1 a_Singletons_PatternMatching_26
+    type instance Apply @_ @_ (LamCases_Singletons_PatternMatching_25Sym0 x1) a_Singletons_PatternMatching_26 = LamCases_Singletons_PatternMatching_25 x1 a_Singletons_PatternMatching_26
+    instance SuppressUnusedWarnings (LamCases_Singletons_PatternMatching_25Sym0 x1) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (x0123456789876543210 :: a0123456789876543210) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 a_01234567898765432100123456789876543210
-    type family Let0123456789876543210TSym0 x0123456789876543210 y0123456789876543210 where
-      Let0123456789876543210TSym0 x0123456789876543210 y0123456789876543210 = Let0123456789876543210T x0123456789876543210 y0123456789876543210
-    type family Let0123456789876543210T x0123456789876543210 y0123456789876543210 where
-      Let0123456789876543210T x y = Apply (Apply Tuple2Sym0 x) y
-    type family LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 a b x y _ = a
-    data LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_25Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_25Sym1 (x1 :: a0) a_Singletons_PatternMatching_26 where
+      LamCases_Singletons_PatternMatching_25Sym1 x1 a_Singletons_PatternMatching_26 = LamCases_Singletons_PatternMatching_25 x1 a_Singletons_PatternMatching_26
+    type family Let28TSym0 x0 y1 where
+      Let28TSym0 x0 y1 = Let28T x0 y1
+    type family Let28T x0 y1 where
+      Let28T x y = Apply (Apply Tuple2Sym0 x) y
+    type family LamCases_Singletons_PatternMatching_30 a0 b1 x2 y3 a_Singletons_PatternMatching_31 where
+      LamCases_Singletons_PatternMatching_30 a b x y _ = a
+    data LamCases_Singletons_PatternMatching_30Sym0 a0 b1 x2 y3 a_Singletons_PatternMatching_31
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) arg) (LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210) where
+        LamCases_Singletons_PatternMatching_30Sym0KindInference :: SameKind (Apply (LamCases_Singletons_PatternMatching_30Sym0 a0 b1 x2 y3) arg) (LamCases_Singletons_PatternMatching_30Sym1 a0 b1 x2 y3 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_30Sym0 a0 b1 x2 y3 a_Singletons_PatternMatching_31
+    type instance Apply @_ @_ (LamCases_Singletons_PatternMatching_30Sym0 a0 b1 x2 y3) a_Singletons_PatternMatching_31 = LamCases_Singletons_PatternMatching_30 a0 b1 x2 y3 a_Singletons_PatternMatching_31
+    instance SuppressUnusedWarnings (LamCases_Singletons_PatternMatching_30Sym0 a0 b1 x2 y3) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a0123456789876543210 b0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x y '(a,
-                                         b) = Apply (LamCases_0123456789876543210Sym0 a b x y) b
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_30Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_30Sym1 a0 b1 x2 y3 a_Singletons_PatternMatching_31 where
+      LamCases_Singletons_PatternMatching_30Sym1 a0 b1 x2 y3 a_Singletons_PatternMatching_31 = LamCases_Singletons_PatternMatching_30 a0 b1 x2 y3 a_Singletons_PatternMatching_31
+    type family LamCases_Singletons_PatternMatching_29 x0 y1 a_Singletons_PatternMatching_32 where
+      LamCases_Singletons_PatternMatching_29 x y '(a,
+                                                   b) = Apply (LamCases_Singletons_PatternMatching_30Sym0 a b x y) b
+    data LamCases_Singletons_PatternMatching_29Sym0 x0 y1 a_Singletons_PatternMatching_32
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) where
+        LamCases_Singletons_PatternMatching_29Sym0KindInference :: SameKind (Apply (LamCases_Singletons_PatternMatching_29Sym0 x0 y1) arg) (LamCases_Singletons_PatternMatching_29Sym1 x0 y1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_29Sym0 x0 y1 a_Singletons_PatternMatching_32
+    type instance Apply @_ @_ (LamCases_Singletons_PatternMatching_29Sym0 x0 y1) a_Singletons_PatternMatching_32 = LamCases_Singletons_PatternMatching_29 x0 y1 a_Singletons_PatternMatching_32
+    instance SuppressUnusedWarnings (LamCases_Singletons_PatternMatching_29Sym0 x0 y1) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 x y _ = x
-    data LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_29Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_29Sym1 x0 y1 a_Singletons_PatternMatching_32 where
+      LamCases_Singletons_PatternMatching_29Sym1 x0 y1 a_Singletons_PatternMatching_32 = LamCases_Singletons_PatternMatching_29 x0 y1 a_Singletons_PatternMatching_32
+    type family LamCases_Singletons_PatternMatching_34 x0 y1 a_Singletons_PatternMatching_35 where
+      LamCases_Singletons_PatternMatching_34 x y _ = x
+    data LamCases_Singletons_PatternMatching_34Sym0 x0 y1 a_Singletons_PatternMatching_35
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) arg) (LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 x0123456789876543210 y0123456789876543210) where
+        LamCases_Singletons_PatternMatching_34Sym0KindInference :: SameKind (Apply (LamCases_Singletons_PatternMatching_34Sym0 x0 y1) arg) (LamCases_Singletons_PatternMatching_34Sym1 x0 y1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_34Sym0 x0 y1 a_Singletons_PatternMatching_35
+    type instance Apply @_ @_ (LamCases_Singletons_PatternMatching_34Sym0 x0 y1) a_Singletons_PatternMatching_35 = LamCases_Singletons_PatternMatching_34 x0 y1 a_Singletons_PatternMatching_35
+    instance SuppressUnusedWarnings (LamCases_Singletons_PatternMatching_34Sym0 x0 y1) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 x0123456789876543210 y0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '[_,
-                                     _,
-                                     'Succ y_0123456789876543210] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_34Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_34Sym1 x0 y1 a_Singletons_PatternMatching_35 where
+      LamCases_Singletons_PatternMatching_34Sym1 x0 y1 a_Singletons_PatternMatching_35 = LamCases_Singletons_PatternMatching_34 x0 y1 a_Singletons_PatternMatching_35
+    type family LamCases_Singletons_PatternMatching_36 a_Singletons_PatternMatching_37 where
+      LamCases_Singletons_PatternMatching_36 '[_,
+                                               _,
+                                               'Succ y_Singletons_PatternMatching_23] = y_Singletons_PatternMatching_23
+    data LamCases_Singletons_PatternMatching_36Sym0 a_Singletons_PatternMatching_37
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_36Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_36Sym0 arg) (LamCases_Singletons_PatternMatching_36Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_36Sym0 a_Singletons_PatternMatching_37
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_36Sym0 a_Singletons_PatternMatching_37 = LamCases_Singletons_PatternMatching_36 a_Singletons_PatternMatching_37
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_36Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '[_,
-                                     y_0123456789876543210,
-                                     'Succ _] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_36Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_36Sym1 a_Singletons_PatternMatching_37 where
+      LamCases_Singletons_PatternMatching_36Sym1 a_Singletons_PatternMatching_37 = LamCases_Singletons_PatternMatching_36 a_Singletons_PatternMatching_37
+    type family LamCases_Singletons_PatternMatching_38 a_Singletons_PatternMatching_39 where
+      LamCases_Singletons_PatternMatching_38 '[_,
+                                               y_Singletons_PatternMatching_22,
+                                               'Succ _] = y_Singletons_PatternMatching_22
+    data LamCases_Singletons_PatternMatching_38Sym0 a_Singletons_PatternMatching_39
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_38Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_38Sym0 arg) (LamCases_Singletons_PatternMatching_38Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_38Sym0 a_Singletons_PatternMatching_39
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_38Sym0 a_Singletons_PatternMatching_39 = LamCases_Singletons_PatternMatching_38 a_Singletons_PatternMatching_39
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_38Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '(_,
-                                     _,
-                                     y_0123456789876543210) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_38Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_38Sym1 a_Singletons_PatternMatching_39 where
+      LamCases_Singletons_PatternMatching_38Sym1 a_Singletons_PatternMatching_39 = LamCases_Singletons_PatternMatching_38 a_Singletons_PatternMatching_39
+    type family LamCases_Singletons_PatternMatching_40 a_Singletons_PatternMatching_41 where
+      LamCases_Singletons_PatternMatching_40 '(_,
+                                               _,
+                                               y_Singletons_PatternMatching_20) = y_Singletons_PatternMatching_20
+    data LamCases_Singletons_PatternMatching_40Sym0 a_Singletons_PatternMatching_41
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_40Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_40Sym0 arg) (LamCases_Singletons_PatternMatching_40Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_40Sym0 a_Singletons_PatternMatching_41
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_40Sym0 a_Singletons_PatternMatching_41 = LamCases_Singletons_PatternMatching_40 a_Singletons_PatternMatching_41
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_40Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '(_,
-                                     y_0123456789876543210,
-                                     _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_40Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_40Sym1 a_Singletons_PatternMatching_41 where
+      LamCases_Singletons_PatternMatching_40Sym1 a_Singletons_PatternMatching_41 = LamCases_Singletons_PatternMatching_40 a_Singletons_PatternMatching_41
+    type family LamCases_Singletons_PatternMatching_42 a_Singletons_PatternMatching_43 where
+      LamCases_Singletons_PatternMatching_42 '(_,
+                                               y_Singletons_PatternMatching_19,
+                                               _) = y_Singletons_PatternMatching_19
+    data LamCases_Singletons_PatternMatching_42Sym0 a_Singletons_PatternMatching_43
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_42Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_42Sym0 arg) (LamCases_Singletons_PatternMatching_42Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_42Sym0 a_Singletons_PatternMatching_43
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_42Sym0 a_Singletons_PatternMatching_43 = LamCases_Singletons_PatternMatching_42 a_Singletons_PatternMatching_43
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_42Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '(y_0123456789876543210,
-                                     _,
-                                     _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_42Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_42Sym1 a_Singletons_PatternMatching_43 where
+      LamCases_Singletons_PatternMatching_42Sym1 a_Singletons_PatternMatching_43 = LamCases_Singletons_PatternMatching_42 a_Singletons_PatternMatching_43
+    type family LamCases_Singletons_PatternMatching_44 a_Singletons_PatternMatching_45 where
+      LamCases_Singletons_PatternMatching_44 '(y_Singletons_PatternMatching_18,
+                                               _,
+                                               _) = y_Singletons_PatternMatching_18
+    data LamCases_Singletons_PatternMatching_44Sym0 a_Singletons_PatternMatching_45
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_44Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_44Sym0 arg) (LamCases_Singletons_PatternMatching_44Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_44Sym0 a_Singletons_PatternMatching_45
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_44Sym0 a_Singletons_PatternMatching_45 = LamCases_Singletons_PatternMatching_44 a_Singletons_PatternMatching_45
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_44Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Pair ('Pair _ _) y_0123456789876543210) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_44Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_44Sym1 a_Singletons_PatternMatching_45 where
+      LamCases_Singletons_PatternMatching_44Sym1 a_Singletons_PatternMatching_45 = LamCases_Singletons_PatternMatching_44 a_Singletons_PatternMatching_45
+    type family LamCases_Singletons_PatternMatching_46 a_Singletons_PatternMatching_47 where
+      LamCases_Singletons_PatternMatching_46 ('Pair ('Pair _ _) y_Singletons_PatternMatching_16) = y_Singletons_PatternMatching_16
+    data LamCases_Singletons_PatternMatching_46Sym0 a_Singletons_PatternMatching_47
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_46Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_46Sym0 arg) (LamCases_Singletons_PatternMatching_46Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_46Sym0 a_Singletons_PatternMatching_47
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_46Sym0 a_Singletons_PatternMatching_47 = LamCases_Singletons_PatternMatching_46 a_Singletons_PatternMatching_47
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_46Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Pair ('Pair _ y_0123456789876543210) _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_46Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_46Sym1 a_Singletons_PatternMatching_47 where
+      LamCases_Singletons_PatternMatching_46Sym1 a_Singletons_PatternMatching_47 = LamCases_Singletons_PatternMatching_46 a_Singletons_PatternMatching_47
+    type family LamCases_Singletons_PatternMatching_48 a_Singletons_PatternMatching_49 where
+      LamCases_Singletons_PatternMatching_48 ('Pair ('Pair _ y_Singletons_PatternMatching_15) _) = y_Singletons_PatternMatching_15
+    data LamCases_Singletons_PatternMatching_48Sym0 a_Singletons_PatternMatching_49
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_48Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_48Sym0 arg) (LamCases_Singletons_PatternMatching_48Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_48Sym0 a_Singletons_PatternMatching_49
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_48Sym0 a_Singletons_PatternMatching_49 = LamCases_Singletons_PatternMatching_48 a_Singletons_PatternMatching_49
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_48Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Pair ('Pair y_0123456789876543210 _) _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_48Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_48Sym1 a_Singletons_PatternMatching_49 where
+      LamCases_Singletons_PatternMatching_48Sym1 a_Singletons_PatternMatching_49 = LamCases_Singletons_PatternMatching_48 a_Singletons_PatternMatching_49
+    type family LamCases_Singletons_PatternMatching_50 a_Singletons_PatternMatching_51 where
+      LamCases_Singletons_PatternMatching_50 ('Pair ('Pair y_Singletons_PatternMatching_14 _) _) = y_Singletons_PatternMatching_14
+    data LamCases_Singletons_PatternMatching_50Sym0 a_Singletons_PatternMatching_51
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_50Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_50Sym0 arg) (LamCases_Singletons_PatternMatching_50Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_50Sym0 a_Singletons_PatternMatching_51
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_50Sym0 a_Singletons_PatternMatching_51 = LamCases_Singletons_PatternMatching_50 a_Singletons_PatternMatching_51
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_50Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Pair _ y_0123456789876543210) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_50Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_50Sym1 a_Singletons_PatternMatching_51 where
+      LamCases_Singletons_PatternMatching_50Sym1 a_Singletons_PatternMatching_51 = LamCases_Singletons_PatternMatching_50 a_Singletons_PatternMatching_51
+    type family LamCases_Singletons_PatternMatching_52 a_Singletons_PatternMatching_53 where
+      LamCases_Singletons_PatternMatching_52 ('Pair _ y_Singletons_PatternMatching_12) = y_Singletons_PatternMatching_12
+    data LamCases_Singletons_PatternMatching_52Sym0 a_Singletons_PatternMatching_53
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_52Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_52Sym0 arg) (LamCases_Singletons_PatternMatching_52Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_52Sym0 a_Singletons_PatternMatching_53
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_52Sym0 a_Singletons_PatternMatching_53 = LamCases_Singletons_PatternMatching_52 a_Singletons_PatternMatching_53
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_52Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Pair y_0123456789876543210 _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_52Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_52Sym1 a_Singletons_PatternMatching_53 where
+      LamCases_Singletons_PatternMatching_52Sym1 a_Singletons_PatternMatching_53 = LamCases_Singletons_PatternMatching_52 a_Singletons_PatternMatching_53
+    type family LamCases_Singletons_PatternMatching_54 a_Singletons_PatternMatching_55 where
+      LamCases_Singletons_PatternMatching_54 ('Pair y_Singletons_PatternMatching_11 _) = y_Singletons_PatternMatching_11
+    data LamCases_Singletons_PatternMatching_54Sym0 a_Singletons_PatternMatching_55
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_PatternMatching_54Sym0KindInference :: SameKind (Apply LamCases_Singletons_PatternMatching_54Sym0 arg) (LamCases_Singletons_PatternMatching_54Sym1 arg) =>
+                                                                   LamCases_Singletons_PatternMatching_54Sym0 a_Singletons_PatternMatching_55
+    type instance Apply @_ @_ LamCases_Singletons_PatternMatching_54Sym0 a_Singletons_PatternMatching_55 = LamCases_Singletons_PatternMatching_54 a_Singletons_PatternMatching_55
+    instance SuppressUnusedWarnings LamCases_Singletons_PatternMatching_54Sym0 where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
+        = snd
+            ((,) LamCases_Singletons_PatternMatching_54Sym0KindInference ())
+    type family LamCases_Singletons_PatternMatching_54Sym1 a_Singletons_PatternMatching_55 where
+      LamCases_Singletons_PatternMatching_54Sym1 a_Singletons_PatternMatching_55 = LamCases_Singletons_PatternMatching_54 a_Singletons_PatternMatching_55
     type SillySym0 :: (~>) a ()
     data SillySym0 :: (~>) a ()
       where
         SillySym0KindInference :: SameKind (Apply SillySym0 arg) (SillySym1 arg) =>
-                                  SillySym0 a0123456789876543210
-    type instance Apply @a @() SillySym0 a0123456789876543210 = Silly a0123456789876543210
+                                  SillySym0 a_Singletons_PatternMatching_24
+    type instance Apply @a @() SillySym0 a_Singletons_PatternMatching_24 = Silly a_Singletons_PatternMatching_24
     instance SuppressUnusedWarnings SillySym0 where
       suppressUnusedWarnings = snd ((,) SillySym0KindInference ())
     type SillySym1 :: a -> ()
-    type family SillySym1 @a (a0123456789876543210 :: a) :: () where
-      SillySym1 a0123456789876543210 = Silly a0123456789876543210
+    type family SillySym1 @a (a_Singletons_PatternMatching_24 :: a) :: () where
+      SillySym1 a_Singletons_PatternMatching_24 = Silly a_Singletons_PatternMatching_24
     type Foo2Sym0 :: (~>) (a, b) a
     data Foo2Sym0 :: (~>) (a, b) a
       where
         Foo2Sym0KindInference :: SameKind (Apply Foo2Sym0 arg) (Foo2Sym1 arg) =>
-                                 Foo2Sym0 a0123456789876543210
+                                 Foo2Sym0 a_Singletons_PatternMatching_27
     type instance Apply @(a,
-                          b) @a Foo2Sym0 a0123456789876543210 = Foo2 a0123456789876543210
+                          b) @a Foo2Sym0 a_Singletons_PatternMatching_27 = Foo2 a_Singletons_PatternMatching_27
     instance SuppressUnusedWarnings Foo2Sym0 where
       suppressUnusedWarnings = snd ((,) Foo2Sym0KindInference ())
     type Foo2Sym1 :: (a, b) -> a
-    type family Foo2Sym1 @a @b (a0123456789876543210 :: (a,
-                                                         b)) :: a where
-      Foo2Sym1 a0123456789876543210 = Foo2 a0123456789876543210
+    type family Foo2Sym1 @a @b (a_Singletons_PatternMatching_27 :: (a,
+                                                                    b)) :: a where
+      Foo2Sym1 a_Singletons_PatternMatching_27 = Foo2 a_Singletons_PatternMatching_27
     type Foo1Sym0 :: (~>) (a, b) a
     data Foo1Sym0 :: (~>) (a, b) a
       where
         Foo1Sym0KindInference :: SameKind (Apply Foo1Sym0 arg) (Foo1Sym1 arg) =>
-                                 Foo1Sym0 a0123456789876543210
+                                 Foo1Sym0 a_Singletons_PatternMatching_33
     type instance Apply @(a,
-                          b) @a Foo1Sym0 a0123456789876543210 = Foo1 a0123456789876543210
+                          b) @a Foo1Sym0 a_Singletons_PatternMatching_33 = Foo1 a_Singletons_PatternMatching_33
     instance SuppressUnusedWarnings Foo1Sym0 where
       suppressUnusedWarnings = snd ((,) Foo1Sym0KindInference ())
     type Foo1Sym1 :: (a, b) -> a
-    type family Foo1Sym1 @a @b (a0123456789876543210 :: (a,
-                                                         b)) :: a where
-      Foo1Sym1 a0123456789876543210 = Foo1 a0123456789876543210
+    type family Foo1Sym1 @a @b (a_Singletons_PatternMatching_33 :: (a,
+                                                                    b)) :: a where
+      Foo1Sym1 a_Singletons_PatternMatching_33 = Foo1 a_Singletons_PatternMatching_33
     type family BlimySym0 where
       BlimySym0 = Blimy
     type LszSym0 :: Nat
     type family LszSym0 :: Nat where
       LszSym0 = Lsz
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_PatternMatching_21Sym0 where
+      X_Singletons_PatternMatching_21Sym0 = X_Singletons_PatternMatching_21
     type family TtSym0 where
       TtSym0 = Tt
     type family TjzSym0 where
       TjzSym0 = Tjz
     type family TfSym0 where
       TfSym0 = Tf
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_PatternMatching_17Sym0 where
+      X_Singletons_PatternMatching_17Sym0 = X_Singletons_PatternMatching_17
     type FlsSym0 :: Bool
     type family FlsSym0 :: Bool where
       FlsSym0 = Fls
@@ -430,54 +445,55 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       ZzSym0 = Zz
     type family JzSym0 where
       JzSym0 = Jz
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_PatternMatching_13Sym0 where
+      X_Singletons_PatternMatching_13Sym0 = X_Singletons_PatternMatching_13
     type family LzSym0 where
       LzSym0 = Lz
     type family SzSym0 where
       SzSym0 = Sz
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_PatternMatching_10Sym0 where
+      X_Singletons_PatternMatching_10Sym0 = X_Singletons_PatternMatching_10
     type Silly :: a -> ()
     type family Silly @a (a :: a) :: () where
-      Silly x = Apply (LamCases_0123456789876543210Sym0 x) x
+      Silly x = Apply (LamCases_Singletons_PatternMatching_25Sym0 x) x
     type Foo2 :: (a, b) -> a
     type family Foo2 @a @b (a :: (a, b)) :: a where
       Foo2 '(x,
-             y) = Apply (LamCases_0123456789876543210Sym0 x y) (Let0123456789876543210TSym0 x y)
+             y) = Apply (LamCases_Singletons_PatternMatching_29Sym0 x y) (Let28TSym0 x y)
     type Foo1 :: (a, b) -> a
     type family Foo1 @a @b (a :: (a, b)) :: a where
-      Foo1 '(x, y) = Apply (LamCases_0123456789876543210Sym0 x y) y
+      Foo1 '(x,
+             y) = Apply (LamCases_Singletons_PatternMatching_34Sym0 x y) y
     type family Blimy where
-      Blimy = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Blimy = Apply LamCases_Singletons_PatternMatching_36Sym0 X_Singletons_PatternMatching_21Sym0
     type Lsz :: Nat
     type family Lsz :: Nat where
-      Lsz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = AListSym0
+      Lsz = Apply LamCases_Singletons_PatternMatching_38Sym0 X_Singletons_PatternMatching_21Sym0
+    type family X_Singletons_PatternMatching_21 where
+      X_Singletons_PatternMatching_21 = AListSym0
     type family Tt where
-      Tt = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Tt = Apply LamCases_Singletons_PatternMatching_40Sym0 X_Singletons_PatternMatching_17Sym0
     type family Tjz where
-      Tjz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Tjz = Apply LamCases_Singletons_PatternMatching_42Sym0 X_Singletons_PatternMatching_17Sym0
     type family Tf where
-      Tf = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = TupleSym0
+      Tf = Apply LamCases_Singletons_PatternMatching_44Sym0 X_Singletons_PatternMatching_17Sym0
+    type family X_Singletons_PatternMatching_17 where
+      X_Singletons_PatternMatching_17 = TupleSym0
     type Fls :: Bool
     type family Fls :: Bool where
-      Fls = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Fls = Apply LamCases_Singletons_PatternMatching_46Sym0 X_Singletons_PatternMatching_13Sym0
     type family Zz where
-      Zz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Zz = Apply LamCases_Singletons_PatternMatching_48Sym0 X_Singletons_PatternMatching_13Sym0
     type family Jz where
-      Jz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = ComplexSym0
+      Jz = Apply LamCases_Singletons_PatternMatching_50Sym0 X_Singletons_PatternMatching_13Sym0
+    type family X_Singletons_PatternMatching_13 where
+      X_Singletons_PatternMatching_13 = ComplexSym0
     type family Lz where
-      Lz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      Lz = Apply LamCases_Singletons_PatternMatching_52Sym0 X_Singletons_PatternMatching_10Sym0
     type family Sz where
-      Sz = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = PrSym0
+      Sz = Apply LamCases_Singletons_PatternMatching_54Sym0 X_Singletons_PatternMatching_10Sym0
+    type family X_Singletons_PatternMatching_10 where
+      X_Singletons_PatternMatching_10 = PrSym0
     sSilly :: (forall (t :: a). Sing t -> Sing (Silly t :: ()) :: Type)
     sFoo2 ::
       (forall (t :: (a, b)). Sing t -> Sing (Foo2 t :: a) :: Type)
@@ -485,139 +501,149 @@ Singletons/PatternMatching.hs:(0,0)-(0,0): Splicing declarations
       (forall (t :: (a, b)). Sing t -> Sing (Foo1 t :: a) :: Type)
     sBlimy :: Sing @_ Blimy
     sLsz :: (Sing (Lsz :: Nat) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_PatternMatching_21 ::
+      Sing @_ X_Singletons_PatternMatching_21
     sTt :: Sing @_ Tt
     sTjz :: Sing @_ Tjz
     sTf :: Sing @_ Tf
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_PatternMatching_17 ::
+      Sing @_ X_Singletons_PatternMatching_17
     sFls :: (Sing (Fls :: Bool) :: Type)
     sZz :: Sing @_ Zz
     sJz :: Sing @_ Jz
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_PatternMatching_13 ::
+      Sing @_ X_Singletons_PatternMatching_13
     sLz :: Sing @_ Lz
     sSz :: Sing @_ Sz
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_PatternMatching_10 ::
+      Sing @_ X_Singletons_PatternMatching_10
     sSilly (sX :: Sing x)
       = applySing
           (singFun1
-             @(LamCases_0123456789876543210Sym0 x) (\cases _ -> STuple0))
+             @(LamCases_Singletons_PatternMatching_25Sym0 x)
+             (\cases _ -> STuple0))
           sX
     sFoo2 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = let
-          sT :: Sing @_ (Let0123456789876543210T x y)
+          sT :: Sing @_ (Let28T x y)
           sT = applySing (applySing (singFun2 @Tuple2Sym0 STuple2) sX) sY
         in
           applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 x y)
+               @(LamCases_Singletons_PatternMatching_29Sym0 x y)
                (\cases
                   (STuple2 (sA :: Sing a) (sB :: Sing b))
                     -> applySing
                          (singFun1
-                            @(LamCases_0123456789876543210Sym0 a b x y) (\cases _ -> sA))
+                            @(LamCases_Singletons_PatternMatching_30Sym0 a b x y)
+                            (\cases _ -> sA))
                          sB))
             sT
     sFoo1 (STuple2 (sX :: Sing x) (sY :: Sing y))
       = applySing
-          (singFun1 @(LamCases_0123456789876543210Sym0 x y) (\cases _ -> sX))
+          (singFun1
+             @(LamCases_Singletons_PatternMatching_34Sym0 x y) (\cases _ -> sX))
           sY
     sBlimy
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_36Sym0
              (\cases
                 (SCons _
                        (SCons _
-                              (SCons (SSucc (sY_0123456789876543210 :: Sing y_0123456789876543210))
+                              (SCons (SSucc (sY_Singletons_PatternMatching_23 :: Sing y_Singletons_PatternMatching_23))
                                      SNil)))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                  -> sY_Singletons_PatternMatching_23))
+          sX_Singletons_PatternMatching_21
     sLsz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_38Sym0
              (\cases
                 (SCons _
-                       (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                       (SCons (sY_Singletons_PatternMatching_22 :: Sing y_Singletons_PatternMatching_22)
                               (SCons (SSucc _) SNil)))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210 = sAList
+                  -> sY_Singletons_PatternMatching_22))
+          sX_Singletons_PatternMatching_21
+    sX_Singletons_PatternMatching_21 = sAList
     sTt
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_40Sym0
              (\cases
                 (STuple3 _ _
-                         (sY_0123456789876543210 :: Sing y_0123456789876543210))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                         (sY_Singletons_PatternMatching_20 :: Sing y_Singletons_PatternMatching_20))
+                  -> sY_Singletons_PatternMatching_20))
+          sX_Singletons_PatternMatching_17
     sTjz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_42Sym0
              (\cases
-                (STuple3 _ (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                (STuple3 _
+                         (sY_Singletons_PatternMatching_19 :: Sing y_Singletons_PatternMatching_19)
                          _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                  -> sY_Singletons_PatternMatching_19))
+          sX_Singletons_PatternMatching_17
     sTf
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_44Sym0
              (\cases
-                (STuple3 (sY_0123456789876543210 :: Sing y_0123456789876543210) _
-                         _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210 = sTuple
+                (STuple3 (sY_Singletons_PatternMatching_18 :: Sing y_Singletons_PatternMatching_18)
+                         _ _)
+                  -> sY_Singletons_PatternMatching_18))
+          sX_Singletons_PatternMatching_17
+    sX_Singletons_PatternMatching_17 = sTuple
     sFls
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_46Sym0
              (\cases
                 (SPair (SPair _ _)
-                       (sY_0123456789876543210 :: Sing y_0123456789876543210))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                       (sY_Singletons_PatternMatching_16 :: Sing y_Singletons_PatternMatching_16))
+                  -> sY_Singletons_PatternMatching_16))
+          sX_Singletons_PatternMatching_13
     sZz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_48Sym0
              (\cases
                 (SPair (SPair _
-                              (sY_0123456789876543210 :: Sing y_0123456789876543210))
+                              (sY_Singletons_PatternMatching_15 :: Sing y_Singletons_PatternMatching_15))
                        _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                  -> sY_Singletons_PatternMatching_15))
+          sX_Singletons_PatternMatching_13
     sJz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_50Sym0
              (\cases
-                (SPair (SPair (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                (SPair (SPair (sY_Singletons_PatternMatching_14 :: Sing y_Singletons_PatternMatching_14)
                               _)
                        _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210 = sComplex
+                  -> sY_Singletons_PatternMatching_14))
+          sX_Singletons_PatternMatching_13
+    sX_Singletons_PatternMatching_13 = sComplex
     sLz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_52Sym0
              (\cases
-                (SPair _ (sY_0123456789876543210 :: Sing y_0123456789876543210))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                (SPair _
+                       (sY_Singletons_PatternMatching_12 :: Sing y_Singletons_PatternMatching_12))
+                  -> sY_Singletons_PatternMatching_12))
+          sX_Singletons_PatternMatching_10
     sSz
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_PatternMatching_54Sym0
              (\cases
-                (SPair (sY_0123456789876543210 :: Sing y_0123456789876543210) _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210 = sPr
+                (SPair (sY_Singletons_PatternMatching_11 :: Sing y_Singletons_PatternMatching_11)
+                       _)
+                  -> sY_Singletons_PatternMatching_11))
+          sX_Singletons_PatternMatching_10
+    sX_Singletons_PatternMatching_10 = sPr
     instance SingI (SillySym0 :: (~>) a ()) where
       sing = singFun1 @SillySym0 sSilly
     instance SingI (Foo2Sym0 :: (~>) (a, b) a) where

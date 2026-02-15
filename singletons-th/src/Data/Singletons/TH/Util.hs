@@ -7,7 +7,10 @@ This file contains helper functions internal to the singletons-th package.
 Users of the package should not need to consult this file.
 -}
 
-module Data.Singletons.TH.Util where
+module Data.Singletons.TH.Util
+  ( module Data.Singletons.TH.Util
+  , UniqueCounter(..)
+  ) where
 
 import Prelude hiding ( exp, foldl, concat, mapM, any, pred )
 import Language.Haskell.TH ( pprint )
@@ -19,6 +22,7 @@ import Control.Monad ( liftM, unless, when )
 import Control.Monad.Except ( ExceptT, runExceptT, MonadError(..) )
 import Control.Monad.IO.Class ( MonadIO )
 import Control.Monad.Reader ( MonadReader(..), Reader, ReaderT(..) )
+import Control.Monad.State.Strict ( State, evalState, get, modify' )
 import Control.Monad.Trans ( MonadTrans )
 import Control.Monad.Writer ( MonadWriter(..), WriterT(..), execWriterT )
 import qualified Data.Map as Map
@@ -38,14 +42,6 @@ qReportWarning = qReport False
 -- like reportError, but generalized to any Quasi
 qReportError :: Quasi q => String -> q ()
 qReportError = qReport True
-
--- | Generate a new Unique
-qNewUnique :: DsMonad q => q Uniq
-qNewUnique = do
-  Name _ flav <- qNewName "x"
-  case flav of
-    NameU n -> return n
-    _       -> error "Internal error: `qNewName` didn't return a NameU"
 
 checkForRep :: Quasi q => [Name] -> q ()
 checkForRep names =
@@ -168,31 +164,6 @@ tailNameStr str =
   case str of
     (_:cs) -> cs
     [] -> error "tailNameStr: Expected non-empty string"
-
--- convert a number into both alphanumeric and symoblic forms
-uniquePrefixes :: String   -- alphanumeric prefix
-               -> String   -- symbolic prefix
-               -> Uniq
-               -> (String, String)  -- (alphanum, symbolic)
-uniquePrefixes alpha symb n = (alpha ++ n_str, symb ++ convert n_str)
-  where
-    n_str = show n
-
-    convert [] = []
-    convert (d : ds) =
-      let d' = case d of
-                 '0' -> '!'
-                 '1' -> '#'
-                 '2' -> '$'
-                 '3' -> '%'
-                 '4' -> '&'
-                 '5' -> '*'
-                 '6' -> '+'
-                 '7' -> '.'
-                 '8' -> '/'
-                 '9' -> '>'
-                 _   -> error "non-digit in show #"
-      in d' : convert ds
 
 -- extract the kind from a TyVarBndr
 extractTvbKind :: DTyVarBndr flag -> Maybe DKind
@@ -416,44 +387,96 @@ filterInvisTvbArgs (DFAForalls tele args) =
     DForallVis   _     -> res
     DForallInvis tvbs' -> tvbs' ++ res
 
--- Change all unique Names with a NameU or NameL namespace to non-unique Names
--- by performing a syb-based traversal. See Note [Pitfalls of NameU/NameL] for
--- why this is useful.
+-- | Change all unique 'Name's with a 'NameU' or 'NameL' namespace to non-unique
+-- 'Name's by performing a syb-based traversal. See @Note [Pitfalls of
+-- NameU/NameL]@ for why this is useful.
+--
+-- Each variable encountered during the traversal will be given a fresh
+-- non-unique 'Name' which is the variable OccName followed by an incrementing
+-- counter. For example: @x0@, @y1@, @z2@, @x3@, etc.
+--
+-- Each call to 'noExactTyVars' starts producing names from @0@. As a result,
+-- if you call 'noExactTyVars' in two different locations, then there is no
+-- guarantee that the 'Name's used in one location will be distinct from the
+-- other location. It is the responsibility of the caller to ensure that this
+-- does not result in name clashes.
 noExactTyVars :: Data a => a -> a
-noExactTyVars = everywhere go
+noExactTyVars = runFreshen . freshenTyVarsM
+
+-- | This function performs an SYB traversal and replaces `Name`s with a fresh
+-- name, and substitutes the fresh name for all other occurences of the name in
+-- the expression.
+--
+-- The scope of 'freshenTyVarsM' is indicated by executing the stateful
+-- computation using 'runFreshen'.
+freshenTyVarsM :: Data a => a -> State FreshenState a
+freshenTyVarsM = everywhereM freshenTyVarsStep
   where
-    go :: Data a => a -> a
-    go = mkT (fix_tvb @Specificity)
-      `extT` fix_tvb @()
-      `extT` fix_tvb @BndrVis
-      `extT` fix_ty
-      `extT` fix_inj_ann
-      `extT` fix_local_var
+    freshenTyVarsStep :: Data a => a -> State FreshenState a
+    freshenTyVarsStep = mkM (fix_tvb @Specificity)
+      `extM` fix_tvb @()
+      `extM` fix_tvb @BndrVis
+      `extM` fix_ty
+      `extM` fix_inj_ann
+      `extM` fix_local_var
 
-    fix_tvb :: Typeable flag => DTyVarBndr flag -> DTyVarBndr flag
-    fix_tvb (DPlainTV n f)    = DPlainTV (noExactName n) f
-    fix_tvb (DKindedTV n f k) = DKindedTV (noExactName n) f k
+    fix_tvb :: Typeable flag => DTyVarBndr flag -> State FreshenState (DTyVarBndr flag)
+    fix_tvb (DPlainTV n f) = do
+      n' <- freshenName n
+      pure (DPlainTV n' f)
+    fix_tvb (DKindedTV n f k) = do
+      n' <- freshenName n
+      pure (DKindedTV n' f k)
 
-    fix_ty (DVarT n)           = DVarT (noExactName n)
-    fix_ty ty                  = ty
+    fix_ty :: DType -> State FreshenState DType
+    fix_ty (DVarT n) = DVarT <$> freshenName n
+    fix_ty ty        = pure ty
 
-    fix_inj_ann (InjectivityAnn lhs rhs)
-      = InjectivityAnn (noExactName lhs) (map noExactName rhs)
+    fix_inj_ann :: InjectivityAnn -> State FreshenState InjectivityAnn
+    fix_inj_ann (InjectivityAnn lhs rhs) = do
+      lhs' <- freshenName lhs
+      rhs' <- traverse freshenName rhs
+      pure (InjectivityAnn lhs' rhs')
 
-    fix_local_var :: LocalVar -> LocalVar
-    fix_local_var (LocalVar { lvName = n, lvKind =  mbKind })
-      = LocalVar { lvName = noExactName n, lvKind = mbKind }
+    fix_local_var :: LocalVar -> State FreshenState LocalVar
+    fix_local_var (LocalVar { lvName = n, lvKind = mbKind }) = do
+      n' <- freshenName n
+      pure LocalVar { lvName = n', lvKind = mbKind }
 
--- Changes a unique Name with a NameU or NameL namespace to a non-unique Name.
--- See Note [Pitfalls of NameU/NameL] for why this is useful.
-noExactName :: Name -> Name
-noExactName n@(Name (OccName occ) ns) =
+-- | The state maintained by 'freshenTyVarsM'.
+data FreshenState = FreshenState
+  { fsNextId    :: !Int
+  , fsRenamings :: Map Name Name
+  }
+
+-- | The initial state for 'freshenTyVarsM': identifiers will start from @0@,
+-- and no renamings will have yet occurred.
+initialFreshenState :: FreshenState
+initialFreshenState = FreshenState 0 Map.empty
+
+-- | Run a stateful computation that involves 'FreshenState'.
+runFreshen :: State FreshenState a -> a
+runFreshen = (`evalState` initialFreshenState)
+
+-- | Create a fresh name and update the 'FreshenState' accordingly.
+freshenName :: Name -> State FreshenState Name
+freshenName n@(Name (OccName occ) ns) =
   case ns of
-    NameU unique -> mk_name unique
-    NameL unique -> mk_name unique
-    _            -> n
+    NameU _ -> allocate occ
+    NameL _ -> allocate occ
+    _       -> pure n
   where
-    mk_name unique = mkName (occ ++ show unique)
+    allocate occStr = do
+      FreshenState { fsNextId = next, fsRenamings = renamings } <- get
+      case Map.lookup n renamings of
+        Just n' -> pure n'
+        Nothing -> do
+          let newOccName = mkName (occStr ++ show next)
+          modify' $ \s -> s { fsNextId = next + 1
+                            , fsRenamings = Map.insert n newOccName renamings
+                            }
+          pure newOccName
+
 
 {-
 Note [Pitfalls of NameU/NameL]
@@ -507,24 +530,26 @@ the equation for `G`, and once more in the type variable binder in
 `type family LetG x_456`. The last of these scopes in particular is enough to
 confuse GHC in some situations and trigger GHC#11812.
 
-Our workaround is to apply the `noExactName` function to such names, which
-converts any Names with NameU/NameL namespaces into non-unique Names with
-longer OccNames. For instance, `noExactName x_456` will return a non-unique
-Name with the OccName `x456`. We use `noExactName` when generating `LetG` so
+Our workaround is to apply the `freshenName` function (via `freshenTyVarsM`) to
+such names, which converts any Names with NameU/NameL namespaces into
+non-unique Names. In each freshening-scope, all variables encountered are given
+an incrementing unique name. For example, `x_456` will
+return a non-unique Name with the OccName `x0`. We use this renamer when
+generating `LetG` so
 that it will instead be:
 
-    type family LetG x456 where
-      LetG x_456 = x_456
+    type family LetG x0 where
+      LetG x0 = x0
 
-Here, `x456` is a non-unique Name, and `x_456` is a Unique name. Thankfully,
+Here, `x0` is a non-unique Name, and `x_456` is a Unique name. Thankfully,
 this is sufficient to work around GHC#11812. There is still some amount of
 risk, since we are reusing `x_456` in two different type family equations (one
 for `LetG` and one for `F`), but GHC accepts this for now. We prefer to use the
-`noExactName` in as few places as possible, as using longer OccNames makes the
+this renaming machinery in as few places as possible, as using longer OccNames makes the
 Haddocks harder to read, so we will continue to reuse unique Names unless GHC
 forces us to behave differently.
 
-In addition to the type family example above, we also make use of `noExactName`
+In addition to the type family example above, we also make use of this renaming
 (as well as its cousin, `noExactTyVars`) when generating defunctionalization
 symbols, as these also require reusing Unique names in several type family and
 data type declarations. See references to this Note in the code for particular

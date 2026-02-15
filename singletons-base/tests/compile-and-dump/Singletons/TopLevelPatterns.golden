@@ -15,23 +15,23 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     data BarSym0 :: (~>) Bool ((~>) Bool Foo)
       where
         BarSym0KindInference :: SameKind (Apply BarSym0 arg) (BarSym1 arg) =>
-                                BarSym0 a0123456789876543210
-    type instance Apply @Bool @((~>) Bool Foo) BarSym0 a0123456789876543210 = BarSym1 a0123456789876543210
+                                BarSym0 a_Singletons_TopLevelPatterns_0
+    type instance Apply @Bool @((~>) Bool Foo) BarSym0 a_Singletons_TopLevelPatterns_0 = BarSym1 a_Singletons_TopLevelPatterns_0
     instance SuppressUnusedWarnings BarSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) BarSym0KindInference ())
     type BarSym1 :: Bool -> (~>) Bool Foo
-    data BarSym1 (a0123456789876543210 :: Bool) :: (~>) Bool Foo
+    data BarSym1 (a_Singletons_TopLevelPatterns_0 :: Bool) :: (~>) Bool Foo
       where
-        BarSym1KindInference :: SameKind (Apply (BarSym1 a0123456789876543210) arg) (BarSym2 a0123456789876543210 arg) =>
-                                BarSym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @Bool @Foo (BarSym1 a0123456789876543210) a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (BarSym1 a0123456789876543210) where
+        BarSym1KindInference :: SameKind (Apply (BarSym1 a_Singletons_TopLevelPatterns_0) arg) (BarSym2 a_Singletons_TopLevelPatterns_0 arg) =>
+                                BarSym1 a_Singletons_TopLevelPatterns_0 a_Singletons_TopLevelPatterns_1
+    type instance Apply @Bool @Foo (BarSym1 a_Singletons_TopLevelPatterns_0) a_Singletons_TopLevelPatterns_1 = Bar a_Singletons_TopLevelPatterns_0 a_Singletons_TopLevelPatterns_1
+    instance SuppressUnusedWarnings (BarSym1 a_Singletons_TopLevelPatterns_0) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) BarSym1KindInference ())
     type BarSym2 :: Bool -> Bool -> Foo
-    type family BarSym2 (a0123456789876543210 :: Bool) (a0123456789876543210 :: Bool) :: Foo where
-      BarSym2 a0123456789876543210 a0123456789876543210 = Bar a0123456789876543210 a0123456789876543210
+    type family BarSym2 (a_Singletons_TopLevelPatterns_0 :: Bool) (a_Singletons_TopLevelPatterns_1 :: Bool) :: Foo where
+      BarSym2 a_Singletons_TopLevelPatterns_0 a_Singletons_TopLevelPatterns_1 = Bar a_Singletons_TopLevelPatterns_0 a_Singletons_TopLevelPatterns_1
     data SBool :: Bool -> Type
       where
         SFalse :: SBool (False :: Bool)
@@ -112,245 +112,245 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     l :: Bool
     m :: Bool
     [l, m] = [not True, id False]
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '[_,
-                                     y_0123456789876543210] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+    type family LamCases_Singletons_TopLevelPatterns_14 a_Singletons_TopLevelPatterns_15 where
+      LamCases_Singletons_TopLevelPatterns_14 '[_,
+                                                y_Singletons_TopLevelPatterns_13] = y_Singletons_TopLevelPatterns_13
+    data LamCases_Singletons_TopLevelPatterns_14Sym0 a_Singletons_TopLevelPatterns_15
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_TopLevelPatterns_14Sym0KindInference :: SameKind (Apply LamCases_Singletons_TopLevelPatterns_14Sym0 arg) (LamCases_Singletons_TopLevelPatterns_14Sym1 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_14Sym0 a_Singletons_TopLevelPatterns_15
+    type instance Apply @_ @_ LamCases_Singletons_TopLevelPatterns_14Sym0 a_Singletons_TopLevelPatterns_15 = LamCases_Singletons_TopLevelPatterns_14 a_Singletons_TopLevelPatterns_15
+    instance SuppressUnusedWarnings LamCases_Singletons_TopLevelPatterns_14Sym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 '[y_0123456789876543210,
-                                     _] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_14Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_14Sym1 a_Singletons_TopLevelPatterns_15 where
+      LamCases_Singletons_TopLevelPatterns_14Sym1 a_Singletons_TopLevelPatterns_15 = LamCases_Singletons_TopLevelPatterns_14 a_Singletons_TopLevelPatterns_15
+    type family LamCases_Singletons_TopLevelPatterns_16 a_Singletons_TopLevelPatterns_17 where
+      LamCases_Singletons_TopLevelPatterns_16 '[y_Singletons_TopLevelPatterns_12,
+                                                _] = y_Singletons_TopLevelPatterns_12
+    data LamCases_Singletons_TopLevelPatterns_16Sym0 a_Singletons_TopLevelPatterns_17
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_TopLevelPatterns_16Sym0KindInference :: SameKind (Apply LamCases_Singletons_TopLevelPatterns_16Sym0 arg) (LamCases_Singletons_TopLevelPatterns_16Sym1 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_16Sym0 a_Singletons_TopLevelPatterns_17
+    type instance Apply @_ @_ LamCases_Singletons_TopLevelPatterns_16Sym0 a_Singletons_TopLevelPatterns_17 = LamCases_Singletons_TopLevelPatterns_16 a_Singletons_TopLevelPatterns_17
+    instance SuppressUnusedWarnings LamCases_Singletons_TopLevelPatterns_16Sym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Bar _ y_0123456789876543210) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_16Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_16Sym1 a_Singletons_TopLevelPatterns_17 where
+      LamCases_Singletons_TopLevelPatterns_16Sym1 a_Singletons_TopLevelPatterns_17 = LamCases_Singletons_TopLevelPatterns_16 a_Singletons_TopLevelPatterns_17
+    type family LamCases_Singletons_TopLevelPatterns_18 a_Singletons_TopLevelPatterns_19 where
+      LamCases_Singletons_TopLevelPatterns_18 ('Bar _ y_Singletons_TopLevelPatterns_10) = y_Singletons_TopLevelPatterns_10
+    data LamCases_Singletons_TopLevelPatterns_18Sym0 a_Singletons_TopLevelPatterns_19
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_TopLevelPatterns_18Sym0KindInference :: SameKind (Apply LamCases_Singletons_TopLevelPatterns_18Sym0 arg) (LamCases_Singletons_TopLevelPatterns_18Sym1 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_18Sym0 a_Singletons_TopLevelPatterns_19
+    type instance Apply @_ @_ LamCases_Singletons_TopLevelPatterns_18Sym0 a_Singletons_TopLevelPatterns_19 = LamCases_Singletons_TopLevelPatterns_18 a_Singletons_TopLevelPatterns_19
+    instance SuppressUnusedWarnings LamCases_Singletons_TopLevelPatterns_18Sym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 a_0123456789876543210 where
-      LamCases_0123456789876543210 ('Bar y_0123456789876543210 _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_18Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_18Sym1 a_Singletons_TopLevelPatterns_19 where
+      LamCases_Singletons_TopLevelPatterns_18Sym1 a_Singletons_TopLevelPatterns_19 = LamCases_Singletons_TopLevelPatterns_18 a_Singletons_TopLevelPatterns_19
+    type family LamCases_Singletons_TopLevelPatterns_20 a_Singletons_TopLevelPatterns_21 where
+      LamCases_Singletons_TopLevelPatterns_20 ('Bar y_Singletons_TopLevelPatterns_9 _) = y_Singletons_TopLevelPatterns_9
+    data LamCases_Singletons_TopLevelPatterns_20Sym0 a_Singletons_TopLevelPatterns_21
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply LamCases_0123456789876543210Sym0 arg) (LamCases_0123456789876543210Sym1 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings LamCases_0123456789876543210Sym0 where
+        LamCases_Singletons_TopLevelPatterns_20Sym0KindInference :: SameKind (Apply LamCases_Singletons_TopLevelPatterns_20Sym0 arg) (LamCases_Singletons_TopLevelPatterns_20Sym1 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_20Sym0 a_Singletons_TopLevelPatterns_21
+    type instance Apply @_ @_ LamCases_Singletons_TopLevelPatterns_20Sym0 a_Singletons_TopLevelPatterns_21 = LamCases_Singletons_TopLevelPatterns_20 a_Singletons_TopLevelPatterns_21
+    instance SuppressUnusedWarnings LamCases_Singletons_TopLevelPatterns_20Sym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (a_01234567898765432100123456789876543210 :: Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 a_0123456789876543210 '(_,
-                                                           y_0123456789876543210) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_20Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_20Sym1 a_Singletons_TopLevelPatterns_21 where
+      LamCases_Singletons_TopLevelPatterns_20Sym1 a_Singletons_TopLevelPatterns_21 = LamCases_Singletons_TopLevelPatterns_20 a_Singletons_TopLevelPatterns_21
+    type family LamCases_Singletons_TopLevelPatterns_24 (a_Singletons_TopLevelPatterns_220 :: Bool) a_Singletons_TopLevelPatterns_25 where
+      LamCases_Singletons_TopLevelPatterns_24 a_Singletons_TopLevelPatterns_22 '(_,
+                                                                                 y_Singletons_TopLevelPatterns_7) = y_Singletons_TopLevelPatterns_7
+    data LamCases_Singletons_TopLevelPatterns_24Sym0 (a_Singletons_TopLevelPatterns_220 :: Bool) a_Singletons_TopLevelPatterns_25
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_Singletons_TopLevelPatterns_24Sym0KindInference :: SameKind (Apply (LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_220) arg) (LamCases_Singletons_TopLevelPatterns_24Sym1 a_Singletons_TopLevelPatterns_220 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_220 a_Singletons_TopLevelPatterns_25
+    type instance Apply @_ @_ (LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_220) a_Singletons_TopLevelPatterns_25 = LamCases_Singletons_TopLevelPatterns_24 a_Singletons_TopLevelPatterns_220 a_Singletons_TopLevelPatterns_25
+    instance SuppressUnusedWarnings (LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_220) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (a_01234567898765432100123456789876543210 :: Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 a_0123456789876543210 '(y_0123456789876543210,
-                                                           _) = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_24Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_24Sym1 (a_Singletons_TopLevelPatterns_220 :: Bool) a_Singletons_TopLevelPatterns_25 where
+      LamCases_Singletons_TopLevelPatterns_24Sym1 a_Singletons_TopLevelPatterns_220 a_Singletons_TopLevelPatterns_25 = LamCases_Singletons_TopLevelPatterns_24 a_Singletons_TopLevelPatterns_220 a_Singletons_TopLevelPatterns_25
+    type family LamCases_Singletons_TopLevelPatterns_28 (a_Singletons_TopLevelPatterns_260 :: Bool) a_Singletons_TopLevelPatterns_29 where
+      LamCases_Singletons_TopLevelPatterns_28 a_Singletons_TopLevelPatterns_26 '(y_Singletons_TopLevelPatterns_6,
+                                                                                 _) = y_Singletons_TopLevelPatterns_6
+    data LamCases_Singletons_TopLevelPatterns_28Sym0 (a_Singletons_TopLevelPatterns_260 :: Bool) a_Singletons_TopLevelPatterns_29
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_Singletons_TopLevelPatterns_28Sym0KindInference :: SameKind (Apply (LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_260) arg) (LamCases_Singletons_TopLevelPatterns_28Sym1 a_Singletons_TopLevelPatterns_260 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_260 a_Singletons_TopLevelPatterns_29
+    type instance Apply @_ @_ (LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_260) a_Singletons_TopLevelPatterns_29 = LamCases_Singletons_TopLevelPatterns_28 a_Singletons_TopLevelPatterns_260 a_Singletons_TopLevelPatterns_29
+    instance SuppressUnusedWarnings (LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_260) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (a_01234567898765432100123456789876543210 :: Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 a_0123456789876543210 '[_,
-                                                           y_0123456789876543210] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_28Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_28Sym1 (a_Singletons_TopLevelPatterns_260 :: Bool) a_Singletons_TopLevelPatterns_29 where
+      LamCases_Singletons_TopLevelPatterns_28Sym1 a_Singletons_TopLevelPatterns_260 a_Singletons_TopLevelPatterns_29 = LamCases_Singletons_TopLevelPatterns_28 a_Singletons_TopLevelPatterns_260 a_Singletons_TopLevelPatterns_29
+    type family LamCases_Singletons_TopLevelPatterns_32 (a_Singletons_TopLevelPatterns_300 :: Bool) a_Singletons_TopLevelPatterns_33 where
+      LamCases_Singletons_TopLevelPatterns_32 a_Singletons_TopLevelPatterns_30 '[_,
+                                                                                 y_Singletons_TopLevelPatterns_4] = y_Singletons_TopLevelPatterns_4
+    data LamCases_Singletons_TopLevelPatterns_32Sym0 (a_Singletons_TopLevelPatterns_300 :: Bool) a_Singletons_TopLevelPatterns_33
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_Singletons_TopLevelPatterns_32Sym0KindInference :: SameKind (Apply (LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_300) arg) (LamCases_Singletons_TopLevelPatterns_32Sym1 a_Singletons_TopLevelPatterns_300 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_300 a_Singletons_TopLevelPatterns_33
+    type instance Apply @_ @_ (LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_300) a_Singletons_TopLevelPatterns_33 = LamCases_Singletons_TopLevelPatterns_32 a_Singletons_TopLevelPatterns_300 a_Singletons_TopLevelPatterns_33
+    instance SuppressUnusedWarnings (LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_300) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (a_01234567898765432100123456789876543210 :: Bool) a_0123456789876543210 where
-      LamCases_0123456789876543210 a_0123456789876543210 '[y_0123456789876543210,
-                                                           _] = y_0123456789876543210
-    data LamCases_0123456789876543210Sym0 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_32Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_32Sym1 (a_Singletons_TopLevelPatterns_300 :: Bool) a_Singletons_TopLevelPatterns_33 where
+      LamCases_Singletons_TopLevelPatterns_32Sym1 a_Singletons_TopLevelPatterns_300 a_Singletons_TopLevelPatterns_33 = LamCases_Singletons_TopLevelPatterns_32 a_Singletons_TopLevelPatterns_300 a_Singletons_TopLevelPatterns_33
+    type family LamCases_Singletons_TopLevelPatterns_36 (a_Singletons_TopLevelPatterns_340 :: Bool) a_Singletons_TopLevelPatterns_37 where
+      LamCases_Singletons_TopLevelPatterns_36 a_Singletons_TopLevelPatterns_34 '[y_Singletons_TopLevelPatterns_3,
+                                                                                 _] = y_Singletons_TopLevelPatterns_3
+    data LamCases_Singletons_TopLevelPatterns_36Sym0 (a_Singletons_TopLevelPatterns_340 :: Bool) a_Singletons_TopLevelPatterns_37
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 a_01234567898765432100123456789876543210) where
+        LamCases_Singletons_TopLevelPatterns_36Sym0KindInference :: SameKind (Apply (LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_340) arg) (LamCases_Singletons_TopLevelPatterns_36Sym1 a_Singletons_TopLevelPatterns_340 arg) =>
+                                                                    LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_340 a_Singletons_TopLevelPatterns_37
+    type instance Apply @_ @_ (LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_340) a_Singletons_TopLevelPatterns_37 = LamCases_Singletons_TopLevelPatterns_36 a_Singletons_TopLevelPatterns_340 a_Singletons_TopLevelPatterns_37
+    instance SuppressUnusedWarnings (LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_340) where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd
-            ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (a_01234567898765432100123456789876543210 :: Bool) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 a_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
+            ((,) LamCases_Singletons_TopLevelPatterns_36Sym0KindInference ())
+    type family LamCases_Singletons_TopLevelPatterns_36Sym1 (a_Singletons_TopLevelPatterns_340 :: Bool) a_Singletons_TopLevelPatterns_37 where
+      LamCases_Singletons_TopLevelPatterns_36Sym1 a_Singletons_TopLevelPatterns_340 a_Singletons_TopLevelPatterns_37 = LamCases_Singletons_TopLevelPatterns_36 a_Singletons_TopLevelPatterns_340 a_Singletons_TopLevelPatterns_37
     type MSym0 :: Bool
     type family MSym0 :: Bool where
       MSym0 = M
     type LSym0 :: Bool
     type family LSym0 :: Bool where
       LSym0 = L
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_TopLevelPatterns_11Sym0 where
+      X_Singletons_TopLevelPatterns_11Sym0 = X_Singletons_TopLevelPatterns_11
     type KSym0 :: Bool
     type family KSym0 :: Bool where
       KSym0 = K
     type JSym0 :: Bool
     type family JSym0 :: Bool where
       JSym0 = J
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family X_Singletons_TopLevelPatterns_8Sym0 where
+      X_Singletons_TopLevelPatterns_8Sym0 = X_Singletons_TopLevelPatterns_8
     type ISym0 :: (~>) Bool Bool
     data ISym0 :: (~>) Bool Bool
       where
         ISym0KindInference :: SameKind (Apply ISym0 arg) (ISym1 arg) =>
-                              ISym0 a0123456789876543210
-    type instance Apply @Bool @Bool ISym0 a0123456789876543210 = I a0123456789876543210
+                              ISym0 a_Singletons_TopLevelPatterns_23
+    type instance Apply @Bool @Bool ISym0 a_Singletons_TopLevelPatterns_23 = I a_Singletons_TopLevelPatterns_23
     instance SuppressUnusedWarnings ISym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) ISym0KindInference ())
     type ISym1 :: Bool -> Bool
-    type family ISym1 (a0123456789876543210 :: Bool) :: Bool where
-      ISym1 a0123456789876543210 = I a0123456789876543210
+    type family ISym1 (a_Singletons_TopLevelPatterns_23 :: Bool) :: Bool where
+      ISym1 a_Singletons_TopLevelPatterns_23 = I a_Singletons_TopLevelPatterns_23
     type HSym0 :: (~>) Bool Bool
     data HSym0 :: (~>) Bool Bool
       where
         HSym0KindInference :: SameKind (Apply HSym0 arg) (HSym1 arg) =>
-                              HSym0 a0123456789876543210
-    type instance Apply @Bool @Bool HSym0 a0123456789876543210 = H a0123456789876543210
+                              HSym0 a_Singletons_TopLevelPatterns_27
+    type instance Apply @Bool @Bool HSym0 a_Singletons_TopLevelPatterns_27 = H a_Singletons_TopLevelPatterns_27
     instance SuppressUnusedWarnings HSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) HSym0KindInference ())
     type HSym1 :: Bool -> Bool
-    type family HSym1 (a0123456789876543210 :: Bool) :: Bool where
-      HSym1 a0123456789876543210 = H a0123456789876543210
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family HSym1 (a_Singletons_TopLevelPatterns_27 :: Bool) :: Bool where
+      HSym1 a_Singletons_TopLevelPatterns_27 = H a_Singletons_TopLevelPatterns_27
+    type family X_Singletons_TopLevelPatterns_5Sym0 where
+      X_Singletons_TopLevelPatterns_5Sym0 = X_Singletons_TopLevelPatterns_5
     type GSym0 :: (~>) Bool Bool
     data GSym0 :: (~>) Bool Bool
       where
         GSym0KindInference :: SameKind (Apply GSym0 arg) (GSym1 arg) =>
-                              GSym0 a0123456789876543210
-    type instance Apply @Bool @Bool GSym0 a0123456789876543210 = G a0123456789876543210
+                              GSym0 a_Singletons_TopLevelPatterns_31
+    type instance Apply @Bool @Bool GSym0 a_Singletons_TopLevelPatterns_31 = G a_Singletons_TopLevelPatterns_31
     instance SuppressUnusedWarnings GSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) GSym0KindInference ())
     type GSym1 :: Bool -> Bool
-    type family GSym1 (a0123456789876543210 :: Bool) :: Bool where
-      GSym1 a0123456789876543210 = G a0123456789876543210
+    type family GSym1 (a_Singletons_TopLevelPatterns_31 :: Bool) :: Bool where
+      GSym1 a_Singletons_TopLevelPatterns_31 = G a_Singletons_TopLevelPatterns_31
     type FSym0 :: (~>) Bool Bool
     data FSym0 :: (~>) Bool Bool
       where
         FSym0KindInference :: SameKind (Apply FSym0 arg) (FSym1 arg) =>
-                              FSym0 a0123456789876543210
-    type instance Apply @Bool @Bool FSym0 a0123456789876543210 = F a0123456789876543210
+                              FSym0 a_Singletons_TopLevelPatterns_35
+    type instance Apply @Bool @Bool FSym0 a_Singletons_TopLevelPatterns_35 = F a_Singletons_TopLevelPatterns_35
     instance SuppressUnusedWarnings FSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) FSym0KindInference ())
     type FSym1 :: Bool -> Bool
-    type family FSym1 (a0123456789876543210 :: Bool) :: Bool where
-      FSym1 a0123456789876543210 = F a0123456789876543210
-    type family X_0123456789876543210Sym0 where
-      X_0123456789876543210Sym0 = X_0123456789876543210
+    type family FSym1 (a_Singletons_TopLevelPatterns_35 :: Bool) :: Bool where
+      FSym1 a_Singletons_TopLevelPatterns_35 = F a_Singletons_TopLevelPatterns_35
+    type family X_Singletons_TopLevelPatterns_2Sym0 where
+      X_Singletons_TopLevelPatterns_2Sym0 = X_Singletons_TopLevelPatterns_2
     type family False_Sym0 where
       False_Sym0 = False_
     type NotSym0 :: (~>) Bool Bool
     data NotSym0 :: (~>) Bool Bool
       where
         NotSym0KindInference :: SameKind (Apply NotSym0 arg) (NotSym1 arg) =>
-                                NotSym0 a0123456789876543210
-    type instance Apply @Bool @Bool NotSym0 a0123456789876543210 = Not a0123456789876543210
+                                NotSym0 a_Singletons_TopLevelPatterns_38
+    type instance Apply @Bool @Bool NotSym0 a_Singletons_TopLevelPatterns_38 = Not a_Singletons_TopLevelPatterns_38
     instance SuppressUnusedWarnings NotSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) NotSym0KindInference ())
     type NotSym1 :: Bool -> Bool
-    type family NotSym1 (a0123456789876543210 :: Bool) :: Bool where
-      NotSym1 a0123456789876543210 = Not a0123456789876543210
+    type family NotSym1 (a_Singletons_TopLevelPatterns_38 :: Bool) :: Bool where
+      NotSym1 a_Singletons_TopLevelPatterns_38 = Not a_Singletons_TopLevelPatterns_38
     type IdSym0 :: (~>) a a
     data IdSym0 :: (~>) a a
       where
         IdSym0KindInference :: SameKind (Apply IdSym0 arg) (IdSym1 arg) =>
-                               IdSym0 a0123456789876543210
-    type instance Apply @a @a IdSym0 a0123456789876543210 = Id a0123456789876543210
+                               IdSym0 a_Singletons_TopLevelPatterns_39
+    type instance Apply @a @a IdSym0 a_Singletons_TopLevelPatterns_39 = Id a_Singletons_TopLevelPatterns_39
     instance SuppressUnusedWarnings IdSym0 where
       suppressUnusedWarnings
         = GHC.Internal.Data.Tuple.snd ((,) IdSym0KindInference ())
     type IdSym1 :: a -> a
-    type family IdSym1 @a (a0123456789876543210 :: a) :: a where
-      IdSym1 a0123456789876543210 = Id a0123456789876543210
+    type family IdSym1 @a (a_Singletons_TopLevelPatterns_39 :: a) :: a where
+      IdSym1 a_Singletons_TopLevelPatterns_39 = Id a_Singletons_TopLevelPatterns_39
     type OtherwiseSym0 :: Bool
     type family OtherwiseSym0 :: Bool where
       OtherwiseSym0 = Otherwise
     type M :: Bool
     type family M :: Bool where
-      M = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      M = Apply LamCases_Singletons_TopLevelPatterns_14Sym0 X_Singletons_TopLevelPatterns_11Sym0
     type L :: Bool
     type family L :: Bool where
-      L = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) NilSym0)
+      L = Apply LamCases_Singletons_TopLevelPatterns_16Sym0 X_Singletons_TopLevelPatterns_11Sym0
+    type family X_Singletons_TopLevelPatterns_11 where
+      X_Singletons_TopLevelPatterns_11 = Apply (Apply (:@#@$) (Apply NotSym0 TrueSym0)) (Apply (Apply (:@#@$) (Apply IdSym0 FalseSym0)) NilSym0)
     type K :: Bool
     type family K :: Bool where
-      K = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
+      K = Apply LamCases_Singletons_TopLevelPatterns_18Sym0 X_Singletons_TopLevelPatterns_8Sym0
     type J :: Bool
     type family J :: Bool where
-      J = Apply LamCases_0123456789876543210Sym0 X_0123456789876543210Sym0
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
+      J = Apply LamCases_Singletons_TopLevelPatterns_20Sym0 X_Singletons_TopLevelPatterns_8Sym0
+    type family X_Singletons_TopLevelPatterns_8 where
+      X_Singletons_TopLevelPatterns_8 = Apply (Apply BarSym0 TrueSym0) (Apply HSym0 FalseSym0)
     type I :: Bool -> Bool
     type family I (a :: Bool) :: Bool where
-      I a_0123456789876543210 = Apply (Apply (LamCases_0123456789876543210Sym0 a_0123456789876543210) X_0123456789876543210Sym0) a_0123456789876543210
+      I a_Singletons_TopLevelPatterns_22 = Apply (Apply (LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_22) X_Singletons_TopLevelPatterns_5Sym0) a_Singletons_TopLevelPatterns_22
     type H :: Bool -> Bool
     type family H (a :: Bool) :: Bool where
-      H a_0123456789876543210 = Apply (Apply (LamCases_0123456789876543210Sym0 a_0123456789876543210) X_0123456789876543210Sym0) a_0123456789876543210
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply Tuple2Sym0 FSym0) GSym0
+      H a_Singletons_TopLevelPatterns_26 = Apply (Apply (LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_26) X_Singletons_TopLevelPatterns_5Sym0) a_Singletons_TopLevelPatterns_26
+    type family X_Singletons_TopLevelPatterns_5 where
+      X_Singletons_TopLevelPatterns_5 = Apply (Apply Tuple2Sym0 FSym0) GSym0
     type G :: Bool -> Bool
     type family G (a :: Bool) :: Bool where
-      G a_0123456789876543210 = Apply (Apply (LamCases_0123456789876543210Sym0 a_0123456789876543210) X_0123456789876543210Sym0) a_0123456789876543210
+      G a_Singletons_TopLevelPatterns_30 = Apply (Apply (LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_30) X_Singletons_TopLevelPatterns_2Sym0) a_Singletons_TopLevelPatterns_30
     type F :: Bool -> Bool
     type family F (a :: Bool) :: Bool where
-      F a_0123456789876543210 = Apply (Apply (LamCases_0123456789876543210Sym0 a_0123456789876543210) X_0123456789876543210Sym0) a_0123456789876543210
-    type family X_0123456789876543210 where
-      X_0123456789876543210 = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) NilSym0)
+      F a_Singletons_TopLevelPatterns_34 = Apply (Apply (LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_34) X_Singletons_TopLevelPatterns_2Sym0) a_Singletons_TopLevelPatterns_34
+    type family X_Singletons_TopLevelPatterns_2 where
+      X_Singletons_TopLevelPatterns_2 = Apply (Apply (:@#@$) NotSym0) (Apply (Apply (:@#@$) IdSym0) NilSym0)
     type family False_ where
       False_ = FalseSym0
     type Not :: Bool -> Bool
@@ -365,16 +365,20 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
       Otherwise = TrueSym0
     sM :: (Sing (M :: Bool) :: Type)
     sL :: (Sing (L :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_TopLevelPatterns_11 ::
+      Sing @_ X_Singletons_TopLevelPatterns_11
     sK :: (Sing (K :: Bool) :: Type)
     sJ :: (Sing (J :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_TopLevelPatterns_8 ::
+      Sing @_ X_Singletons_TopLevelPatterns_8
     sI :: (forall (t :: Bool). Sing t -> Sing (I t :: Bool) :: Type)
     sH :: (forall (t :: Bool). Sing t -> Sing (H t :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_TopLevelPatterns_5 ::
+      Sing @_ X_Singletons_TopLevelPatterns_5
     sG :: (forall (t :: Bool). Sing t -> Sing (G t :: Bool) :: Type)
     sF :: (forall (t :: Bool). Sing t -> Sing (F t :: Bool) :: Type)
-    sX_0123456789876543210 :: Sing @_ X_0123456789876543210
+    sX_Singletons_TopLevelPatterns_2 ::
+      Sing @_ X_Singletons_TopLevelPatterns_2
     sFalse_ :: Sing @_ False_
     sNot ::
       (forall (t :: Bool). Sing t -> Sing (Not t :: Bool) :: Type)
@@ -383,23 +387,23 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sM
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_TopLevelPatterns_14Sym0
              (\cases
                 (SCons _
-                       (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                       (SCons (sY_Singletons_TopLevelPatterns_13 :: Sing y_Singletons_TopLevelPatterns_13)
                               SNil))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                  -> sY_Singletons_TopLevelPatterns_13))
+          sX_Singletons_TopLevelPatterns_11
     sL
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_TopLevelPatterns_16Sym0
              (\cases
-                (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                (SCons (sY_Singletons_TopLevelPatterns_12 :: Sing y_Singletons_TopLevelPatterns_12)
                        (SCons _ SNil))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210
+                  -> sY_Singletons_TopLevelPatterns_12))
+          sX_Singletons_TopLevelPatterns_11
+    sX_Singletons_TopLevelPatterns_11
       = applySing
           (applySing
              (singFun2 @(:@#@$) SCons)
@@ -412,71 +416,79 @@ Singletons/TopLevelPatterns.hs:(0,0)-(0,0): Splicing declarations
     sK
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_TopLevelPatterns_18Sym0
              (\cases
-                (SBar _ (sY_0123456789876543210 :: Sing y_0123456789876543210))
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
+                (SBar _
+                      (sY_Singletons_TopLevelPatterns_10 :: Sing y_Singletons_TopLevelPatterns_10))
+                  -> sY_Singletons_TopLevelPatterns_10))
+          sX_Singletons_TopLevelPatterns_8
     sJ
       = applySing
           (singFun1
-             @LamCases_0123456789876543210Sym0
+             @LamCases_Singletons_TopLevelPatterns_20Sym0
              (\cases
-                (SBar (sY_0123456789876543210 :: Sing y_0123456789876543210) _)
-                  -> sY_0123456789876543210))
-          sX_0123456789876543210
-    sX_0123456789876543210
+                (SBar (sY_Singletons_TopLevelPatterns_9 :: Sing y_Singletons_TopLevelPatterns_9)
+                      _)
+                  -> sY_Singletons_TopLevelPatterns_9))
+          sX_Singletons_TopLevelPatterns_8
+    sX_Singletons_TopLevelPatterns_8
       = applySing
           (applySing (singFun2 @BarSym0 SBar) STrue)
           (applySing (singFun1 @HSym0 sH) SFalse)
-    sI (sA_0123456789876543210 :: Sing a_0123456789876543210)
+    sI
+      (sA_Singletons_TopLevelPatterns_22 :: Sing a_Singletons_TopLevelPatterns_22)
       = applySing
           (applySing
              (singFun1
-                @(LamCases_0123456789876543210Sym0 a_0123456789876543210)
+                @(LamCases_Singletons_TopLevelPatterns_24Sym0 a_Singletons_TopLevelPatterns_22)
                 (\cases
-                   (STuple2 _ (sY_0123456789876543210 :: Sing y_0123456789876543210))
-                     -> sY_0123456789876543210))
-             sX_0123456789876543210)
-          sA_0123456789876543210
-    sH (sA_0123456789876543210 :: Sing a_0123456789876543210)
+                   (STuple2 _
+                            (sY_Singletons_TopLevelPatterns_7 :: Sing y_Singletons_TopLevelPatterns_7))
+                     -> sY_Singletons_TopLevelPatterns_7))
+             sX_Singletons_TopLevelPatterns_5)
+          sA_Singletons_TopLevelPatterns_22
+    sH
+      (sA_Singletons_TopLevelPatterns_26 :: Sing a_Singletons_TopLevelPatterns_26)
       = applySing
           (applySing
              (singFun1
-                @(LamCases_0123456789876543210Sym0 a_0123456789876543210)
+                @(LamCases_Singletons_TopLevelPatterns_28Sym0 a_Singletons_TopLevelPatterns_26)
                 (\cases
-                   (STuple2 (sY_0123456789876543210 :: Sing y_0123456789876543210) _)
-                     -> sY_0123456789876543210))
-             sX_0123456789876543210)
-          sA_0123456789876543210
-    sX_0123456789876543210
+                   (STuple2 (sY_Singletons_TopLevelPatterns_6 :: Sing y_Singletons_TopLevelPatterns_6)
+                            _)
+                     -> sY_Singletons_TopLevelPatterns_6))
+             sX_Singletons_TopLevelPatterns_5)
+          sA_Singletons_TopLevelPatterns_26
+    sX_Singletons_TopLevelPatterns_5
       = applySing
           (applySing (singFun2 @Tuple2Sym0 STuple2) (singFun1 @FSym0 sF))
           (singFun1 @GSym0 sG)
-    sG (sA_0123456789876543210 :: Sing a_0123456789876543210)
+    sG
+      (sA_Singletons_TopLevelPatterns_30 :: Sing a_Singletons_TopLevelPatterns_30)
       = applySing
           (applySing
              (singFun1
-                @(LamCases_0123456789876543210Sym0 a_0123456789876543210)
+                @(LamCases_Singletons_TopLevelPatterns_32Sym0 a_Singletons_TopLevelPatterns_30)
                 (\cases
                    (SCons _
-                          (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                          (SCons (sY_Singletons_TopLevelPatterns_4 :: Sing y_Singletons_TopLevelPatterns_4)
                                  SNil))
-                     -> sY_0123456789876543210))
-             sX_0123456789876543210)
-          sA_0123456789876543210
-    sF (sA_0123456789876543210 :: Sing a_0123456789876543210)
+                     -> sY_Singletons_TopLevelPatterns_4))
+             sX_Singletons_TopLevelPatterns_2)
+          sA_Singletons_TopLevelPatterns_30
+    sF
+      (sA_Singletons_TopLevelPatterns_34 :: Sing a_Singletons_TopLevelPatterns_34)
       = applySing
           (applySing
              (singFun1
-                @(LamCases_0123456789876543210Sym0 a_0123456789876543210)
+                @(LamCases_Singletons_TopLevelPatterns_36Sym0 a_Singletons_TopLevelPatterns_34)
                 (\cases
-                   (SCons (sY_0123456789876543210 :: Sing y_0123456789876543210)
+                   (SCons (sY_Singletons_TopLevelPatterns_3 :: Sing y_Singletons_TopLevelPatterns_3)
                           (SCons _ SNil))
-                     -> sY_0123456789876543210))
-             sX_0123456789876543210)
-          sA_0123456789876543210
-    sX_0123456789876543210
+                     -> sY_Singletons_TopLevelPatterns_3))
+             sX_Singletons_TopLevelPatterns_2)
+          sA_Singletons_TopLevelPatterns_34
+    sX_Singletons_TopLevelPatterns_2
       = applySing
           (applySing (singFun2 @(:@#@$) SCons) (singFun1 @NotSym0 sNot))
           (applySing

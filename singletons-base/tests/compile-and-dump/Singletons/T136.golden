@@ -29,69 +29,69 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
       fromEnum [] = 0
       fromEnum (False : as) = (2 * fromEnum as)
       fromEnum (True : as) = (1 + (2 * fromEnum as))
-    type Succ_0123456789876543210 :: [Bool] -> [Bool]
-    type family Succ_0123456789876543210 (a :: [Bool]) :: [Bool] where
-      Succ_0123456789876543210 '[] = Apply (Apply (:@#@$) TrueSym0) NilSym0
-      Succ_0123456789876543210 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) as
-      Succ_0123456789876543210 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) (Apply SuccSym0 as)
-    type Pred_0123456789876543210 :: [Bool] -> [Bool]
-    type family Pred_0123456789876543210 (a :: [Bool]) :: [Bool] where
-      Pred_0123456789876543210 '[] = Apply ErrorSym0 "pred 0"
-      Pred_0123456789876543210 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) (Apply PredSym0 as)
-      Pred_0123456789876543210 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) as
-    type family LamCases_0123456789876543210 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 i arg_0123456789876543210 'True = NilSym0
-      LamCases_0123456789876543210 i arg_0123456789876543210 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
-    data LamCases_0123456789876543210Sym0 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+    type Succ_Binary_1 :: [Bool] -> [Bool]
+    type family Succ_Binary_1 (a :: [Bool]) :: [Bool] where
+      Succ_Binary_1 '[] = Apply (Apply (:@#@$) TrueSym0) NilSym0
+      Succ_Binary_1 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) as
+      Succ_Binary_1 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) (Apply SuccSym0 as)
+    type Pred_Binary_3 :: [Bool] -> [Bool]
+    type family Pred_Binary_3 (a :: [Bool]) :: [Bool] where
+      Pred_Binary_3 '[] = Apply ErrorSym0 "pred 0"
+      Pred_Binary_3 ('(:) 'False as) = Apply (Apply (:@#@$) TrueSym0) (Apply PredSym0 as)
+      Pred_Binary_3 ('(:) 'True as) = Apply (Apply (:@#@$) FalseSym0) as
+    type family LamCases_Binary_9 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_10 where
+      LamCases_Binary_9 i arg_Binary_0 'True = NilSym0
+      LamCases_Binary_9 i arg_Binary_0 'False = Apply SuccSym0 (Apply ToEnumSym0 (Apply PredSym0 i))
+    data LamCases_Binary_9Sym0 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_10
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) where
+        LamCases_Binary_9Sym0KindInference :: SameKind (Apply (LamCases_Binary_9Sym0 i0 arg_Binary_01) arg) (LamCases_Binary_9Sym1 i0 arg_Binary_01 arg) =>
+                                              LamCases_Binary_9Sym0 i0 arg_Binary_01 a_Binary_10
+    type instance Apply @_ @_ (LamCases_Binary_9Sym0 i0 arg_Binary_01) a_Binary_10 = LamCases_Binary_9 i0 arg_Binary_01 a_Binary_10
+    instance SuppressUnusedWarnings (LamCases_Binary_9Sym0 i0 arg_Binary_01) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 i arg_0123456789876543210 'True = Apply ErrorSym0 "negative toEnum"
-      LamCases_0123456789876543210 i arg_0123456789876543210 'False = Apply (LamCases_0123456789876543210Sym0 i arg_0123456789876543210) (Apply (Apply (==@#@$) i) (FromInteger 0))
-    data LamCases_0123456789876543210Sym0 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Binary_9Sym0KindInference ())
+    type family LamCases_Binary_9Sym1 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_10 where
+      LamCases_Binary_9Sym1 i0 arg_Binary_01 a_Binary_10 = LamCases_Binary_9 i0 arg_Binary_01 a_Binary_10
+    type family LamCases_Binary_8 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_11 where
+      LamCases_Binary_8 i arg_Binary_0 'True = Apply ErrorSym0 "negative toEnum"
+      LamCases_Binary_8 i arg_Binary_0 'False = Apply (LamCases_Binary_9Sym0 i arg_Binary_0) (Apply (Apply (==@#@$) i) (FromInteger 0))
+    data LamCases_Binary_8Sym0 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_11
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 i0123456789876543210 arg_01234567898765432100123456789876543210) where
+        LamCases_Binary_8Sym0KindInference :: SameKind (Apply (LamCases_Binary_8Sym0 i0 arg_Binary_01) arg) (LamCases_Binary_8Sym1 i0 arg_Binary_01 arg) =>
+                                              LamCases_Binary_8Sym0 i0 arg_Binary_01 a_Binary_11
+    type instance Apply @_ @_ (LamCases_Binary_8Sym0 i0 arg_Binary_01) a_Binary_11 = LamCases_Binary_8 i0 arg_Binary_01 a_Binary_11
+    instance SuppressUnusedWarnings (LamCases_Binary_8Sym0 i0 arg_Binary_01) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 i0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 i0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type family LamCases_0123456789876543210 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_0123456789876543210 where
-      LamCases_0123456789876543210 arg_0123456789876543210 i = Apply (LamCases_0123456789876543210Sym0 i arg_0123456789876543210) (Apply (Apply (<@#@$) i) (FromInteger 0))
-    data LamCases_0123456789876543210Sym0 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210
+        = snd ((,) LamCases_Binary_8Sym0KindInference ())
+    type family LamCases_Binary_8Sym1 i0 (arg_Binary_01 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_11 where
+      LamCases_Binary_8Sym1 i0 arg_Binary_01 a_Binary_11 = LamCases_Binary_8 i0 arg_Binary_01 a_Binary_11
+    type family LamCases_Binary_7 (arg_Binary_00 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_12 where
+      LamCases_Binary_7 arg_Binary_0 i = Apply (LamCases_Binary_8Sym0 i arg_Binary_0) (Apply (Apply (<@#@$) i) (FromInteger 0))
+    data LamCases_Binary_7Sym0 (arg_Binary_00 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_12
       where
-        LamCases_0123456789876543210Sym0KindInference :: SameKind (Apply (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) arg) (LamCases_0123456789876543210Sym1 arg_01234567898765432100123456789876543210 arg) =>
-                                                         LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type instance Apply @_ @_ (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    instance SuppressUnusedWarnings (LamCases_0123456789876543210Sym0 arg_01234567898765432100123456789876543210) where
+        LamCases_Binary_7Sym0KindInference :: SameKind (Apply (LamCases_Binary_7Sym0 arg_Binary_00) arg) (LamCases_Binary_7Sym1 arg_Binary_00 arg) =>
+                                              LamCases_Binary_7Sym0 arg_Binary_00 a_Binary_12
+    type instance Apply @_ @_ (LamCases_Binary_7Sym0 arg_Binary_00) a_Binary_12 = LamCases_Binary_7 arg_Binary_00 a_Binary_12
+    instance SuppressUnusedWarnings (LamCases_Binary_7Sym0 arg_Binary_00) where
       suppressUnusedWarnings
-        = snd ((,) LamCases_0123456789876543210Sym0KindInference ())
-    type family LamCases_0123456789876543210Sym1 (arg_01234567898765432100123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) a_01234567898765432100123456789876543210 where
-      LamCases_0123456789876543210Sym1 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210 = LamCases_0123456789876543210 arg_01234567898765432100123456789876543210 a_01234567898765432100123456789876543210
-    type ToEnum_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural
-                                       -> [Bool]
-    type family ToEnum_0123456789876543210 (a :: GHC.Internal.Bignum.Natural.Natural) :: [Bool] where
-      ToEnum_0123456789876543210 arg_0123456789876543210 = Apply (LamCases_0123456789876543210Sym0 arg_0123456789876543210) arg_0123456789876543210
-    type FromEnum_0123456789876543210 :: [Bool]
-                                         -> GHC.Internal.Bignum.Natural.Natural
-    type family FromEnum_0123456789876543210 (a :: [Bool]) :: GHC.Internal.Bignum.Natural.Natural where
-      FromEnum_0123456789876543210 '[] = FromInteger 0
-      FromEnum_0123456789876543210 ('(:) 'False as) = Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as)
-      FromEnum_0123456789876543210 ('(:) 'True as) = Apply (Apply (+@#@$) (FromInteger 1)) (Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as))
+        = snd ((,) LamCases_Binary_7Sym0KindInference ())
+    type family LamCases_Binary_7Sym1 (arg_Binary_00 :: GHC.Internal.Bignum.Natural.Natural) a_Binary_12 where
+      LamCases_Binary_7Sym1 arg_Binary_00 a_Binary_12 = LamCases_Binary_7 arg_Binary_00 a_Binary_12
+    type ToEnum_Binary_5 :: GHC.Internal.Bignum.Natural.Natural
+                            -> [Bool]
+    type family ToEnum_Binary_5 (a :: GHC.Internal.Bignum.Natural.Natural) :: [Bool] where
+      ToEnum_Binary_5 arg_Binary_0 = Apply (LamCases_Binary_7Sym0 arg_Binary_0) arg_Binary_0
+    type FromEnum_Binary_13 :: [Bool]
+                               -> GHC.Internal.Bignum.Natural.Natural
+    type family FromEnum_Binary_13 (a :: [Bool]) :: GHC.Internal.Bignum.Natural.Natural where
+      FromEnum_Binary_13 '[] = FromInteger 0
+      FromEnum_Binary_13 ('(:) 'False as) = Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as)
+      FromEnum_Binary_13 ('(:) 'True as) = Apply (Apply (+@#@$) (FromInteger 1)) (Apply (Apply (*@#@$) (FromInteger 2)) (Apply FromEnumSym0 as))
     instance PEnum [Bool] where
-      type Succ a = Succ_0123456789876543210 a
-      type Pred a = Pred_0123456789876543210 a
-      type ToEnum a = ToEnum_0123456789876543210 a
-      type FromEnum a = FromEnum_0123456789876543210 a
+      type Succ a = Succ_Binary_1 a
+      type Pred a = Pred_Binary_3 a
+      type ToEnum a = ToEnum_Binary_5 a
+      type FromEnum a = FromEnum_Binary_13 a
     instance SEnum [Bool] where
       sSucc SNil
         = applySing (applySing (singFun2 @(:@#@$) SCons) STrue) SNil
@@ -109,15 +109,15 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
             (applySing (singFun1 @PredSym0 sPred) sAs)
       sPred (SCons STrue (sAs :: Sing as))
         = applySing (applySing (singFun2 @(:@#@$) SCons) SFalse) sAs
-      sToEnum (sArg_0123456789876543210 :: Sing arg_0123456789876543210)
+      sToEnum (sArg_Binary_0 :: Sing arg_Binary_0)
         = applySing
             (singFun1
-               @(LamCases_0123456789876543210Sym0 arg_0123456789876543210)
+               @(LamCases_Binary_7Sym0 arg_Binary_0)
                (\cases
                   (sI :: Sing i)
                     -> applySing
                          (singFun1
-                            @(LamCases_0123456789876543210Sym0 i arg_0123456789876543210)
+                            @(LamCases_Binary_8Sym0 i arg_Binary_0)
                             (\cases
                                STrue
                                  -> applySing
@@ -125,7 +125,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
                                SFalse
                                  -> applySing
                                       (singFun1
-                                         @(LamCases_0123456789876543210Sym0 i arg_0123456789876543210)
+                                         @(LamCases_Binary_9Sym0 i arg_Binary_0)
                                          (\cases
                                             STrue -> SNil
                                             SFalse
@@ -140,7 +140,7 @@ Singletons/T136.hs:(0,0)-(0,0): Splicing declarations
                          (applySing
                             (applySing (singFun2 @(<@#@$) (%<)) sI)
                             (sFromInteger (sing :: Sing 0)))))
-            sArg_0123456789876543210
+            sArg_Binary_0
       sFromEnum SNil = sFromInteger (sing :: Sing 0)
       sFromEnum (SCons SFalse (sAs :: Sing as))
         = applySing

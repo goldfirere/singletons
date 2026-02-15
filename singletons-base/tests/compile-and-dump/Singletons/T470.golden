@@ -18,35 +18,35 @@ Singletons/T470.hs:(0,0)-(0,0): Splicing declarations
     data MkT1Sym0 :: (~>) a (T a)
       where
         MkT1Sym0KindInference :: SameKind (Apply MkT1Sym0 arg) (MkT1Sym1 arg) =>
-                                 MkT1Sym0 a0123456789876543210
-    type instance Apply @a @(T a) MkT1Sym0 a0123456789876543210 = MkT1 a0123456789876543210
+                                 MkT1Sym0 a_T470_0
+    type instance Apply @a @(T a) MkT1Sym0 a_T470_0 = MkT1 a_T470_0
     instance SuppressUnusedWarnings MkT1Sym0 where
       suppressUnusedWarnings = snd ((,) MkT1Sym0KindInference ())
     type MkT1Sym1 :: a -> T a
-    type family MkT1Sym1 @a (a0123456789876543210 :: a) :: T a where
-      MkT1Sym1 a0123456789876543210 = MkT1 a0123456789876543210
+    type family MkT1Sym1 @a (a_T470_0 :: a) :: T a where
+      MkT1Sym1 a_T470_0 = MkT1 a_T470_0
     type MkT2Sym0 :: (~>) Void (T a)
     data MkT2Sym0 :: (~>) Void (T a)
       where
         MkT2Sym0KindInference :: SameKind (Apply MkT2Sym0 arg) (MkT2Sym1 arg) =>
-                                 MkT2Sym0 a0123456789876543210
-    type instance Apply @Void @(T a) MkT2Sym0 a0123456789876543210 = MkT2 a0123456789876543210
+                                 MkT2Sym0 a_T470_1
+    type instance Apply @Void @(T a) MkT2Sym0 a_T470_1 = MkT2 a_T470_1
     instance SuppressUnusedWarnings MkT2Sym0 where
       suppressUnusedWarnings = snd ((,) MkT2Sym0KindInference ())
     type MkT2Sym1 :: Void -> T a
-    type family MkT2Sym1 @a (a0123456789876543210 :: Void) :: T a where
-      MkT2Sym1 a0123456789876543210 = MkT2 a0123456789876543210
+    type family MkT2Sym1 @a (a_T470_1 :: Void) :: T a where
+      MkT2Sym1 a_T470_1 = MkT2 a_T470_1
     type MkSSym0 :: (~>) Bool S
     data MkSSym0 :: (~>) Bool S
       where
         MkSSym0KindInference :: SameKind (Apply MkSSym0 arg) (MkSSym1 arg) =>
-                                MkSSym0 a0123456789876543210
-    type instance Apply @Bool @S MkSSym0 a0123456789876543210 = MkS a0123456789876543210
+                                MkSSym0 a_T470_2
+    type instance Apply @Bool @S MkSSym0 a_T470_2 = MkS a_T470_2
     instance SuppressUnusedWarnings MkSSym0 where
       suppressUnusedWarnings = snd ((,) MkSSym0KindInference ())
     type MkSSym1 :: Bool -> S
-    type family MkSSym1 (a0123456789876543210 :: Bool) :: S where
-      MkSSym1 a0123456789876543210 = MkS a0123456789876543210
+    type family MkSSym1 (a_T470_2 :: Bool) :: S where
+      MkSSym1 a_T470_2 = MkS a_T470_2
     type ST :: forall (a :: Type). T a -> Type
     data ST :: forall (a :: Type). T a -> Type
       where

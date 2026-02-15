@@ -20,13 +20,13 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     data X2Sym0 :: (~>) (Y a) (X a)
       where
         X2Sym0KindInference :: SameKind (Apply X2Sym0 arg) (X2Sym1 arg) =>
-                               X2Sym0 a0123456789876543210
-    type instance Apply @(Y a) @(X a) X2Sym0 a0123456789876543210 = X2 a0123456789876543210
+                               X2Sym0 a_T371_4
+    type instance Apply @(Y a) @(X a) X2Sym0 a_T371_4 = X2 a_T371_4
     instance SuppressUnusedWarnings X2Sym0 where
       suppressUnusedWarnings = snd ((,) X2Sym0KindInference ())
     type X2Sym1 :: forall (a :: Type). Y a -> X a
-    type family X2Sym1 @(a :: Type) (a0123456789876543210 :: Y a) :: X a where
-      X2Sym1 a0123456789876543210 = X2 a0123456789876543210
+    type family X2Sym1 @(a :: Type) (a_T371_4 :: Y a) :: X a where
+      X2Sym1 a_T371_4 = X2 a_T371_4
     type Y1Sym0 :: forall (a :: Type). Y a
     type family Y1Sym0 @(a :: Type) :: Y a where
       Y1Sym0 = Y1
@@ -34,31 +34,29 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
     data Y2Sym0 :: (~>) (X a) (Y a)
       where
         Y2Sym0KindInference :: SameKind (Apply Y2Sym0 arg) (Y2Sym1 arg) =>
-                               Y2Sym0 a0123456789876543210
-    type instance Apply @(X a) @(Y a) Y2Sym0 a0123456789876543210 = Y2 a0123456789876543210
+                               Y2Sym0 a_T371_5
+    type instance Apply @(X a) @(Y a) Y2Sym0 a_T371_5 = Y2 a_T371_5
     instance SuppressUnusedWarnings Y2Sym0 where
       suppressUnusedWarnings = snd ((,) Y2Sym0KindInference ())
     type Y2Sym1 :: forall (a :: Type). X a -> Y a
-    type family Y2Sym1 @(a :: Type) (a0123456789876543210 :: X a) :: Y a where
-      Y2Sym1 a0123456789876543210 = Y2 a0123456789876543210
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
-                                                    -> X a
-                                                       -> GHC.Internal.Types.Symbol
-                                                          -> GHC.Internal.Types.Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: X a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
-      ShowsPrec_0123456789876543210 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (X1 :: X a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "X1") a_0123456789876543210
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (X2 arg_0123456789876543210 :: X a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "X2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+    type family Y2Sym1 @(a :: Type) (a_T371_5 :: X a) :: Y a where
+      Y2Sym1 a_T371_5 = Y2 a_T371_5
+    type ShowsPrec_T371_6 :: forall a. GHC.Internal.Bignum.Natural.Natural
+                                       -> X a
+                                          -> GHC.Internal.Types.Symbol -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_T371_6 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: X a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_T371_6 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (X1 :: X a) (a_T371_7 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "X1") a_T371_7
+      ShowsPrec_T371_6 @a (p_T371_0 :: GHC.Internal.Bignum.Natural.Natural) (X2 arg_T371_1 :: X a) (a_T371_8 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_T371_0) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "X2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_T371_1))) a_T371_8
     instance PShow (X a) where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
-    type ShowsPrec_0123456789876543210 :: forall a. GHC.Internal.Bignum.Natural.Natural
-                                                    -> Y a
-                                                       -> GHC.Internal.Types.Symbol
-                                                          -> GHC.Internal.Types.Symbol
-    type family ShowsPrec_0123456789876543210 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Y a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
-      ShowsPrec_0123456789876543210 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (Y1 :: Y a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "Y1") a_0123456789876543210
-      ShowsPrec_0123456789876543210 @a (p_0123456789876543210 :: GHC.Internal.Bignum.Natural.Natural) (Y2 arg_0123456789876543210 :: Y a) (a_0123456789876543210 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_0123456789876543210) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Y2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_0123456789876543210))) a_0123456789876543210
+      type ShowsPrec a a a = ShowsPrec_T371_6 a a a
+    type ShowsPrec_T371_12 :: forall a. GHC.Internal.Bignum.Natural.Natural
+                                        -> Y a
+                                           -> GHC.Internal.Types.Symbol -> GHC.Internal.Types.Symbol
+    type family ShowsPrec_T371_12 @a (a :: GHC.Internal.Bignum.Natural.Natural) (a :: Y a) (a :: GHC.Internal.Types.Symbol) :: GHC.Internal.Types.Symbol where
+      ShowsPrec_T371_12 @a (_ :: GHC.Internal.Bignum.Natural.Natural) (Y1 :: Y a) (a_T371_13 :: GHC.Internal.Types.Symbol) = Apply (Apply ShowStringSym0 "Y1") a_T371_13
+      ShowsPrec_T371_12 @a (p_T371_2 :: GHC.Internal.Bignum.Natural.Natural) (Y2 arg_T371_3 :: Y a) (a_T371_14 :: GHC.Internal.Types.Symbol) = Apply (Apply (Apply ShowParenSym0 (Apply (Apply (>@#@$) p_T371_2) (FromInteger 10))) (Apply (Apply (.@#@$) (Apply ShowStringSym0 "Y2 ")) (Apply (Apply ShowsPrecSym0 (FromInteger 11)) arg_T371_3))) a_T371_14
     instance PShow (Y a) where
-      type ShowsPrec a a a = ShowsPrec_0123456789876543210 a a a
+      type ShowsPrec a a a = ShowsPrec_T371_12 a a a
     data SX :: forall (a :: Type). X a -> Type
       where
         SX1 :: forall (a :: Type). SX (X1 :: X a)
@@ -86,24 +84,21 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
         = (\cases (SomeSing c) -> SomeSing (SY2 c))
             (toSing b :: SomeSing (X a))
     instance SShow (Y a) => SShow (X a) where
-      sShowsPrec
-        _
-        SX1
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sShowsPrec _ SX1 (sA_T371_7 :: Sing a_T371_7)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "X1"))
-            sA_0123456789876543210
+            sA_T371_7
       sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SX2 (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sP_T371_0 :: Sing p_T371_0)
+        (SX2 (sArg_T371_1 :: Sing arg_T371_1))
+        (sA_T371_8 :: Sing a_T371_8)
         = applySing
             (applySing
                (applySing
                   (singFun3 @ShowParenSym0 sShowParen)
                   (applySing
-                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_T371_0)
                      (sFromInteger (sing :: Sing 10))))
                (applySing
                   (applySing
@@ -114,27 +109,24 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                      (applySing
                         (singFun3 @ShowsPrecSym0 sShowsPrec)
                         (sFromInteger (sing :: Sing 11)))
-                     sArg_0123456789876543210)))
-            sA_0123456789876543210
+                     sArg_T371_1)))
+            sA_T371_8
     instance SShow (X a) => SShow (Y a) where
-      sShowsPrec
-        _
-        SY1
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+      sShowsPrec _ SY1 (sA_T371_13 :: Sing a_T371_13)
         = applySing
             (applySing
                (singFun2 @ShowStringSym0 sShowString) (sing :: Sing "Y1"))
-            sA_0123456789876543210
+            sA_T371_13
       sShowsPrec
-        (sP_0123456789876543210 :: Sing p_0123456789876543210)
-        (SY2 (sArg_0123456789876543210 :: Sing arg_0123456789876543210))
-        (sA_0123456789876543210 :: Sing a_0123456789876543210)
+        (sP_T371_2 :: Sing p_T371_2)
+        (SY2 (sArg_T371_3 :: Sing arg_T371_3))
+        (sA_T371_14 :: Sing a_T371_14)
         = applySing
             (applySing
                (applySing
                   (singFun3 @ShowParenSym0 sShowParen)
                   (applySing
-                     (applySing (singFun2 @(>@#@$) (%>)) sP_0123456789876543210)
+                     (applySing (singFun2 @(>@#@$) (%>)) sP_T371_2)
                      (sFromInteger (sing :: Sing 10))))
                (applySing
                   (applySing
@@ -145,8 +137,8 @@ Singletons/T371.hs:(0,0)-(0,0): Splicing declarations
                      (applySing
                         (singFun3 @ShowsPrecSym0 sShowsPrec)
                         (sFromInteger (sing :: Sing 11)))
-                     sArg_0123456789876543210)))
-            sA_0123456789876543210
+                     sArg_T371_3)))
+            sA_T371_14
     deriving instance Data.Singletons.ShowSing.ShowSing (Y a) =>
                       Show (SX (z :: X a))
     deriving instance Data.Singletons.ShowSing.ShowSing (X a) =>

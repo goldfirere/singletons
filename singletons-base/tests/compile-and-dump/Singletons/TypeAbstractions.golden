@@ -53,38 +53,38 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
       TF @j _ @k _ = (j, k)
     type TS :: forall j. j -> forall k. k -> Type
     type TS @j (a :: j) @k (b :: k) = (j, k)
-    data TSSym0 :: (~>) j0123456789876543210 ((~>) k0123456789876543210 Type)
+    data TSSym0 :: (~>) j0 ((~>) k1 Type)
       where
         TSSym0KindInference :: SameKind (Apply TSSym0 arg) (TSSym1 arg) =>
-                               TSSym0 e0123456789876543210
-    type instance Apply @j0123456789876543210 @((~>) k0123456789876543210 Type) TSSym0 e0123456789876543210 = TSSym1 e0123456789876543210
+                               TSSym0 e_TypeAbstractions_0
+    type instance Apply @j0 @((~>) k1 Type) TSSym0 e_TypeAbstractions_0 = TSSym1 e_TypeAbstractions_0
     instance SuppressUnusedWarnings TSSym0 where
       suppressUnusedWarnings = snd ((,) TSSym0KindInference ())
-    data TSSym1 (e0123456789876543210 :: j0123456789876543210) :: (~>) k0123456789876543210 Type
+    data TSSym1 (e_TypeAbstractions_0 :: j0) :: (~>) k1 Type
       where
-        TSSym1KindInference :: SameKind (Apply (TSSym1 e0123456789876543210) arg) (TSSym2 e0123456789876543210 arg) =>
-                               TSSym1 e0123456789876543210 e0123456789876543210
-    type instance Apply @k0123456789876543210 @Type (TSSym1 e0123456789876543210) e0123456789876543210 = TS e0123456789876543210 e0123456789876543210
-    instance SuppressUnusedWarnings (TSSym1 e0123456789876543210) where
+        TSSym1KindInference :: SameKind (Apply (TSSym1 e_TypeAbstractions_0) arg) (TSSym2 e_TypeAbstractions_0 arg) =>
+                               TSSym1 e_TypeAbstractions_0 e_TypeAbstractions_1
+    type instance Apply @k1 @Type (TSSym1 e_TypeAbstractions_0) e_TypeAbstractions_1 = TS e_TypeAbstractions_0 e_TypeAbstractions_1
+    instance SuppressUnusedWarnings (TSSym1 e_TypeAbstractions_0) where
       suppressUnusedWarnings = snd ((,) TSSym1KindInference ())
-    type family TSSym2 (e0123456789876543210 :: j0123456789876543210) (e0123456789876543210 :: k0123456789876543210) :: Type where
-      TSSym2 e0123456789876543210 e0123456789876543210 = TS e0123456789876543210 e0123456789876543210
-    data TFSym0 :: (~>) j0123456789876543210 ((~>) k0123456789876543210 Type)
+    type family TSSym2 (e_TypeAbstractions_0 :: j0) (e_TypeAbstractions_1 :: k1) :: Type where
+      TSSym2 e_TypeAbstractions_0 e_TypeAbstractions_1 = TS e_TypeAbstractions_0 e_TypeAbstractions_1
+    data TFSym0 :: (~>) j0 ((~>) k1 Type)
       where
         TFSym0KindInference :: SameKind (Apply TFSym0 arg) (TFSym1 arg) =>
-                               TFSym0 e0123456789876543210
-    type instance Apply @j0123456789876543210 @((~>) k0123456789876543210 Type) TFSym0 e0123456789876543210 = TFSym1 e0123456789876543210
+                               TFSym0 e_TypeAbstractions_2
+    type instance Apply @j0 @((~>) k1 Type) TFSym0 e_TypeAbstractions_2 = TFSym1 e_TypeAbstractions_2
     instance SuppressUnusedWarnings TFSym0 where
       suppressUnusedWarnings = snd ((,) TFSym0KindInference ())
-    data TFSym1 (e0123456789876543210 :: j0123456789876543210) :: (~>) k0123456789876543210 Type
+    data TFSym1 (e_TypeAbstractions_2 :: j0) :: (~>) k1 Type
       where
-        TFSym1KindInference :: SameKind (Apply (TFSym1 e0123456789876543210) arg) (TFSym2 e0123456789876543210 arg) =>
-                               TFSym1 e0123456789876543210 e0123456789876543210
-    type instance Apply @k0123456789876543210 @Type (TFSym1 e0123456789876543210) e0123456789876543210 = TF e0123456789876543210 e0123456789876543210
-    instance SuppressUnusedWarnings (TFSym1 e0123456789876543210) where
+        TFSym1KindInference :: SameKind (Apply (TFSym1 e_TypeAbstractions_2) arg) (TFSym2 e_TypeAbstractions_2 arg) =>
+                               TFSym1 e_TypeAbstractions_2 e_TypeAbstractions_3
+    type instance Apply @k1 @Type (TFSym1 e_TypeAbstractions_2) e_TypeAbstractions_3 = TF e_TypeAbstractions_2 e_TypeAbstractions_3
+    instance SuppressUnusedWarnings (TFSym1 e_TypeAbstractions_2) where
       suppressUnusedWarnings = snd ((,) TFSym1KindInference ())
-    type family TFSym2 (e0123456789876543210 :: j0123456789876543210) (e0123456789876543210 :: k0123456789876543210) :: Type where
-      TFSym2 e0123456789876543210 e0123456789876543210 = TF e0123456789876543210 e0123456789876543210
+    type family TFSym2 (e_TypeAbstractions_2 :: j0) (e_TypeAbstractions_3 :: k1) :: Type where
+      TFSym2 e_TypeAbstractions_2 e_TypeAbstractions_3 = TF e_TypeAbstractions_2 e_TypeAbstractions_3
     type MkD1Sym0 :: forall j
                             k
                             (a :: j)
@@ -92,23 +92,23 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data MkD1Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D1 @j @k a b))
       where
         MkD1Sym0KindInference :: SameKind (Apply MkD1Sym0 arg) (MkD1Sym1 arg) =>
-                                 MkD1Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @((~>) (Proxy b) (D1 @j @k a b)) MkD1Sym0 a0123456789876543210 = MkD1Sym1 a0123456789876543210
+                                 MkD1Sym0 a_TypeAbstractions_4
+    type instance Apply @(Proxy a) @((~>) (Proxy b) (D1 @j @k a b)) MkD1Sym0 a_TypeAbstractions_4 = MkD1Sym1 a_TypeAbstractions_4
     instance SuppressUnusedWarnings MkD1Sym0 where
       suppressUnusedWarnings = snd ((,) MkD1Sym0KindInference ())
     type MkD1Sym1 :: forall j k (a :: j) (b :: k). Proxy a
                                                    -> (~>) (Proxy b) (D1 @j @k a b)
-    data MkD1Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D1 @j @k a b)
+    data MkD1Sym1 (a_TypeAbstractions_4 :: Proxy a) :: (~>) (Proxy b) (D1 @j @k a b)
       where
-        MkD1Sym1KindInference :: SameKind (Apply (MkD1Sym1 a0123456789876543210) arg) (MkD1Sym2 a0123456789876543210 arg) =>
-                                 MkD1Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Proxy b) @(D1 @j @k a b) (MkD1Sym1 a0123456789876543210) a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkD1Sym1 a0123456789876543210) where
+        MkD1Sym1KindInference :: SameKind (Apply (MkD1Sym1 a_TypeAbstractions_4) arg) (MkD1Sym2 a_TypeAbstractions_4 arg) =>
+                                 MkD1Sym1 a_TypeAbstractions_4 a_TypeAbstractions_5
+    type instance Apply @(Proxy b) @(D1 @j @k a b) (MkD1Sym1 a_TypeAbstractions_4) a_TypeAbstractions_5 = MkD1 a_TypeAbstractions_4 a_TypeAbstractions_5
+    instance SuppressUnusedWarnings (MkD1Sym1 a_TypeAbstractions_4) where
       suppressUnusedWarnings = snd ((,) MkD1Sym1KindInference ())
     type MkD1Sym2 :: forall j k (a :: j) (b :: k). Proxy a
                                                    -> Proxy b -> D1 @j @k a b
-    type family MkD1Sym2 @j @k @(a :: j) @(b :: k) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D1 @j @k a b where
-      MkD1Sym2 a0123456789876543210 a0123456789876543210 = MkD1 a0123456789876543210 a0123456789876543210
+    type family MkD1Sym2 @j @k @(a :: j) @(b :: k) (a_TypeAbstractions_4 :: Proxy a) (a_TypeAbstractions_5 :: Proxy b) :: D1 @j @k a b where
+      MkD1Sym2 a_TypeAbstractions_4 a_TypeAbstractions_5 = MkD1 a_TypeAbstractions_4 a_TypeAbstractions_5
     type MkD2Sym0 :: forall x
                             y
                             (a :: x)
@@ -116,23 +116,23 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data MkD2Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D2 @x @y a b))
       where
         MkD2Sym0KindInference :: SameKind (Apply MkD2Sym0 arg) (MkD2Sym1 arg) =>
-                                 MkD2Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @((~>) (Proxy b) (D2 @x @y a b)) MkD2Sym0 a0123456789876543210 = MkD2Sym1 a0123456789876543210
+                                 MkD2Sym0 a_TypeAbstractions_6
+    type instance Apply @(Proxy a) @((~>) (Proxy b) (D2 @x @y a b)) MkD2Sym0 a_TypeAbstractions_6 = MkD2Sym1 a_TypeAbstractions_6
     instance SuppressUnusedWarnings MkD2Sym0 where
       suppressUnusedWarnings = snd ((,) MkD2Sym0KindInference ())
     type MkD2Sym1 :: forall x y (a :: x) (b :: y). Proxy a
                                                    -> (~>) (Proxy b) (D2 @x @y a b)
-    data MkD2Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D2 @x @y a b)
+    data MkD2Sym1 (a_TypeAbstractions_6 :: Proxy a) :: (~>) (Proxy b) (D2 @x @y a b)
       where
-        MkD2Sym1KindInference :: SameKind (Apply (MkD2Sym1 a0123456789876543210) arg) (MkD2Sym2 a0123456789876543210 arg) =>
-                                 MkD2Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Proxy b) @(D2 @x @y a b) (MkD2Sym1 a0123456789876543210) a0123456789876543210 = MkD2 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkD2Sym1 a0123456789876543210) where
+        MkD2Sym1KindInference :: SameKind (Apply (MkD2Sym1 a_TypeAbstractions_6) arg) (MkD2Sym2 a_TypeAbstractions_6 arg) =>
+                                 MkD2Sym1 a_TypeAbstractions_6 a_TypeAbstractions_7
+    type instance Apply @(Proxy b) @(D2 @x @y a b) (MkD2Sym1 a_TypeAbstractions_6) a_TypeAbstractions_7 = MkD2 a_TypeAbstractions_6 a_TypeAbstractions_7
+    instance SuppressUnusedWarnings (MkD2Sym1 a_TypeAbstractions_6) where
       suppressUnusedWarnings = snd ((,) MkD2Sym1KindInference ())
     type MkD2Sym2 :: forall x y (a :: x) (b :: y). Proxy a
                                                    -> Proxy b -> D2 @x @y a b
-    type family MkD2Sym2 @x @y @(a :: x) @(b :: y) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D2 @x @y a b where
-      MkD2Sym2 a0123456789876543210 a0123456789876543210 = MkD2 a0123456789876543210 a0123456789876543210
+    type family MkD2Sym2 @x @y @(a :: x) @(b :: y) (a_TypeAbstractions_6 :: Proxy a) (a_TypeAbstractions_7 :: Proxy b) :: D2 @x @y a b where
+      MkD2Sym2 a_TypeAbstractions_6 a_TypeAbstractions_7 = MkD2 a_TypeAbstractions_6 a_TypeAbstractions_7
     type MkD3Sym0 :: forall j
                             (a :: j)
                             k
@@ -140,34 +140,34 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data MkD3Sym0 :: (~>) (Proxy a) ((~>) (Proxy b) (D3 @j a @k b))
       where
         MkD3Sym0KindInference :: SameKind (Apply MkD3Sym0 arg) (MkD3Sym1 arg) =>
-                                 MkD3Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @((~>) (Proxy b) (D3 @j a @k b)) MkD3Sym0 a0123456789876543210 = MkD3Sym1 a0123456789876543210
+                                 MkD3Sym0 a_TypeAbstractions_8
+    type instance Apply @(Proxy a) @((~>) (Proxy b) (D3 @j a @k b)) MkD3Sym0 a_TypeAbstractions_8 = MkD3Sym1 a_TypeAbstractions_8
     instance SuppressUnusedWarnings MkD3Sym0 where
       suppressUnusedWarnings = snd ((,) MkD3Sym0KindInference ())
     type MkD3Sym1 :: forall j (a :: j) k (b :: k). Proxy a
                                                    -> (~>) (Proxy b) (D3 @j a @k b)
-    data MkD3Sym1 (a0123456789876543210 :: Proxy a) :: (~>) (Proxy b) (D3 @j a @k b)
+    data MkD3Sym1 (a_TypeAbstractions_8 :: Proxy a) :: (~>) (Proxy b) (D3 @j a @k b)
       where
-        MkD3Sym1KindInference :: SameKind (Apply (MkD3Sym1 a0123456789876543210) arg) (MkD3Sym2 a0123456789876543210 arg) =>
-                                 MkD3Sym1 a0123456789876543210 a0123456789876543210
-    type instance Apply @(Proxy b) @(D3 @j a @k b) (MkD3Sym1 a0123456789876543210) a0123456789876543210 = MkD3 a0123456789876543210 a0123456789876543210
-    instance SuppressUnusedWarnings (MkD3Sym1 a0123456789876543210) where
+        MkD3Sym1KindInference :: SameKind (Apply (MkD3Sym1 a_TypeAbstractions_8) arg) (MkD3Sym2 a_TypeAbstractions_8 arg) =>
+                                 MkD3Sym1 a_TypeAbstractions_8 a_TypeAbstractions_9
+    type instance Apply @(Proxy b) @(D3 @j a @k b) (MkD3Sym1 a_TypeAbstractions_8) a_TypeAbstractions_9 = MkD3 a_TypeAbstractions_8 a_TypeAbstractions_9
+    instance SuppressUnusedWarnings (MkD3Sym1 a_TypeAbstractions_8) where
       suppressUnusedWarnings = snd ((,) MkD3Sym1KindInference ())
     type MkD3Sym2 :: forall j (a :: j) k (b :: k). Proxy a
                                                    -> Proxy b -> D3 @j a @k b
-    type family MkD3Sym2 @j @(a :: j) @k @(b :: k) (a0123456789876543210 :: Proxy a) (a0123456789876543210 :: Proxy b) :: D3 @j a @k b where
-      MkD3Sym2 a0123456789876543210 a0123456789876543210 = MkD3 a0123456789876543210 a0123456789876543210
+    type family MkD3Sym2 @j @(a :: j) @k @(b :: k) (a_TypeAbstractions_8 :: Proxy a) (a_TypeAbstractions_9 :: Proxy b) :: D3 @j a @k b where
+      MkD3Sym2 a_TypeAbstractions_8 a_TypeAbstractions_9 = MkD3 a_TypeAbstractions_8 a_TypeAbstractions_9
     type MkD4Sym0 :: forall (a :: Type). (~>) a (D4 @a)
     data MkD4Sym0 :: (~>) a (D4 @a)
       where
         MkD4Sym0KindInference :: SameKind (Apply MkD4Sym0 arg) (MkD4Sym1 arg) =>
-                                 MkD4Sym0 a0123456789876543210
-    type instance Apply @a @(D4 @a) MkD4Sym0 a0123456789876543210 = MkD4 a0123456789876543210
+                                 MkD4Sym0 a_TypeAbstractions_10
+    type instance Apply @a @(D4 @a) MkD4Sym0 a_TypeAbstractions_10 = MkD4 a_TypeAbstractions_10
     instance SuppressUnusedWarnings MkD4Sym0 where
       suppressUnusedWarnings = snd ((,) MkD4Sym0KindInference ())
     type MkD4Sym1 :: forall (a :: Type). a -> D4 @a
-    type family MkD4Sym1 @(a :: Type) (a0123456789876543210 :: a) :: D4 @a where
-      MkD4Sym1 a0123456789876543210 = MkD4 a0123456789876543210
+    type family MkD4Sym1 @(a :: Type) (a_TypeAbstractions_10 :: a) :: D4 @a where
+      MkD4Sym1 a_TypeAbstractions_10 = MkD4 a_TypeAbstractions_10
     type Meth1Sym0 :: forall j
                              k
                              (a :: j)
@@ -175,13 +175,13 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data Meth1Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth1Sym0KindInference :: SameKind (Apply Meth1Sym0 arg) (Meth1Sym1 arg) =>
-                                  Meth1Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @(Proxy b) Meth1Sym0 a0123456789876543210 = Meth1 a0123456789876543210
+                                  Meth1Sym0 a_TypeAbstractions_11
+    type instance Apply @(Proxy a) @(Proxy b) Meth1Sym0 a_TypeAbstractions_11 = Meth1 a_TypeAbstractions_11
     instance SuppressUnusedWarnings Meth1Sym0 where
       suppressUnusedWarnings = snd ((,) Meth1Sym0KindInference ())
     type Meth1Sym1 :: forall j k (a :: j) (b :: k). Proxy a -> Proxy b
-    type family Meth1Sym1 @j @k @(a :: j) @(b :: k) (a0123456789876543210 :: Proxy a) :: Proxy b where
-      Meth1Sym1 a0123456789876543210 = Meth1 a0123456789876543210
+    type family Meth1Sym1 @j @k @(a :: j) @(b :: k) (a_TypeAbstractions_11 :: Proxy a) :: Proxy b where
+      Meth1Sym1 a_TypeAbstractions_11 = Meth1 a_TypeAbstractions_11
     type PC1 :: forall j k. j -> k -> Constraint
     class PC1 @j @k (a :: j) (b :: k) where
       type family Meth1 (arg :: Proxy a) :: Proxy b
@@ -192,13 +192,13 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data Meth2Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth2Sym0KindInference :: SameKind (Apply Meth2Sym0 arg) (Meth2Sym1 arg) =>
-                                  Meth2Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @(Proxy b) Meth2Sym0 a0123456789876543210 = Meth2 a0123456789876543210
+                                  Meth2Sym0 a_TypeAbstractions_12
+    type instance Apply @(Proxy a) @(Proxy b) Meth2Sym0 a_TypeAbstractions_12 = Meth2 a_TypeAbstractions_12
     instance SuppressUnusedWarnings Meth2Sym0 where
       suppressUnusedWarnings = snd ((,) Meth2Sym0KindInference ())
     type Meth2Sym1 :: forall x y (a :: x) (b :: y). Proxy a -> Proxy b
-    type family Meth2Sym1 @x @y @(a :: x) @(b :: y) (a0123456789876543210 :: Proxy a) :: Proxy b where
-      Meth2Sym1 a0123456789876543210 = Meth2 a0123456789876543210
+    type family Meth2Sym1 @x @y @(a :: x) @(b :: y) (a_TypeAbstractions_12 :: Proxy a) :: Proxy b where
+      Meth2Sym1 a_TypeAbstractions_12 = Meth2 a_TypeAbstractions_12
     type PC2 :: forall j k. j -> k -> Constraint
     class PC2 @x @y (a :: x) (b :: y) where
       type family Meth2 (arg :: Proxy a) :: Proxy b
@@ -209,13 +209,13 @@ Singletons/TypeAbstractions.hs:(0,0)-(0,0): Splicing declarations
     data Meth3Sym0 :: (~>) (Proxy a) (Proxy b)
       where
         Meth3Sym0KindInference :: SameKind (Apply Meth3Sym0 arg) (Meth3Sym1 arg) =>
-                                  Meth3Sym0 a0123456789876543210
-    type instance Apply @(Proxy a) @(Proxy b) Meth3Sym0 a0123456789876543210 = Meth3 a0123456789876543210
+                                  Meth3Sym0 a_TypeAbstractions_13
+    type instance Apply @(Proxy a) @(Proxy b) Meth3Sym0 a_TypeAbstractions_13 = Meth3 a_TypeAbstractions_13
     instance SuppressUnusedWarnings Meth3Sym0 where
       suppressUnusedWarnings = snd ((,) Meth3Sym0KindInference ())
     type Meth3Sym1 :: forall j (a :: j) k (b :: k). Proxy a -> Proxy b
-    type family Meth3Sym1 @j @(a :: j) @k @(b :: k) (a0123456789876543210 :: Proxy a) :: Proxy b where
-      Meth3Sym1 a0123456789876543210 = Meth3 a0123456789876543210
+    type family Meth3Sym1 @j @(a :: j) @k @(b :: k) (a_TypeAbstractions_13 :: Proxy a) :: Proxy b where
+      Meth3Sym1 a_TypeAbstractions_13 = Meth3 a_TypeAbstractions_13
     type PC3 :: forall j. j -> forall k. k -> Constraint
     class PC3 @j (a :: j) @k (b :: k) where
       type family Meth3 (arg :: Proxy a) :: Proxy b
