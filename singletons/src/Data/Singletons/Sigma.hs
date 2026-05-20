@@ -8,6 +8,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -196,6 +197,18 @@ uncurrySigma :: forall a (b :: a ~> Type) (c :: Sigma a b ~> Type).
 uncurrySigma f (x :%&: y) = f x y
 
 #if __GLASGOW_HASKELL__ >= 806
+#if __GLASGOW_HASKELL__ >= 902
+deriving instance (ShowSing s, ShowApply t) => Show (Sigma s t)
+deriving instance forall s (t :: s ~> Type) (sig :: Sigma s t).
+                  (ShowSing s, ShowSingApply t)
+               => Show (SSigma sig)
+#else
+-- For technical reasons, the derived Show instances won't typecheck on pre-9.2
+-- versions of GHC.
+-- (See https://gitlab.haskell.org/ghc/ghc/-/issues/14860#note_454218.)
+-- To work around this, we hand-write the code that would have been generated in
+-- the derived Show instances, but with extra type annotations to guide the
+-- typechecker along.
 instance (ShowSing s, ShowApply t) => Show (Sigma s t) where
   showsPrec p ((a :: Sing (fst :: s)) :&: b) = showParen (p >= 5) $
     showsPrec 5 a . showString " :&: " . showsPrec 5 b
@@ -208,6 +221,7 @@ instance forall s (t :: s ~> Type) (sig :: Sigma s t).
     showParen (p >= 5) $
       showsPrec 5 sa . showString " :&: " . showsPrec 5 sb
         :: ShowSingApply' t fst snd => ShowS
+#endif
 
 ------------------------------------------------------------
 -- Internal utilities
