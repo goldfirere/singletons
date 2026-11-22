@@ -1,4 +1,5 @@
-Singletons/T511.hs:0:0: error: [GHC-39584] Q monad failure
+Singletons/T511.hs:0:0: error: [GHC-39584]
+    Q monad failure
   |
 7 | $(singletons [d|
   |  ^^^^^^^^^^^^^^^...
