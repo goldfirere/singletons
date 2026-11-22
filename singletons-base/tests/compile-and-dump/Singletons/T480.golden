@@ -1,5 +1,5 @@
-
-Singletons/T480.hs:0:0: error: [GHC-39584] Q monad failure
+Singletons/T480.hs:0:0: error: [GHC-39584]
+    Q monad failure
   |
 5 | $(singletons
   |  ^^^^^^^^^^^...
@@ -12,3 +12,4 @@ Singletons/T480.hs:0:0: error: [GHC-39584]
   |
 5 | $(singletons
   |  ^^^^^^^^^^^...
+

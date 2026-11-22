@@ -6,6 +6,8 @@ next [????.??.??]
 * The unique names that `singletons-base` generates are now deterministic. This
   should not affect the public-facing API portions of the TH-generated code,
   but the resulting Haddocks should be a bit more compact and readable.
+* Make the test suite more portable such that it works when compiled from a
+  Hackage checkout, not just a checkout of the `git` repository.
 
 3.5.1 [2026.01.10]
 ------------------

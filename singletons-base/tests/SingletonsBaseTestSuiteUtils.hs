@@ -75,17 +75,27 @@ compileAndDumpTest testName opts =
       actualFilePath
       compileWithGHC
   where
-    testPath         = testName ++ ".hs"
-    goldenFilePath   = goldenPath ++ testName ++ ".golden"
-    actualFilePath   = goldenPath ++ testName ++ ".actual"
+    testPrefix       = goldenPath ++ testName
+    testPath         = testPrefix ++ ".hs"
+    goldenFilePath   = testPrefix ++ ".golden"
+    actualFilePath   = testPrefix ++ ".actual"
 
     compileWithGHC :: IO ()
     compileWithGHC = do
       hActualFile <- openFile actualFilePath WriteMode
+      -- Importantly, we must change the current working directory (`cwd`) to
+      -- `Just rootDir` before invoking the `ghc` subprocess. This is because
+      -- `cabal`'s `code-generator` feature is a bit inconsistent about whether
+      -- it generates absolute or relative paths in `opts`, and if the paths are
+      -- relative, then they will be relative to the `rootDir`. Therefore, the
+      -- simplest way to make the generated paths work is to set the `cwd` to
+      -- `rootDir`. (It's perhaps a bit unsatisfying that we have to do this,
+      -- but ultimately this is a `cabal` issue. See
+      -- https://github.com/haskell/cabal/issues/9238#issuecomment-7086710238.)
       (_, _, _, pid) <- createProcess (proc ghc (testPath : opts))
                                               { std_out = UseHandle hActualFile
                                               , std_err = UseHandle hActualFile
-                                              , cwd     = Just goldenPath }
+                                              , cwd     = Just rootDir }
       _ <- waitForProcess pid        -- see Note [Ignore exit code]
       normalizeOutput actualFilePath -- see Note [Output normalization]
       return ()
@@ -140,6 +150,12 @@ are turned into:
 This allows inserting comments into test files without the need to modify the
 golden file to adjust line numbers.
 
+See also the following Notes, which describe more specific occurrences of
+normalization that deserve their own commentary:
+
+* Note [Normalizing Windows path separators]
+* Note [Normalizing absolute paths]
+
 Note [Normalizing Windows path separators]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 File paths are printed differently by GHC depending on which operating system
@@ -171,6 +187,15 @@ in lambda expressions. As a result, the expression above would be
 pretty-printed as (id \ x -> x), which avoids the issue entirely. Again, we
 will choose not to worry about this corner case unless it becomes an issue in
 practice.
+
+Note [Normalizing absolute paths]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When you specify an absolute path to an `.hs` file as an argument to `ghc`, the
+`-ddump-splices` output will print the full, absolute path. This is obviously
+undesirable from a portability perspective, as we don't want to bake in the
+particular checkout directory on one's local machine into the golden output.
+Luckily, all of the absolute paths happen to have `goldenPath` as a prefix, so
+normalizing these paths is as simple as removing the `goldenPath` prefix.
 -}
 
 normalizeOutput :: FilePath -> IO ()
@@ -187,10 +212,13 @@ normalizeOutput file = Turtle.inplace pat (fromString file)
       -- (e.g., turn `singletons-2.4.1:Sing` into `Sing`) to make the output
       -- more stable.
       , "" <$ "singletons-" <* verNum <* ":"
+      -- See Note [Normalizing Windows path separators]
       , do x <- Turtle.alphaNum
            _ <- Turtle.char '\\'
            y <- Turtle.alphaNum
            pure $ Text.pack [x, '/', y]
+      -- See Note [Normalizing absolute paths]
+      , "" <$ fromString goldenPath
       ]
     verNum = d `Turtle.sepBy` Turtle.char '.'
     numPair = () <$ "(" <* d <* "," <* d <* ")"
